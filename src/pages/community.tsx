@@ -25,7 +25,7 @@ const CommunityPage: NextPage = () => {
                         width="512"
                         height="512"
                         alt={icon.prompt ?? "an image of an icon"}
-                        src={`https://name-design-ai.s3.us-east-1.amazonaws.com/${icon.id}`}
+                        src={`https://gaminglogoai-images.s3.us-east-1.amazonaws.com/${icon.id}`}
                     />
                 </li>
             ))}

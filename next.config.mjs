@@ -12,7 +12,7 @@ const config = {
 
   images: {
     domains: [
-      "name-design-ai.s3.us-east-1.amazonaws.com",
+      "gaminglogoai-images.s3.us-east-1.amazonaws.com",
     ],
   },
 

@@ -21,7 +21,7 @@ const s3 = new AWS.S3({
   region: "us-east-1",
 });
 
-const BUCKET_NAME = "name-design-ai"; // Replace with your S3 bucket name
+const BUCKET_NAME = "gaminglogoai-images"; // Replace with your S3 bucket name
 
 const replicate = new Replicate({
   auth: env.REPLICATE_API_TOKEN,

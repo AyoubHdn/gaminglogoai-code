@@ -44,7 +44,7 @@ const CollectionPage: NextPage = () => {
 
         const link = document.createElement("a");
         link.href = blobUrl;
-        link.download = "name-design-ai.png"; // Customize filename
+        link.download = "gaminglogoai.png"; // Customize filename
         link.click();
 
         window.URL.revokeObjectURL(blobUrl);
@@ -74,13 +74,13 @@ const CollectionPage: NextPage = () => {
                 width="512"
                 height="512"
                 alt={icon.prompt ?? "an image of an icon"}
-                src={`https://name-design-ai.s3.us-east-1.amazonaws.com/${icon.id}`}
+                src={`https://gaminglogoai-images.s3.us-east-1.amazonaws.com/${icon.id}`}
               />
               {/* Button Container */}
               <div className="absolute top-0 right-0 flex gap-0">
                 {/* View Button */}
                 <button
-                  onClick={() => openPopup(`https://name-design-ai.s3.us-east-1.amazonaws.com/${icon.id}`)}
+                  onClick={() => openPopup(`https://gaminglogoai-images.us-east-1.amazonaws.com/${icon.id}`)}
                   className="bg-gray-800 bg-opacity-50 text-white hover:bg-opacity-70 focus:outline-none p-2"
                   title="View Fullscreen"
                 >
@@ -89,7 +89,7 @@ const CollectionPage: NextPage = () => {
                 {/* Download Button */}
                 <button
                   onClick={() => {
-                    void handleDownload(`https://name-design-ai.s3.us-east-1.amazonaws.com/${icon.id}`);
+                    void handleDownload(`https://gaminglogoai-images.s3.us-east-1.amazonaws.com/${icon.id}`);
                   }}
                   className="bg-gray-800 bg-opacity-50 text-white hover:bg-opacity-70 focus:outline-none p-2"
                   title="Download"

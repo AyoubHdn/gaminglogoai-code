@@ -226,7 +226,7 @@ const NameArtPage: NextPage = () => {
           const blobUrl = window.URL.createObjectURL(pngBlob);
           const link = document.createElement("a");
           link.href = blobUrl;
-          link.download = "name-design-ai.png";
+          link.download = "gaminglogoai.png";
           link.click();
           window.URL.revokeObjectURL(blobUrl);
         }
