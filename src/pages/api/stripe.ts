@@ -4,7 +4,7 @@ import Stripe from "stripe";
 import { env } from "~/env.mjs";
 import { buffer } from "micro";
 import { prisma } from "~/server/db";
-import { updateMauticContact } from "~/server/api/routers/mautic-utils";
+import { syncUserToMautic } from "~/server/api/routers/mautic-utils";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: "2024-11-20.acacia",
@@ -29,6 +29,10 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     event = stripe.webhooks.constructEvent(buf, sig, env.STRIPE_WEB_HOOK_SECRET);
+    console.log('Stripe Price IDs from env:');
+    console.log('STARTER:', env.PRICE_ID_STARTER);
+    console.log('PRO:', env.PRICE_ID_PRO);
+    console.log('ELITE:', env.PRICE_ID_ELITE);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown Error";
     console.error("Webhook Error:", message);
@@ -58,6 +62,7 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const priceId = lineItems.data[0]?.price?.id;
       console.log("Price ID from line items:", priceId);
+      console.log("Comparing with env.PRICE_ID_STARTER:", env.PRICE_ID_STARTER, "Match:", priceId === env.PRICE_ID_STARTER);
 
       if (!priceId) {
         console.error("Missing priceId in line items.");
@@ -89,6 +94,7 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
       try {
         const userBeforeUpdate = await prisma.user.findUnique({
           where: { id: userId },
+          select: { gamingCredits: true, gamingPlan: true, email: true, name: true }
         });
 
         console.log("User before update:", userBeforeUpdate);
@@ -96,10 +102,10 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
         const updatedUser = await prisma.user.update({
           where: { id: userId },
           data: {
-            credits: {
+            gamingCredits: {
               increment: incrementCredits,
             },
-            plan: plan as "None" | "Starter" | "Pro" | "Elite", // Type-safe with Plan enum
+            gamingPlan: plan as "None" | "Starter" | "Pro" | "Elite", // Type-safe with Plan enum
           },
         });
 
@@ -107,13 +113,12 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
 
         if (updatedUser.email) {
           try {
-            const mauticResult = await updateMauticContact({
+            const mauticResult = await syncUserToMautic({
               email: updatedUser.email,
               name: updatedUser.name,
-              credits: updatedUser.credits,
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              plan: updatedUser.plan, // Now recognized
-            });
+              brand_specific_credits: updatedUser.gamingCredits,
+              brand_specific_plan: updatedUser.gamingPlan,
+            },'gaminglogoai');
             console.log("Mautic updated after purchase:", mauticResult);
           } catch (err) {
             console.error("Error updating Mautic after purchase:", err);

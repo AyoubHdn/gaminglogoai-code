@@ -1,76 +1,222 @@
 // ~/server/api/routers/mautic-utils.ts
-import { env } from "~/env.mjs";
+// OR common/utils/mautic-utils.ts if you structure for sharing
+import { env } from "~/env.mjs"; // ENSURE THIS PATH IS CORRECT FOR BOTH PROJECTS
+                                // If projects are separate, copy env.mjs or ensure paths resolve.
+                                // If monorepo, this might be a shared package.
 
-export interface MauticResponse {
-  contact?: unknown;
-  errors?: string[];
+export interface MauticApiResponse {
+  contact?: { id?: number; [key: string]: any };
+  errors?: Array<{ message: string; code: number; type: string }>;
   [key: string]: unknown;
 }
 
-export async function updateMauticContact(contact: {
+interface MauticContactPayload {
   email: string;
-  name?: string | null;
-  credits?: number;
+  firstname?: string;
+  lastname?: string;
+  // NameDesignAI specific custom field aliases (as defined in Mautic)
+  credits?: string | number;
   plan?: string;
-}): Promise<MauticResponse> {
-  const mauticBaseUrl = env.MAUTIC_BASE_URL!;
-  const mauticUsername = env.MAUTIC_USERNAME!;
-  const mauticPassword = env.MAUTIC_PASSWORD!;
-  const authHeader =
-    "Basic " + Buffer.from(`${mauticUsername}:${mauticPassword}`).toString("base64");
+  // GamingLogoAI specific custom field aliases (as defined in Mautic)
+  gla_credits?: string | number;
+  gla_plan?: string;
+  // Brand tracking custom field aliases (as defined in Mautic)
+  brand_origin?: string[]; // For multi-select
+  last_interaction_brand?: string;
+}
 
-  const [firstname, ...rest] = contact.name ? contact.name.split(" ") : [""];
-  const lastname = rest.join(" ") || "";
+// Helper to make API calls to Mautic
+export async function updateMauticContact(
+  endpoint: string,
+  method: 'GET' | 'POST' | 'PATCH',
+  payload?: any
+): Promise<any> {
+  const mauticBaseUrl = env.MAUTIC_BASE_URL;
+  const mauticUsername = env.MAUTIC_USERNAME;
+  const mauticPassword = env.MAUTIC_PASSWORD;
 
-  const payload: { [key: string]: unknown } = {
-    email: contact.email,
-    firstname,
-    lastname,
-  };
-
-  if (contact.credits !== undefined) {
-    payload.credits = contact.credits === 0 ? "No credits" : String(contact.credits);
+  if (!mauticBaseUrl || !mauticUsername || !mauticPassword) {
+    console.error("MAUTIC_API: Mautic credentials or base URL are not configured.");
+    throw new Error("Mautic configuration missing.");
   }
 
-  if (contact.plan !== undefined) {
-    payload.plan = contact.plan; // This should send "Starter" or "None"
+  const authHeader = "Basic " + Buffer.from(`${mauticUsername}:${mauticPassword}`).toString("base64");
+  const headers: HeadersInit = { Authorization: authHeader };
+  if (payload && (method === 'POST' || method === 'PATCH')) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  const response = await fetch(`${mauticBaseUrl}/api/${endpoint}`, {
+    method: method,
+    headers: headers,
+    body: payload ? JSON.stringify(payload) : undefined,
+  });
+
+  if (!response.ok) {
+    let errorData;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      errorData = await response.json();
+    } catch (e) {
+      errorData = { message: `HTTP error! Status: ${response.status} ${response.statusText}` };
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const errorMessage = errorData?.errors?.[0]?.message || errorData?.message || `Mautic API Error: ${response.status}`;
+    console.error(`MAUTIC_API_ERROR on ${method} ${endpoint}:`, response.status, errorMessage, errorData);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    throw new Error(errorMessage);
+  }
+
+  // Handle 204 No Content for certain successful operations like delete
+  if (response.status === 204) return { success: true };
+  
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return await response.json();
+  } catch (e) {
+      console.error(`MAUTIC_API_JSON_ERROR on ${method} ${endpoint}: Not a JSON response.`, e);
+      throw new Error("Failed to parse Mautic API JSON response for an OK status.");
+  }
+}
+
+// Helper to find a Mautic contact by email
+async function findMauticContactByEmail(email: string): Promise<{ id: number; fields: { all: Record<string, any> } } | null> {
+  console.log(`MAUTIC_UTIL: Searching for contact with email: ${email}`);
+  try {
+    type MauticSearchResponse = {
+      total?: string | number;
+      contacts?: Record<string, { id: number; fields: { all: Record<string, any> } }>;
+    };
+    const searchResult = await updateMauticContact(`contacts?search=email:${encodeURIComponent(email)}&limit=1`, 'GET') as MauticSearchResponse;
+
+    if (searchResult.contacts && typeof searchResult.contacts === 'object' && Object.keys(searchResult.contacts).length > 0) {
+      const contactKey = Object.keys(searchResult.contacts)[0];
+      if (contactKey && searchResult.contacts[contactKey]) {
+        console.log(`MAUTIC_UTIL: Found contact for ${email}. Key: ${contactKey}, ID: ${searchResult.contacts[contactKey].id}`);
+        return searchResult.contacts[contactKey];
+      }
+    }
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    console.log(`MAUTIC_UTIL: No contact found for email ${email}. Total: ${searchResult.total}`);
+    return null;
+  } catch (error) {
+    // updateMauticContact already logs the specific API error
+    console.error(`MAUTIC_UTIL: Broader error in findMauticContactByEmail for ${email}.`);
+    return null; // Keep the main flow going if Mautic search fails
+  }
+}
+
+// Main sync function
+export async function syncUserToMautic(
+  contactInput: {
+    email: string;
+    name?: string | null;
+    brand_specific_credits?: number | null; // Credits for the current brand
+    brand_specific_plan?: string | null;    // Plan for the current brand
+  },
+  currentBrand: 'namedesignai' | 'gaminglogoai'
+): Promise<MauticApiResponse> { // Always return MauticApiResponse
+  if (!contactInput.email) {
+    console.error("MAUTIC_SYNC: Email is required for Mautic sync.");
+    return { errors: [{ message: "Email is required", code: 400, type: "validation_error" }] };
+  }
+  console.log(`MAUTIC_SYNC: Initiating sync for ${contactInput.email}, brand: ${currentBrand}`);
+
+  const mauticPayloadForApi: Partial<MauticContactPayload> = {
+    email: contactInput.email,
+    firstname: contactInput.name?.split(' ')[0] || undefined,
+    lastname: contactInput.name?.split(' ').slice(1).join(' ') || undefined,
+    last_interaction_brand: currentBrand,
+    // Initialize all brand-specific data fields to undefined
+    credits: undefined,
+    plan: undefined,
+    gla_credits: undefined,
+    gla_plan: undefined,
+    brand_origin: undefined, // This will be populated based on existing + current
+  };
+
+  if (currentBrand === 'namedesignai') {
+    if (contactInput.brand_specific_credits !== undefined && contactInput.brand_specific_credits !== null) {
+      mauticPayloadForApi.credits = contactInput.brand_specific_credits === 0 ? "No credits" : String(contactInput.brand_specific_credits);
+    }
+    if (contactInput.brand_specific_plan) {
+      mauticPayloadForApi.plan = contactInput.brand_specific_plan;
+    }
+  } else if (currentBrand === 'gaminglogoai') {
+    if (contactInput.brand_specific_credits !== undefined && contactInput.brand_specific_credits !== null) {
+      mauticPayloadForApi.gla_credits = contactInput.brand_specific_credits === 0 ? "No credits" : String(contactInput.brand_specific_credits);
+    }
+    if (contactInput.brand_specific_plan) {
+      mauticPayloadForApi.gla_plan = contactInput.brand_specific_plan;
+    }
   }
 
   try {
-    const searchResponse = await fetch(`${mauticBaseUrl}/api/contacts?search=email:${contact.email}`, {
-      method: "GET",
-      headers: { Authorization: authHeader },
-    });
-    const searchData = (await searchResponse.json()) as { contacts: Record<string, any> };
-    const contactId = searchData.contacts ? Object.keys(searchData.contacts)[0] : null;
+    const existingMauticContact = await findMauticContactByEmail(contactInput.email);
+    let httpMethod: 'POST' | 'PATCH';
+    let mauticApiUrl: string;
+    const mauticBaseUrl = env.MAUTIC_BASE_URL; // Get it once
 
-    if (contactId) {
-      const updateResponse = await fetch(`${mauticBaseUrl}/api/contacts/${contactId}/edit`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: authHeader,
-        },
-        body: JSON.stringify(payload),
-      });
-      const updateData = (await updateResponse.json()) as MauticResponse;
-      console.log(`Updated Mautic contact ${contactId}:`, updateData);
-      return updateData;
+    if (existingMauticContact?.id) {
+      console.log(`MAUTIC_SYNC: Found existing contact ID: ${existingMauticContact.id} for ${contactInput.email}`);
+      httpMethod = "PATCH";
+      mauticApiUrl = `${mauticBaseUrl}/api/contacts/${existingMauticContact.id}/edit`;
+
+      const rawBrandOrigins: unknown = existingMauticContact.fields?.all?.brand_origin;
+      let currentBrandOrigins: string[] = [];
+      if (typeof rawBrandOrigins === 'string' && rawBrandOrigins.trim() !== '') {
+        currentBrandOrigins = rawBrandOrigins.includes('|') ? rawBrandOrigins.split('|') : [rawBrandOrigins];
+      } else if (Array.isArray(rawBrandOrigins)) {
+        currentBrandOrigins = rawBrandOrigins.filter((item): item is string => typeof item === 'string' && item.trim() !== '');
+      }
+      currentBrandOrigins = currentBrandOrigins.map(s => s.trim()).filter(Boolean);
+
+      if (!currentBrandOrigins.includes(currentBrand)) {
+        currentBrandOrigins.push(currentBrand);
+      }
+      if (currentBrandOrigins.length > 0) {
+        mauticPayloadForApi.brand_origin = currentBrandOrigins;
+      } else {
+        // If after logic it's empty, Mautic might interpret empty array as clearing,
+        // or you might send undefined. Sending an empty array is usually for "set to no selection".
+        // To be safe, if it's empty, don't send the key or send undefined.
+        // Let's not send the key if the array is empty after logic.
+        // This is handled by cleanPayload.
+      }
     } else {
-      const createResponse = await fetch(`${mauticBaseUrl}/api/contacts/new`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: authHeader,
-        },
-        body: JSON.stringify(payload),
-      });
-      const createData = (await createResponse.json()) as MauticResponse;
-      console.log(`Created Mautic contact for ${contact.email}:`, createData);
-      return createData;
+      console.log(`MAUTIC_SYNC: No Mautic contact found for ${contactInput.email}. Creating new.`);
+      httpMethod = "POST";
+      mauticApiUrl = `${mauticBaseUrl}/api/contacts/new`;
+      mauticPayloadForApi.brand_origin = [currentBrand]; // Initialize for new contact
     }
-  } catch (err) {
-    console.error(`Error syncing contact ${contact.email}:`, err);
-    throw err;
+
+    // Remove undefined fields from payload before sending
+    const cleanPayload: { [key: string]: any } = {};
+    for (const key in mauticPayloadForApi) {
+      if (mauticPayloadForApi[key as keyof MauticContactPayload] !== undefined) {
+        cleanPayload[key] = mauticPayloadForApi[key as keyof MauticContactPayload];
+      }
+    }
+    // Ensure email is always present for new contact creation
+    if (httpMethod === 'POST' && !cleanPayload.email) {
+        cleanPayload.email = contactInput.email;
+    }
+
+
+    console.log(`MAUTIC_SYNC: FINAL CLEAN PAYLOAD for ${httpMethod} to ${mauticApiUrl}:`, JSON.stringify(cleanPayload, null, 2));
+
+    const responseData = await updateMauticContact(
+        mauticApiUrl.substring(mauticBaseUrl.length + 5), // Pass endpoint part, e.g., 'contacts/new'
+        httpMethod,
+        cleanPayload
+    ) as MauticApiResponse;
+
+    console.log(`MAUTIC_SYNC: Successfully ${httpMethod === 'POST' ? 'created' : 'updated'} Mautic for ${contactInput.email}. Response contact ID:`, responseData.contact?.id);
+    return responseData;
+
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown Mautic processing error";
+    console.error(`MAUTIC_SYNC: Overall error for ${contactInput.email}, brand ${currentBrand}:`, message, error);
+    return { errors: [{ message, code: 500, type: "internal_error" }] };
   }
 }

@@ -8,8 +8,7 @@ import Replicate from "replicate";
 import { env } from "~/env.mjs";
 import { b64Image } from "~/data/b64Image";
 import AWS from "aws-sdk";
-import { updateMauticContact } from "~/server/api/routers/mautic-utils";
-// Rename this import to avoid clashing with local variables
+import { syncUserToMautic } from "~/server/api/routers/mautic-utils";
 import { buffer as readStreamIntoBuffer } from "stream/consumers";
 import { Readable } from "stream";
 
@@ -212,10 +211,10 @@ export const generateRouter = createTRPCRouter({
       const { count } = await ctx.prisma.user.updateMany({
         where: {
           id: ctx.session.user.id,
-          credits: { gte: totalCredits },
+          gamingCredits: { gte: totalCredits },
         },
         data: {
-          credits: { decrement: totalCredits },
+          gamingCredits: { decrement: totalCredits },
         },
       });
 
@@ -239,11 +238,12 @@ export const generateRouter = createTRPCRouter({
 
       // Update Mautic contact
       try {
-        await updateMauticContact({
+        await syncUserToMautic({
           email: updatedUser.email,
           name: updatedUser.name,
-          credits: updatedUser.credits,
-        });
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          brand_specific_credits: updatedUser.gamingCredits,
+        },'gaminglogoai');
         console.log("Mautic contact updated after credit deduction.");
       } catch (err) {
         console.error("Error updating Mautic after credit deduction:", err);

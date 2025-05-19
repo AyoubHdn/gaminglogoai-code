@@ -8,7 +8,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
-import { updateMauticContact } from "~/server/api/routers/mautic-utils";
+import { syncUserToMautic } from "~/server/api/routers/mautic-utils";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -73,12 +73,14 @@ export const authOptions: NextAuthOptions = {
             console.error("User not found in database on signIn.");
             return;
           }
-          const result = await updateMauticContact({
+          const result = await syncUserToMautic({
             email: latestUser.email!,
             name: latestUser.name,
-            credits: latestUser.credits,
-            plan: latestUser.plan,
-          });
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            brand_specific_credits: latestUser.gamingCredits,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            brand_specific_plan: latestUser.gamingPlan,
+          },'gaminglogoai');
           console.log("Mautic updated on signIn:", result);
         } catch (err) {
           console.error("Error updating Mautic on signIn:", err);
@@ -91,12 +93,12 @@ export const authOptions: NextAuthOptions = {
     createUser: async ({ user }) => {
       if (user.email) {
         try {
-          const result = await updateMauticContact({
+          const result = await syncUserToMautic({
             email: user.email,
             name: user.name,
-            credits: 1, // New users start with 1 credit
-            plan: "None",
-          });
+            brand_specific_credits: 1, // New users start with 1 credit
+            brand_specific_plan: "None",
+          },'gaminglogoai');
           console.log("Mautic updated on createUser:", result);
         } catch (err) {
           console.error("Error updating Mautic on createUser:", err);

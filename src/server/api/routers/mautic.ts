@@ -1,6 +1,6 @@
 // ~/server/api/routers/mautic.ts
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { updateMauticContact } from "./mautic-utils";
+import { syncUserToMautic } from "./mautic-utils";
 import { User } from "@prisma/client";
 
 export const mauticRouter = createTRPCRouter({
@@ -20,12 +20,12 @@ export const mauticRouter = createTRPCRouter({
       }
       try {
         console.log("Sending to Mautic:", { email: contact.email, credits: contact.credits, plan: contact.plan });
-        const mauticData = await updateMauticContact({
+        const mauticData = await syncUserToMautic({
           email: contact.email,
           name: contact.name,
-          credits: contact.credits,
-          plan: contact.plan,
-        });
+          brand_specific_credits: contact.credits,
+          brand_specific_plan: contact.plan,
+        },'gaminglogoai');
         console.log(`Processed contact ${contact.email}:`, mauticData);
         processedCount++;
       } catch (err) {

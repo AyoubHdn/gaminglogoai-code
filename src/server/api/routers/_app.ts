@@ -1,11 +1,11 @@
 // src/server/api/routers/_app.ts
 
 import { createTRPCRouter } from "~/server/api/trpc";
-import { mauticRouter } from "./mautic";
+//import { mauticRouter } from "./mautic";
 // ... import other routers as needed
 
 export const appRouter = createTRPCRouter({
-  mautic: mauticRouter,
+  //mautic: mauticRouter,
   // ... other routers
 });
 
