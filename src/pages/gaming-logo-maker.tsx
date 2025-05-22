@@ -69,60 +69,87 @@ const GameLogoPage: NextPage = () => {
   const typedGamerStylesData = gamerStylesData as GamerStyleCategory; // Cast to our defined type
 
   const handleStyleSelect = useCallback((basePrompt: string, src: string) => {
-    setSelectedStyleImageSrc(src);
-    setForm((prev) => ({ ...prev, basePrompt }));
-    setError("");
-  }, []); // Empty dependency array if setSelectedStyleImageSrc and setForm are stable
+  setSelectedStyleImageSrc(src);
+  setForm((prev) => ({ ...prev, basePrompt }));
+  setError("");
+}, []); // Dependencies: only if setSelectedStyleImageSrc or setForm setters change, which they don't
 
-  // Initialize activeTab to the first category
-  useEffect(() => {
-    const categoryKeys = Object.keys(typedGamerStylesData);
-    if (categoryKeys.length > 0 && categoryKeys[0]) {
-      setActiveTab(categoryKeys[0]);
-    }
-  }, []); // Runs once on mount
+// Initialize activeTab to the first category
+useEffect(() => {
+  const categoryKeys = Object.keys(typedGamerStylesData); // Use the typed version
+  if (categoryKeys.length > 0 && categoryKeys[0]) {
+    setActiveTab(categoryKeys[0]);
+  }
+}, []); // typedGamerStylesData is stable, so no need to add it here if it's a static import
 
-  // Update activeSubTab when activeTab changes
-  useEffect(() => {
-    if (!activeTab || !typedGamerStylesData[activeTab]) {
-      setActiveSubTab("");
-      setSelectedStyleImageSrc(null);
-      setForm(prev => ({ ...prev, basePrompt: "" }));
-      return;
-    }
+// Update activeSubTab when activeTab changes
+useEffect(() => {
+  if (!activeTab) { // If activeTab is empty string (initial state or reset)
+    setActiveSubTab("");
+    setSelectedStyleImageSrc(null);
+    setForm(prev => ({ ...prev, basePrompt: "" }));
+    return;
+  }
 
-    const subcategoriesForActiveTab = typedGamerStylesData[activeTab]; // TS knows this is GamerStyleSubCategory
-    const subKeys = Object.keys(subcategoriesForActiveTab); // This is now safe
+  // Check if the activeTab key actually exists and has data
+  const subcategoriesForActiveTab = typedGamerStylesData[activeTab];
 
-    if (subKeys.length > 0 && subKeys[0]) {
-      setActiveSubTab(subKeys[0]);
-      // Note: The next useEffect will handle selecting the first style based on new activeSubTab
-    } else {
-      setActiveSubTab("");
-      setSelectedStyleImageSrc(null);
-      setForm(prev => ({ ...prev, basePrompt: "" }));
-    }
-  }, [activeTab]); // Runs when activeTab changes
+  if (!subcategoriesForActiveTab || typeof subcategoriesForActiveTab !== 'object') {
+    // This case means activeTab was a string, but not a valid key in typedGamerStylesData,
+    // or the data for that key is not an object (which would be a data structure error).
+    setActiveSubTab("");
+    setSelectedStyleImageSrc(null);
+    setForm(prev => ({ ...prev, basePrompt: "" }));
+    return;
+  }
 
-  // Update selected style when activeTab or activeSubTab changes
-  useEffect(() => {
-    if (!activeTab || !activeSubTab || 
-        !typedGamerStylesData[activeTab] || 
-        !typedGamerStylesData[activeTab]?.[activeSubTab]) {
-      setSelectedStyleImageSrc(null);
-      setForm(prev => ({ ...prev, basePrompt: "" }));
-      return;
-    }
+  // At this point, subcategoriesForActiveTab IS an object (GamerStyleSubCategory).
+  const subKeys = Object.keys(subcategoriesForActiveTab); // This is now safe.
 
-    const stylesInCurrentSubTab = typedGamerStylesData[activeTab]?.[activeSubTab];
-    if (stylesInCurrentSubTab && stylesInCurrentSubTab.length > 0 && stylesInCurrentSubTab[0]) {
-      const firstStyle = stylesInCurrentSubTab[0];
+  if (subKeys.length > 0 && subKeys[0]) {
+    setActiveSubTab(subKeys[0]);
+    // The next useEffect will handle selecting the first style of this new subTab.
+  } else {
+    // No subcategories found for this activeTab
+    setActiveSubTab("");
+    setSelectedStyleImageSrc(null);
+    setForm(prev => ({ ...prev, basePrompt: "" }));
+  }
+}, [activeTab]); // Runs when activeTab changes
+
+// Update selected style when activeSubTab (or activeTab leading to new subTab) changes
+useEffect(() => {
+  if (!activeTab || !activeSubTab) {
+    setSelectedStyleImageSrc(null);
+    setForm(prev => ({ ...prev, basePrompt: "" }));
+    return;
+  }
+
+  const categoryData = typedGamerStylesData[activeTab];
+  if (!categoryData || typeof categoryData !== 'object') {
+    setSelectedStyleImageSrc(null); setForm(prev => ({ ...prev, basePrompt: "" })); return;
+  }
+
+  const stylesInCurrentSubTab = categoryData[activeSubTab];
+  if (!stylesInCurrentSubTab || !Array.isArray(stylesInCurrentSubTab)) {
+    setSelectedStyleImageSrc(null); setForm(prev => ({ ...prev, basePrompt: "" })); return;
+  }
+
+  if (stylesInCurrentSubTab.length > 0 && stylesInCurrentSubTab[0]) {
+    const firstStyle = stylesInCurrentSubTab[0];
+    // Ensure firstStyle and its properties exist before calling handleStyleSelect
+    if (firstStyle && typeof firstStyle.src === 'string' && typeof firstStyle.basePrompt === 'string') {
       handleStyleSelect(firstStyle.basePrompt, firstStyle.src);
     } else {
-      setSelectedStyleImageSrc(null);
-      setForm(prev => ({ ...prev, basePrompt: "" }));
+      // First style item is malformed
+      setSelectedStyleImageSrc(null); setForm(prev => ({ ...prev, basePrompt: "" }));
     }
-  }, [activeTab, activeSubTab, handleStyleSelect]); // Runs when activeTab or activeSubTab changes
+  } else {
+    // No styles in current subcategory
+    setSelectedStyleImageSrc(null);
+    setForm(prev => ({ ...prev, basePrompt: "" }));
+  }
+}, [activeTab, activeSubTab, handleStyleSelect]);   // Runs when activeTab or activeSubTab changes
 
   // Scroll handling effects
   useLayoutEffect(() => {
