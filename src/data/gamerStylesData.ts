@@ -2,7 +2,7 @@ export const gamerStylesData: Record<
 string,
 Record<string, { src: string; basePrompt: string }[]>
 > = {
-  "Game Titles": {
+  "Game Titles": { 
     "Apex Legends": [
       {
         src: "/styles/s300.webp",
