@@ -24,6 +24,13 @@ interface MauticContactPayload {
   brand_origin?: string[]; // For multi-select
   last_interaction_brand?: string;
 }
+interface MauticFoundContactDetail {
+  id: number; // We expect 'id' to be a number
+  fields: {
+    all: Record<string, any>; // Custom fields
+  };
+  // Add other known top-level Mautic contact fields if you use them
+}
 
 // Helper to make API calls to Mautic
 export async function updateMauticContact(
@@ -80,29 +87,47 @@ export async function updateMauticContact(
 }
 
 // Helper to find a Mautic contact by email
-async function findMauticContactByEmail(email: string): Promise<{ id: number; fields: { all: Record<string, any> } } | null> {
+async function findMauticContactByEmail(email: string): Promise<MauticFoundContactDetail | null> {
   console.log(`MAUTIC_UTIL: Searching for contact with email: ${email}`);
   try {
     type MauticSearchResponse = {
       total?: string | number;
-      contacts?: Record<string, { id: number; fields: { all: Record<string, any> } }>;
+      contacts?: Record<string, MauticFoundContactDetail>; // Use the more specific type here
     };
-    const searchResult = await updateMauticContact(`contacts?search=email:${encodeURIComponent(email)}&limit=1`, 'GET') as MauticSearchResponse;
 
+    const searchResult = await makeMauticApiCall(
+      `contacts?search=email:${encodeURIComponent(email)}&limit=1`,
+      'GET'
+    ) as MauticSearchResponse;
+
+    // Check if contacts object exists, is an object, and is not empty
     if (searchResult.contacts && typeof searchResult.contacts === 'object' && Object.keys(searchResult.contacts).length > 0) {
-      const contactKey = Object.keys(searchResult.contacts)[0];
+      const contactKey = Object.keys(searchResult.contacts)[0]; // Get the first key (which is the Mautic contact ID as a string)
+
+      // Ensure contactKey is a valid string and that the contact object exists for that key
       if (contactKey && searchResult.contacts[contactKey]) {
-        console.log(`MAUTIC_UTIL: Found contact for ${email}. Key: ${contactKey}, ID: ${searchResult.contacts[contactKey].id}`);
-        return searchResult.contacts[contactKey];
+        const contactData = searchResult.contacts[contactKey];
+
+        // Now, explicitly check if contactData.id exists and is a number before using it
+        if (contactData && typeof contactData.id === 'number') {
+          console.log(`MAUTIC_UTIL: Found contact for ${email}. Key: ${contactKey}, ID: ${contactData.id}`);
+          return contactData; // Return the full contactData object
+        } else {
+          console.warn(`MAUTIC_UTIL: Contact data found for key ${contactKey} but 'id' is missing or not a number. Data:`, contactData);
+        }
+      } else {
+        console.warn(`MAUTIC_UTIL: contactKey invalid or no data for contactKey from searchResult.contacts for email ${email}.`);
       }
+    } else {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      console.log(`MAUTIC_UTIL: No contact found for email ${email} or contacts object malformed/empty. Total: ${searchResult.total}`);
     }
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    console.log(`MAUTIC_UTIL: No contact found for email ${email}. Total: ${searchResult.total}`);
-    return null;
+    return null; // Return null if not found or if data is malformed
   } catch (error) {
-    // updateMauticContact already logs the specific API error
+    // makeMauticApiCall should ideally throw a typed error or an error with a message
+    // console.error already happens in makeMauticApiCall for API errors
     console.error(`MAUTIC_UTIL: Broader error in findMauticContactByEmail for ${email}.`);
-    return null; // Keep the main flow going if Mautic search fails
+    return null;
   }
 }
 
@@ -157,7 +182,7 @@ export async function syncUserToMautic(
     let mauticApiUrl: string;
     const mauticBaseUrl = env.MAUTIC_BASE_URL; // Get it once
 
-    if (existingMauticContact?.id) {
+    if (existingMauticContact && typeof existingMauticContact.id === 'number') {
       console.log(`MAUTIC_SYNC: Found existing contact ID: ${existingMauticContact.id} for ${contactInput.email}`);
       httpMethod = "PATCH";
       mauticApiUrl = `${mauticBaseUrl}/api/contacts/${existingMauticContact.id}/edit`;
@@ -219,4 +244,12 @@ export async function syncUserToMautic(
     console.error(`MAUTIC_SYNC: Overall error for ${contactInput.email}, brand ${currentBrand}:`, message, error);
     return { errors: [{ message, code: 500, type: "internal_error" }] };
   }
+}
+
+function makeMauticApiCall(arg0: string, arg1: string): {
+  total?: string | number; contacts?: Record<string, MauticFoundContactDetail>; // Use the more specific type here
+} | PromiseLike<{
+  total?: string | number; contacts?: Record<string, MauticFoundContactDetail>; // Use the more specific type here
+}> {
+  throw new Error("Function not implemented.");
 }
