@@ -35,6 +35,7 @@ const server = z.object({
   MAUTIC_USERNAME: z.string(),
   MAUTIC_PASSWORD: z.string(),
   CRON_SECRET: z.string(),
+  
 });
 
 /**
@@ -44,6 +45,8 @@ const server = z.object({
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
   NEXT_PUBLIC_STRIPE_KEY: z.string(),
+  NEXT_PUBLIC_S3_BUCKET_NAME_GAMING: z.string(),
+  NEXT_PUBLIC_AWS_REGION_GAMING: z.string(),
 });
 
 /**
@@ -74,6 +77,8 @@ const processEnv = {
   MAUTIC_USERNAME: process.env.MAUTIC_USERNAME,
   MAUTIC_PASSWORD: process.env.MAUTIC_PASSWORD,
   CRON_SECRET: process.env.CRON_SECRET,
+  NEXT_PUBLIC_S3_BUCKET_NAME_GAMING: process.env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING,
+  NEXT_PUBLIC_AWS_REGION_GAMING: process.env.NEXT_PUBLIC_AWS_REGION_GAMING,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

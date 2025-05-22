@@ -1,15 +1,51 @@
+/* src/styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-    @apply bg-gray-100 dark:bg-gray-800 dark:text-gray-100;
+@layer base {
+  body {
+    @apply bg-white text-slate-800; /* Light Mode Default: White background, dark slate text */
+    @apply dark:bg-slate-950 dark:text-slate-200; /* Dark Mode Default: Very dark slate background, light gray/off-white text */
+    /* Add your preferred default font family here if you have one */
+    /* e.g., font-family: 'Inter', sans-serif; */
+    /* Ensure smooth scrolling for anchor links */
+    scroll-behavior: smooth;
+  }
+
+  /* Optional: Consistent link styling if not handled by prose or components */
+  /* a {
+    @apply text-purple-600 dark:text-cyan-400;
+    @apply hover:underline;
+  } */
+
+  /* Optional: More specific heading defaults if not using prose extensively */
+  /* h1, h2, h3, h4, h5, h6 {
+    @apply text-slate-900 dark:text-white;
+  } */
 }
+
+/* Scrollbar Hiding Utilities (these are fine as they are) */
 .no-scrollbar::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Opera */
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none; /* For Internet Explorer and Edge */
-    scrollbar-width: none; /* For Firefox */
-  }
-  
+  display: none; /* For Chrome, Safari, and Opera */
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
+}
+
+/* Optional: Custom scrollbar styling for a more "gamer" feel if desired (for browsers that support it) */
+/* This is an extra touch, not essential, and browser support varies. */
+/* ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-slate-200 dark:bg-slate-800 rounded-full;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-purple-500 dark:bg-cyan-500 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-purple-600 dark:bg-cyan-600;
+} */
