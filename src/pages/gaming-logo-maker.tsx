@@ -1,21 +1,37 @@
 // src/pages/gaming-logo-maker.tsx
 import { type NextPage } from "next";
 import Head from "next/head";
-import NextImage from "next/image"; // Renamed to NextImage to avoid conflict if 'Image' is used elsewhere
+import Image from "next/image"; // Using Image directly from next/image
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from "react";
 import { Button } from "~/component/Button";
 import { FormGroup } from "~/component/FormGroup";
 import { api } from "~/utils/api";
 import { Input } from "~/component/Input";
-import { gamerStylesData } from "~/data/gamerStylesData";
+import { gamerStylesData } from "~/data/gamerStylesData"; // Ensure this path and data structure are correct
 import { useSession, signIn } from "next-auth/react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import Link from "next/link";
 import clsx from "clsx";
-import { Plan } from "@prisma/client"; // Assuming Plan enum is used for gamingPlan
+// Assuming Plan enum is relevant if gamingPlan on User model uses it.
+// If gamingPlan is just a string, you might not need this import here.
+// import { Plan } from "@prisma/client"; 
 
+// Type definitions
 type AIModel = "flux-schnell" | "flux-dev" | "ideogram-ai/ideogram-v2-turbo";
 type AspectRatio = "1:1" | "16:9" | "9:16" | "4:3";
+
+// Define the expected structure for items in gamerStylesData more precisely
+interface StyleItem {
+  src: string;
+  basePrompt: string;
+}
+interface GamerStyleSubCategory {
+  [subcategoryName: string]: StyleItem[];
+}
+interface GamerStyleCategory {
+  [categoryName: string]: GamerStyleSubCategory;
+}
+
 
 const GameLogoPage: NextPage = () => {
   const { data: session } = useSession();
@@ -50,47 +66,69 @@ const GameLogoPage: NextPage = () => {
   ];
   const [selectedAspectRatio, setSelectedAspectRatio] = useState<AspectRatio>("1:1");
 
-  const handleStyleSelect = useCallback((basePrompt: string, baseSrc: string) => {
-    console.log("handleStyleSelect called with:", { basePrompt, baseSrc });
-    setSelectedStyleImageSrc(baseSrc);
+  const typedGamerStylesData = gamerStylesData as GamerStyleCategory; // Cast to our defined type
+
+  const handleStyleSelect = useCallback((basePrompt: string, src: string) => {
+    setSelectedStyleImageSrc(src);
     setForm((prev) => ({ ...prev, basePrompt }));
     setError("");
-  }, []);
+  }, []); // Empty dependency array if setSelectedStyleImageSrc and setForm are stable
 
+  // Initialize activeTab to the first category
   useEffect(() => {
-    const categoryKeys = Object.keys(gamerStylesData);
+    const categoryKeys = Object.keys(typedGamerStylesData);
     if (categoryKeys.length > 0 && categoryKeys[0]) {
       setActiveTab(categoryKeys[0]);
     }
-  }, []);
+  }, []); // Runs once on mount
 
+  // Update activeSubTab when activeTab changes
   useEffect(() => {
-    if (!activeTab || !gamerStylesData[activeTab]) {
-      setActiveSubTab(""); setSelectedStyleImageSrc(null); setForm(prev => ({...prev, basePrompt: ""})); return;
+    if (!activeTab || !typedGamerStylesData[activeTab]) {
+      setActiveSubTab("");
+      setSelectedStyleImageSrc(null);
+      setForm(prev => ({ ...prev, basePrompt: "" }));
+      return;
     }
-    const subKeys = Object.keys(gamerStylesData[activeTab]);
+
+    const subcategoriesForActiveTab = typedGamerStylesData[activeTab]; // TS knows this is GamerStyleSubCategory
+    const subKeys = Object.keys(subcategoriesForActiveTab); // This is now safe
+
     if (subKeys.length > 0 && subKeys[0]) {
       setActiveSubTab(subKeys[0]);
+      // Note: The next useEffect will handle selecting the first style based on new activeSubTab
     } else {
-      setActiveSubTab(""); setSelectedStyleImageSrc(null); setForm(prev => ({...prev, basePrompt: ""}));
+      setActiveSubTab("");
+      setSelectedStyleImageSrc(null);
+      setForm(prev => ({ ...prev, basePrompt: "" }));
     }
-  }, [activeTab]);
+  }, [activeTab]); // Runs when activeTab changes
 
+  // Update selected style when activeTab or activeSubTab changes
   useEffect(() => {
-    if (!activeTab || !activeSubTab || !gamerStylesData[activeTab]?.[activeSubTab]) {
-      setSelectedStyleImageSrc(null); setForm(prev => ({...prev, basePrompt: ""})); return;
+    if (!activeTab || !activeSubTab || 
+        !typedGamerStylesData[activeTab] || 
+        !typedGamerStylesData[activeTab]?.[activeSubTab]) {
+      setSelectedStyleImageSrc(null);
+      setForm(prev => ({ ...prev, basePrompt: "" }));
+      return;
     }
-    const firstStyleInSubTab = gamerStylesData[activeTab]?.[activeSubTab]?.[0];
-    if (firstStyleInSubTab && firstStyleInSubTab.src && firstStyleInSubTab.basePrompt) {
-        handleStyleSelect(firstStyleInSubTab.basePrompt, firstStyleInSubTab.src);
-    } else {
-        setSelectedStyleImageSrc(null); setForm(prev => ({...prev, basePrompt: ""}));
-    }
-  }, [activeTab, activeSubTab, handleStyleSelect]);
 
+    const stylesInCurrentSubTab = typedGamerStylesData[activeTab]?.[activeSubTab];
+    if (stylesInCurrentSubTab && stylesInCurrentSubTab.length > 0 && stylesInCurrentSubTab[0]) {
+      const firstStyle = stylesInCurrentSubTab[0];
+      handleStyleSelect(firstStyle.basePrompt, firstStyle.src);
+    } else {
+      setSelectedStyleImageSrc(null);
+      setForm(prev => ({ ...prev, basePrompt: "" }));
+    }
+  }, [activeTab, activeSubTab, handleStyleSelect]); // Runs when activeTab or activeSubTab changes
+
+  // Scroll handling effects
   useLayoutEffect(() => {
-    handleCategoryScroll(); handleSubCategoryScroll();
-  }, [activeTab, activeSubTab, gamerStylesData]);
+    handleCategoryScroll();
+    handleSubCategoryScroll();
+  }, [activeTab, activeSubTab, typedGamerStylesData]);
 
   const handleScroll = (ref: React.RefObject<HTMLDivElement>, setLeft: React.Dispatch<React.SetStateAction<boolean>>, setRight: React.Dispatch<React.SetStateAction<boolean>>) => {
     if (!ref.current) return; const { scrollLeft, scrollWidth, clientWidth } = ref.current;
@@ -126,7 +164,7 @@ const GameLogoPage: NextPage = () => {
     }
     let finalPrompt = form.basePrompt;
     finalPrompt = finalPrompt.replace(/('Text'|"Text"|`Text`|\[Text\])/gi, form.name.trim());
-    finalPrompt += ", gaming logo, esports emblem, vector, vibrant, dynamic, clean background";
+    finalPrompt += ", gaming logo, esports emblem, vector, vibrant, dynamic, clean background, official game art"; // Added more keywords
     triggerGenerateIcon({
       prompt: finalPrompt, numberOfImages: parseInt(form.numberofImages, 10),
       aspectRatio: selectedAspectRatio, model: selectedModel,
@@ -146,7 +184,7 @@ const GameLogoPage: NextPage = () => {
             if (pngBlob) {
             const blobUrl = window.URL.createObjectURL(pngBlob); const link = document.createElement("a");
             link.href = blobUrl;
-            const safeName = (form.name.trim() || promptText?.substring(0,30) || "gaming-logo").replace(/[^a-z0-9_]+/gi, '_');
+            const safeName = (form.name.trim() || promptText?.replace(/[^a-z0-9_]+/gi, '_').substring(0,30) || "gaming-logo").replace(/[^a-z0-9_]+/gi, '_');
             link.download = `${safeName}_${selectedModel}_${selectedAspectRatio.replace(":", "x")}.png`;
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
             window.URL.revokeObjectURL(blobUrl);
@@ -165,20 +203,24 @@ const GameLogoPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>AI Gaming Logo Generator - Create Epic Esports & Streamer Logos | GamingLogoAI</title>
+        <title>AI Gaming Logo Maker - Create Epic Esports & Streamer Logos | GamingLogoAI</title>
         <meta name="description" content="Design unique, professional gaming logos in minutes with GamingLogoAI's AI-powered generator. Perfect for esports teams, Twitch streamers, YouTube channels, and gamer profiles. Try it free!" />
-        <meta name="keywords" content="ai gaming logo generator, esports logo maker, streamer logo, youtube gaming logo, custom gaming logo, game team logo, free gaming logo trial" />
+        <meta name="keywords" content="ai gaming logo generator, esports logo maker, streamer logo, youtube gaming logo, custom gaming logo, game team logo, free gaming logo trial, ai game art" />
         <link rel="canonical" href="https://www.gaminglogoai.com/gaming-logo-maker" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900">
         <header className="text-center mb-10">
-            <NextImage src="/gaminglogo-ai-banner.png" alt="Gaming Logo AI Banner" width={800} height={200} className="mx-auto mb-4 rounded-lg shadow-lg" />
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-3">AI Gaming Logo Generator</h1>
-            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">Craft legendary logos for your team, stream, or gamer profile. Our AI makes it fast, easy, and totally epic. No design skills needed!</p>
+            <Image src="/gaminglogo-ai-banner.png" alt="Gaming Logo AI Banner - Create stunning gaming logos with AI" width={800} height={200} className="mx-auto mb-4 rounded-lg shadow-lg" priority />
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-3">
+                AI Gaming Logo Generator
+            </h1>
+            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
+                Craft legendary logos for your team, stream, or gamer profile. Our AI makes it fast, easy, and totally epic. No design skills needed!
+            </p>
         </header>
 
-        <div className="mb-12 p-6 border border-purple-500/50 dark:border-cyan-500/50 rounded-xl bg-slate-50 dark:bg-slate-800 text-sm leading-relaxed shadow-lg">
+        <div className="mb-12 p-6 border border-purple-500/30 dark:border-cyan-500/30 rounded-xl bg-slate-50 dark:bg-slate-800/70 text-sm leading-relaxed shadow-lg backdrop-blur-sm">
           <h2 className="text-2xl font-semibold mb-3 text-purple-700 dark:text-cyan-400">How to Forge Your Logo:</h2>
           <ol className="list-decimal list-inside space-y-2 text-slate-700 dark:text-slate-300">
             <li><strong className="text-slate-800 dark:text-slate-100">Enter Your Gamer Tag/Team Name:</strong> This text will be featured in your logo.</li>
@@ -188,74 +230,79 @@ const GameLogoPage: NextPage = () => {
             <li><strong className="text-slate-800 dark:text-slate-100">Number of Designs:</strong> Generate multiple variations to find the perfect one.</li>
           </ol>
           <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
-            <strong className="font-semibold">Quick Tip:</strong> Shorter names or acronyms often work great for impactful gaming logos!
+            <strong className="font-semibold">Quick Tip:</strong> Shorter names or acronyms often create more impactful gaming logos!
           </p>
         </div>
 
-        <form className="flex flex-col gap-8" onSubmit={handleFormSubmit}>
+        <form className="flex flex-col gap-10" onSubmit={handleFormSubmit}>
           <section>
-            <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white">1. Your Gamer Tag / Team Name</h2>
+            <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white flex items-center">
+              <span className="bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">1</span>
+              Your Gamer Tag / Team Name
+            </h2>
             <FormGroup className="mb-0">
               <Input required value={form.name} onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="e.g., ShadowBlade, Pixel Prowlers, YourStreamName"
-                className="w-full p-3 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 dark:focus:ring-cyan-500 focus:border-transparent"
+                className="w-full p-3 text-base border-2 border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 dark:focus:ring-cyan-500 focus:border-transparent shadow-sm"
+                aria-label="Gamer Tag or Team Name"
               />
             </FormGroup>
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white">2. Choose Your Logo Style</h2>
+            <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white flex items-center">
+                <span className="bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">2</span>
+                Choose Your Logo Style
+            </h2>
+            {/* Category Scroller */}
             <div className="relative mb-4 flex items-center">
-              {showLeftCategoryArrow && ( <button type="button" onClick={() => scrollCategories("left")} className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 shadow-md" aria-label="Scroll Categories Left"><AiOutlineLeft size={20} /></button> )}
-              <div ref={categoryScrollRef} onScroll={handleCategoryScroll} className="flex overflow-x-auto whitespace-nowrap no-scrollbar space-x-2 py-2 flex-1">
-                {Object.keys(gamerStylesData ?? {}).map((catKey) => ( <button key={catKey} type="button" onClick={() => setActiveTab(catKey)} className={`px-4 py-2 rounded-md font-medium transition-colors duration-200 ${activeTab === catKey ? "bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 shadow-lg" : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600"}`}>{catKey}</button> ))}
+              {showLeftCategoryArrow && ( <button type="button" onClick={() => scrollCategories("left")} className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 shadow-md border border-slate-300 dark:border-slate-600" aria-label="Scroll Categories Left"><AiOutlineLeft size={18} /></button> )}
+              <div ref={categoryScrollRef} onScroll={handleCategoryScroll} className="flex overflow-x-auto whitespace-nowrap no-scrollbar space-x-2 sm:space-x-3 py-2 flex-1 mx-3">
+                {Object.keys(typedGamerStylesData).map((catKey) => ( <button key={catKey} type="button" onClick={() => setActiveTab(catKey)} className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm shadow-sm hover:shadow-md ${activeTab === catKey ? "bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"}`}>{catKey}</button>))}
               </div>
-              {showRightCategoryArrow && ( <button type="button" onClick={() => scrollCategories("right")} className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 shadow-md" aria-label="Scroll Categories Right"><AiOutlineRight size={20} /></button> )}
+              {showRightCategoryArrow && ( <button type="button" onClick={() => scrollCategories("right")} className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 shadow-md border border-slate-300 dark:border-slate-600" aria-label="Scroll Categories Right"><AiOutlineRight size={18} /></button> )}
             </div>
-            {activeTab && gamerStylesData[activeTab] && Object.keys(gamerStylesData[activeTab]).length > 0 && (
+            {/* Subcategory Scroller */}
+            {activeTab && typedGamerStylesData[activeTab] && Object.keys(typedGamerStylesData[activeTab]!).length > 0 && (
                 <div className="relative mb-6 flex items-center">
-                {showLeftSubCategoryArrow && ( <button type="button" onClick={() => scrollSubCategories("left")} className="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 shadow-md" aria-label="Scroll Subcategories Left"><AiOutlineLeft size={18} /></button> )}
-                <div ref={subcategoryScrollRef} onScroll={handleSubCategoryScroll} className="flex overflow-x-auto whitespace-nowrap no-scrollbar space-x-2 py-2 flex-1">
-                    {Object.keys(gamerStylesData[activeTab] ?? {}).map((subKey) => ( <button key={subKey} type="button" onClick={() => setActiveSubTab(subKey)} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-200 ${activeSubTab === subKey ? "bg-purple-500 dark:bg-cyan-400 text-white dark:text-slate-900 shadow-md" : "bg-slate-100 dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-500"}`}>{subKey}</button>))}
+                {showLeftSubCategoryArrow && ( <button type="button" onClick={() => scrollSubCategories("left")} className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-300 dark:border-slate-600" aria-label="Scroll Subcategories Left"><AiOutlineLeft size={16} /></button> )}
+                <div ref={subcategoryScrollRef} onScroll={handleSubCategoryScroll} className="flex overflow-x-auto whitespace-nowrap no-scrollbar space-x-2 sm:space-x-3 py-2 flex-1 mx-3">
+                    {Object.keys(typedGamerStylesData[activeTab]!).map((subKey) => ( <button key={subKey} type="button" onClick={() => setActiveSubTab(subKey)} className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 shadow-sm hover:shadow ${activeSubTab === subKey ? "bg-purple-500 dark:bg-cyan-400 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-500"}`}>{subKey}</button>))}
                 </div>
-                {showRightSubCategoryArrow && ( <button type="button" onClick={() => scrollSubCategories("right")} className="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 shadow-md" aria-label="Scroll Subcategories Right"><AiOutlineRight size={18} /></button> )}
+                {showRightSubCategoryArrow && ( <button type="button" onClick={() => scrollSubCategories("right")} className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-300 dark:border-slate-600" aria-label="Scroll Subcategories Right"><AiOutlineRight size={16} /></button> )}
                 </div>
             )}
-            <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4">
-              {(gamerStylesData[activeTab]?.[activeSubTab] ?? []).map((item, idx) => {
-                if (!item || !item.src) {
-                  console.error("Style item invalid or missing src:", { item, activeTab, activeSubTab, idx });
-                  return <div key={`error-${idx}`} className="aspect-square bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-700 dark:text-red-300 rounded-lg">Style Error</div>;
+            {/* Style Thumbnails */}
+            <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-4">
+              {(typedGamerStylesData[activeTab]?.[activeSubTab] ?? []).map((item, idx) => {
+                if (!item || !item.src || !item.basePrompt) {
+                  console.warn("Style item invalid or missing src/basePrompt:", { item, activeTab, activeSubTab, idx });
+                  return <div key={`error-style-${idx}`} className="aspect-square bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-700 dark:text-red-300 rounded-lg text-xs p-2">Style Data Error</div>;
                 }
-                const displayImagePath = item.src.replace(/\.webp$/, "e.webp");
+                // Assuming item.src might have .webp, and display uses e.webp
+                const displayImagePath = item.src.endsWith("e.webp") ? item.src : item.src.replace(/\.webp$/, "e.webp");
                 return (
-                  <div
-                    key={`${activeTab}-${activeSubTab}-${item.src}-${idx}`}
-                    className={clsx(`relative rounded-lg shadow-md hover:shadow-xl dark:bg-slate-700 transition-all duration-300 cursor-pointer aspect-square overflow-hidden group`, // Updated dark:bg
-                                selectedStyleImageSrc === item.src ? "ring-2 sm:ring-4 ring-purple-500 dark:ring-cyan-500" : "ring-1 ring-transparent hover:ring-purple-300 dark:hover:ring-cyan-300")}
+                  <div key={`${activeTab}-${activeSubTab}-${item.src}-${idx}`}
+                    className={clsx(`relative rounded-xl shadow-md hover:shadow-xl dark:bg-slate-700/50 transition-all duration-300 cursor-pointer aspect-square overflow-hidden group border-2`,
+                                selectedStyleImageSrc === item.src ? "border-purple-500 dark:border-cyan-500 scale-105" : "border-transparent hover:border-purple-300 dark:hover:border-cyan-300")}
                     onClick={() => handleStyleSelect(item.basePrompt, item.src)}
-                    title={`Select style: ${item.basePrompt.substring(0, 50)}...`}
-                  >
-                    <img // Using plain <img> tag for style thumbnails
-                      src={displayImagePath}
-                      alt={`Style preview for: ${item.basePrompt.substring(0, 40)}...`}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    title={`Select style: ${item.basePrompt.substring(0, 50)}...`} >
+                    <img src={displayImagePath} alt={`Style preview for: ${item.basePrompt.substring(0, 40)}...`}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                       loading="lazy"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        if (target.src.endsWith(displayImagePath) && !target.src.endsWith(item.src)) {
-                            console.warn(`Plain img: Failed to load derived ${displayImagePath}, falling back to ${item.src}`);
-                            target.src = item.src;
+                        // Fallback logic for images: try original src, then placeholder
+                        if (target.src.includes("e.webp") && !target.src.endsWith(item.src) && item.src) {
+                            target.src = item.src; // Try original if 'e.webp' fails
                         } else if (!target.src.endsWith("/images/placeholder-style.png")) {
-                            console.warn(`Plain img: Fallback ${item.src} also failed or was already tried. Using placeholder.`);
-                            target.src = "/images/placeholder-style.png";
+                            target.src = "/images/placeholder-style.png"; // Final fallback
                         }
-                      }}
-                    />
+                      }} />
                     <button type="button" onClick={(e) => { e.stopPropagation(); openPopup(displayImagePath); }}
-                      className="absolute top-1 right-1 z-10 p-1 sm:p-1.5 rounded-full bg-black/40 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                      className="absolute top-1.5 right-1.5 z-10 p-1.5 rounded-full bg-black/30 hover:bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 focus:outline-none"
                       title="View Fullscreen" aria-label="View Fullscreen">
-                       <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 10V3m0 7H3m7 0h7m0-7v7" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM13.5 10.5h-3m-3 0H3m7.5 0V3m0 7.5v4.5m4.5-4.5h3m-3 0V3m0 7.5v4.5" /></svg>
                     </button>
                   </div>
                 );
@@ -263,44 +310,59 @@ const GameLogoPage: NextPage = () => {
             </div>
           </section>
 
+          {/* Section 3: AI Engine (using descriptive card) */}
           <section>
-            <h2 className="text-2xl font-semibold mb-1 text-slate-900 dark:text-white">3. Choose AI Engine</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Different engines offer unique looks and detail levels.</p>
+            <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white flex items-center">
+                <span className="bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">3</span>
+                Choose AI Engine
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Different engines offer unique looks and detail levels. Previews show a hint based on your selected style.</p>
             <FormGroup className="mb-0">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
-                  { name: "Speedy Engine", value: "flux-schnell" as AIModel, cost: 1, desc: "Fast results, great for quick ideas and variations." },
-                  { name: "Balanced Engine", value: "flux-dev" as AIModel, cost: 4, desc: "Excellent quality and detail, our recommended choice.", recommended: true },
-                  { name: "Max Detail Engine", value: "ideogram-ai/ideogram-v2-turbo" as AIModel, cost: 8, desc: "Top-tier fidelity for truly unique, intricate designs." },
-                ].map((model) => (
+                  { name: "Speedy Engine", value: "flux-schnell" as AIModel, cost: 1, desc: "Fast results, great for quick ideas and variations.", getPreviewImage: (baseSrc: string | null) => baseSrc, },
+                  { name: "Balanced Engine", value: "flux-dev" as AIModel, cost: 4, desc: "Excellent quality and detail, our recommended choice.", recommended: true, getPreviewImage: (baseSrc: string | null) => baseSrc ? baseSrc.replace(/(\.[^.]+)$/, "e$1") : null, },
+                  { name: "Max Detail Engine", value: "ideogram-ai/ideogram-v2-turbo" as AIModel, cost: 8, desc: "Top-tier fidelity for unique, intricate designs.", getPreviewImage: (baseSrc: string | null) => baseSrc ? baseSrc.replace(/(\.[^.]+)$/, "ea$1") : null, },
+                ].map((model) => {
+                  const previewImageSrc = model.getPreviewImage(selectedStyleImageSrc) || "/images/placeholder-logo.png";
+                  return (
                     <button key={model.value} type="button" onClick={() => setSelectedModel(model.value)}
-                      className={clsx(`flex flex-col items-start justify-between border rounded-lg p-4 transition-all duration-200 min-h-[130px] sm:min-h-[150px] h-full text-left text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-800 group`,
-                        selectedModel === model.value ? "border-purple-500 dark:border-cyan-500 ring-2 ring-purple-500 dark:ring-cyan-400 shadow-xl" : "border-slate-300 dark:border-slate-700 hover:border-purple-400 dark:hover:border-cyan-400 hover:shadow-md"
+                      className={clsx(`flex flex-col items-stretch justify-between border-2 rounded-xl p-4 transition-all duration-200 h-full text-left text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-800/70 group shadow-sm hover:shadow-lg`,
+                        selectedModel === model.value ? "border-purple-500 dark:border-cyan-500 ring-2 ring-purple-500 dark:ring-cyan-400 scale-105 shadow-xl" : "border-slate-300 dark:border-slate-700 hover:border-purple-400 dark:hover:border-cyan-400"
                       )}>
-                      <div className="w-full">
-                        <span className="font-semibold text-lg block">{model.name}</span>
-                        {model.recommended && ( <span className="text-xs bg-yellow-400 text-yellow-900 px-2 py-0.5 rounded-full font-medium shadow inline-block my-1">Recommended</span> )}
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-2 grow min-h-[3em]">{model.desc}</p>
+                      <div className="relative w-full aspect-square mb-3 overflow-hidden rounded-lg bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
+                        <Image src={previewImageSrc} alt={`${model.name} preview`} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "/images/placeholder-logo.png"; }} />
+                        {model.recommended && ( <span className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-0.5 text-xs rounded-full font-medium shadow">Recommended</span> )}
                       </div>
-                      <span className="text-sm font-medium text-purple-700 dark:text-cyan-400 self-start mt-auto pt-2">Cost: {model.cost} Credit{model.cost > 1 ? 's' : ''}</span>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-lg">{model.name}</span>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-2 grow min-h-[2.5em]">{model.desc}</p>
+                        <span className="text-sm font-medium text-purple-700 dark:text-cyan-400 self-start mt-auto pt-1">Cost: {model.cost} Credit{model.cost > 1 ? 's' : ''}</span>
+                      </div>
                     </button>
-                  ))}
+                  );
+                })}
               </div>
             </FormGroup>
           </section>
 
+          {/* Section 4: Aspect Ratio */}
           <section>
-            <h2 className="text-2xl font-semibold mb-1 text-slate-900 dark:text-white">4. Select Image Shape & Size</h2>
+            <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white flex items-center">
+                <span className="bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">4</span>
+                Select Image Shape & Size
+            </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Choose the aspect ratio that best fits where you&apos;ll use your logo.</p>
             <FormGroup className="mb-0">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {aspectRatios.map((ratio) => (
                     <button key={ratio.value} type="button" onClick={() => setSelectedAspectRatio(ratio.value)}
-                      className={clsx(`relative flex flex-col items-center justify-start border rounded-lg p-3 pt-4 transition-all duration-200 group text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-800 h-32 sm:h-36`,
-                                      selectedAspectRatio === ratio.value ? "border-purple-500 dark:border-cyan-500 ring-2 ring-purple-500 dark:ring-cyan-400 shadow-xl" : "border-slate-300 dark:border-slate-700 hover:border-purple-400 dark:hover:border-cyan-400 hover:shadow-md"
+                      className={clsx(`relative flex flex-col items-center justify-start border-2 rounded-xl p-3 pt-4 transition-all duration-200 group text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-800/70 h-32 sm:h-36 shadow-sm hover:shadow-lg`,
+                                      selectedAspectRatio === ratio.value ? "border-purple-500 dark:border-cyan-500 ring-2 ring-purple-500 dark:ring-cyan-400 scale-105 shadow-xl" : "border-slate-300 dark:border-slate-700 hover:border-purple-400 dark:hover:border-cyan-400"
                                   )} title={`Select aspect ratio: ${ratio.label} (${ratio.description})`}>
                       <div className="w-full h-[50px] sm:h-[60px] flex items-center justify-center mb-1 sm:mb-2">
-                        <div className={clsx("bg-slate-300 dark:bg-slate-600 rounded-sm shadow-inner group-hover:bg-slate-400 dark:group-hover:bg-slate-500 transition-colors", ratio.tailwindClass)}
+                        <div className={clsx("bg-slate-300 dark:bg-slate-600 rounded-md shadow-inner group-hover:bg-slate-400 dark:group-hover:bg-slate-500 transition-colors border border-slate-400 dark:border-slate-500", ratio.tailwindClass)}
                           style={ ratio.value === "16:9" ? { width: '80%', height: 'auto' } : { height: '80%', width: 'auto' } }></div>
                       </div>
                       <div className="text-center mt-auto">
@@ -313,8 +375,12 @@ const GameLogoPage: NextPage = () => {
             </FormGroup>
           </section>
 
+          {/* Section 5: Number of Variations */}
           <section>
-            <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white">5. Number of Variations</h2>
+            <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white flex items-center">
+                <span className="bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">5</span>
+                Number of Variations
+            </h2>
             <FormGroup className="mb-0">
               <label htmlFor="numberofImages" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Logos to Generate (Max {selectedModel === "ideogram-ai/ideogram-v2-turbo" ? 1 : 4})</label>
               <Input required id="numberofImages" type="number" min={1}
@@ -328,11 +394,12 @@ const GameLogoPage: NextPage = () => {
                 }}
                 disabled={selectedModel === "ideogram-ai/ideogram-v2-turbo"}
                 placeholder={selectedModel === "ideogram-ai/ideogram-v2-turbo" ? "1 (Fixed for Ultimate)" : "1-4"}
-                className="w-full p-3 border border-slate-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 dark:focus:ring-cyan-500 focus:border-transparent"
+                className="w-full p-3 text-base border-2 border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 dark:focus:ring-cyan-500 focus:border-transparent shadow-sm"
               />
             </FormGroup>
           </section>
 
+          {/* Error Display */}
           {error && (
             <div className={`my-6 p-4 border-l-4 rounded-md shadow-md ${error === "INSUFFICIENT_CREDITS" ? "bg-yellow-50 border-yellow-500 dark:bg-yellow-900/30 dark:border-yellow-600" : "bg-red-50 border-red-500 dark:bg-red-900/30 dark:border-red-600"}`}>
               <div className="flex">
@@ -353,6 +420,7 @@ const GameLogoPage: NextPage = () => {
             </div>
           )}
 
+          {/* Submit Button */}
           <div className="mt-6">
             <Button type="submit" isLoading={isGenerating} disabled={isGenerating || !form.basePrompt.trim() || !form.name.trim()}
               className={`w-full text-lg font-semibold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoggedIn ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white dark:from-cyan-500 dark:to-blue-500 dark:hover:from-cyan-600 dark:hover:to-blue-600 dark:text-slate-900 focus:ring-purple-500 dark:focus:ring-cyan-400' : 'bg-slate-500 text-slate-100 cursor-not-allowed' } disabled:opacity-70 disabled:cursor-not-allowed`}
@@ -363,13 +431,14 @@ const GameLogoPage: NextPage = () => {
           </div>
         </form>
 
+        {/* Generated Images Section (using Image from next/image) */}
         {imagesUrl.length > 0 && (
           <section id="results-section" className="mt-12">
             <h2 className="text-3xl font-semibold mb-6 text-center text-slate-900 dark:text-white">Your Generated Gaming Logos!</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {imagesUrl.map(({ imageUrl }, index) => (
-                <div key={index} className="relative group rounded-lg shadow-lg hover:shadow-2xl dark:bg-slate-800 transition-all duration-300 aspect-square overflow-hidden">
-                  <NextImage src={imageUrl} alt={`Generated gaming logo ${index + 1} for ${form.name}`} fill style={{ objectFit: "cover" }} className="transition-transform duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" priority={index < 4} />
+                <div key={index} className="relative group rounded-xl shadow-lg hover:shadow-2xl dark:bg-slate-800/70 transition-all duration-300 aspect-square overflow-hidden border-2 border-transparent hover:border-purple-500 dark:hover:border-cyan-500">
+                  <Image src={imageUrl} alt={`Generated gaming logo ${index + 1} for ${form.name}`} fill style={{ objectFit: "cover" }} className="transition-transform duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" priority={index < 4} />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-end p-3 space-y-2">
                     <div className="flex gap-2">
                         <button type="button" onClick={() => openPopup(imageUrl)} className="p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors" title="View Fullscreen" aria-label="View Fullscreen">
@@ -386,13 +455,14 @@ const GameLogoPage: NextPage = () => {
           </section>
         )}
 
+        {/* Popup Modal (using Image from next/image) */}
         {popupImage && (
           <div className="fixed inset-0 z-[100] bg-black bg-opacity-80 flex items-center justify-center p-4 backdrop-blur-sm" onClick={closePopup}>
             <div className="relative bg-slate-100 dark:bg-slate-800 p-2 rounded-lg shadow-2xl max-w-3xl max-h-[90vh]" onClick={(e) => e.stopPropagation()}>
               <button type="button" onClick={closePopup} className="absolute -top-4 -right-4 z-[110] bg-purple-600 dark:bg-cyan-500 text-white rounded-full p-1.5 hover:opacity-80 focus:outline-none shadow-md" title="Close Fullscreen" aria-label="Close Fullscreen">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
-              <NextImage src={popupImage} alt="Fullscreen generated gaming logo" width={1024} height={1024} style={{ objectFit: 'contain', width: 'auto', height: 'auto', maxHeight: '85vh', maxWidth: 'calc(100vw - 4rem)' }} className="rounded-md"/>
+              <Image src={popupImage} alt="Fullscreen generated gaming logo" width={1024} height={1024} style={{ objectFit: 'contain', width: 'auto', height: 'auto', maxHeight: '85vh', maxWidth: 'calc(100vw - 4rem)' }} className="rounded-md"/>
             </div>
           </div>
         )}
