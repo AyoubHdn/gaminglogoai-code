@@ -100,7 +100,7 @@ const HomePage: NextPage = () => {
                     </div>
                 ))}
             </div>
-             <div className="text-center mt-12">
+            <div className="text-center mt-12">
                 <Link href="/gaming-logo-maker" className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-900 font-semibold rounded-lg text-md hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
                       id="how-it-works-cta">
                         Start Designing Your Logo
@@ -168,7 +168,7 @@ const HomePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Gaming Logo AI - Free AI Gaming Logo Generator for Esports & Streamers</title>
+        <title>AI Gaming Logo Maker - Create Esports & Streamer Logos | GamingLogoAI</title>
         <meta
           name="description"
           content="Create stunning, unique gaming logos in seconds with GamingLogoAI! Our AI-powered generator is perfect for esports teams, Twitch streamers, YouTube channels, and individual gamers. Try free now!"
