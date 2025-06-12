@@ -1,17 +1,16 @@
-// src/pages/refund-policy.tsx (or refund.tsx, ensure consistent naming with links)
+// src/pages/refund-policy.tsx (or your chosen URL slug, e.g., /refund)
 import Head from "next/head";
-import Link from "next/link"; // Import Link
+import Link from "next/link"; // Import Link for internal navigation
 
 const RefundPolicyPage: React.FC = () => {
-  const siteName = "Gaming Logo AI";
-  const siteUrl = "https://www.gaminglogoai.com"; // Replace with actual live domain
-  const contactEmail = "support@gaminglogoai.com"; // Replace with actual support email
-  const communityPageUrl = "/community"; // URL to your community page
+  const siteName = "Gaming Logo AI"; // NEW BRAND NAME
+  const siteUrl = "https://www.gaminglogoai.com"; // ** REPLACE with your actual live domain for GamingLogoAI **
+  const contactEmail = "support@gaminglogoai.com"; // ** REPLACE with GamingLogoAI's support email **
+  const communityPageUrl = "/community"; // URL to GamingLogoAI's community page
 
-  // Get current year for "Last updated"
-  const currentYear = new Date().getFullYear();
-  // You might want a more specific last updated date if the policy changes often.
-  const lastUpdatedDate = `January 1, ${currentYear}`; // Or more specific
+  // You'll want to set a realistic "Last updated" date.
+  // For this example, I'll use a placeholder or current date.
+  const lastUpdatedDate = "May 16, 2024"; // Example: Or new Date().toLocaleDateString(...)
 
   return (
     <>
@@ -19,13 +18,13 @@ const RefundPolicyPage: React.FC = () => {
         <title>Refund Policy - {siteName}</title>
         <meta
           name="description"
-          content={`Learn about the refund policy for credit purchases on ${siteName}. Understand terms before buying credits for your AI gaming logos.`}
+          content={`Understand our refund policy at ${siteName}. Learn about terms for credit purchases for AI-generated gaming logos.`}
         />
-        <meta name="keywords" content="refund policy, gaming logo ai refunds, credit purchase policy, no refunds, ai design costs" />
-        <link rel="canonical" href={`${siteUrl}/refund-policy`} /> {/* Or /refund if that's your URL */}
+        <meta name="keywords" content="refund policy, gaming logo ai refunds, credit purchase terms, no refunds on used credits" />
+        <link rel="canonical" href={`${siteUrl}/refund-policy`} /> {/* Adjust slug if needed */}
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {/* Main background: dark slate, text: light slate/white */}
+
       <main className="flex min-h-screen flex-col items-center py-16 sm:py-24 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300">
         <div className="w-full max-w-3xl px-4 sm:px-6">
           <header className="text-center mb-12">
@@ -42,64 +41,47 @@ const RefundPolicyPage: React.FC = () => {
                               prose-a:text-purple-600 dark:prose-a:text-cyan-400 hover:prose-a:underline
                               prose-strong:text-slate-700 dark:prose-strong:text-slate-100">
             <p>
-              At {siteName}, we are committed to helping you create awesome AI-generated gaming logos.
-              The generation of these designs involves significant computational resources and associated costs.
-              Therefore, our policy regarding refunds is as follows:
+              At {siteName}, we strive to provide high-quality AI-generated designs. However,
+              due to the inherent nature of AI and the costs involved, we are unable to offer
+              refunds once credits are used.
+            </p>
+            <p>
+              We encourage you to explore examples on our <Link href={communityPageUrl}>community page</Link> to better understand the
+              capabilities and limitations of AI-generated designs.
             </p>
 
-            <h2>No Refunds on Used Credits</h2>
-            <p>
-              Once credits have been purchased and used to generate logos on {siteName}, we are unable to offer refunds.
-              This is due to the irreversible computational costs incurred during the AI generation process for each design you create.
-            </p>
-            <p>
-              Each time you initiate a logo generation, credits are consumed, and our AI systems perform complex tasks to deliver your unique designs. These processes have direct operational costs.
-            </p>
-
-            <h2>Before You Buy Credits</h2>
-            <p>
-              We strongly encourage you to:
-            </p>
+            <h2>Key Points</h2>
             <ul>
               <li>
-                <strong>Utilize any free trial credits or features</strong> (if offered) to test the capabilities of our AI logo generator.
+                Refunds are not provided once credits have been used due to the computational costs
+                involved.
               </li>
               <li>
-                Explore examples on our <Link href={communityPageUrl}>Community Showcase</Link> page to get a good understanding of the style and quality of logos our AI can produce.
-              </li>
-              <li>
-                Understand that AI generation can sometimes be unpredictable. While we strive for high-quality results, the creative output can vary. Experimenting with different prompts and styles is part of the process.
+                Ensure you review our examples and understand the AI&apos;s limitations before making a
+                purchase.
               </li>
             </ul>
-            <p>
-                By purchasing credits, you acknowledge and agree to this refund policy.
-            </p>
-
-            <h2>Exceptional Circumstances</h2>
-            <p>
-              While our general policy is no refunds on used credits, if you experience a verifiable technical issue directly caused by our platform that prevents you from receiving your generated logos after credits were deducted, please contact our support team. We will investigate such cases on an individual basis. Accidental purchases of credit packs, if no credits from that pack have been used, may be considered for a refund at our sole discretion if reported promptly.
-            </p>
 
             <h2>Contact Us</h2>
             <p>
-              If you have any questions or concerns about our Refund Policy, please do not hesitate to reach out to us:
+              If you have any questions or concerns about this policy, you can reach us at:
             </p>
-            <ul>
-              <li>
-                By email:{" "}
-                <a href={`mailto:${contactEmail}`}>
-                  {contactEmail}
-                </a>
-              </li>
-            </ul>
-            <p className="mt-8 text-center">
-                <Link href="/buy-credits"  className="inline-block px-6 py-3 font-semibold rounded-lg transition-all duration-300 ease-in-out
+            <p>
+              <a href={`mailto:${contactEmail}`}>
+                {contactEmail}
+              </a>
+            </p>
+
+             <div className="mt-12 text-center not-prose"> {/* Added not-prose to prevent prose styling on button container */}
+                <Link href="/buy-credits" legacyBehavior={false}
+                    className="inline-block px-6 py-3 font-semibold rounded-lg transition-all duration-300 ease-in-out
                                   bg-purple-600 hover:bg-purple-700 text-white
                                   dark:bg-cyan-500 dark:hover:bg-cyan-600 dark:text-slate-900
-                                  shadow-md hover:shadow-lg">
+                                  shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 focus:ring-purple-500 dark:focus:ring-cyan-400">
                         View Credit Plans
+                    
                 </Link>
-            </p>
+            </div>
           </article>
         </div>
       </main>

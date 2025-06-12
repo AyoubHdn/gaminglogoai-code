@@ -77,7 +77,7 @@ const BuyCreditsPage: React.FC = () => {
           </h1>
           <p className="text-center text-slate-600 dark:text-slate-400 mb-4">
             Please review our{" "}
-            <Link href="/refund" className="text-purple-600 dark:text-purple-400 hover:underline">
+            <Link href="/refund-policy" className="text-purple-600 dark:text-purple-400 hover:underline">
               Refund Policy
             </Link>{" "}
             before purchasing credits.
