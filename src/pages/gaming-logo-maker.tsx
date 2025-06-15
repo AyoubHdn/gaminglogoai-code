@@ -17,7 +17,7 @@ import clsx from "clsx";
 // import { Plan } from "@prisma/client"; 
 
 // Type definitions
-type AIModel = "flux-schnell" | "flux-dev" | "ideogram-ai/ideogram-v2-turbo";
+type AIModel = "flux-schnell" | "flux-dev";
 type AspectRatio = "1:1" | "16:9" | "9:16" | "4:3";
 
 // Define the expected structure for items in gamerStylesData more precisely
@@ -223,10 +223,6 @@ useEffect(() => {
   const openPopup = (imageUrl: string) => setPopupImage(imageUrl);
   const closePopup = () => setPopupImage(null);
 
-  useEffect(() => {
-    if (selectedModel === "ideogram-ai/ideogram-v2-turbo") { setForm(prev => ({ ...prev, numberofImages: "1" })); }
-  }, [selectedModel]);
-
   return (
     <>
       <Head>
@@ -345,27 +341,52 @@ useEffect(() => {
             </h2>
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Different engines offer unique looks and detail levels. Previews show a hint based on your selected style.</p>
             <FormGroup className="mb-0">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"> {/* Changed to sm:grid-cols-2 */}
                 {[
-                  { name: "Speedy Engine", value: "flux-schnell" as AIModel, cost: 1, desc: "Fast results, great for quick ideas and variations.", getPreviewImage: (baseSrc: string | null) => baseSrc, },
-                  { name: "Balanced Engine", value: "flux-dev" as AIModel, cost: 4, desc: "Excellent quality and detail, our recommended choice.", recommended: true, getPreviewImage: (baseSrc: string | null) => baseSrc ? baseSrc.replace(/(\.[^.]+)$/, "e$1") : null, },
-                  { name: "Max Detail Engine", value: "ideogram-ai/ideogram-v2-turbo" as AIModel, cost: 8, desc: "Top-tier fidelity for unique, intricate designs.", getPreviewImage: (baseSrc: string | null) => baseSrc ? baseSrc.replace(/(\.[^.]+)$/, "ea$1") : null, },
+                  {
+                    name: "Speedy Engine",
+                    value: "flux-schnell" as AIModel, // Stays as flux-schnell
+                    cost: 1, // Adjust cost if different
+                    desc: "Fast results, great for text-to-logo, less style image influence.",
+                    getPreviewImage: (baseSrc: string | null) => baseSrc, // Shows selected style directly
+                  },
+                  {
+                    name: "Context Pro Engine", // Renamed from Balanced/Optimized
+                    value: "flux-kontext-pro" as AIModel, // UPDATED to your new model
+                    cost: 4, // Adjust cost if different for kontext-pro
+                    desc: "Uses style image for higher fidelity and context. Recommended.",
+                    recommended: true,
+                    // Uses the 'e' suffixed image, assuming you have previews for it
+                    getPreviewImage: (baseSrc: string | null) => baseSrc ? baseSrc.replace(/(\.[^.]+)$/, "e$1") : null,
+                  },
                 ].map((model) => {
                   const previewImageSrc = model.getPreviewImage(selectedStyleImageSrc) || "/images/placeholder-logo.png";
                   return (
-                    <button key={model.value} type="button" onClick={() => setSelectedModel(model.value)}
+                    <button
+                      key={model.value}
+                      type="button"
+                      onClick={() => setSelectedModel(model.value)}
                       className={clsx(`flex flex-col items-stretch justify-between border-2 rounded-xl p-4 transition-all duration-200 h-full text-left text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-800/70 group shadow-sm hover:shadow-lg`,
                         selectedModel === model.value ? "border-purple-500 dark:border-cyan-500 ring-2 ring-purple-500 dark:ring-cyan-400 scale-105 shadow-xl" : "border-slate-300 dark:border-slate-700 hover:border-purple-400 dark:hover:border-cyan-400"
-                      )}>
+                      )}
+                    >
                       <div className="relative w-full aspect-square mb-3 overflow-hidden rounded-lg bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
-                        <Image src={previewImageSrc} alt={`${model.name} preview`} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105"
-                          onError={(e) => { (e.target as HTMLImageElement).src = "/images/placeholder-logo.png"; }} />
+                        <Image
+                          src={previewImageSrc}
+                          alt={`${model.name} preview`}
+                          layout="fill"
+                          objectFit="cover"
+                          className="transition-transform duration-300 group-hover:scale-105"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "/images/placeholder-logo.png"; }}
+                        />
                         {model.recommended && ( <span className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-0.5 text-xs rounded-full font-medium shadow">Recommended</span> )}
                       </div>
                       <div className="flex flex-col">
                         <span className="font-semibold text-lg">{model.name}</span>
                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-2 grow min-h-[2.5em]">{model.desc}</p>
-                        <span className="text-sm font-medium text-purple-700 dark:text-cyan-400 self-start mt-auto pt-1">Cost: {model.cost} Credit{model.cost > 1 ? 's' : ''}</span>
+                        <span className="text-sm font-medium text-purple-700 dark:text-cyan-400 self-start mt-auto pt-1">
+                          Cost: {model.cost} Credit{model.cost > 1 ? 's' : ''}
+                        </span>
                       </div>
                     </button>
                   );
@@ -409,18 +430,17 @@ useEffect(() => {
                 Number of Variations
             </h2>
             <FormGroup className="mb-0">
-              <label htmlFor="numberofImages" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Logos to Generate (Max {selectedModel === "ideogram-ai/ideogram-v2-turbo" ? 1 : 4})</label>
+              <label htmlFor="numberofImages" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Logos to Generate (Max {4})</label>
               <Input required id="numberofImages" type="number" min={1}
-                max={selectedModel === "ideogram-ai/ideogram-v2-turbo" ? 1 : 4}
+                max={4}
                 value={form.numberofImages}
                 onChange={(e) => {
-                    const num = parseInt(e.target.value, 10); const maxVal = selectedModel === "ideogram-ai/ideogram-v2-turbo" ? 1 : 4;
+                    const num = parseInt(e.target.value, 10); const maxVal = 4;
                     if (num > maxVal) { setForm((prev) => ({ ...prev, numberofImages: maxVal.toString() })); }
                     else if (num < 1 && e.target.value !== "") { setForm((prev) => ({ ...prev, numberofImages: "1" })); }
                     else { setForm((prev) => ({ ...prev, numberofImages: e.target.value })); }
                 }}
-                disabled={selectedModel === "ideogram-ai/ideogram-v2-turbo"}
-                placeholder={selectedModel === "ideogram-ai/ideogram-v2-turbo" ? "1 (Fixed for Ultimate)" : "1-4"}
+                placeholder={"1-4"}
                 className="w-full p-3 text-base border-2 border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 dark:focus:ring-cyan-500 focus:border-transparent shadow-sm"
               />
             </FormGroup>
