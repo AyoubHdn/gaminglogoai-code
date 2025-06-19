@@ -17,10 +17,10 @@ const s3 = new AWS.S3({
     accessKeyId: env.ACCESS_KEY_ID,
     secretAccessKey: env.SECRET_ACCESS_KEY,
   },
-  region: env.AWS_REGION_GAMING,
+  region: env.NEXT_PUBLIC_AWS_REGION_GAMING,
 });
 
-const BUCKET_NAME = env.S3_BUCKET_NAME_GAMING; // Replace with your S3 bucket name
+const BUCKET_NAME = env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING; // Replace with your S3 bucket name
 
 const replicate = new Replicate({
   auth: env.REPLICATE_API_TOKEN,
