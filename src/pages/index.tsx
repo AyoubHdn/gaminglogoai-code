@@ -72,7 +72,7 @@ const HomePage: NextPage = () => {
       {
         name: "AI Gaming Logos",
         description: "Generate text, icon, or mascot logos for your team or channel.",
-        icon: "/icons/gaming-logo-icon.png", // REPLACE
+        icon: "/user-game-logo.webp", // REPLACE
         href: "/gaming-logo-maker",
         cta: "Design Gaming Logo",
         id: "link-gaming-logo"
@@ -80,7 +80,7 @@ const HomePage: NextPage = () => {
       {
         name: "AI Face Logos / Mascots",
         description: "Upload your photo and let AI create a stylized gaming mascot of you!",
-        icon: "/icons/face-logo-icon.png", // REPLACE
+        icon: "/face-logo-icon.webp", // REPLACE
         href: "/face-logo-generator",
         cta: "Create Your Face Mascot",
         id: "link-face-logo"
