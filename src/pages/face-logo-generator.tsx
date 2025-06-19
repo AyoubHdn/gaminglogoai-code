@@ -291,7 +291,7 @@ const FaceLogoGeneratorPage: NextPage = () => {
       </Head>
       <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900">
         <header className="text-center mb-10">
-          <AiOutlineUserSwitch className="mx-auto h-16 w-16 sm:h-20 sm:w-20 text-purple-600 dark:text-cyan-500 mb-4" />
+          <Image src="/face-logo-image.png" alt="Gaming Logo AI Banner - Create stunning gaming logos with AI" width={800} height={200} className="mx-auto mb-4 rounded-lg shadow-lg" priority />
           <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-3">
             AI Face Logo Generator
           </h1>
