@@ -4,6 +4,7 @@ import { generateRouter } from "~/server/api/routers/generate";
 import { checkoutRouter } from "~/server/api/routers/checkout";
 import { iconRouter } from "./routers/icons";
 import { mauticRouter } from "~/server/api/routers/mautic";
+import { faceLogoRouter } from "~/server/api/routers/faceLogo"; 
 
 /**
  * This is the primary router for your server.
@@ -13,6 +14,7 @@ import { mauticRouter } from "~/server/api/routers/mautic";
 export const appRouter = createTRPCRouter({
   user: userRouter,
   generate: generateRouter,
+  faceLogo: faceLogoRouter,
   checkout: checkoutRouter,
   icons: iconRouter,
   mautic: mauticRouter,

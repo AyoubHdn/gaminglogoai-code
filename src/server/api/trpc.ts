@@ -108,7 +108,14 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
     },
   });
 });
-
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "8mb", // Or "4mb", "8mb", etc. Choose a reasonable limit.
+                        // Should be large enough for your expected base64 image + other JSON data.
+    },
+  },
+};
 /**
  * Protected (authenticated) procedure
  *

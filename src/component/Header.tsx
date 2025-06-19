@@ -34,7 +34,8 @@ export function Header() {
 
   // Navigation links for GamingLogoAI
   const commonNavLinks = [
-    { href: "/gaming-logo-maker", label: "Create Logo", id: "gaming-logo-maker-header-button", icon: <FaGamepad className="mr-2 sm:mr-1 h-4 w-4" /> },
+    { href: "/gaming-logo-maker", label: "Text Logo", id: "gaming-logo-maker-header-button", icon: <FaGamepad className="mr-2 sm:mr-1 h-4 w-4" /> },
+    { href: "/face-logo-generator", label: "Face Logo", id: "face-logo-maker-header-button", icon: <FaGamepad className="mr-2 sm:mr-1 h-4 w-4" /> },
     { href: "/community", label: "Community", id: "community-header-button", icon: <FaUsers className="mr-2 sm:mr-1 h-4 w-4" /> },
   ];
 

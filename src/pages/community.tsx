@@ -13,7 +13,7 @@ const CommunityPage: NextPage = () => {
 
   const [popupImage, setPopupImage] = useState<string | null>(null); 
 
-  const s3BucketUrl = `https://${env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING}.s3.${env.NEXT_PUBLIC_AWS_REGION_GAMING || "us-east-1"}.amazonaws.com`;
+  const s3BucketUrl = `https://${env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING}.s3.${env.NEXT_PUBLIC_AWS_REGION_GAMING}.amazonaws.com`;
 
   const openPopup = (imageUrl: string) => {
     setPopupImage(imageUrl);

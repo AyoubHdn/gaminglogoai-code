@@ -17,10 +17,10 @@ const s3 = new AWS.S3({
     accessKeyId: env.ACCESS_KEY_ID,
     secretAccessKey: env.SECRET_ACCESS_KEY,
   },
-  region: "us-east-1",
+  region: env.AWS_REGION_GAMING,
 });
 
-const BUCKET_NAME = "gaminglogoai-images"; // Replace with your S3 bucket name
+const BUCKET_NAME = env.S3_BUCKET_NAME_GAMING; // Replace with your S3 bucket name
 
 const replicate = new Replicate({
   auth: env.REPLICATE_API_TOKEN,
@@ -38,6 +38,7 @@ async function fetchAndEncodeImage(url: string): Promise<string> {
   const buf = await response.buffer();
   return buf.toString("base64");
 }
+
 
 // Generate the image and encode it as Base64
 const generateIcon = async (
@@ -75,20 +76,6 @@ const generateIcon = async (
       output_quality: 80,
       num_inference_steps: 28,
     };
-  } else if (model === "ideogram-ai/ideogram-v2-turbo") {
-    path = "ideogram-ai/ideogram-v2-turbo";
-    input = {
-      prompt,
-      aspect_ratio: aspectRatio,
-      resolution: "None",
-      style_type: "General",
-      magic_prompt_option: "Auto",
-    };
-    // Ideogram generates only one image at a time
-    if (numberOfImages > 1) {
-      console.warn("Ideogram only supports one image per request; ignoring additional images.");
-      numberOfImages = 1;
-    }
   } else {
     throw new TRPCError({
       code: "BAD_REQUEST",
@@ -101,61 +88,6 @@ const generateIcon = async (
     return Array(numberOfImages).fill(b64Image) as string[];
   }
 
-  // Actual API calls
-  if (model === "ideogram-ai/ideogram-v2-turbo") {
-    const output = await replicate.run(path, { input });
-    console.log("Ideogram output type:", typeof output);
-    console.log("Ideogram output:", output);
-
-    let base64Image: string;
-
-    // Type-guard for Node.js Readable stream
-    function isNodeReadableStream(obj: any): obj is Readable {
-      return obj instanceof Readable;
-    }
-
-    // Type-guard for Web ReadableStream
-    function isWebReadableStream(obj: any): obj is ReadableStream<Uint8Array> {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      return typeof obj?.getReader === "function";
-    }
-
-    if (isNodeReadableStream(output)) {
-      // It's a Node.js Readable stream
-      const streamBuffer = await readStreamIntoBuffer(output);
-      base64Image = streamBuffer.toString("base64");
-    } else if (isWebReadableStream(output)) {
-      // It's a Web ReadableStream
-      const reader = output.getReader();
-      const chunks: Uint8Array[] = [];
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        if (value) chunks.push(value);
-      }
-      base64Image = Buffer.concat(chunks).toString("base64");
-    } else if (Buffer.isBuffer(output)) {
-      // Already a Buffer
-      base64Image = output.toString("base64");
-    } else if (typeof output === "string") {
-      // If it's a URL, fetch and encode
-      base64Image = await fetchAndEncodeImage(output);
-    } else if (
-      typeof output === "object" &&
-      output !== null &&
-      "url" in output &&
-      typeof output.url === "string"
-    ) {
-      // If it's an object with a .url property
-      base64Image = await fetchAndEncodeImage(output.url);
-    } else {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Unexpected output type from Ideogram model",
-      });
-    }
-    outputs = [base64Image];
-  } else {
     // For flux models, we expect an array of URLs
     const output = (await replicate.run(path, { input })) as string[];
     if (!Array.isArray(output) || output.length === 0) {
@@ -166,7 +98,7 @@ const generateIcon = async (
     }
     // Convert each URL to base64
     outputs = await Promise.all(output.map(fetchAndEncodeImage));
-  }
+  
 
   return outputs;
 };
@@ -181,7 +113,6 @@ export const generateRouter = createTRPCRouter({
         model: z.enum([
           "flux-schnell",
           "flux-dev",
-          "ideogram-ai/ideogram-v2-turbo",
         ]),
       })
     )
@@ -190,7 +121,6 @@ export const generateRouter = createTRPCRouter({
       const modelConfig = {
         "flux-schnell": { credits: 1 },
         "flux-dev": { credits: 4 },
-        "ideogram-ai/ideogram-v2-turbo": { credits: 8 },
       }[input.model];
 
       if (!modelConfig) {
@@ -203,9 +133,7 @@ export const generateRouter = createTRPCRouter({
       // Calculate total credits needed
       const totalCredits =
         modelConfig.credits *
-        (input.model === "ideogram-ai/ideogram-v2-turbo"
-          ? 1
-          : input.numberOfImages);
+        input.numberOfImages;
 
       // Deduct credits
       const { count } = await ctx.prisma.user.updateMany({
@@ -252,9 +180,7 @@ export const generateRouter = createTRPCRouter({
       // Generate images
       const b64Images: string[] = await generateIcon(
         input.prompt,
-        input.model === "ideogram-ai/ideogram-v2-turbo"
-          ? 1
-          : input.numberOfImages,
+        input.numberOfImages,
         input.aspectRatio,
         input.model
       );
@@ -276,10 +202,7 @@ export const generateRouter = createTRPCRouter({
                 Body: Buffer.from(image, "base64"),
                 Key: icon.id,
                 ContentEncoding: "base64",
-                ContentType:
-                  input.model === "ideogram-ai/ideogram-v2-turbo"
-                    ? "image/png"
-                    : "image/webp",
+                ContentType:"image/webp",
               })
               .promise();
           } catch (s3Error) {

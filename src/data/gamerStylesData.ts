@@ -1287,17 +1287,7 @@ Record<string, { src: string; basePrompt: string }[]>
           "basePrompt": "An e-sport logo for ''Text'' inspired by ninja themes. The text ''Text'' is styled in sharp, slanted typography with a shadowy outline, framed in a sleek circular badge. Featuring a masked ninja wielding a katana, the design is set against a faint bamboo forest texture, exuding stealth and competitive precision."
         },
         {
-          "src": "/styles/s30e.webp",
-          
-          "basePrompt": "An e-sport logo for ''Text'' inspired by ninja themes. The text ''Text'' is styled in sharp, slanted typography with a shadowy outline, framed in a sleek circular badge. Featuring a masked ninja wielding a katana, the design is set against a faint bamboo forest texture, exuding stealth and competitive precision."
-        },
-        {
           "src": "/styles/s31.webp",
-          
-          "basePrompt": "Design an e-sport logo for ''Text'' based on ninja motifs. The text ''Text'' uses bold, angular fonts with metallic shuriken accents, centered in a shield-like emblem. Integrated with a ninja in a striking pose, it’s set against a subtle moonlit sky outline, perfect for a pro gaming team."
-        },
-        {
-          "src": "/styles/s31e.webp",
           
           "basePrompt": "Design an e-sport logo for ''Text'' based on ninja motifs. The text ''Text'' uses bold, angular fonts with metallic shuriken accents, centered in a shield-like emblem. Integrated with a ninja in a striking pose, it’s set against a subtle moonlit sky outline, perfect for a pro gaming team."
         },
@@ -1307,17 +1297,7 @@ Record<string, { src: string; basePrompt: string }[]>
           "basePrompt": "Create a ninja-themed e-sport logo for ''Text''. The text ''Text'' is in sleek, jagged fonts with neon smoke trails, encased in a geometric crest. Featuring a ninja hurling throwing stars, the design captures a swift, competitive edge with a clean, team-ready look."
         },
         {
-          "src": "/styles/s32e.webp",
-          
-          "basePrompt": "Create a ninja-themed e-sport logo for ''Text''. The text ''Text'' is in sleek, jagged fonts with neon smoke trails, encased in a geometric crest. Featuring a ninja hurling throwing stars, the design captures a swift, competitive edge with a clean, team-ready look."
-        },
-        {
           "src": "/styles/s33.webp",
-          
-          "basePrompt": "A dynamic e-sport logo for ''Text'' inspired by ninjas. The text ''Text'' is bold and stylized with a brushed ink texture, surrounded by a ninja silhouette mid-leap with flowing scarves. Framed in an octagonal badge, it’s set against a faint temple rooftop backdrop, built for e-sport branding."
-        },
-        {
-          "src": "/styles/s33e.webp",
           
           "basePrompt": "A dynamic e-sport logo for ''Text'' inspired by ninjas. The text ''Text'' is bold and stylized with a brushed ink texture, surrounded by a ninja silhouette mid-leap with flowing scarves. Framed in an octagonal badge, it’s set against a faint temple rooftop backdrop, built for e-sport branding."
         },
@@ -1327,17 +1307,7 @@ Record<string, { src: string; basePrompt: string }[]>
           "basePrompt": "Design ''Text'' as a ninja e-sport logo. The text ''Text'' is crafted with swift, calligraphic fonts and a glowing edge, integrated into a hexagonal emblem with kunai motifs and smoke wisps. The design is agile and fierce, ideal for a competitive gaming squad."
         },
         {
-          "src": "/styles/s34e.webp",
-          
-          "basePrompt": "Design ''Text'' as a ninja e-sport logo. The text ''Text'' is crafted with swift, calligraphic fonts and a glowing edge, integrated into a hexagonal emblem with kunai motifs and smoke wisps. The design is agile and fierce, ideal for a competitive gaming squad."
-        },
-        {
           "src": "/styles/s35.webp",
-          
-          "basePrompt": "Create a stylized e-sport logo for ''Text'' based on ninja elements. The text ''Text'' features stealthy fonts with etched blade marks, paired with a minimalist ninja mask icon. Encased in a sharp, angular frame, it’s set against a vibrant, team-focused color scheme, perfect for e-sport jerseys."
-        },
-        {
-          "src": "/styles/s35e.webp",
           
           "basePrompt": "Create a stylized e-sport logo for ''Text'' based on ninja elements. The text ''Text'' features stealthy fonts with etched blade marks, paired with a minimalist ninja mask icon. Encased in a sharp, angular frame, it’s set against a vibrant, team-focused color scheme, perfect for e-sport jerseys."
         },
@@ -1347,17 +1317,7 @@ Record<string, { src: string; basePrompt: string }[]>
           "basePrompt": "A professional e-sport logo for ''Text'' inspired by ninja agility. The text ''Text'' is designed with sleek lines and bold slashes, centered in a streamlined crest. Featuring a ninja with a tanto blade and a flowing cloak, it’s built for a polished, competitive team identity."
         },
         {
-          "src": "/styles/s36e.webp",
-          
-          "basePrompt": "A professional e-sport logo for ''Text'' inspired by ninja agility. The text ''Text'' is designed with sleek lines and bold slashes, centered in a streamlined crest. Featuring a ninja with a tanto blade and a flowing cloak, it’s built for a polished, competitive team identity."
-        },
-        {
           "src": "/styles/s37.webp",
-          
-          "basePrompt": "Create a ninja-themed e-sport design for ''Text''. The text ''Text'' is in bold, swift typography with subtle smoke accents, integrated into a symmetrical badge. Paired with a ninja star and a hooded figure, it’s set in a high-energy scheme, tailored for e-sport tournaments."
-        },
-        {
-          "src": "/styles/s37e.webp",
           
           "basePrompt": "Create a ninja-themed e-sport design for ''Text''. The text ''Text'' is in bold, swift typography with subtle smoke accents, integrated into a symmetrical badge. Paired with a ninja star and a hooded figure, it’s set in a high-energy scheme, tailored for e-sport tournaments."
         },
@@ -1367,20 +1327,10 @@ Record<string, { src: string; basePrompt: string }[]>
           "basePrompt": "A vibrant e-sport logo for ''Text'' inspired by ninja stealth. The text ''Text'' uses dynamic fonts with shadowy gradients, framed in a bold, diamond-shaped emblem. Surrounded by a ninja in a crouching stance with glowing eyes, it’s designed to stand out in competitive gaming scenes."
         },
         {
-          "src": "/styles/s38e.webp",
-          
-          "basePrompt": "A vibrant e-sport logo for ''Text'' inspired by ninja stealth. The text ''Text'' uses dynamic fonts with shadowy gradients, framed in a bold, diamond-shaped emblem. Surrounded by a ninja in a crouching stance with glowing eyes, it’s designed to stand out in competitive gaming scenes."
-        },
-        {
           "src": "/styles/s39.webp",
           
           "basePrompt": "Design a creative ninja e-sport logo for ''Text''. The text ''Text'' features bold, brushed fonts with vibrant overlays, centered in a rugged, team-oriented crest. Integrated with a ninja wielding dual sais and a swirling smoke effect, it’s a striking emblem for e-sport domination."
         },
-        {
-          "src": "/styles/s39e.webp",
-          
-          "basePrompt": "Design a creative ninja e-sport logo for ''Text''. The text ''Text'' features bold, brushed fonts with vibrant overlays, centered in a rugged, team-oriented crest. Integrated with a ninja wielding dual sais and a swirling smoke effect, it’s a striking emblem for e-sport domination."
-        }
       ]
     // Continue with other themes & motifs like Horror, Ninja, etc.
   },
