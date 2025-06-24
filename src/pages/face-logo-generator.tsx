@@ -13,6 +13,9 @@ import { AiOutlineLeft, AiOutlineRight, AiOutlineCloudUpload, AiOutlineUserSwitc
 import Link from "next/link";
 import clsx from "clsx";
 import imageCompression from 'browser-image-compression';
+import { SharePopup } from "~/component/SharePopup"
+import router from "next/router";
+import { FaShareAlt } from "react-icons/fa";
 
 // Type definitions for Face Styles
 interface FaceStyleItem {
@@ -43,6 +46,9 @@ const FaceLogoGeneratorPage: NextPage = () => {
   const [activeStyleSubTab, setActiveStyleSubTab] = useState<string>("");
   const [selectedStyleBasePrompt, setSelectedStyleBasePrompt] = useState<string>("");
   const [selectedStyleImagePreview, setSelectedStyleImagePreview] = useState<string | null>(null);
+
+  const [showSharePopupFor, setShowSharePopupFor] = useState<string | null>(null);
+  const [currentPromptForShare, setCurrentPromptForShare] = useState<string>("");
 
   const [selectedModel, setSelectedModel] = useState<FaceAIModel>("flux-kontext-pro");
   const [selectedAspectRatio, setSelectedAspectRatio] = useState<FaceAspectRatio>("1:1");
@@ -119,6 +125,11 @@ const FaceLogoGeneratorPage: NextPage = () => {
       setUploadedImageFile(null); setUploadedImagePreview(null);
     }
   }
+};
+
+const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) => {
+  setCurrentPromptForShare(promptOrName || "my awesome gaming logo"); // Set a default if no prompt/name
+  setShowSharePopupFor(imageUrl);
 };
 
   const handleScroll = (
@@ -466,6 +477,15 @@ const FaceLogoGeneratorPage: NextPage = () => {
                         <button type="button" onClick={() => void handleDownload(imageUrl)} className="p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors" title="Download Logo" aria-label="Download Logo" disabled={isDownloading === imageUrl}>
                            {isDownloading === imageUrl ? <div className="w-5 h-5 border-2 border-t-transparent border-current rounded-full animate-spin"></div> : <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>}
                         </button>
+                        <button
+                        type="button"
+                        onClick={() => handleOpenSharePopup(imageUrl, "this awesome logo")} // Use icon.imageUrl and icon.prompt
+                        className="p-2 sm:p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors disabled:opacity-50"
+                        title="Share Logo"
+                        aria-label="Share Logo"
+                      >
+                        <FaShareAlt className="h-4 w-4 sm:h-5 sm:w-5" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -484,6 +504,18 @@ const FaceLogoGeneratorPage: NextPage = () => {
               <Image src={popupImage} alt="Fullscreen generated gaming face logo" width={1024} height={1024} style={{ objectFit: 'contain', width: 'auto', height: 'auto', maxHeight: '85vh', maxWidth: 'calc(100vw - 4rem)' }} className="rounded-md"/>
             </div>
           </div>
+        )}
+        {showSharePopupFor && router.isReady && ( // Add router.isReady if generatorUrl depends on it
+        <SharePopup
+                imageUrl={showSharePopupFor}
+                imageAlt={`Shareable gaming logo ${currentPromptForShare ? 'for ' + currentPromptForShare : ''}`}
+                defaultText={`Check out this logo I made ${currentPromptForShare ? `for "${currentPromptForShare.substring(0,50)}..."` : ''} with GamingLogoAI!`}
+                siteUrl="https://www.gaminglogoai.com" // ** REPLACE **
+                // For collection, the original generator might not be easily known,
+                // so link to the main gaming logo maker or homepage.
+                generatorUrl={"/gaming-logo-maker"} 
+                onClose={() => setShowSharePopupFor(null)}
+            />
         )}
       </main>
     </>

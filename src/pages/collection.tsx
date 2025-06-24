@@ -7,6 +7,9 @@ import { api } from "~/utils/api"; // Ensure this uses GamingLogoAI's API endpoi
 import { useSession } from "next-auth/react"; // To check if user is logged in
 import Link from "next/link"; // For a CTA if no icons
 import { env } from "~/env.mjs"; // To get S3 bucket name if needed, or construct URL server-side
+import { SharePopup } from "~/component/SharePopup"
+import router, { useRouter } from "next/router";
+import { FaShareAlt } from "react-icons/fa";
 
 const CollectionPage: NextPage = () => {
   const { data: session, status } = useSession();
@@ -21,6 +24,10 @@ const CollectionPage: NextPage = () => {
 
   const [popupImage, setPopupImage] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState<string | null>(null); // Track download state per image
+
+  const [showSharePopupFor, setShowSharePopupFor] = useState<string | null>(null);
+  const [currentPromptForShare, setCurrentPromptForShare] = useState<string>("");
+  const router = useRouter();
 
   const s3BucketUrl = `https://${s3BucketName}.s3.${awsRegion}.amazonaws.com`;
 
@@ -82,6 +89,13 @@ const CollectionPage: NextPage = () => {
     }
   };
 
+  const handleOpenSharePopup = (fullImageUrlToShare: string, promptText?: string | null) => {
+    console.log("CollectionPage: handleOpenSharePopup called with:", { fullImageUrlToShare, promptText });
+    // router.isReady check removed for now, assuming generatorUrl in SharePopup for collection page can be static
+    setCurrentPromptForShare(promptText || "my awesome gaming logo");
+    setShowSharePopupFor(fullImageUrlToShare); // This now receives the full URL
+  };
+
   if (status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-slate-900">
@@ -139,14 +153,16 @@ const CollectionPage: NextPage = () => {
 
         {iconsQuery.data && iconsQuery.data.length > 0 && (
           <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {iconsQuery.data.map((icon) => (
+            {iconsQuery.data.map((icon) => {
+              const fullIconS3Url = `${s3BucketUrl}/${icon.id}`;
+              return (
               <li key={icon.id} className="relative group bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden aspect-square">
                 <Image
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   width={512} // Keep for aspect ratio hint, actual display controlled by CSS
                   height={512}
                   alt={icon.prompt ?? `AI generated gaming logo ${icon.id}`}
-                  src={`${s3BucketUrl}/${icon.id}`}
+                  src={fullIconS3Url}
                   priority={false} // Set to true for first few images if you want them to load faster
                 />
                 {/* Overlay for buttons, appears on hover */}
@@ -184,9 +200,24 @@ const CollectionPage: NextPage = () => {
                         </svg>
                     )}
                   </button>
+                  <button
+                    type="button"
+                    // In GameLogoPage/FaceLogoGeneratorPage, use form.name or a relevant prompt piece:
+                    onClick={() => handleOpenSharePopup(fullIconS3Url, icon.prompt)}
+                    // In CollectionPage, use icon.prompt:
+                    // onClick={() => handleOpenSharePopup(icon.imageUrl, icon.prompt)}
+                    className={`opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                    bg-slate-700 text-white p-3 rounded-full hover:bg-purple-600 dark:hover:bg-cyan-500 focus:outline-none shadow-lg
+                    ${isDownloading === icon.id ? 'cursor-not-allowed animate-pulse' : ''}`}                    
+                    aria-label="Share Logo"
+                  >
+                    <FaShareAlt className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </button>
                 </div>
+                
               </li>
-            ))}
+              );
+             })}
           </ul>
         )}
 
@@ -213,6 +244,17 @@ const CollectionPage: NextPage = () => {
               />
             </div>
           </div>
+        )}
+        {showSharePopupFor && (
+            <SharePopup
+                imageUrl={showSharePopupFor}
+                imageAlt={`Shareable gaming logo ${currentPromptForShare ? 'for ' + currentPromptForShare : ''}`}
+                defaultText={`Check out this logo I made ${currentPromptForShare ? `for "${currentPromptForShare.substring(0,50)}..."` : ''} with GamingLogoAI!`}
+                siteUrl="https://www.gaminglogoai.com" // ** REPLACE **
+                // For collection page, linking to the main generator is a good default
+                generatorUrl={"/gaming-logo-maker"} 
+                onClose={() => setShowSharePopupFor(null)}
+            />
         )}
       </main>
     </>

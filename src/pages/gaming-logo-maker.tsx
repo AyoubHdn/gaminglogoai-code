@@ -12,6 +12,9 @@ import { useSession, signIn } from "next-auth/react";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import Link from "next/link";
 import clsx from "clsx";
+import { SharePopup } from "~/component/SharePopup"
+import router from "next/router";
+import { FaShareAlt } from "react-icons/fa";
 // Assuming Plan enum is relevant if gamingPlan on User model uses it.
 // If gamingPlan is just a string, you might not need this import here.
 // import { Plan } from "@prisma/client"; 
@@ -49,6 +52,9 @@ const GameLogoPage: NextPage = () => {
 
   const [activeTab, setActiveTab] = useState<string>("");
   const [activeSubTab, setActiveSubTab] = useState<string>("");
+
+  const [showSharePopupFor, setShowSharePopupFor] = useState<string | null>(null);
+  const [currentPromptForShare, setCurrentPromptForShare] = useState<string>("");
 
   const categoryScrollRef = useRef<HTMLDivElement>(null);
   const subcategoryScrollRef = useRef<HTMLDivElement>(null);
@@ -222,6 +228,11 @@ useEffect(() => {
 
   const openPopup = (imageUrl: string) => setPopupImage(imageUrl);
   const closePopup = () => setPopupImage(null);
+
+  const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) => {
+  setCurrentPromptForShare(promptOrName || "my awesome gaming logo"); // Set a default if no prompt/name
+  setShowSharePopupFor(imageUrl);
+};
 
   return (
     <>
@@ -494,6 +505,18 @@ useEffect(() => {
                         <button type="button" onClick={() => void handleDownload(imageUrl, form.basePrompt)} className="p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors" title="Download Logo" aria-label="Download Logo">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                         </button>
+                        <button
+                          type="button"
+                          // In GameLogoPage/FaceLogoGeneratorPage, use form.name or a relevant prompt piece:
+                          onClick={() => handleOpenSharePopup(imageUrl, form.name || "this awesome logo")}
+                          // In CollectionPage, use icon.prompt:
+                          // onClick={() => handleOpenSharePopup(icon.imageUrl, icon.prompt)}
+                          className="p-2 sm:p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors"
+                          title="Share Logo"
+                          aria-label="Share Logo"
+                        >
+                          <FaShareAlt className="h-4 w-4 sm:h-5 sm:w-5" />
+                        </button>
                     </div>
                   </div>
                 </div>
@@ -512,6 +535,19 @@ useEffect(() => {
               <Image src={popupImage} alt="Fullscreen generated gaming logo" width={1024} height={1024} style={{ objectFit: 'contain', width: 'auto', height: 'auto', maxHeight: '85vh', maxWidth: 'calc(100vw - 4rem)' }} className="rounded-md"/>
             </div>
           </div>
+        )}
+        {showSharePopupFor && (
+          <SharePopup
+            imageUrl={showSharePopupFor}
+            imageAlt={`Shareable gaming logo ${currentPromptForShare ? 'for ' + currentPromptForShare : ''}`}
+            defaultText={`Check out this logo I made ${currentPromptForShare ? `for "${currentPromptForShare.substring(0,50)}..."` : ''} with GamingLogoAI!`}
+            siteUrl="https://www.gaminglogoai.com" // Replace with your actual site URL
+            generatorUrl={
+                router.pathname.includes('face-logo-generator') ? "/face-logo-generator" : "/gaming-logo-maker"
+                // Or pass this more directly if page context is clear
+            }
+            onClose={() => setShowSharePopupFor(null)}
+          />
         )}
       </main>
     </>
