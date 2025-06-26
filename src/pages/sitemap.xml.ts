@@ -8,7 +8,7 @@ const generateSiteMap = (pages: string[]) => {
   const getPriority = (page: string) => {
     if (page === '/') return '1.0';
     if (['/community', '/collection'].includes(page)) return '0.7';
-    if (['/privacy-policy', '/terms-of-service', '/refund'].includes(page)) return '0.3';
+    if (['/privacy-policy', '/terms-of-service', '/refund-policy'].includes(page)) return '0.3';
     // Default priority for landing pages like /name-art, /pro-logo etc.
     return '0.8'; 
   };
