@@ -64,6 +64,7 @@ export function Footer() {
               <li><PrimaryLink href={stylesHubUrl} className="text-xs hover:underline">Browse All Styles</PrimaryLink></li>*/}
               <li><PrimaryLink href="/community" className="text-xs hover:underline">Community</PrimaryLink></li>
               <li><PrimaryLink href="/buy-credits" className="text-xs hover:underline">Pricing</PrimaryLink></li>
+              <li><PrimaryLink href="/blog" className="text-xs hover:underline">Blog</PrimaryLink></li>
             </ul>
           </div>
 

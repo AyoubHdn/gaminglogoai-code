@@ -53,6 +53,7 @@ export function Header() {
   const otherMainLinks = [
     { href: "/logo-styles", label: "Browse All Styles", id: "browse-styles-header", icon: <AiOutlineExperiment /> },
     { href: "/community", label: "Community", id: "community-header-button", icon: <FaUsers /> },
+    { href: "/blog", label: "Blog", id: "blog-header-button", icon: <FaUsers /> },
   ];
 
   const loggedInSpecificLinks = [
