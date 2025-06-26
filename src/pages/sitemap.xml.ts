@@ -51,7 +51,8 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     '/pfp-maker',
 
     // --- START: NEW BLOG PAGES TO ADD ---
-    // '/blog', // The main blog page
+    '/blog', // The main blog page
+    '/blog/how-to-create-an-epic-mascot-logo-with-ai-step-by-step',
     // --- END: NEW BLOG PAGES TO ADD ---
 
     // Legal Pages (Low Priority)

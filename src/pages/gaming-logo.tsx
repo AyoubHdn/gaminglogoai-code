@@ -68,7 +68,7 @@ const GamingLogoLandingPage: NextPage = () => {
           
           <div className="container mx-auto px-4 sm:px-6 relative z-20">
             <Image
-              src="/gaminglogo-ai-main-icon.png" // ** REPLACE with your main GamingLogoAI icon/mascot if you have one **
+              src="/styles/s385e.webp" // ** REPLACE with your main GamingLogoAI icon/mascot if you have one **
               alt="Gaming Logo AI Icon"
               width={140}
               height={140}
