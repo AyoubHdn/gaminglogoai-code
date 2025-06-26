@@ -1,10 +1,15 @@
 // src/pages/buy-credits.tsx
+import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useBuyCredits } from "~/hook/useBuyCredits"; // Assuming hook path is correct
 
 const BuyCreditsPage: React.FC = () => {
+  
+  const { data: session, status: sessionStatus } = useSession(); // Get session status
+  const isLoggedIn = !!session; // Or sessionStatus === "authenticated"
+
   const { buyCredits } = useBuyCredits();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
@@ -47,16 +52,38 @@ const BuyCreditsPage: React.FC = () => {
   })) as Offer[];
 
   const handleBuy = async (plan: "starter" | "pro" | "elite") => {
+    if (!isLoggedIn) {
+      // If not logged in, prompt to sign in.
+      // You can also pass a callbackUrl to redirect back to buy-credits after sign-in.
+      const callbackUrl = window.location.pathname; // Current page
+      void signIn("google", { callbackUrl }); // Or your preferred provider
+      return;
+    }
+
     try {
       setLoadingPlan(plan);
       await buyCredits(plan);
     } catch (error) {
       console.error("Error during purchase:", error);
-      alert("Something went wrong with the purchase. Please try again.");
+      // More specific error handling could be done here based on error type
+      if (error instanceof Error && error.message.toLowerCase().includes("authentication required")) {
+        alert("Please sign in to purchase credits.");
+      } else {
+        alert("Something went wrong with the purchase. Please try again.");
+      }
     } finally {
       setLoadingPlan(null);
     }
   };
+
+  // Handle loading state for the session
+  if (sessionStatus === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-slate-900">
+        <p className="text-xl text-slate-700 dark:text-slate-300">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <>
