@@ -7,57 +7,57 @@ Record<string, { src: string; basePrompt: string }[]>
       {
         src: "/styles/s640.webp",
         
-        basePrompt: "A Fortnite-style gaming logo for a team called 'Text' — includes a cartoonish masked hero mascot holding a glowing pickaxe, bold blocky text ''Text'' underneath, vibrant neon blue and purple color scheme, glowing outline, dynamic comic-style pose, slight 3D effect, clean background, esports logo, high detail, Fortnite aesthetic",
+        basePrompt: "A Fortnite-style gaming logo for a team called ''Text'' — includes a cartoonish masked hero mascot holding a glowing pickaxe, bold blocky text ''Text'' underneath, vibrant neon blue and purple color scheme, glowing outline, dynamic comic-style pose, slight 3D effect, clean background, esports logo, high detail, Fortnite aesthetic",
       },
       {
         src: "/styles/s641.webp",
         
-        basePrompt: "A Fortnite-style gaming logo for a team called 'Text' — includes a cartoonish masked hero mascot holding a glowing pickaxe, bold blocky text 'Text', neon blue and purple glow, dynamic comic-style pose, futuristic background, clean esports look",
+        basePrompt: "A Fortnite-style gaming logo for a team called ''Text'' — includes a cartoonish masked hero mascot holding a glowing pickaxe, bold blocky text ''Text'', neon blue and purple glow, dynamic comic-style pose, futuristic background, clean esports look",
       },
       {
         src: "/styles/s642.webp",
         
-        basePrompt: "A Fortnite-style mascot logo for 'Text' — a flying character with a jetpack and sniper rifle, electric teal and pink colors, dramatic action pose, futuristic sky elements, glowing stylized text 'Text' below, modern cartoon design, esports-ready",
+        basePrompt: "A Fortnite-style mascot logo for ''Text'' — a flying character with a jetpack and sniper rifle, electric teal and pink colors, dramatic action pose, futuristic sky elements, glowing stylized text ''Text'' below, modern cartoon design, esports-ready",
       },
       {
         src: "/styles/s643.webp",
         
-        basePrompt: "Gaming logo in Fortnite style for 'Text' — features a cute but aggressive cartoon llama with shades and a golden crown, bright rainbow and turquoise colors, playful font 'Text' underneath, outlined in neon glow, comic-style layout, fun esports look",
+        basePrompt: "Gaming logo in Fortnite style for ''Text'' — features a cute but aggressive cartoon llama with shades and a golden crown, bright rainbow and turquoise colors, playful font ''Text'' underneath, outlined in neon glow, comic-style layout, fun esports look",
       },
       {
         src: "/styles/s644.webp",
         
-        basePrompt: "A Fortnite-inspired logo for team 'Text' — includes a robot builder mascot holding building tools, bold 3D block letters 'Text', glowing green and orange color scheme, digital blueprint background, sharp outlines, gaming/esports design",
+        basePrompt: "A Fortnite-inspired logo for team ''Text'' — includes a robot builder mascot holding building tools, bold 3D block letters ''Text'', glowing green and orange color scheme, digital blueprint background, sharp outlines, gaming/esports design",
       },
       {
         src: "/styles/s645.webp",
         
-        basePrompt: "A Fortnite-style abstract mascot logo for 'Text' — features a cyber ninja with energy blades, electric blue and red contrast, glitch effects, aggressive pose, text 'Text' in digital blocky font, neon glow, esports-grade polish",
+        basePrompt: "A Fortnite-style abstract mascot logo for ''Text'' — features a cyber ninja with energy blades, electric blue and red contrast, glitch effects, aggressive pose, text ''Text'' in digital blocky font, neon glow, esports-grade polish",
       },
       {
         src: "/styles/s646.webp",
         
-        basePrompt: "Fortnite-style gaming logo for 'Text' — a secret agent banana character wearing a tuxedo, holding a futuristic pistol, bold gold and black color combo, comic book pose, text 'Text' in playful military font, stylized icon with cartoon finish",
+        basePrompt: "Fortnite-style gaming logo for ''Text'' — a secret agent banana character wearing a tuxedo, holding a futuristic pistol, bold gold and black color combo, comic book pose, text ''Text'' in playful military font, stylized icon with cartoon finish",
       },
       {
         src: "/styles/s647.webp",
         
-        basePrompt: "A mascot logo in Fortnite style for 'Text' — features a storm-powered soldier with glowing hands and lightning effects, purple and white color palette, bold angular font 'Text', outlined with electric blue neon, dynamic background, esports style",
+        basePrompt: "A mascot logo in Fortnite style for ''Text'' — features a storm-powered soldier with glowing hands and lightning effects, purple and white color palette, bold angular font ''Text'', outlined with electric blue neon, dynamic background, esports style",
       },
       {
         src: "/styles/s648.webp",
         
-        basePrompt: "Fortnite-style logo for gaming team 'Text' — includes a toxic mutant character with green glowing eyes and gas mask, dripping neon green and black color scheme, toxic barrel prop, graffiti-style text 'Text', high-energy comic design",
+        basePrompt: "Fortnite-style logo for gaming team ''Text'' — includes a toxic mutant character with green glowing eyes and gas mask, dripping neon green and black color scheme, toxic barrel prop, graffiti-style text ''Text'', high-energy comic design",
       },
       {
         src: "/styles/s649.webp",
         
-        basePrompt: "Gaming logo in Fortnite-style for team 'Text' — fierce cybernetic wolf howling at a digital moon, dark blue and silver tones, glowing claw marks in background, stylized text 'Text' with futuristic font, esport-ready branding",
+        basePrompt: "Gaming logo in Fortnite-style for team ''Text'' — fierce cybernetic wolf howling at a digital moon, dark blue and silver tones, glowing claw marks in background, stylized text ''Text'' with futuristic font, esport-ready branding",
       },
       {
         src: "/styles/s650.webp",
         
-        basePrompt: "Fortnite-themed pixel art gaming logo for team 'Text' — 8-bit style character with rocket launcher, fun color palette of pink, yellow, and aqua, pixelated explosion behind, retro blocky text 'Text', clean square layout, energetic design",
+        basePrompt: "Fortnite-themed pixel art gaming logo for team ''Text'' — 8-bit style character with rocket launcher, fun color palette of pink, yellow, and aqua, pixelated explosion behind, retro blocky text ''Text'', clean square layout, energetic design",
       },
       
     ],
