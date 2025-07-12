@@ -7,7 +7,7 @@ interface SharePopupProps {
   imageUrl: string;
   imageAlt: string;
   defaultText?: string; // Optional: "Check out this logo..."
-  siteUrl: string; // e.g., https://www.gaminglogoai.com
+  siteUrl: string; // e.g., https://gaminglogoai.com
   generatorUrl: string; // e.g., /gaming-logo-maker or /face-logo-generator
   onClose: () => void;
 }

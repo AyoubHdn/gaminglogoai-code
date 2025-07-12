@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://www.gaminglogoai.com
+Host: https://gaminglogoai.com
 
 # Sitemaps
-Sitemap: https://www.gaminglogoai.com/sitemap.xml
+Sitemap: https://gaminglogoai.com/sitemap.xml

@@ -154,7 +154,7 @@ const CollectionPage: NextPage = () => {
           name="keywords"
           content="my gaming logos, logo collection, generated logos, ai esports logo, saved designs, gaming branding"
         />
-        <link rel="canonical" href="https://www.gaminglogoai.com/collection" />{" "}
+        <link rel="canonical" href="https://gaminglogoai.com/collection" />{" "}
         {/* Replace with actual domain */}
         <link rel="icon" href="/favicon-gaming.ico" />
       </Head>
@@ -358,7 +358,7 @@ const CollectionPage: NextPage = () => {
                 ? `for "${currentPromptForShare.substring(0, 50)}..."`
                 : ""
             } with GamingLogoAI!`}
-            siteUrl="https://www.gaminglogoai.com" // ** REPLACE **
+            siteUrl="https://gaminglogoai.com" // ** REPLACE **
             // For collection page, linking to the main generator is a good default
             generatorUrl={"/gaming-logo-maker"}
             onClose={() => setShowSharePopupFor(null)}

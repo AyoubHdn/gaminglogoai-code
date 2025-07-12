@@ -297,7 +297,7 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
         <title>AI Face Logo Generator - Photo to Gaming Logo | GamingLogoAI</title>
         <meta name="description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
         <meta name="keywords" content="ai face logo, photo to logo, image to image generator, gaming avatar maker, custom streamer avatar, ai portrait logo, flux kontext pro, flux kontext max" />
-        <link rel="canonical" href="https://www.gaminglogoai.com/face-logo-generator" /> {/* ** REPLACE with actual domain ** */}
+        <link rel="canonical" href="https://gaminglogoai.com/face-logo-generator" /> {/* ** REPLACE with actual domain ** */}
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900">
@@ -510,7 +510,7 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
                 imageUrl={showSharePopupFor}
                 imageAlt={`Shareable gaming logo ${currentPromptForShare ? 'for ' + currentPromptForShare : ''}`}
                 defaultText={`Check out this logo I made ${currentPromptForShare ? `for "${currentPromptForShare.substring(0,50)}..."` : ''} with GamingLogoAI!`}
-                siteUrl="https://www.gaminglogoai.com" // ** REPLACE **
+                siteUrl="https://gaminglogoai.com" // ** REPLACE **
                 // For collection, the original generator might not be easily known,
                 // so link to the main gaming logo maker or homepage.
                 generatorUrl={"/gaming-logo-maker"} 

@@ -109,7 +109,7 @@ const LogoStylesHubPage: NextPage = () => {
         <title>Browse All Gaming Logo Styles & Categories | GamingLogoAI</title>
         <meta name="description" content="Explore a vast collection of AI gaming logo styles on GamingLogoAI. Find inspiration by game title, art style, theme, and more to create your perfect logo or PFP." />
         <meta name="keywords" content="gaming logo styles, logo categories, pfp styles, esports logo themes, game logo ideas, browse ai logos, text logo styles, photo avatar styles" />
-        <link rel="canonical" href="https://www.gaminglogoai.com/logo-styles" />
+        <link rel="canonical" href="https://gaminglogoai.com/logo-styles" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

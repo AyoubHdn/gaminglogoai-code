@@ -240,7 +240,7 @@ useEffect(() => {
         <title>AI Gaming Logo Maker - Create Epic Esports & Streamer Logos | GamingLogoAI</title>
         <meta name="description" content="Design unique, professional gaming logos in minutes with GamingLogoAI's AI-powered generator. Perfect for esports teams, Twitch streamers, YouTube channels, and gamer profiles. Try it free!" />
         <meta name="keywords" content="ai gaming logo generator, esports logo maker, streamer logo, youtube gaming logo, custom gaming logo, game team logo, free gaming logo trial, ai game art" />
-        <link rel="canonical" href="https://www.gaminglogoai.com/gaming-logo-maker" />
+        <link rel="canonical" href="https://gaminglogoai.com/gaming-logo-maker" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900">
@@ -541,7 +541,7 @@ useEffect(() => {
             imageUrl={showSharePopupFor}
             imageAlt={`Shareable gaming logo ${currentPromptForShare ? 'for ' + currentPromptForShare : ''}`}
             defaultText={`Check out this logo I made ${currentPromptForShare ? `for "${currentPromptForShare.substring(0,50)}..."` : ''} with GamingLogoAI!`}
-            siteUrl="https://www.gaminglogoai.com" // Replace with your actual site URL
+            siteUrl="https://gaminglogoai.com" // Replace with your actual site URL
             generatorUrl={
                 router.pathname.includes('face-logo-generator') ? "/face-logo-generator" : "/gaming-logo-maker"
                 // Or pass this more directly if page context is clear

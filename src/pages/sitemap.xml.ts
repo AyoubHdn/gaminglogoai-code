@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next';
 
 // This function generates the XML content for your sitemap.
 const generateSiteMap = (pages: string[]) => {
-  const baseUrl = 'https://www.gaminglogoai.com'; // Your website's base URL
+  const baseUrl = 'https://gaminglogoai.com'; // Your website's base URL
 
   // Define priorities for specific page types
   const getPriority = (page: string) => {

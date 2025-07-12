@@ -11,7 +11,7 @@ const HomePage: NextPage = () => {
   const isLoggedIn = !!session;
   const router = useRouter();
 
-  const SITE_URL = process.env.HOST_NAME || "https://www.gaminglogoai.com";
+  const SITE_URL = process.env.HOST_NAME || "https://gaminglogoai.com";
 
   function HeroBanner() {
     // Option A: Single CTA leading to a choice page or primary tool
@@ -258,7 +258,7 @@ const HomePage: NextPage = () => {
           content="Create unique gaming logos and AI face mascots in seconds with GamingLogoAI! Perfect for esports teams, Twitch streamers, YouTube, and personal gamer profiles. Try our AI logo generator free!"
         />
         <meta name="keywords" content="ai gaming logo, ai face logo, gaming mascot maker, esports logo generator, streamer logo, youtube gaming logo, custom game logo, ai avatar generator, personalized gaming logo" />
-        <link rel="canonical" href="https://www.gaminglogoai.com/" /> {/* Replace with actual domain */}
+        <link rel="canonical" href="https://gaminglogoai.com/" /> {/* Replace with actual domain */}
         <meta property="og:description" content="Instantly design professional gaming logos or transform your photo into an epic AI gaming mascot. Fast, easy, and free to try!" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={SITE_URL} />

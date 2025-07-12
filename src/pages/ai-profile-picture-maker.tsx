@@ -48,7 +48,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
           content="Create unique AI-generated profile pictures (PFPs) and gaming avatars from your photos! GamingLogoAI transforms your image into cartoon, anime, cyberpunk styles, and more. Try free!"
         />
         <meta name="keywords" content="ai profile picture maker, pfp maker, photo to avatar, custom gaming pfp, ai avatar generator, image to pfp, personalized avatar" />
-        <link rel="canonical" href="https://www.gaminglogoai.com/ai-profile-picture-maker" /> {/* ** REPLACE with your actual domain ** */}
+        <link rel="canonical" href="https://gaminglogoai.com/ai-profile-picture-maker" /> {/* ** REPLACE with your actual domain ** */}
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

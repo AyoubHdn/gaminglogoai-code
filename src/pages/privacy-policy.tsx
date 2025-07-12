@@ -4,7 +4,7 @@ import Link from "next/link"; // Import Link if you add internal links
 
 const PrivacyPolicyPage: React.FC = () => {
   const siteName = "Gaming Logo AI";
-  const siteUrl = "https://www.gaminglogoai.com"; // Replace with actual live domain
+  const siteUrl = "https://gaminglogoai.com"; // Replace with actual live domain
   const contactEmail = "support@gaminglogoai.com"; // Replace with actual support email
   const companyName = "HDN STUDIO LTD"; // Assuming this remains the same
   const companyAddress = "71-75 Shelton Street, Covent Garden, London, WC2H 9JQ";

@@ -47,7 +47,7 @@ const GamingLogoLandingPage: NextPage = () => {
           content="Design your unique gaming logo in seconds with GamingLogoAI! Our AI-powered generator creates stunning, professional logos for esports teams, streamers, and gamers. Try it now!"
         />
         <meta name="keywords" content="gaming logo maker, ai gaming logo, esports logo, streamer logo, custom game logo, create gaming logo, logo generator gaming, team logo maker" />
-        <link rel="canonical" href="https://www.gaminglogoai.com/gaming-logo" /> {/* ** REPLACE with your actual domain ** */}
+        <link rel="canonical" href="https://gaminglogoai.com/gaming-logo" /> {/* ** REPLACE with your actual domain ** */}
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

@@ -85,7 +85,7 @@ interface BlogPostPageProps {
 const BlogPostPage: NextPage<BlogPostPageProps> = ({ postData }) => {
   // ... (siteName, siteUrl, date handling, displayTitle, displayExcerpt - same as before) ...
   const siteName = "GamingLogoAI Blog";
-  const siteUrl = "https://www.gaminglogoai.com"; // ** REPLACE **
+  const siteUrl = "https://gaminglogoai.com"; // ** REPLACE **
   let formattedDate = "Date not available";
   let validDateForDateTimeAttr: string | undefined = undefined;
   if (postData.date && typeof postData.date === 'string') { try {

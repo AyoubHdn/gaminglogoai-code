@@ -33,7 +33,7 @@ const CommunityPage: NextPage = () => {
           content="Explore a gallery of AI-generated gaming logos created by the Gaming Logo AI community. Get inspired for your next team emblem, streamer avatar, or game icon."
         />
         <meta name="keywords" content="gaming logo gallery, community logos, ai game art, esports logo ideas, logo inspiration, user generated logos" />
-        <link rel="canonical" href="https://www.gaminglogoai.com/community" /> {/* Replace with actual domain */}
+        <link rel="canonical" href="https://gaminglogoai.com/community" /> {/* Replace with actual domain */}
         <link rel="icon" href="/favicon-gaming.ico" />
       </Head>
       {/* Dark mode: bg-slate-900, Light mode: bg-gray-100 */}

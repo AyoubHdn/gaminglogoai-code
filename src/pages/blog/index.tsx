@@ -13,7 +13,7 @@ interface BlogIndexProps {
 
 const BlogIndexPage: NextPage<BlogIndexProps> = ({ allPostsData }) => {
   const siteName = "GamingLogoAI Blog"; // Or just "GamingLogoAI"
-  const siteUrl = "https://www.gaminglogoai.com"; // ** REPLACE with your actual production domain **
+  const siteUrl = "https://gaminglogoai.com"; // ** REPLACE with your actual production domain **
 
   return (
     <>

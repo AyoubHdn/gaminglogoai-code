@@ -4,7 +4,7 @@ import Link from "next/link"; // Import Link for internal navigation
 
 const RefundPolicyPage: React.FC = () => {
   const siteName = "Gaming Logo AI"; // NEW BRAND NAME
-  const siteUrl = "https://www.gaminglogoai.com"; // ** REPLACE with your actual live domain for GamingLogoAI **
+  const siteUrl = "https://gaminglogoai.com"; // ** REPLACE with your actual live domain for GamingLogoAI **
   const contactEmail = "support@gaminglogoai.com"; // ** REPLACE with GamingLogoAI's support email **
   const communityPageUrl = "/community"; // URL to GamingLogoAI's community page
 
