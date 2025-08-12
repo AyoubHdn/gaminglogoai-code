@@ -31,6 +31,7 @@ const HomePage: NextPage = () => {
               width={150} height={150}
               className="rounded-xl shadow-xl border-2 border-cyan-500"
               priority
+              unoptimized={true}
             />
             <Image
               src="/face-logo-example.webp" // Example of an AI face logo
@@ -38,6 +39,7 @@ const HomePage: NextPage = () => {
               width={150} height={150}
               className="rounded-xl shadow-xl border-2 border-purple-500"
               priority
+              unoptimized={true}
             />
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
@@ -101,6 +103,7 @@ const HomePage: NextPage = () => {
                   alt={`${type.name} Icon`}
                   width={80} height={80}
                   className="mb-5"
+                  unoptimized={true}
                 />
                 <h3 className="text-2xl font-bold mt-2 mb-3 text-slate-800 dark:text-white">{type.name}</h3>
                 <p className="text-slate-600 dark:text-slate-300 text-center mb-6 text-sm grow">
@@ -120,12 +123,12 @@ const HomePage: NextPage = () => {
   }
   function KeyFeaturesSection() {
     const features = [
-      { title: "Unique AI Concepts", description: "Fresh logo ideas every time, no templates.", icon: "/icons/feature-ai-brain.png" },
-      { title: "Versatile Gamer Styles", description: "Mascots, emblems, text, face-styles & more.", icon: "/icons/feature-styles-controller.png" },
-      { title: "Instant Creation", description: "Get your high-res logos in minutes, not days.", icon: "/icons/feature-download-rocket.png" },
-      { title: "Easy to Use", description: "Simple prompts, powerful results. No design skills needed.", icon: "/icons/feature-customize-gear.png" },
-      { title: "Affordable Options", description: "Premium designs with flexible credit packs.", icon: "/icons/feature-credits-coin.png" },
-      { title: "For Every Gamer", description: "Individuals, teams, streamers, content creators.", icon: "/icons/feature-community-group.png" },
+      { title: "Unique AI Concepts", description: "Fresh logo ideas every time, no templates.", icon: "/icons/feature-ai-brain.webp" },
+      { title: "Versatile Gamer Styles", description: "Mascots, emblems, text, face-styles & more.", icon: "/icons/feature-styles-controller.webp" },
+      { title: "Instant Creation", description: "Get your high-res logos in minutes, not days.", icon: "/icons/feature-download-rocket.webp" },
+      { title: "Easy to Use", description: "Simple prompts, powerful results. No design skills needed.", icon: "/icons/feature-customize-gear.webp" },
+      { title: "Affordable Options", description: "Premium designs with flexible credit packs.", icon: "/icons/feature-credits-coin.webp" },
+      { title: "For Every Gamer", description: "Individuals, teams, streamers, content creators.", icon: "/icons/feature-community-group.webp" },
     ];
 
     return (
@@ -137,7 +140,7 @@ const HomePage: NextPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature) => (
               <div key={feature.title} className="flex flex-col items-center text-center p-6 bg-slate-50 dark:bg-slate-700 rounded-xl shadow-lg hover:shadow-purple-500/20 dark:hover:shadow-cyan-500/20 transition-shadow duration-300">
-                <Image src={feature.icon} alt={`${feature.title} icon`} width={72} height={72} className="mb-4" />
+                <Image src={feature.icon} alt={`${feature.title} icon`} width={72} height={72} className="mb-4" unoptimized={true}/>
                 <h3 className="text-xl font-semibold mb-2 text-slate-800 dark:text-white">{feature.title}</h3>
                 <p className="text-slate-600 dark:text-slate-400 text-sm">{feature.description}</p>
               </div>

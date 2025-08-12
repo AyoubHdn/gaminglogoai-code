@@ -56,13 +56,14 @@ const GamingLogoLandingPage: NextPage = () => {
         <section className="relative py-20 md:py-32 text-center text-white overflow-hidden">
           {/* Background Image/Video - Replace with a dynamic gaming background */}
           <Image
-            src="/gaminglogo-ai-banner.png" // ** REPLACE with a cool, abstract gaming background **
+            src="/gaminglogo-ai-banner.webp" // ** REPLACE with a cool, abstract gaming background **
             alt="Abstract gaming background"
             layout="fill"
             objectFit="cover"
             quality={75}
             className="z-0 opacity-30 dark:opacity-20"
             priority
+            unoptimized={true}
           />
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/70 via-indigo-950/80 to-slate-900/90 z-10"></div>
           
@@ -74,6 +75,7 @@ const GamingLogoLandingPage: NextPage = () => {
               height={140}
               className="mx-auto mb-6 transform transition-transform duration-500 hover:scale-110"
               priority
+              unoptimized={true}
             />
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg">
               AI-Powered <span className="text-cyan-400">Gaming Logo</span> Maker
@@ -155,7 +157,7 @@ const GamingLogoLandingPage: NextPage = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {exampleShowcase.map((example) => (
                 <div key={example.caption} className="group relative rounded-lg shadow-lg overflow-hidden aspect-square">
-                  <Image src={example.src} alt={example.alt} layout="fill" objectFit="cover" className="transition-transform duration-500 group-hover:scale-110" />
+                  <Image src={example.src} alt={example.alt} layout="fill" objectFit="cover" className="transition-transform duration-500 group-hover:scale-110" unoptimized={true}/>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-lg font-semibold text-white drop-shadow-md">{example.caption}</h3>

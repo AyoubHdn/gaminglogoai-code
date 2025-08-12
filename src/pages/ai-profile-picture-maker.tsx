@@ -55,7 +55,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">
         {/* Hero Section */}
         <section className="relative py-20 md:py-32 text-center text-white overflow-hidden">
-          <Image src="/images/pfp-hero-bg.webp" alt="Abstract background for AI PFP Maker" layout="fill" objectFit="cover" quality={75} className="z-0 opacity-25 dark:opacity-15" priority />
+          <Image src="/images/pfp-hero-bg.webp" alt="Abstract background for AI PFP Maker" layout="fill" objectFit="cover" quality={75} className="z-0 opacity-25 dark:opacity-15" priority unoptimized={true} />
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/80 via-indigo-950/90 to-slate-900/95 z-10"></div>
           
           <div className="container mx-auto px-4 sm:px-6 relative z-20">
@@ -136,7 +136,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {exampleTransformations.map((example) => ( 
                 <div key={example.caption} className="group relative rounded-lg shadow-lg overflow-hidden aspect-square">
-                    <Image src={example.src} alt={example.alt} layout="fill" objectFit="cover" className="transition-transform duration-500 group-hover:scale-110" />
+                    <Image src={example.src} alt={example.alt} layout="fill" objectFit="cover" className="transition-transform duration-500 group-hover:scale-110" unoptimized={true}/>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-lg font-semibold text-white drop-shadow-md">{example.caption}</h3>

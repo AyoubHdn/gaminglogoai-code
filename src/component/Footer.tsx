@@ -25,11 +25,12 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2 mb-3 group w-fit">
               {/* This Image component should now work if imported correctly */}
               <Image
-                src="/logo.png" // ** REPLACE with your GamingLogoAI logo **
+                src="/logo.webp" // ** REPLACE with your GamingLogoAI logo **
                 alt={`${siteName} Logo`}
                 width={32}
                 height={32}
                 className="rounded-md group-hover:scale-110 transition-transform"
+                unoptimized={true}
               />
               <span className="font-bold text-lg text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-cyan-400">{siteName}</span>
             </Link>

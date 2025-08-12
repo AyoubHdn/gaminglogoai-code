@@ -31,7 +31,7 @@ export function getSortedPostsData(): PostData[] {
   const allPostsData = fileNames.map((fileName) => {
     // Remove ".mdx" from file name to get slug
     const slug = fileName.replace(/\.mdx$/, '')
-
+    console.log(`Sitemap/Blog Data: Found file "${fileName}", generated slug: "${slug}"`);
     // Read markdown file as string
     const fullPath = path.join(postsDirectory, fileName)
     const fileContents = fs.readFileSync(fullPath, 'utf8')

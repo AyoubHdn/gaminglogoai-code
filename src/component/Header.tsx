@@ -73,6 +73,7 @@ export function Header() {
             alt="Gaming Logo AI Logo"
             width={36} height={36}
             className="rounded-md transition-transform duration-300 group-hover:rotate-[-12deg] group-hover:scale-110"
+            unoptimized={true}
           />
           <span className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-cyan-400 transition-colors">
             GamingLogoAI

@@ -53,6 +53,7 @@ const mdxComponents = {
           style={{ objectFit: "contain" }} // Use "contain" for blog images to see whole image
           sizes="(max-width: 768px) 100vw, 700px"
           className="rounded-lg"
+          unoptimized={true}
         />
       </span>
     );
@@ -155,6 +156,7 @@ const BlogPostPage: NextPage<BlogPostPageProps> = ({ postData }) => {
                 <Image 
                   src={postData.coverImage} alt={`${displayTitle} cover image`} fill 
                   style={{objectFit: "cover"}} priority sizes="(max-width: 768px) 100vw, 800px"
+                  unoptimized={true}
                 />
               </div>
             )}

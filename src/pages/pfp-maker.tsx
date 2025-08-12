@@ -302,7 +302,7 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
       </Head>
       <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900">
         <header className="text-center mb-10">
-          <Image src="/face-logo-image.png" alt="Gaming Logo AI Banner - Create stunning gaming logos with AI" width={800} height={200} className="mx-auto mb-4 rounded-lg shadow-lg" priority />
+          <Image src="/face-logo-image.webp" alt="Gaming Logo AI Banner - Create stunning gaming logos with AI" width={800} height={200} className="mx-auto mb-4 rounded-lg shadow-lg" priority unoptimized={true}/>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-3">
             AI Face Logo Generator
           </h1>
@@ -501,7 +501,7 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
               <button type="button" onClick={closePopup} className="absolute -top-4 -right-4 z-[110] bg-purple-600 dark:bg-cyan-500 text-white rounded-full p-1.5 hover:opacity-80 focus:outline-none shadow-md" title="Close Fullscreen" aria-label="Close Fullscreen">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
-              <Image src={popupImage} alt="Fullscreen generated gaming face logo" width={1024} height={1024} style={{ objectFit: 'contain', width: 'auto', height: 'auto', maxHeight: '85vh', maxWidth: 'calc(100vw - 4rem)' }} className="rounded-md"/>
+              <Image src={popupImage} alt="Fullscreen generated gaming face logo" width={1024} height={1024} style={{ objectFit: 'contain', width: 'auto', height: 'auto', maxHeight: '85vh', maxWidth: 'calc(100vw - 4rem)' }} className="rounded-md" unoptimized={true}/>
             </div>
           </div>
         )}

@@ -76,6 +76,7 @@ const BlogIndexPage: NextPage<BlogIndexProps> = ({ allPostsData }) => {
                                 layout="fill"
                                 objectFit="cover"
                                 className="transition-transform duration-300 hover:scale-105"
+                                unoptimized={true}
                               />
                           </Link>
                         </div>

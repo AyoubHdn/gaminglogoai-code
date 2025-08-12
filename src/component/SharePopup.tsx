@@ -77,7 +77,7 @@ export const SharePopup: React.FC<SharePopupProps> = ({
         </div>
 
         <div className="mb-4 rounded-lg overflow-hidden aspect-square relative bg-slate-200 dark:bg-slate-700">
-          <Image src={imageUrl} alt={imageAlt} layout="fill" objectFit="contain" />
+          <Image src={imageUrl} alt={imageAlt} layout="fill" objectFit="contain" unoptimized={true}/>
         </div>
 
         <textarea
