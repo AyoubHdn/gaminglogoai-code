@@ -69,7 +69,7 @@ export function Header() {
         {/* Left Section: Logo and Site Name */}
         <Link href="/" className="flex items-center gap-2 group" aria-label="Gaming Logo AI Home">
           <Image
-            src="/logo.png" // ** YOUR GAMINGLOGOAI LOGO PATH **
+            src="/logo.webp" // ** YOUR GAMINGLOGOAI LOGO PATH **
             alt="Gaming Logo AI Logo"
             width={36} height={36}
             className="rounded-md transition-transform duration-300 group-hover:rotate-[-12deg] group-hover:scale-110"
