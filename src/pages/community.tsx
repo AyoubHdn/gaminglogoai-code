@@ -34,7 +34,7 @@ const CommunityPage: NextPage = () => {
         />
         <meta name="keywords" content="gaming logo gallery, community logos, ai game art, esports logo ideas, logo inspiration, user generated logos" />
         <link rel="canonical" href="https://gaminglogoai.com/community" /> {/* Replace with actual domain */}
-        <link rel="icon" href="/favicon-gaming.ico" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* Dark mode: bg-slate-900, Light mode: bg-gray-100 */}
       <main className="flex min-h-screen mt-16 sm:mt-24 flex-col container mx-auto gap-8 px-4 sm:px-8 py-8 bg-gray-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200">

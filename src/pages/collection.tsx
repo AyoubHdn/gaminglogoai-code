@@ -156,7 +156,7 @@ const CollectionPage: NextPage = () => {
         />
         <link rel="canonical" href="https://gaminglogoai.com/collection" />{" "}
         {/* Replace with actual domain */}
-        <link rel="icon" href="/favicon-gaming.ico" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* Dark mode: bg-slate-900, Light mode: bg-gray-100 */}
       <main className="container mx-auto mt-16 flex min-h-screen flex-col gap-8 bg-gray-100 px-4 py-8 text-slate-800 sm:mt-24 sm:px-8 dark:bg-slate-900 dark:text-slate-200">

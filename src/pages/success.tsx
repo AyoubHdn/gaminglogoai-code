@@ -37,7 +37,7 @@ const SuccessPage: React.FC = () => {
       <Head>
         <title>Payment Successful! - Gaming Logo AI</title>
         <meta name="description" content="Your credit purchase for Gaming Logo AI was successful. Start designing your new gaming logos now!" />
-        <link rel="icon" href="/favicon-gaming.ico" /> {/* Ensure this exists */}
+        <link rel="icon" href="/favicon.ico" /> {/* Ensure this exists */}
       </Head>
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-slate-900 px-4">
         <div className="bg-white dark:bg-slate-800 shadow-xl rounded-lg p-8 sm:p-12 text-center max-w-md w-full">
