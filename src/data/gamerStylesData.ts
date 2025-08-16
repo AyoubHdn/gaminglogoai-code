@@ -391,6 +391,59 @@ Record<string, { src: string; basePrompt: string }[]>
           basePrompt: "Design a creative Free Fire e-sport logo for ''Text''. The text ''Text'' features bold, futuristic fonts with vibrant overlays, centered in a jagged, team-oriented crest. Integrated with Free Fire’s survival weaponry and characters, it’s a striking emblem for e-sport domination."
         },
       ],
+      "DOTA": [
+        {
+          src: "/styles/s651.webp",
+          
+          basePrompt: "A DOTA-style emblem logo for ''Text'' — a stone shield with glowing red runes, ancient fantasy design, bold metallic text underneath, dark mystical background, esports-ready, highly detailed"
+        },
+        {
+          src: "/styles/s652.webp",
+
+          basePrompt: "Epic fantasy gaming logo for team ''Text'' — a fierce raven with glowing red eyes perched on a spiked axe, black and crimson color scheme, dramatic medieval text ''Text'', dark aura, DOTA-inspired look"
+        },
+        {
+          src: "/styles/s653.webp",
+
+          basePrompt: "DOTA-style emblem for ''Text'' — a flaming sword stuck in molten rock, glowing golden-red aura, epic fantasy typography for the team name, highly detailed, esports fantasy style"
+        },
+        {
+          src: "/styles/s654.webp",
+
+          basePrompt: "Fantasy gaming logo for ''Text'' — features a hooded assassin silhouette with glowing daggers, purple and black color scheme, sinister atmosphere, medieval gothic text ''Text'', sharp emblem layout"
+        },
+        {
+          src: "/styles/s655.webp",
+          
+          basePrompt: "A DOTA-style emblem logo for ''Text'' — metallic crest with glowing runes engraved, magical aura, blue and silver tones, bold engraved fantasy font, esports-ready, high detail"
+        },
+        {
+          src: "/styles/s656.webp",
+
+          basePrompt: "Epic gaming logo for ''Text'' — armored knight helmet with crossed swords, silver and bronze metallic glow, medieval heraldic style, bold serif text ''Text'', esports design with fantasy energy"
+        },
+        {
+          src: "/styles/s657.webp",
+
+          basePrompt: "DOTA-inspired fantasy logo for ''Text'' — a fierce dragon head breathing fire, red-orange flames, ancient rune circle in background, glowing bold medieval-style text ''Text''"
+        },
+        {
+          src: "/styles/s658.webp",
+
+          basePrompt: "Gaming logo for team ''Text'' — dark cosmic portal with glowing purple energy, shadowy hunters surrounding it, fantasy aura, mystical typography ''Text'', DOTA-style design"
+        },
+        {
+          src: "/styles/s659.webp",
+          
+          basePrompt: "A DOTA-style emblem logo for ''Text'' — giant stone golem face carved with glowing green cracks, shield-shaped crest, epic metallic fantasy text ''Text'', dark earthy tones"
+        },
+        {
+          src: "/styles/s660.webp",
+          
+          basePrompt: "Epic fantasy logo for ''Text'' — thunderous storm clouds with glowing lightning striking a medieval sword, blue and gold mystical aura, bold ornamental font ''Text'', esports DOTA-style design"
+        },
+        
+      ],
     // You can continue this pattern for other specific game titles like Counter-Strike, Cyberpunk 2077, etc.
   },
   "Game Genres": {
