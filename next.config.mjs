@@ -28,11 +28,17 @@ const config = {
   },
   async redirects() {
      return [
-       {
-         source: '/face-logo-generator', // The OLD path
-         destination: '/pfp-maker', // The NEW path
-         permanent: true, // This signifies a 301 redirect
-       },
+        {
+          source: '/(.*)',
+          has: [{ type: 'host', value: 'www.gaminglogoai.com' }],
+          destination: 'https://gaminglogoai.com/:1',
+          permanent: true, // 👈 this makes it 301
+        },
+        {
+          source: '/face-logo-generator', // The OLD path
+          destination: '/pfp-maker', // The NEW path
+          permanent: true, // This signifies a 301 redirect
+        },
        // Add any other redirects you need here
        // For example, if you also had a landing page for face-logo that's changing:
        // {
