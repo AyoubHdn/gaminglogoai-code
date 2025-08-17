@@ -29,12 +29,6 @@ const config = {
   async redirects() {
      return [
         {
-          source: '/(.*)',
-          has: [{ type: 'host', value: 'www.gaminglogoai.com' }],
-          destination: 'https://gaminglogoai.com/:1',
-          permanent: true, // 👈 this makes it 301
-        },
-        {
           source: '/face-logo-generator', // The OLD path
           destination: '/pfp-maker', // The NEW path
           permanent: true, // This signifies a 301 redirect
