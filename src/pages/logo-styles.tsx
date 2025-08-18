@@ -99,6 +99,21 @@ const styleCategories: StyleCategory[] = [
       { name: "Go to PFP Maker", url: "/pfp-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
     ]
   },
+  {
+    name: "Fortnite Logos",
+    icon: <FaUserCircle className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
+    description: "Create unique Fortnite logos for your clan, team, or YouTube channel using AI.",
+    categoryLandingPageUrl: "/fortnite-logos",
+    subItemsPreview: [
+      { name: "Fortnite Clan Logos", hasLandingPage: false, targetUrl: "/fortnite-logos/clan" },
+      { name: "Fortnite YouTube Logos", hasLandingPage: false, targetUrl: "/fortnite-logos/youtube" },
+      { name: "Fortnite Streamer Logos", hasLandingPage: false, targetUrl: "/fortnite-logos/streamer" },
+    ],
+    relevantTools: [
+      { name: "Go to Fortnite Logo Maker", url: "/gaming-logo-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
+    ]
+  },
+  
   // ... Add other categories
 ];
 
