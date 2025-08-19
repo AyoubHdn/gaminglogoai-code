@@ -61,6 +61,58 @@ Record<string, { src: string; basePrompt: string }[]>
       },
       
     ],
+    "Minecraft": [
+      {
+        src: "/styles/s701.webp",
+        
+        basePrompt: "Create a Minecraft-inspired mascot logo of a Creeper with glowing green pixel energy, blocky style, and place the text 'Text' in bold pixel font beneath.",
+      },
+      {
+        src: "/styles/s702.webp",
+        
+        basePrompt: "Design a Minecraft warrior mascot holding a diamond sword, blocky armor glowing with neon edges, with the name 'Text' in Minecraft-style pixel text.",
+      },
+      {
+        src: "/styles/s703.webp",
+        
+        basePrompt: "Generate a mascot logo of an Enderman with glowing purple eyes, surrounded by floating blocks, with bold blocky text 'Text' at the bottom.",
+      },
+      {
+        src: "/styles/s704.webp",
+        
+        basePrompt: "Design a Minecraft wolf mascot with pixel fur, glowing effects, aggressive pose, and include the text [USER TEXT] in pixelated font style.",
+      },
+      {
+        src: "/styles/s705.webp",
+        
+        basePrompt: "Create a Minecraft villager mascot with emerald effects, glowing blocky outlines, and the name 'Text' below in blocky pixel typography.",
+      },
+      {
+        src: "/styles/s706.webp",
+        
+        basePrompt: "Design a Minecraft block emblem logo, with grass, dirt, and stone textures forming a shield, and the text 'Text' engraved in pixel art style.",
+      },
+      {
+        src: "/styles/s707.webp",
+        
+        basePrompt: "Create a Minecraft gaming logo featuring crossed diamond pickaxes, glowing effects, and bold blocky text 'Text' beneath.",
+      },
+      {
+        src: "/styles/s708.webp",
+        
+        basePrompt: "Generate a Minecraft-inspired logo with a diamond sword stuck in a glowing block, with 'Text' in bold pixelated font across.",
+      },
+      {
+        src: "/styles/s709.webp",
+        
+        basePrompt: "Design a Minecraft badge-style logo with pixel clouds, sun, and grass blocks, with the team name 'Text' in retro pixel typography.",
+      },
+      {
+        src: "/styles/s710.webp",
+        
+        basePrompt: "Create a Minecraft cave logo with ores glowing in the background, pickaxe and sword crossing, and bold pixel text 'Text' at the center.",
+      },
+    ],
     "Apex Legends": [
       {
         src: "/styles/s300.webp",
