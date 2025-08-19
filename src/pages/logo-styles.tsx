@@ -113,6 +113,20 @@ const styleCategories: StyleCategory[] = [
       { name: "Go to Fortnite Logo Maker", url: "/gaming-logo-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
     ]
   },
+  {
+    name: "Minecraft Logos",
+    icon: <FaUserCircle className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
+    description: "Create unique Minecraft logos for your clan, team, or YouTube channel using AI.",
+    categoryLandingPageUrl: "/minecraft-logos",
+    subItemsPreview: [
+      { name: "Minecraft Server Logo", hasLandingPage: false, targetUrl: "/minecraft-logos/clan" },
+      { name: "Minecraft YouTube Logos", hasLandingPage: false, targetUrl: "/minecraft-logos/youtube" },
+      { name: "Creeper Logo Minecraft", hasLandingPage: false, targetUrl: "/minecraft-logos/streamer" },
+    ],
+    relevantTools: [
+      { name: "Go to Minecraft Logo Maker", url: "/gaming-logo-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
+    ]
+  },
   
   // ... Add other categories
 ];

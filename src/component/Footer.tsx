@@ -26,7 +26,7 @@ export function Footer() {
   // Curate a list of your most important/popular niche landing pages to feature
   const popularNiches = [
     { name: "Fortnite Logos", url: "/fortnite-logos" },
-    //{ name: "Mascot Logos", url: "/gaming-logos/mascot" }, // Example URL
+    { name: "Minecraft Logos", url: "/minecraft-logos" },
     //{ name: "Cartoon Style PFPs", url: "/pfp-styles/cartoon" }, // Example URL
     //{ name: "Esports Emblems", url: "/gaming-logos/esports-emblems" }, // Example URL
     //{ name: "Valorant Logos", url: "/gaming-logos/valorant" }, // Example URL
