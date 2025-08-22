@@ -127,6 +127,20 @@ const styleCategories: StyleCategory[] = [
       { name: "Go to Minecraft Logo Maker", url: "/gaming-logo-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
     ]
   },
+  {
+    name: "Free Fire Logos",
+    icon: <FaUserCircle className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
+    description: "Create unique Free Fire logos for your clan, team, or YouTube channel using AI.",
+    categoryLandingPageUrl: "/free-fire-logos",
+    subItemsPreview: [
+      { name: "Free Fire Server Logo", hasLandingPage: false, targetUrl: "/free-fire-logos/clan" },
+      { name: "Free Fire YouTube Logos", hasLandingPage: false, targetUrl: "/free-fire-logos/youtube" },
+      { name: "Free Fire Streamer Logo", hasLandingPage: false, targetUrl: "/free-fire-logos/streamer" },
+    ],
+    relevantTools: [
+      { name: "Go to Free Fire Logo Maker", url: "/gaming-logo-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
+    ]
+  },
   
   // ... Add other categories
 ];

@@ -47,6 +47,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     '/logo-styles',
     '/fortnite-logos',
     '/minecraft-logos',
+    '/free-fire-logos',
 
     // Generator Pages (Medium Priority)
     '/gaming-logo-maker',

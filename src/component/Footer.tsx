@@ -27,7 +27,7 @@ export function Footer() {
   const popularNiches = [
     { name: "Fortnite Logos", url: "/fortnite-logos" },
     { name: "Minecraft Logos", url: "/minecraft-logos" },
-    //{ name: "Cartoon Style PFPs", url: "/pfp-styles/cartoon" }, // Example URL
+    { name: "Free Fire Logos", url: "/free-fire-logos" }, // Example URL
     //{ name: "Esports Emblems", url: "/gaming-logos/esports-emblems" }, // Example URL
     //{ name: "Valorant Logos", url: "/gaming-logos/valorant" }, // Example URL
     // Add 1-2 more if you like, but keep the list concise

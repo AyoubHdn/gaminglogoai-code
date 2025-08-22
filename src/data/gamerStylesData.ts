@@ -442,6 +442,56 @@ Record<string, { src: string; basePrompt: string }[]>
           
           basePrompt: "Design a creative Free Fire e-sport logo for ''Text''. The text ''Text'' features bold, futuristic fonts with vibrant overlays, centered in a jagged, team-oriented crest. Integrated with Free Fire’s survival weaponry and characters, it’s a striking emblem for e-sport domination."
         },
+        {
+          src: "/styles/s711.webp",
+          
+          basePrompt: "Design a mascot logo inspired by Free Fire’s DJ Alok, with his glowing headphones, stylish outfit, and neon purple/blue energy waves around him. The logo must include the word 'Text' in bold futuristic font beneath."
+        },
+        {
+          src: "/styles/s712.webp",
+          
+          basePrompt: "Create a mascot logo inspired by Free Fire’s Chrono, wearing futuristic armor with a glowing blue energy shield. The logo must include the word 'Text' in bold esports-style font below."
+        },
+        {
+          src: "/styles/s713.webp",
+          
+          basePrompt: "Generate a mascot logo inspired by Free Fire’s K (Captain Booyah), with his iconic gold-and-black jacket glowing with radiant energy. The logo must include the team name 'Text' in strong cyber font."
+        },
+        {
+          src: "/styles/s714.webp",
+          
+          basePrompt: "Design a mascot logo inspired by Free Fire’s Jota, in combat stance holding dual guns with a fiery glowing background. The logo must include the word 'Text' in sharp metallic typography below."
+        },
+        {
+          src: "/styles/s715.webp",
+          
+          basePrompt: "Create a mascot logo inspired by Free Fire’s Kelly, sprinting at high speed with neon yellow streaks showing her motion. The logo must include the word 'Text' in bold angled gaming font beneath."
+        },
+        {
+          src: "/styles/s716.webp",
+          
+          basePrompt: "Design a mascot logo inspired by Free Fire’s Dimitri, with his DJ setup glowing, futuristic beats visualized as purple soundwaves around him. The logo must include the word 'Text' in glowing neon font."
+        },
+        {
+          src: "/styles/s717.webp",
+          
+          basePrompt: "Generate a mascot logo inspired by Free Fire’s Hayato, styled as a samurai warrior holding a glowing katana, surrounded by purple flames. The logo must include the word 'Text' in bold Japanese-style font below."
+        },
+        {
+          src: "/styles/s718.webp",
+          
+          basePrompt: "Create a mascot logo inspired by Free Fire’s character Xayne, featuring her futuristic cyber armor, short hair, glowing red highlights, and aggressive stance. The logo must include the word 'Text' in sharp metallic typography at the bottom."
+        },
+        {
+          src: "/styles/s719.webp",
+          
+          basePrompt: "Design a mascot logo inspired by Free Fire’s Olivia, styled as a heroic medic with her combat outfit, glowing health aura, and red cross effects. The design must include the word 'Text' in bold pixel-inspired font beneath."
+        },
+        {
+          src: "/styles/s720.webp",
+          
+          basePrompt: "Generate a mascot logo inspired by Free Fire’s Moco, with her iconic neon green hair, hacker glasses, and holographic cyber interface around her. The logo must include the word 'Text' in glowing cyberpunk-style font at the bottom."
+        },
       ],
       "DOTA": [
         {
