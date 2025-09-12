@@ -10,7 +10,7 @@ import {
   AiOutlineMenu, AiOutlineClose, AiOutlineCreditCard, AiOutlineLogout,
   AiOutlineLogin, AiOutlineExperiment, AiOutlineUser, AiOutlineDown, AiOutlineRight
 } from "react-icons/ai";
-import { FaPaintBrush, FaImages, FaUsers } from "react-icons/fa"; // Removed FaGamepad if not used directly for a top-level link
+import { FaPaintBrush, FaImages, FaUsers, FaCoins } from "react-icons/fa"; // Removed FaGamepad if not used directly for a top-level link
 import clsx from "clsx";
 import router, { useRouter } from "next/router";
 import React from "react";
@@ -53,7 +53,7 @@ export function Header() {
   const otherMainLinks = [
     { href: "/logo-styles", label: "Browse All Styles", id: "browse-styles-header", icon: <AiOutlineExperiment /> },
     { href: "/community", label: "Community", id: "community-header-button", icon: <FaUsers /> },
-    { href: "/blog", label: "Blog", id: "blog-header-button", icon: <FaUsers /> },
+    { href: "/buy-credits", label: "Pricing", id: "pricing-header-button", icon: <FaCoins /> },
   ];
 
   const loggedInSpecificLinks = [

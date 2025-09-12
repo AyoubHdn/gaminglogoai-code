@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 // Assuming PrimaryLink is your themed Link component that handles modern Next/Link behavior
 import { PrimaryLink } from "./PrimaryLink"; 
+import { FaXTwitter, FaFacebook, FaPinterest } from "react-icons/fa6"; // Import social icons
 
 export function Footer() {
   const siteName = "GamingLogoAI.com";
@@ -47,6 +48,12 @@ export function Footer() {
     { name: "Refund Policy", url: "/refund-policy" },
   ];
 
+  const socialLinks = [
+    { name: "Twitter", href: "https://x.com/gaming_logo_ai", icon: <FaXTwitter /> },
+    { name: "Facebook", href: "https://www.facebook.com/profile.php?id=61580488384893", icon: <FaFacebook /> },
+    { name: "Pinterest", href: "https://au.pinterest.com/gaminglogoai/", icon: <FaPinterest /> },
+  ];
+
 
   return (
     <footer className="bg-slate-100 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400">
@@ -68,6 +75,20 @@ export function Footer() {
             <p className="text-xs leading-relaxed max-w-xs">
               Your ultimate destination for AI-powered gaming logos and custom avatars. Create stunning visuals for your team, stream, and online presence instantly.
             </p>
+            <div className="flex items-center gap-4 mt-4 hidden sm:flex"> {/* Hide on xs screens if you only want them in the first column on desktop */}
+              {socialLinks.map(social => (
+                <a 
+                  key={social.name} 
+                  href={social.href} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  aria-label={`Follow us on ${social.name}`}
+                  className="text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-colors"
+                >
+                  <span className="h-5 w-5">{social.icon}</span>
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Generators Column - links to LANDING pages */}
@@ -123,6 +144,20 @@ export function Footer() {
           <p>&copy; {currentYear} {companyName}. All Rights Reserved.</p>
           <p className="mt-1">{siteName} is a product of {companyName}.</p>
         </div>
+        <div className="flex items-center justify-center mt-3 gap-4 sm:hidden"> {/* Hide on sm screens and up if you only want them in the first column on desktop */}
+            {socialLinks.map(social => (
+              <a 
+                key={social.name} 
+                href={social.href} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                aria-label={`Follow us on ${social.name}`}
+                className="text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-cyan-400 transition-colors"
+              >
+                <span className="h-5 w-5">{social.icon}</span>
+              </a>
+            ))}
+          </div>
       </div>
     </footer>
   );
