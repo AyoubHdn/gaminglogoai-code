@@ -101,7 +101,7 @@ const styleCategories: StyleCategory[] = [
   },
   {
     name: "Fortnite Logos",
-    icon: <FaUserCircle className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
+    icon: <FaPaintBrush className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
     description: "Create unique Fortnite logos for your clan, team, or YouTube channel using AI.",
     categoryLandingPageUrl: "/fortnite-logos",
     subItemsPreview: [
@@ -110,12 +110,12 @@ const styleCategories: StyleCategory[] = [
       { name: "Fortnite Streamer Logos", hasLandingPage: false, targetUrl: "/fortnite-logos/streamer" },
     ],
     relevantTools: [
-      { name: "Go to Fortnite Logo Maker", url: "/gaming-logo-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
+      { name: "Go to Fortnite Logo Maker", url: "/gaming-logo-maker", icon: <FaPaintBrush className="mr-1.5"/>, variant: "primary" },
     ]
   },
   {
     name: "Minecraft Logos",
-    icon: <FaUserCircle className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
+    icon: <FaPaintBrush className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
     description: "Create unique Minecraft logos for your clan, team, or YouTube channel using AI.",
     categoryLandingPageUrl: "/minecraft-logos",
     subItemsPreview: [
@@ -124,12 +124,12 @@ const styleCategories: StyleCategory[] = [
       { name: "Creeper Logo Minecraft", hasLandingPage: false, targetUrl: "/minecraft-logos/streamer" },
     ],
     relevantTools: [
-      { name: "Go to Minecraft Logo Maker", url: "/gaming-logo-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
+      { name: "Go to Minecraft Logo Maker", url: "/gaming-logo-maker", icon: <FaPaintBrush className="mr-1.5"/>, variant: "primary" },
     ]
   },
   {
     name: "Free Fire Logos",
-    icon: <FaUserCircle className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
+    icon: <FaPaintBrush className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
     description: "Create unique Free Fire logos for your clan, team, or YouTube channel using AI.",
     categoryLandingPageUrl: "/free-fire-logos",
     subItemsPreview: [
@@ -138,7 +138,21 @@ const styleCategories: StyleCategory[] = [
       { name: "Free Fire Streamer Logo", hasLandingPage: false, targetUrl: "/free-fire-logos/streamer" },
     ],
     relevantTools: [
-      { name: "Go to Free Fire Logo Maker", url: "/gaming-logo-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
+      { name: "Go to Free Fire Logo Maker", url: "/gaming-logo-maker", icon: <FaPaintBrush className="mr-1.5"/>, variant: "primary" },
+    ]
+  },
+  {
+    name: "Fortnite PFP Maker",
+    icon: <FaUserCircle className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
+    description: "Create unique Fortnite PFPs for your clan, team, or YouTube channel using AI.",
+    categoryLandingPageUrl: "/fortnite-pfp-maker",
+    subItemsPreview: [
+      { name: "Fortnite Server PFP", hasLandingPage: false, targetUrl: "/fortnite-pfp-maker/clan" },
+      { name: "Fortnite YouTube PFP", hasLandingPage: false, targetUrl: "/fortnite-pfp-maker/youtube" },
+      { name: "Fortnite Streamer PFP", hasLandingPage: false, targetUrl: "/fortnite-pfp-maker/streamer" },
+    ],
+    relevantTools: [
+      { name: "Go to Fortnite PFP Maker", url: "/pfp-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
     ]
   },
   
