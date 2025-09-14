@@ -155,6 +155,20 @@ const styleCategories: StyleCategory[] = [
       { name: "Go to Fortnite PFP Maker", url: "/pfp-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
     ]
   },
+  {
+    name: "Minecraft PFP Maker",
+    icon: <FaUserCircle className="h-8 w-8 text-purple-600 dark:text-cyan-400" />,
+    description: "Create unique Minecraft PFPs for your clan, team, or YouTube channel using AI.",
+    categoryLandingPageUrl: "/minecraft-pfp-maker",
+    subItemsPreview: [
+      { name: "Minecraft Server PFP", hasLandingPage: false, targetUrl: "/minecraft-pfp-maker/clan" },
+      { name: "Minecraft YouTube PFP", hasLandingPage: false, targetUrl: "/minecraft-pfp-maker/youtube" },
+      { name: "Minecraft Streamer PFP", hasLandingPage: false, targetUrl: "/minecraft-pfp-maker/streamer" },
+    ],
+    relevantTools: [
+      { name: "Go to Minecraft PFP Maker", url: "/pfp-maker", icon: <FaUserCircle className="mr-1.5"/>, variant: "accent" },
+    ]
+  },
   
   // ... Add other categories
 ];

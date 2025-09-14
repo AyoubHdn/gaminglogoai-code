@@ -106,7 +106,8 @@ Record<string, { src: string; basePrompt: string }[]>
         { src: "/styles/ff44.webp", basePrompt: "Create a logo portrait from user's photo in the illustrative style of GTA. Integrate ''Text'' using the iconic GTA 'Price Down' font or similar." },
         { src: "/styles/f45.webp", basePrompt: "Transform user's photo into a portrait logo in the retro, noir-ish style of Mafia games. Integrate ''Text'' using a classic 1930s-50s era font." },
         { src: "/styles/f46.webp", basePrompt: "Render user's photo as a blocky Minecraft character avatar. Integrate ''Text'' below using a pixelated Minecraft-style font." },
-        { src: "/styles/f47.webp", basePrompt: "Create a gritty, survival horror portrait from user's photo, inspired by Resident Evil. Integrate ''Text'' using a distressed, horror-themed font." }
+        { src: "/styles/f47.webp", basePrompt: "Create a gritty, survival horror portrait from user's photo, inspired by Resident Evil. Integrate ''Text'' using a distressed, horror-themed font." },
+        { src: "/styles/f50.webp", basePrompt: "Create a Minecraft-style profile picture based on the reference photo. Keep the face and main features recognizable but transform them into a pixelated Minecraft character design. Use a blocky, 3D voxel art style with sharp edges, low resolution details, and vibrant colors. Format it as a square avatar, centered on the face, with a clean simple background. Add the text ''Text'' below the avatar in a bold Minecraft font style, pixelated to match the theme." },
       ]
     },
 

@@ -29,6 +29,7 @@ export function Footer() {
     { name: "Fortnite Logos", url: "/fortnite-logos" },
     { name: "Fortnite PFP", url: "/fortnite-pfp-maker" },
     { name: "Minecraft Logos", url: "/minecraft-logos" },
+    { name: "Minecraft PFP", url: "/minecraft-pfp-maker" },
     { name: "Free Fire Logos", url: "/free-fire-logos" }, // Example URL
     //{ name: "Esports Emblems", url: "/gaming-logos/esports-emblems" }, // Example URL
     //{ name: "Valorant Logos", url: "/gaming-logos/valorant" }, // Example URL
