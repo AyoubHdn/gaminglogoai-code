@@ -59,6 +59,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     '/blog', // The main blog page
     '/blog/how-to-create-an-epic-mascot-logo-with-ai-step-by-step',
     '/blog/how-to-create-a-clan-logo',
+    '/blog/top-10-minecraft-logo-ideas',
     // --- END: NEW BLOG PAGES TO ADD ---
 
     // Legal Pages (Low Priority)
