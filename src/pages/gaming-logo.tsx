@@ -56,11 +56,12 @@ const GamingLogoLandingPage: NextPage = () => {
         <title>Custom Gaming Logo Generator - AI Text & Mascot Logos</title>
         <meta
           name="description"
-          content="Create a custom gaming logo with text and mascots using our AI generator. Design unique esports emblems and clan logos inspired by styles from Fortnite, Minecraft, and more. Get 1 free credit!"
+          content="Create custom gaming logos, mascots & esports emblems with our AI generator. Get 1 free credit to design a unique logo for your clan or stream in seconds!"
         />
         <meta name="keywords" content="custom gaming logo, text logo generator, gaming mascot logo, clan logo maker, esports emblem creator, fortnite style logo, minecraft logo design, gaming logo styles" /> 
         <link rel="canonical" href="https://gaminglogoai.com/gaming-logo" /> 
         <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.webp" />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">
@@ -158,7 +159,10 @@ const GamingLogoLandingPage: NextPage = () => {
                     {feature.icon}
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-2 text-slate-800 dark:text-white">{feature.title}</h3>
+                    {/* CHANGED from h3 to p + strong */}
+                    <p className="text-xl font-semibold mb-2 text-slate-800 dark:text-white">
+                      <strong>{feature.title}</strong>
+                    </p>
                     <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{feature.description}</p>
                   </div>
                 </div>
@@ -174,17 +178,20 @@ const GamingLogoLandingPage: NextPage = () => {
                   How Our <span className="text-purple-600 dark:text-cyan-400">AI Text Logo Maker</span> Works
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                    {[
-                        { num: "01", title: "Enter Your Text", desc: "Type your gamer tag, team name, or any text for your logo.", icon: <FaGamepad className="h-10 w-10 mx-auto mb-3"/> },
-                        { num: "02", title: "Choose Your Style", desc: "Browse our vast library of gaming-specific styles, mascots, and themes.", icon: <FaPaintBrush className="h-10 w-10 mx-auto mb-3"/> },
-                        { num: "03", title: "Generate & Download", desc: "Our AI creates unique options. Pick your favorite and download!", icon: <FaShieldAlt className="h-10 w-10 mx-auto mb-3"/> }
-                    ].map(step => (
-                        <div key={step.num} className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg">
-                            <div className="text-purple-600 dark:text-cyan-400">{step.icon}</div>
-                            <h3 className="text-xl font-semibold my-2 text-slate-800 dark:text-white">{step.title}</h3>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">{step.desc}</p>
-                        </div>
-                    ))}
+                  {[
+                      { num: "01", title: "Enter Your Text", desc: "Type your gamer tag, team name, or any text for your logo.", icon: <FaGamepad className="h-10 w-10 mx-auto mb-3"/> },
+                      { num: "02", title: "Choose Your Style", desc: "Browse our vast library of gaming-specific styles and themes.", icon: <FaPaintBrush className="h-10 w-10 mx-auto mb-3"/> },
+                      { num: "03", title: "Generate & Download", desc: "Our AI creates unique options. Pick your favorite and download!", icon: <FaShieldAlt className="h-10 w-10 mx-auto mb-3"/> }
+                  ].map(step => (
+                    <div key={step.num} className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg">
+                        <div className="text-purple-600 dark:text-cyan-400">{step.icon}</div>
+                        {/* CHANGED from h3 to p */}
+                        <p className="text-xl font-semibold my-2 text-slate-800 dark:text-white">
+                          <strong>{step.title}</strong>
+                        </p>
+                        <p className="text-sm text-slate-600 dark:text-slate-400">{step.desc}</p>
+                    </div>
+                  ))}
                 </div>
                 <div className="text-center mt-12">
                     <button onClick={handleStartDesigning} className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg text-md transition-colors duration-300 shadow-md hover:shadow-lg dark:bg-cyan-500 dark:hover:bg-cyan-600 dark:text-slate-900">
@@ -203,10 +210,13 @@ const GamingLogoLandingPage: NextPage = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {exampleShowcase.map((example) => (
                 <div key={example.caption} className="group relative rounded-lg shadow-lg overflow-hidden aspect-square">
-                  <Image src={example.src} alt={example.alt} layout="fill" objectFit="cover" className="transition-transform duration-500 group-hover:scale-110" unoptimized={true}/>
+                  <Image src={example.src} alt={example.alt} layout="fill" objectFit="cover" className="transition-transform duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-lg font-semibold text-white drop-shadow-md">{example.caption}</h3>
+                    {/* CHANGED from h3 to p */}
+                    <p className="text-lg font-semibold text-white drop-shadow-md">
+                      {example.caption}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -252,25 +262,23 @@ const GamingLogoLandingPage: NextPage = () => {
             </h2>
             <div className="space-y-6">
               {faqItems.map((item, index) => (
-            <details 
-              key={index} 
-              className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 group cursor-pointer"
-              // Open the first FAQ by default
-              open={index === 0}
-            >
-              <summary className="font-semibold text-lg text-slate-800 dark:text-white flex justify-between items-center list-none">
-                {item.q}
-                <span className="transform transition-transform duration-300 group-open:rotate-180 ml-2">
-                  <svg className="h-5 w-5 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </span>
-              </summary>
-              <div className="mt-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-slate-700 pt-3">
-                <p>{item.a}</p>
-              </div>
-            </details>
-          ))}
+                <details 
+                  key={index} 
+                  className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 group cursor-pointer"
+                  open={index === 0}
+                >
+                  {/* NO h3 here, just a styled summary tag */}
+                  <summary className="font-semibold text-lg text-slate-800 dark:text-white flex justify-between items-center list-none">
+                    <span>{item.q}</span>
+                    <span className="transform transition-transform duration-300 group-open:rotate-180 ml-2">
+                      {/* ... arrow svg ... */}
+                    </span>
+                  </summary>
+                  <div className="mt-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-slate-700 pt-3">
+                    <p>{item.a}</p>
+                  </div>
+                </details>
+              ))}
             </div>
           </div>
         </section>

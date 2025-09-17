@@ -364,7 +364,7 @@ function StyleShowcaseSection() {
         <meta name="twitter:description" content="Create stunning AI-powered logos and mascots for your gaming brand. Fast, easy, and free to try." />
         <meta name="twitter:image" content="https://gaminglogoai.com/twitter-image-gaminglogoai.png" /> 
         <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.webp" />
       </Head>
       <main className="container mx-auto overflow-x-hidden">
         <HeroBanner />
