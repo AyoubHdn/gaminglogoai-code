@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link"; // Use Link for navigation
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
+import { FaChevronRight, FaMagic, FaPaintBrush, FaBolt, FaUsers, FaShieldAlt, FaUserCircle } from "react-icons/fa"; // Example Icons
+
 
 const HomePage: NextPage = () => {
   const { data: session } = useSession();
@@ -13,105 +15,83 @@ const HomePage: NextPage = () => {
 
   const SITE_URL = process.env.HOST_NAME || "https://gaminglogoai.com";
 
+  const gamingLogoLandingUrl = "/gaming-logo";
+  const pfpLandingUrl = "/ai-profile-picture-maker";
+
+  const handleGoToGamingLogo = () => { void router.push(gamingLogoLandingUrl); };
+  const handleGoToPfpMaker = () => { void router.push(pfpLandingUrl); };
+
   function HeroBanner() {
-    // Option A: Single CTA leading to a choice page or primary tool
-    // const handleGetStarted = () => { void router.push("/gaming-logo-maker"); };
-
-    // Option B: Separate CTAs if you want to direct them immediately
-    const handleGoToGamingLogo = () => { void router.push("/gaming-logo-maker"); };
-    const handleGoToFaceLogo = () => { void router.push("/face-logo-generator"); }; // New page
-
     return (
-      <section className="py-16 md:py-24 px-4 sm:px-8 text-center bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-950 text-white rounded-b-3xl shadow-2xl">
-        <div className="container mx-auto">
-          <div className="flex justify-center items-center gap-4 mb-6">
-            <Image
-              src="/game-logo-example.webp" // Example of a text/icon gaming logo
-              alt="AI Generated Gaming Logo Example"
-              width={150} height={150}
-              className="rounded-xl shadow-xl border-2 border-cyan-500"
-              priority
-              unoptimized={true}
-            />
-            <Image
-              src="/face-logo-example.webp" // Example of an AI face logo
-              alt="AI Generated Face Logo Example"
-              width={150} height={150}
-              className="rounded-xl shadow-xl border-2 border-purple-500"
-              priority
-              unoptimized={true}
-            />
-          </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
-            Create <span className="text-cyan-400">Pro Gaming Logos</span> & <span className="text-purple-400">AI Face Mascots</span>
+      <section className="relative py-20 md:py-32 text-center text-white overflow-hidden">
+        {/* You need a very cool, abstract gaming background here */}
+        <Image src="/images/home-hero-bg.webp" alt="Abstract gaming background with neon lights" layout="fill" objectFit="cover" quality={80} className="z-0 opacity-20" priority />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-950 to-indigo-950 z-10"></div>
+        
+        <div className="container mx-auto px-4 sm:px-6 relative z-20">
+          {/* Main Headline (H1) - TARGETING YOUR TOP KEYWORDS */}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg [text-shadow:_2px_2px_4px_rgb(0_0_0_/_50%)]">
+            The Ultimate <span className="text-cyan-400">AI Gaming Logo Generator</span>
           </h1>
-          <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto mb-10">
-            Instantly design unique gaming logos OR transform your photo into an epic AI gaming mascot! Perfect for esports, streaming, or personal branding.
+          <p className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">
+            Instantly create unique logos for your esports team, stream, or gamer profile with our advanced **gaming logo maker AI**. Design text logos, mascots, and more!
           </p>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <button
               onClick={handleGoToGamingLogo}
-              className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-900 font-bold rounded-lg text-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg hover:shadow-cyan-500/50"
-              id="cta-gaming-logo"
+               className="text-lg font-bold shadow-xl"
+              id="cta-hero-gaming-logo"
             >
-              Design Gaming Logo
+              Design Text & Mascot Logos <FaChevronRight className="inline ml-2" />
             </button>
             <button
-              onClick={handleGoToFaceLogo}
-              className="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg text-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-lg hover:shadow-purple-500/50"
-              id="cta-face-logo"
+              onClick={handleGoToPfpMaker}
+               className="text-lg font-bold shadow-xl"
+              id="cta-hero-pfp-maker"
             >
-              Create AI Face Mascot
+              Create AI PFP from Photo <FaChevronRight className="inline ml-2" />
             </button>
           </div>
-          <p className="mt-6 text-xs text-slate-400">Free to explore, credits for full resolution downloads.</p>
+          <p className="mt-6 text-xs text-slate-400">Get 1 free credit on signup to start designing.</p>
         </div>
       </section>
     );
   }
+
   function LogoTypesSection() { // Renamed from CategorySection
     const logoTypes = [
       {
         name: "AI Gaming Logos",
-        description: "Generate text, icon, or mascot logos for your team or channel.",
-        icon: "/user-game-logo.webp", // REPLACE
+        description: "Generate stunning text, icon, or gaming mascot logos for your clan, team, or channel.",
+        icon: "/user-game-logo.webp",
         href: "/gaming-logo-maker",
-        cta: "Design Gaming Logo",
+        cta: "Explore Text Logos",
         id: "link-gaming-logo"
       },
       {
-        name: "AI Face Logos / Mascots",
-        description: "Upload your photo and let AI create a stylized gaming mascot of you!",
-        icon: "/face-logo-icon.webp", // REPLACE
+        name: "AI Photo Avatars (PFP)",
+        description: "Upload your photo and let our AI create a stylized gaming mascot or PFP of you!",
+        icon: "/face-logo-icon.webp",
         href: "/face-logo-generator",
-        cta: "Create Your Face Mascot",
+        cta: "Explore Photo Avatars",
         id: "link-face-logo"
       },
     ];
 
     return (
-      <section className="py-12 md:py-16 px-4 sm:px-8 bg-white dark:bg-slate-800 rounded-lg shadow-sm mb-0 md:mb-0"> {/* Removed bottom margin if next section has top padding */}
+      <section className="py-16 md:py-20 px-4 sm:px-8 bg-white dark:bg-slate-900">
         <div className="container mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-slate-900 dark:text-white">
-            What Kind of <span className="text-purple-600 dark:text-cyan-400">Awesome Logo</span> Will You Create?
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
+            What Kind of <span className="text-purple-600 dark:text-cyan-400">Legendary Logo</span> Will You Create?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {logoTypes.map((type) => (
-              <div key={type.name} className="flex flex-col items-center bg-slate-50 dark:bg-slate-700 p-6 rounded-xl shadow-lg transition hover:shadow-xl hover:-translate-y-1">
-                <Image
-                  src={type.icon}
-                  alt={`${type.name} Icon`}
-                  width={80} height={80}
-                  className="mb-5"
-                  unoptimized={true}
-                />
+              <div key={type.name} className="flex flex-col items-center bg-slate-50 dark:bg-slate-800 p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-transparent hover:border-purple-300 dark:hover:border-cyan-400">
+                <Image src={type.icon} alt={`${type.name} Icon`} width={100} height={100} className="mb-5 rounded-lg" />
                 <h3 className="text-2xl font-bold mt-2 mb-3 text-slate-800 dark:text-white">{type.name}</h3>
-                <p className="text-slate-600 dark:text-slate-300 text-center mb-6 text-sm grow">
-                  {type.description}
-                </p>
+                <p className="text-slate-600 dark:text-slate-300 text-center mb-6 text-sm grow">{type.description}</p>
                 <Link href={type.href} id={type.id}
-                  className="mt-auto px-6 py-2 bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 font-semibold rounded-lg hover:opacity-80 transition-opacity"
-                >
+                  className="mt-auto px-6 py-2 bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 font-semibold rounded-lg hover:opacity-90 transition-opacity">
                     {type.cta}
                 </Link>
               </div>
@@ -255,25 +235,25 @@ const HomePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>AI Logo Maker for Gamers: Gaming Logos & Face Mascots | GamingLogoAI</title>
+        <title>AI Gaming Logo Generator - Free Gaming Logo Maker AI</title>
         <meta
           name="description"
-          content="Create unique gaming logos and AI face mascots in seconds with GamingLogoAI! Perfect for esports teams, Twitch streamers, YouTube, and personal gamer profiles. Try our AI logo generator free!"
+          content="Create your perfect AI gaming logo for free with GamingLogoAI. Our gaming logo maker AI generates stunning esports logos, mascots, and PFPs for your clan or stream. Get 1 free credit!"
         />
-        <meta name="keywords" content="ai gaming logo, ai face logo, gaming mascot maker, esports logo generator, streamer logo, youtube gaming logo, custom game logo, ai avatar generator, personalized gaming logo" />
-        <link rel="canonical" href="https://gaminglogoai.com/" /> {/* Replace with actual domain */}
-        <meta property="og:description" content="Instantly design professional gaming logos or transform your photo into an epic AI gaming mascot. Fast, easy, and free to try!" />
+        <meta name="keywords" content="ai gaming logo generator, gaming logo maker ai, ai gaming logo, gaming mascot, gaming logo ai free, esports logo, custom gaming logo" />
+        <link rel="canonical" href="https://gaminglogoai.com/" />
+        <meta property="og:title" content="AI Gaming Logo Generator - Free Gaming Logo Maker AI" />
+        <meta property="og:description" content="Instantly design professional gaming logos, mascots, and AI avatars. The ultimate tool for streamers and esports teams. Get started with 1 free credit." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={SITE_URL} />
-        <meta property="og:image" content={`${SITE_URL}/og-gaminglogoai.png`} /> {/* Create a specific OG image for homepage */}
+        <meta property="og:url" content="https://gaminglogoai.com/" />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Logo Maker for Gamers: Gaming Logos & Face Mascots | GamingLogoAI" />
-        <meta name="twitter:description" content="AI-powered logo creation for all gamers. Design text logos or unique face mascots." />
-        <meta name="twitter:image" content={`${SITE_URL}/twitter-gaminglogoai.png`} />
+        <meta name="twitter:title" content="AI Gaming Logo Generator - Free Gaming Logo Maker AI" />
+        <meta name="twitter:description" content="Create stunning AI-powered logos and mascots for your gaming brand. Fast, easy, and free to try." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/twitter-image-gaminglogoai.png" /> 
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {/* Main page background color set by sections */}
-      <main className="container mx-auto overflow-x-hidden"> {/* Added overflow-x-hidden to container */}
+      <main className="container mx-auto overflow-x-hidden">
         <HeroBanner />
         <LogoTypesSection />
         <KeyFeaturesSection />
