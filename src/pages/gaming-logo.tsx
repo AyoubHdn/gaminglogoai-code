@@ -5,14 +5,13 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FaChevronRight, FaPaintBrush, FaBolt, FaUsers, FaShieldAlt, FaMagic, FaGamepad, FaCogs, FaStar } from "react-icons/fa"; // Example Icons
+import { FaChevronRight, FaPaintBrush, FaBolt, FaUsers, FaShieldAlt, FaMagic, FaQuestionCircle, FaGamepad, FaCogs, FaStar } from "react-icons/fa"; // Example Icons
 
 const GamingLogoLandingPage: NextPage = () => {
   const router = useRouter();
 
   const handleStartDesigning = () => {
-    // Navigate to the actual tool page
-    void router.push("/gaming-logo-maker"); // <<<< UPDATE THIS if your tool page URL is different
+    void router.push("/gaming-logo-maker");
   };
 
   const features = [
@@ -37,17 +36,30 @@ const GamingLogoLandingPage: NextPage = () => {
       { quote: "Needed unique logos for my clan members, and this AI delivered beyond expectations.", name: "Warlord77", role: "Clan Leader" },
   ];
 
+  const styleCategories = [
+    { name: "By Game Title", description: "Logos inspired by Fortnite, Minecraft, Apex Legends, CoD, and more.", icon: <FaGamepad/>, examples: ["/styles/s643e.webp", "/styles/s640e.webp"] },
+    { name: "By Art Style", description: "Explore styles like cartoon, pixel art, emblems, and bold typography.", icon: <FaPaintBrush/>, examples: ["/styles/s441e.webp", "/styles/s407e.webp"] },
+    { name: "By Theme & Motif", description: "Create logos based on fantasy, sci-fi, horror, or warrior themes.", icon: <FaShieldAlt/>, examples: ["/styles/s491e.webp", "/styles/s471e.webp"] },
+  ];
+
+  const faqItems = [
+    { q: "What types of custom text logos can I create?", a: "A huge variety! Our AI can generate esports emblems, clan logos with mascots, minimalist monograms, and logos with intricate typography. Just choose from our library of styles to guide the AI." },
+    { q: "How does the AI create a logo from my text?", a: "You provide the text (like your gamer tag or clan name) and select a style template. Each style contains a unique, detailed prompt that our AI uses as a blueprint, intelligently combining the style's instructions with your specific text." },
+    { q: "Is this a good tool for a gaming clan logo?", a: "Yes, it's perfect. You can create a professional-looking emblem that unites your team. Many styles are designed to look great on Discord profiles, banners, and even team jerseys." },
+    { q: "What do I get when I download my logo?", a: "When you use a credit to download, you receive a high-resolution, transparent PNG file. This is ideal for placing your logo over any background, like a Twitch stream, YouTube video, or your social media profiles." }
+  ];
+
 
   return (
     <>
       <Head>
-        <title>AI Gaming Logo Maker - Create Custom Esports & Streamer Logos | GamingLogoAI</title>
+        <title>Custom Gaming Logo Generator - AI Text & Mascot Logos</title>
         <meta
           name="description"
-          content="Design your unique gaming logo in seconds with GamingLogoAI! Our AI-powered generator creates stunning, professional logos for esports teams, streamers, and gamers. Try it now!"
+          content="Create a custom gaming logo with text and mascots using our AI generator. Design unique esports emblems and clan logos inspired by styles from Fortnite, Minecraft, and more. Get 1 free credit!"
         />
-        <meta name="keywords" content="gaming logo maker, ai gaming logo, esports logo, streamer logo, custom game logo, create gaming logo, logo generator gaming, team logo maker" />
-        <link rel="canonical" href="https://gaminglogoai.com/gaming-logo" /> {/* ** REPLACE with your actual domain ** */}
+        <meta name="keywords" content="custom gaming logo, text logo generator, gaming mascot logo, clan logo maker, esports emblem creator, fortnite style logo, minecraft logo design, gaming logo styles" /> 
+        <link rel="canonical" href="https://gaminglogoai.com/gaming-logo" /> 
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -78,19 +90,53 @@ const GamingLogoLandingPage: NextPage = () => {
               unoptimized={true}
             />
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg">
-              AI-Powered <span className="text-cyan-400">Gaming Logo</span> Maker
+              Custom <span className="text-cyan-400">Gaming Logo</span> Generator
             </h1>
             <p className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">
-              Unleash your gaming identity! Generate unique, professional logos for your esports team, Twitch stream, YouTube channel, or personal brand in minutes.
+              Forge a unique identity with our AI-powered text and **gaming mascot** logo creator. Perfect for crafting a memorable **clan logo** or a professional **esports emblem**.  
             </p>
             <button
               onClick={handleStartDesigning}
               className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-900 font-bold rounded-lg text-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-xl hover:shadow-cyan-500/50 focus:outline-none focus:ring-4 focus:ring-cyan-300 focus:ring-opacity-50"
               id="cta-hero-to-generator-tool"
             >
-              Create Your Free Logo Preview <FaChevronRight className="inline ml-2 -mr-1" />
+              Design Your Logo Now <FaChevronRight className="inline ml-2 -mr-1" />
             </button>
-            <p className="mt-4 text-xs text-slate-400">Generate unlimited previews. Credits needed for high-res downloads.</p>
+            <p className="mt-4 text-xs text-slate-400">Get 1 free credit to start designing!</p>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="text-center mb-12">
+                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+                    Endless <span className="text-purple-600 dark:text-cyan-400">Gaming Logo Styles</span> at Your Fingertips
+                </h2>
+                <p className="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                    Our AI is trained on a huge variety of gaming aesthetics. Just pick a theme, enter your name, and see the magic. Below are just a few of the categories you can explore in our **text logo generator**.
+                </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {styleCategories.map((category) => (
+                <div key={category.name} className="p-6 bg-slate-50 dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center mb-4">
+                    <div className="text-2xl mr-4 text-purple-600 dark:text-cyan-400">{category.icon}</div>
+                    <h3 className="text-xl font-semibold text-slate-800 dark:text-white">{category.name}</h3>
+                  </div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">{category.description}</p>
+                  <div className="flex -space-x-4">
+                    {category.examples.map((img, index) => (
+                        <Image key={index} src={img} alt={`Example of ${category.name}`} width={48} height={48} className="h-12 w-12 rounded-full border-2 border-white dark:border-slate-900" />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+             <div className="text-center mt-12">
+                <Link href="/logo-styles" className="font-semibold text-purple-600 dark:text-cyan-400 hover:underline">
+                    ...and hundreds more styles to explore in the logo maker &rarr;
+                </Link>
+            </div>
           </div>
         </section>
 
@@ -125,12 +171,12 @@ const GamingLogoLandingPage: NextPage = () => {
         <section className="py-16 md:py-20 bg-slate-50 dark:bg-slate-950">
             <div className="container mx-auto px-4 sm:px-6">
                 <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
-                    Your Epic Logo in <span className="text-purple-600 dark:text-cyan-400">3 Simple Steps</span>
+                  How Our <span className="text-purple-600 dark:text-cyan-400">AI Text Logo Maker</span> Works
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     {[
                         { num: "01", title: "Enter Your Text", desc: "Type your gamer tag, team name, or any text for your logo.", icon: <FaGamepad className="h-10 w-10 mx-auto mb-3"/> },
-                        { num: "02", title: "Choose Your Style", desc: "Browse our vast library of gaming-specific styles and themes.", icon: <FaPaintBrush className="h-10 w-10 mx-auto mb-3"/> },
+                        { num: "02", title: "Choose Your Style", desc: "Browse our vast library of gaming-specific styles, mascots, and themes.", icon: <FaPaintBrush className="h-10 w-10 mx-auto mb-3"/> },
                         { num: "03", title: "Generate & Download", desc: "Our AI creates unique options. Pick your favorite and download!", icon: <FaShieldAlt className="h-10 w-10 mx-auto mb-3"/> }
                     ].map(step => (
                         <div key={step.num} className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg">
@@ -142,7 +188,7 @@ const GamingLogoLandingPage: NextPage = () => {
                 </div>
                 <div className="text-center mt-12">
                     <button onClick={handleStartDesigning} className="px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg text-md transition-colors duration-300 shadow-md hover:shadow-lg dark:bg-cyan-500 dark:hover:bg-cyan-600 dark:text-slate-900">
-                        Start Designing for Free
+                        Go to the Generator Tool
                     </button>
                 </div>
             </div>
@@ -197,19 +243,51 @@ const GamingLogoLandingPage: NextPage = () => {
             </div>
         </section>
 
+        {/* FAQ Section */}
+        <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
+          <div className="container mx-auto max-w-3xl px-4 sm:px-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
+                <FaQuestionCircle className="inline-block mr-2 align-middle text-purple-600 dark:text-cyan-400" />
+                Your <span className="text-purple-600 dark:text-cyan-400">Custom Logo</span> Questions
+            </h2>
+            <div className="space-y-6">
+              {faqItems.map((item, index) => (
+            <details 
+              key={index} 
+              className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 group cursor-pointer"
+              // Open the first FAQ by default
+              open={index === 0}
+            >
+              <summary className="font-semibold text-lg text-slate-800 dark:text-white flex justify-between items-center list-none">
+                {item.q}
+                <span className="transform transition-transform duration-300 group-open:rotate-180 ml-2">
+                  <svg className="h-5 w-5 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </span>
+              </summary>
+              <div className="mt-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-slate-700 pt-3">
+                <p>{item.a}</p>
+              </div>
+            </details>
+          ))}
+            </div>
+          </div>
+        </section>
+
         {/* Final CTA Section */}
         <section className="py-16 md:py-24 text-center bg-gradient-to-tr from-indigo-900 via-purple-950 to-slate-900 text-white">
           <div className="container mx-auto px-4 sm:px-6">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">Ready to Define Your Gaming Legacy?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6">Ready to Create Your <span className="text-purple-600 dark:text-cyan-400">Unique Clan Logo</span>?</h2>
             <p className="text-lg text-slate-200 mb-10 max-w-xl mx-auto">
-              Your ultimate gaming logo is just moments away. Start for free, experiment with styles, and find the perfect design to conquer the digital arena!
+              Our AI is ready to craft a professional logo that sets you apart. Start designing with your free credit now!
             </p>
             <button
               onClick={handleStartDesigning}
               className="px-10 py-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-900 font-bold rounded-lg text-xl hover:from-cyan-500 hover:to-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-xl hover:shadow-cyan-400/60 focus:outline-none focus:ring-4 focus:ring-cyan-300 focus:ring-opacity-50"
               id="cta-final-to-generator-tool-bottom"
             >
-              Design My Gaming Logo Now!
+              Design My Text Logo Now!
             </button>
           </div>
         </section>
