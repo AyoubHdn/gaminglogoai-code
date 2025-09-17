@@ -230,32 +230,147 @@ const HomePage: NextPage = () => {
         </section>
     );
   }
+  // Add this function component inside your HomePage component in src/pages/index.tsx
+function WhoIsThisForSection() {
+  const targetAudiences = [
+    {
+      name: "Esports Teams & Clans",
+      description: "Generate a professional team logo that builds unity and intimidates the competition. Perfect for jerseys, banners, and social media branding.",
+      icon: "/styles/s432e.webp", // ** CREATE a 64x64 icon for this **
+      alt: "Icon for an esports team shield",
+    },
+    {
+      name: "Twitch & YouTube Streamers",
+      description: "Create a unique streamer logo or a custom PFP that grabs attention. Build a recognizable brand for your channel from day one.",
+      icon: "/styles/f7.webp", // ** CREATE a 64x64 icon for this **
+      alt: "Icon representing a streaming camera or play button",
+    },
+    {
+      name: "Content Creators & Gamers",
+      description: "Whether you need a cool gaming avatar, a YouTube channel logo, or a custom PFP, our AI logo maker provides endless creative options.",
+      icon: "/styles/f28.webp", // ** CREATE a 64x64 icon for this **
+      alt: "Icon of a gamer with a headset",
+    },
+  ];
+
+  return (
+    <section className="py-16 md:py-20 px-4 sm:px-8 bg-slate-50 dark:bg-slate-950">
+      <div className="container mx-auto">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
+          Designed for <span className="text-purple-600 dark:text-cyan-400">Every Kind of Gamer</span>
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {targetAudiences.map((audience) => (
+            <div key={audience.name} className="p-6 text-center bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700">
+              <Image
+                src={audience.icon}
+                alt={audience.alt}
+                width={64}
+                height={64}
+                className="mx-auto mb-4"
+              />
+              <h3 className="text-xl font-semibold mb-2 text-slate-800 dark:text-white">{audience.name}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                {audience.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Add this function component inside your HomePage component in src/pages/index.tsx
+function StyleShowcaseSection() {
+  const showcaseItems = [
+    {
+      title: "Create an Epic Gaming Mascot",
+      description: "Bring your team to life with a fierce dragon, a stealthy ninja, or any other powerful mascot. Our AI can generate thousands of unique characters to represent your clan.",
+      imageUrl: "/styles/s486e.webp", // ** REPLACE with a great mascot logo **
+      alt: "An AI-generated fierce dragon gaming mascot logo",
+      ctaText: "Design a Mascot Logo",
+      ctaLink: "/gaming-logo-maker", // Example of pre-filtering
+    },
+    {
+      title: "Design a Professional Esports PFP",
+      description: "Craft a clean, modern esports PFP perfect for competitive teams. Our AI logo generator creates badge and shield designs that look great on jerseys and banners.",
+      imageUrl: "/images/showcase/fortnite-pfp-4.webp", // ** REPLACE with a great emblem logo **
+      alt: "A professional esports PFP for a gaming team created by AI",
+      ctaText: "Create a PFP",
+      ctaLink: "/pfp-maker",
+    },
+  ];
+
+  return (
+    <section className="py-16 md:py-20 px-4 sm:px-8 bg-white dark:bg-slate-900">
+      <div className="container mx-auto">
+        {showcaseItems.map((item, index) => (
+          <div
+            key={item.title}
+            className={`flex flex-col md:flex-row items-center gap-8 lg:gap-16 ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''} ${index > 0 ? 'mt-16' : ''}`}
+          >
+            {/* Image Column */}
+            <div className="w-full md:w-1/2">
+              <div className="relative aspect-square rounded-xl shadow-2xl overflow-hidden group">
+                <Image
+                  src={item.imageUrl}
+                  alt={item.alt}
+                  fill
+                  style={{ objectFit: "cover" }}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            </div>
+            {/* Text Column */}
+            <div className="w-full md:w-1/2 text-center md:text-left">
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                {item.title}
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
+                {item.description}
+              </p>
+              <Link href={item.ctaLink}
+                className="inline-block px-8 py-3 bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-md">
+                  {item.ctaText}
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 
   return (
     <>
       <Head>
-        <title>AI Gaming Logo Generator - Free Gaming Logo Maker AI</title>
+        <title>AI Gaming Logo Generator & Mascot Maker | GamingLogoAI</title>
         <meta
           name="description"
-          content="Create your perfect AI gaming logo for free with GamingLogoAI. Our gaming logo maker AI generates stunning esports logos, mascots, and PFPs for your clan or stream. Get 1 free credit!"
+          content="Create a stunning AI gaming logo or mascot with GamingLogoAI! Our generator is perfect for esports teams, streamers, and clans. Sign up to get 1 free credit to start designing now!"
         />
         <meta name="keywords" content="ai gaming logo generator, gaming logo maker ai, ai gaming logo, gaming mascot, gaming logo ai free, esports logo, custom gaming logo" />
         <link rel="canonical" href="https://gaminglogoai.com/" />
-        <meta property="og:title" content="AI Gaming Logo Generator - Free Gaming Logo Maker AI" />
-        <meta property="og:description" content="Instantly design professional gaming logos, mascots, and AI avatars. The ultimate tool for streamers and esports teams. Get started with 1 free credit." />
+        <meta property="og:title" content="AI Gaming Logo Generator & Mascot Maker | GamingLogoAI" />
+        <meta property="og:description" content="Create a stunning AI gaming logo or mascot with GamingLogoAI! Our generator is perfect for esports teams, streamers, and clans. Sign up to get 1 free credit to start designing now!" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/" />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Gaming Logo Generator - Free Gaming Logo Maker AI" />
+        <meta name="twitter:title" content="AI Gaming Logo Generator & Mascot Maker | GamingLogoAI" />
         <meta name="twitter:description" content="Create stunning AI-powered logos and mascots for your gaming brand. Fast, easy, and free to try." />
         <meta name="twitter:image" content="https://gaminglogoai.com/twitter-image-gaminglogoai.png" /> 
         <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
       </Head>
       <main className="container mx-auto overflow-x-hidden">
         <HeroBanner />
         <LogoTypesSection />
+        <WhoIsThisForSection />
+        <StyleShowcaseSection />
         <KeyFeaturesSection />
         <HowItWorksSection />
         <TestimonialSection />
