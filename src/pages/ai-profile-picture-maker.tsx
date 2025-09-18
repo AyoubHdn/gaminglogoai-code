@@ -151,7 +151,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
         <title>AI Profile Picture Maker - Custom Gaming PFP Generator</title>
         <meta
           name="description"
-          content="Create a custom gaming profile picture (PFP) from your photo with our AI maker! GamingLogoAI transforms your image into unique cartoon, anime, and esports styles. Get 1 free credit to start!"
+          content="Create a custom gaming PFP from your photo with GamingLogoAI. Transform your image into unique cartoon, anime, or esports styles. Get 1 free credit today!"
         />
         <meta name="keywords" content="ai profile picture maker, gaming profile picture maker, gaming pfp maker, custom pfp, photo to avatar, ai avatar generator, image to pfp, streamer avatar" />  
         <link rel="canonical" href="https://gaminglogoai.com/ai-profile-picture-maker" />
