@@ -4,7 +4,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FaChevronRight, FaUserAstronaut, FaCameraRetro, FaMagic, FaPalette, FaDownload, FaUserCheck, FaSmileBeam, FaShieldVirus, FaBolt, FaGamepad } from "react-icons/fa"; // Example Icons, added FaCameraRetro
+import { FaChevronRight, FaUserAstronaut, FaCameraRetro, FaMagic, FaPalette, FaQuestionCircle, FaUserCheck, FaSmileBeam, FaShieldVirus, FaBolt, FaGamepad } from "react-icons/fa"; // Example Icons, added FaCameraRetro
 
 const AIPFPGeneratorLandingPage: NextPage = () => {
   const router = useRouter();
@@ -32,23 +32,129 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
     { src: "/styles/f21.webp", alt: "Example of a photo transformed into a fantasy PFP", caption: "Fantasy Hero Portraits" },
   ];
 
+  function TestimonialSection() {
+  // ** REPLACE with actual or plausible PFP/Avatar-specific testimonials **
   const testimonials = [
-      { quote: "Turned my selfie into an epic anime avatar for my Discord! So cool!", name: "LunarKat", role: "Discord Mod" },
-      { quote: "Finally, a PFP that actually looks like me but way more awesome for my stream.", name: "StreamGod", role: "Twitch Streamer" },
-      { quote: "The AI styles are incredible. Made a bunch of different PFPs for all my socials.", name: "GamerX", role: "Community Member" },
+    { 
+      quote: "I uploaded a simple selfie and got this insane Fortnite-style avatar for my Twitch profile. My viewers love it! This AI PFP maker is magic.", 
+      name: "Cybr_Grl", 
+      role: "Twitch Streamer",
+      image: "/images/showcase/fortnite-pfp-2.webp" // ** CREATE a 100x100 example PFP **
+    },
+    { 
+      quote: "Finally, a gaming profile picture that actually looks like me but in a cool cartoon style. Took less than a minute to create.", 
+      name: "Deadshot_Dave", 
+      role: "Discord Community Admin",
+      image: "/styles/f25.webp" // ** CREATE a 100x100 example PFP **
+    },
+    { 
+      quote: "The Minecraft style is top-notch! I made a new PFP for my YouTube and Instagram and got so many compliments.", 
+      name: "BlockyKat", 
+      role: "Content Creator",
+      image: "/images/showcase/minecraft-pfp-3.webp" // ** CREATE a 100x100 example PFP **
+    },
   ];
+
+  return (
+    <section className="py-16 md:py-20 bg-white dark:bg-slate-800">
+      <div className="container mx-auto px-4 sm:px-6">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
+          Trusted by <span className="text-purple-600 dark:text-cyan-400">Gamers & Creators</span> Like You
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {testimonials.map((testimonial, index) => (
+            <div 
+              key={index} 
+              className="p-6 bg-slate-50 dark:bg-slate-700/50 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700/50 flex flex-col text-center"
+            >
+              <Image
+                src={testimonial.image}
+                alt={`AI generated PFP for ${testimonial.name}`}
+                width={80}
+                height={80}
+                className="rounded-full mx-auto mb-4 border-4 border-white dark:border-slate-600 shadow-md"
+              />
+              <blockquote className="text-slate-600 dark:text-slate-300 italic mb-4 grow text-base leading-relaxed">
+                &quot;{testimonial.quote}&quot;
+              </blockquote>
+              <footer className="font-semibold text-slate-700 dark:text-slate-200">
+                {testimonial.name} 
+                <span className="block text-sm text-purple-500 dark:text-cyan-400 font-normal">
+                  {testimonial.role}
+                </span>
+              </footer>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+  function FaqSection() {
+    const faqItems = [
+        {
+          q: "What is an AI PFP Maker?",
+          a: "An AI PFP (Profile Picture) Maker uses artificial intelligence to transform your uploaded photo into a new, stylized image. Our tool is specifically a gaming PFP maker, designed to create avatars in popular styles like cartoon, anime, fantasy, and more, perfect for your online identity."
+        },
+        {
+          q: "How can I make a gaming profile picture for free?",
+          a: "You can start for free with GamingLogoAI! Every new user gets 1 free credit. This credit is enough to generate and download your first high-resolution custom PFP without a watermark. If you want more designs, you can purchase additional credit packs."
+        },
+        {
+          q: "Can I turn my photo into a logo?",
+          a: "Yes! Our tool is both an avatar creator and a photo to logo converter. By selecting more abstract or emblem-based styles, the AI can transform your face into a unique, stylized logo that you can use for your personal brand or team."
+        },
+        {
+          q: "What styles are available?",
+          a: "Our AI profile picture generator offers a wide range of styles, including vibrant cartoon, classic anime, gritty cyberpunk, heroic fantasy, clean vector art, and even transformations inspired by games like Fortnite or Valorant. Explore all the options in our tool!"
+        }
+    ];
+
+    return (
+        <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
+          <div className="container mx-auto max-w-3xl px-4 sm:px-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
+                <FaQuestionCircle className="inline-block mr-3 align-middle text-purple-600 dark:text-cyan-400" />
+                Your <span className="text-purple-600 dark:text-cyan-400">PFP Maker</span> Questions
+            </h2>
+            <div className="space-y-4">
+                {faqItems.map((item, index) => (
+                    <details 
+                      key={index} 
+                      className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800 rounded-lg shadow-sm cursor-pointer group border border-slate-200 dark:border-slate-700"
+                      open={index === 0} // Open the first FAQ by default
+                    >
+                        <summary className="font-semibold text-lg text-slate-800 dark:text-white flex justify-between items-center list-none">
+                            <span>{item.q}</span>
+                            <span className="transform transition-transform duration-300 group-open:rotate-180 ml-2">
+                                <svg className="h-5 w-5 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div className="mt-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-slate-700 pt-3">
+                            <p>{item.a}</p>
+                        </div>
+                    </details>
+                ))}
+            </div>
+          </div>
+        </section>
+    );
+}
 
 
   return (
     <>
       <Head>
-        <title>AI Profile Picture Maker - Custom PFP from Photo | GamingLogoAI</title>
+        <title>AI Profile Picture Maker - Custom Gaming PFP Generator</title>
         <meta
           name="description"
-          content="Create unique AI-generated profile pictures (PFPs) and gaming avatars from your photos! GamingLogoAI transforms your image into cartoon, anime, cyberpunk styles, and more. Try free!"
+          content="Create a custom gaming profile picture (PFP) from your photo with our AI maker! GamingLogoAI transforms your image into unique cartoon, anime, and esports styles. Get 1 free credit to start!"
         />
-        <meta name="keywords" content="ai profile picture maker, pfp maker, photo to avatar, custom gaming pfp, ai avatar generator, image to pfp, personalized avatar" />
-        <link rel="canonical" href="https://gaminglogoai.com/ai-profile-picture-maker" /> {/* ** REPLACE with your actual domain ** */}
+        <meta name="keywords" content="ai profile picture maker, gaming profile picture maker, gaming pfp maker, custom pfp, photo to avatar, ai avatar generator, image to pfp, streamer avatar" />  
+        <link rel="canonical" href="https://www.gaminglogoai.com/ai-profile-picture-maker" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -64,10 +170,10 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
                 <FaCameraRetro className="h-16 w-16 sm:h-20 sm:w-20 text-cyan-400" />
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg">
-              AI Profile Picture & <span className="text-cyan-400">Avatar Maker</span>
+              The Ultimate <span className="text-cyan-400">AI Profile Picture Maker</span>
             </h1>
             <p className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">
-              Transform your photo into an amazing, AI-generated PFP or gaming avatar! Choose a style, upload your pic, and get a unique look in seconds.
+              Transform your photo into a legendary avatar with our **gaming PFP maker**. Choose an art style, upload your pic, and let our AI create a unique look for your stream or social profiles.            
             </p>
             <button
               onClick={handleStartCreating}
@@ -79,6 +185,8 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
             <p className="mt-4 text-xs text-slate-400">Free previews. Credits for high-res downloads.</p>
           </div>
         </section>
+
+        
 
         {/* How It Works Section */}
         <section className="py-16 md:py-20 bg-slate-50 dark:bg-slate-950">
@@ -154,11 +262,8 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
           </div>
         </section>
 
-        {/* Testimonials Section */}
-        <section className="py-16 md:py-20 bg-white dark:bg-slate-800">
-             {/* ... Similar Testimonials structure as GamingLogo landing page, but use PFP/Avatar specific testimonials ... */}
-        </section>
-
+        <TestimonialSection />
+        <FaqSection /> 
 
         {/* Final CTA Section */}
         <section className="py-16 md:py-24 text-center bg-gradient-to-tr from-indigo-900 via-purple-950 to-slate-900 text-white">
