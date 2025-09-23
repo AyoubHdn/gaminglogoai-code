@@ -829,106 +829,106 @@ Record<string, { src: string; basePrompt: string }[]>
   ],
   "RPG": [
         {
-          "src": "/styles/s10.webp",
+          src: "/styles/s10.webp",
           
-          "basePrompt": "An e-sport logo for ''Text'' inspired by RPG themes. The text ''Text'' is styled in ornate, medieval typography with a glowing aura, framed in a shield-like emblem. Surrounded by mystical runes and a dragon silhouette, the design features a dark, enchanted forest background, exuding a heroic and competitive spirit."
+          basePrompt: "An e-sport logo for ''Text'' inspired by RPG themes. The text ''Text'' is styled in ornate, medieval typography with a glowing aura, framed in a shield-like emblem. Surrounded by mystical runes and a dragon silhouette, the design features a dark, enchanted forest background, exuding a heroic and competitive spirit."
         },
         {
-          "src": "/styles/s11.webp",
+          src: "/styles/s11.webp",
           
-          "basePrompt": "Design an e-sport logo for ''Text'' based on RPG aesthetics. The text ''Text'' uses bold, gothic fonts with metallic edges, centered in a circular crest. Integrated with a warrior’s sword and arcane symbols, it’s set against a subtle castle ruin texture, perfect for a pro RPG gaming team."
+          basePrompt: "Design an e-sport logo for ''Text'' based on RPG aesthetics. The text ''Text'' uses bold, gothic fonts with metallic edges, centered in a circular crest. Integrated with a warrior’s sword and arcane symbols, it’s set against a subtle castle ruin texture, perfect for a pro RPG gaming team."
         },
         {
-          "src": "/styles/s12.webp",
+          src: "/styles/s12.webp",
           
-          "basePrompt": "Create an RPG-themed e-sport logo for ''Text''. The text ''Text'' is in sharp, runic fonts with ethereal highlights, encased in a jagged badge. Featuring a mage’s staff and a mythical beast, the design captures a magical, competitive edge with a sleek, team-ready look."
+          basePrompt: "Create an RPG-themed e-sport logo for ''Text''. The text ''Text'' is in sharp, runic fonts with ethereal highlights, encased in a jagged badge. Featuring a mage’s staff and a mythical beast, the design captures a magical, competitive edge with a sleek, team-ready look."
         },
         {
-          "src": "/styles/s13.webp",
+          src: "/styles/s13.webp",
           
-          "basePrompt": "A dynamic e-sport logo for ''Text'' inspired by RPG worlds. The text ''Text'' is bold and stylized with a crystalline sheen, surrounded by compact adventurer icons and swirling mana effects. Framed in an octagonal emblem, it’s set against a faint dungeon backdrop, built for e-sport branding."
+          basePrompt: "A dynamic e-sport logo for ''Text'' inspired by RPG worlds. The text ''Text'' is bold and stylized with a crystalline sheen, surrounded by compact adventurer icons and swirling mana effects. Framed in an octagonal emblem, it’s set against a faint dungeon backdrop, built for e-sport branding."
         },
         {
-          "src": "/styles/s14.webp",
+          src: "/styles/s14.webp",
           
-          "basePrompt": "Design ''Text'' as an RPG e-sport logo. The text ''Text'' is crafted with elegant, fantasy fonts and a golden outline, integrated into a hexagonal crest with knightly armor motifs and glowing gems. The design is epic and aggressive, ideal for a competitive gaming squad."
+          basePrompt: "Design ''Text'' as an RPG e-sport logo. The text ''Text'' is crafted with elegant, fantasy fonts and a golden outline, integrated into a hexagonal crest with knightly armor motifs and glowing gems. The design is epic and aggressive, ideal for a competitive gaming squad."
         },
         {
-          "src": "/styles/s15.webp",
+          src: "/styles/s15.webp",
           
-          "basePrompt": "Create a stylized e-sport logo for ''Text'' based on RPG elements. The text ''Text'' features ancient fonts with shimmering edges, paired with a minimalist enchanted sword icon. Encased in a sharp, angular frame, it’s set against a mystical, team-focused color scheme, perfect for e-sport jerseys."
+          basePrompt: "Create a stylized e-sport logo for ''Text'' based on RPG elements. The text ''Text'' features ancient fonts with shimmering edges, paired with a minimalist enchanted sword icon. Encased in a sharp, angular frame, it’s set against a mystical, team-focused color scheme, perfect for e-sport jerseys."
         },
         {
-          "src": "/styles/s16.webp",
+          src: "/styles/s16.webp",
           
-          "basePrompt": "A professional e-sport logo for ''Text'' inspired by RPG lore. The text ''Text'' is designed with sleek, calligraphic lines and bold curves, centered in a streamlined banner. Featuring arcane sigils and a phoenix emblem, it’s built for a polished, competitive team identity."
+          basePrompt: "A professional e-sport logo for ''Text'' inspired by RPG lore. The text ''Text'' is designed with sleek, calligraphic lines and bold curves, centered in a streamlined banner. Featuring arcane sigils and a phoenix emblem, it’s built for a polished, competitive team identity."
         },
         {
-          "src": "/styles/s17.webp",
+          src: "/styles/s17.webp",
           
-          "basePrompt": "Create an RPG-themed e-sport design for ''Text''. The text ''Text'' is in bold, fantasy typography with subtle celestial accents, integrated into a symmetrical shield. Paired with a sorcerer’s orb and warrior helm, it’s set in a high-energy scheme, tailored for e-sport tournaments."
+          basePrompt: "Create an RPG-themed e-sport design for ''Text''. The text ''Text'' is in bold, fantasy typography with subtle celestial accents, integrated into a symmetrical shield. Paired with a sorcerer’s orb and warrior helm, it’s set in a high-energy scheme, tailored for e-sport tournaments."
         },
         {
-          "src": "/styles/s18.webp",
+          src: "/styles/s18.webp",
           
-          "basePrompt": "A vibrant e-sport logo for ''Text'' inspired by RPG adventures. The text ''Text'' uses dynamic fonts with arcane gradients, framed in a bold, diamond-shaped emblem. Surrounded by heroic RPG elements like scrolls and crowns, it’s designed to stand out in competitive gaming scenes."
+          basePrompt: "A vibrant e-sport logo for ''Text'' inspired by RPG adventures. The text ''Text'' uses dynamic fonts with arcane gradients, framed in a bold, diamond-shaped emblem. Surrounded by heroic RPG elements like scrolls and crowns, it’s designed to stand out in competitive gaming scenes."
         },
         {
-          "src": "/styles/s19.webp",
+          src: "/styles/s19.webp",
           
-          "basePrompt": "Design a creative RPG e-sport logo for ''Text''. The text ''Text'' features bold, mythical fonts with vibrant overlays, centered in a rugged, team-oriented crest. Integrated with a dragon’s claw and enchanted relics, it’s a striking emblem for e-sport domination."
+          basePrompt: "Design a creative RPG e-sport logo for ''Text''. The text ''Text'' features bold, mythical fonts with vibrant overlays, centered in a rugged, team-oriented crest. Integrated with a dragon’s claw and enchanted relics, it’s a striking emblem for e-sport domination."
         },
       ],
     "Simulation ": [
       {
-        "src": "/styles/s661.webp",
+        src: "/styles/s661.webp",
 
-        "basePrompt": "A simulation game logo for ''Text'' — a colorful farm emblem with a red barn, windmill, crops, and sun, playful cartoon style, bold friendly text ''Text'', bright green and yellow colors, clean flat design"
+        basePrompt: "A simulation game logo for ''Text'' — a colorful farm emblem with a red barn, windmill, crops, and sun, playful cartoon style, bold friendly text ''Text'', bright green and yellow colors, clean flat design"
       },
       {
-        "src": "/styles/s662.webp",
+        src: "/styles/s662.webp",
 
-        "basePrompt": "A modern simulation game logo for ''Text'' — tall skyscrapers with glowing windows, blue and silver tones, stylized skyline inside a circular emblem, clean bold text ''Text'', minimal futuristic design"
+        basePrompt: "A modern simulation game logo for ''Text'' — tall skyscrapers with glowing windows, blue and silver tones, stylized skyline inside a circular emblem, clean bold text ''Text'', minimal futuristic design"
       },
       {
-        "src": "/styles/s663.webp",
+        src: "/styles/s663.webp",
 
-        "basePrompt": "Friendly cartoon-style logo for ''Text'' — smiling characters, house, and heart icons, bright cheerful colors, bold rounded text ''Text'', simple and vibrant, inviting family-friendly design"
+        basePrompt: "Friendly cartoon-style logo for ''Text'' — smiling characters, house, and heart icons, bright cheerful colors, bold rounded text ''Text'', simple and vibrant, inviting family-friendly design"
       },
       {
-        "src": "/styles/s664.webp",
+        src: "/styles/s664.webp",
 
-        "basePrompt": "Simulation game logo for ''Text'' — globe with trees, water, and wind turbines, green and blue palette, clean modern emblem, eco-friendly look, bold smooth text ''Text'', minimalist but colorful style"
+        basePrompt: "Simulation game logo for ''Text'' — globe with trees, water, and wind turbines, green and blue palette, clean modern emblem, eco-friendly look, bold smooth text ''Text'', minimalist but colorful style"
       },
       {
-        "src": "/styles/s665.webp",
+        src: "/styles/s665.webp",
 
-        "basePrompt": "Logo for ''Text'' — sleek airplane icon flying through clouds, dynamic swoosh effect, blue and white color scheme, bold modern text ''Text'', aviation-inspired emblem"
+        basePrompt: "Logo for ''Text'' — sleek airplane icon flying through clouds, dynamic swoosh effect, blue and white color scheme, bold modern text ''Text'', aviation-inspired emblem"
       },
       {
-        "src": "/styles/s666.webp",
+        src: "/styles/s666.webp",
 
-        "basePrompt": "Simulation game logo for ''Text'' — a clean and friendly emblem featuring a hospital building with a red cross and heartbeat line. Include the exact readable word ''Text'' in bold sans-serif font below the icon. Use light blue and red colors, professional yet playful design, vector-style, esports-quality logo with clear typography."
+        basePrompt: "Simulation game logo for ''Text'' — a clean and friendly emblem featuring a hospital building with a red cross and heartbeat line. Include the exact readable word ''Text'' in bold sans-serif font below the icon. Use light blue and red colors, professional yet playful design, vector-style, esports-quality logo with clear typography."
       },
       {
-        "src": "/styles/s667.webp",
+        src: "/styles/s667.webp",
 
-        "basePrompt": "Colorful animal-themed logo for ''Text'' — includes cartoon lion, elephant, and giraffe peeking over the text, bright green jungle leaves, fun friendly typography ''Text'', playful simulation vibe"
+        basePrompt: "Colorful animal-themed logo for ''Text'' — includes cartoon lion, elephant, and giraffe peeking over the text, bright green jungle leaves, fun friendly typography ''Text'', playful simulation vibe"
       },
       {
-        "src": "/styles/s668.webp",
+        src: "/styles/s668.webp",
 
-        "basePrompt": "Simulation game logo for ''Text'' — realistic train engine coming out of a circular emblem with tracks, metallic and dark green tones, industrial style, bold serif text ''Text'', nostalgic railway vibe"
+        basePrompt: "Simulation game logo for ''Text'' — realistic train engine coming out of a circular emblem with tracks, metallic and dark green tones, industrial style, bold serif text ''Text'', nostalgic railway vibe"
       },
       {
-        "src": "/styles/s669.webp",
+        src: "/styles/s669.webp",
 
-        "basePrompt": "Playful cooking simulation logo for ''Text'' — chef hat, spoon and fork crossed behind the text, bright red and yellow palette, rounded cartoon style font ''Text'', light-hearted, fun design"
+        basePrompt: "Playful cooking simulation logo for ''Text'' — chef hat, spoon and fork crossed behind the text, bright red and yellow palette, rounded cartoon style font ''Text'', light-hearted, fun design"
       },
       {
-        "src": "/styles/s670.webp",
+        src: "/styles/s670.webp",
 
-        "basePrompt": "Professional yet fun logo for ''Text'' — bar chart and dollar sign inside a shield, blue and gold color scheme, modern clean text ''Text'', corporate yet playful style for management simulation"
+        basePrompt: "Professional yet fun logo for ''Text'' — bar chart and dollar sign inside a shield, blue and gold color scheme, modern clean text ''Text'', corporate yet playful style for management simulation"
       },
     ],
     // Continue with other game genres like Shooters, RPG, etc.
@@ -986,7 +986,7 @@ Record<string, { src: string; basePrompt: string }[]>
         basePrompt: "A modern 8-bit logo for ''Text'' inspired by retro gaming. The text ''Text'' is styled with pixelated typography and bright, nostalgic colors, integrated with classic gaming elements like pixels, joysticks, and arcade machines, set against a pixelated background.",
       },
     ],
-    "Cartoonish": [
+    "Cartoon": [
       {
         src: "/styles/s410.webp",
         
@@ -1214,106 +1214,106 @@ Record<string, { src: string; basePrompt: string }[]>
   ],
   "Animal": [
         {
-          "src": "/styles/s20.webp",
+          src: "/styles/s20.webp",
           
-          "basePrompt": "An e-sport logo for ''Text'' inspired by animal themes. The text ''Text'' is styled in bold, claw-slashed typography with a primal edge, framed in a circular badge. Featuring a roaring lion’s head with a fiery mane, the design is set against a rugged savanna texture, exuding strength and competitive ferocity."
+          basePrompt: "An e-sport logo for ''Text'' inspired by animal themes. The text ''Text'' is styled in bold, claw-slashed typography with a primal edge, framed in a circular badge. Featuring a roaring lion’s head with a fiery mane, the design is set against a rugged savanna texture, exuding strength and competitive ferocity."
         },
         {
-          "src": "/styles/s21.webp",
+          src: "/styles/s21.webp",
           
-          "basePrompt": "Design an e-sport logo for ''Text'' based on animal motifs. The text ''Text'' uses sleek, angular fonts with metallic claw marks, centered in a shield-like emblem. Integrated with a striking eagle in mid-flight, it’s set against a subtle stormy sky outline, perfect for a pro gaming team."
+          basePrompt: "Design an e-sport logo for ''Text'' based on animal motifs. The text ''Text'' uses sleek, angular fonts with metallic claw marks, centered in a shield-like emblem. Integrated with a striking eagle in mid-flight, it’s set against a subtle stormy sky outline, perfect for a pro gaming team."
         },
         {
-          "src": "/styles/s22.webp",
+          src: "/styles/s22.webp",
           
-          "basePrompt": "Create an animal-themed e-sport logo for ''Text''. The text ''Text'' is in sharp, jagged fonts with neon claw accents, encased in a geometric crest. Featuring a snarling wolf with glowing eyes, the design captures a fierce, competitive spirit with a sleek, team-ready look."
+          basePrompt: "Create an animal-themed e-sport logo for ''Text''. The text ''Text'' is in sharp, jagged fonts with neon claw accents, encased in a geometric crest. Featuring a snarling wolf with glowing eyes, the design captures a fierce, competitive spirit with a sleek, team-ready look."
         },
         {
-          "src": "/styles/s23.webp",
+          src: "/styles/s23.webp",
           
-          "basePrompt": "A dynamic e-sport logo for ''Text'' inspired by animals. The text ''Text'' is bold and stylized with a weathered texture, surrounded by a coiled serpent with venomous fangs. Framed in an octagonal badge, it’s set against a faint jungle backdrop, built for e-sport branding."
+          basePrompt: "A dynamic e-sport logo for ''Text'' inspired by animals. The text ''Text'' is bold and stylized with a weathered texture, surrounded by a coiled serpent with venomous fangs. Framed in an octagonal badge, it’s set against a faint jungle backdrop, built for e-sport branding."
         },
         {
-          "src": "/styles/s24.webp",
+          src: "/styles/s24.webp",
           
-          "basePrompt": "Design ''Text'' as an animal e-sport logo. The text ''Text'' is crafted with rugged, bone-like fonts and a glowing outline, integrated into a hexagonal emblem with a charging rhino silhouette. The design is powerful and aggressive, ideal for a competitive gaming squad."
+          basePrompt: "Design ''Text'' as an animal e-sport logo. The text ''Text'' is crafted with rugged, bone-like fonts and a glowing outline, integrated into a hexagonal emblem with a charging rhino silhouette. The design is powerful and aggressive, ideal for a competitive gaming squad."
         },
         {
-          "src": "/styles/s25.webp",
+          src: "/styles/s25.webp",
           
-          "basePrompt": "Create a stylized e-sport logo for ''Text'' based on animal elements. The text ''Text'' features primal fonts with etched claw marks, paired with a minimalist tiger head icon. Encased in a sharp, angular frame, it’s set against a vibrant, team-focused color scheme, perfect for e-sport jerseys."
+          basePrompt: "Create a stylized e-sport logo for ''Text'' based on animal elements. The text ''Text'' features primal fonts with etched claw marks, paired with a minimalist tiger head icon. Encased in a sharp, angular frame, it’s set against a vibrant, team-focused color scheme, perfect for e-sport jerseys."
         },
         {
-          "src": "/styles/s26.webp",
+          src: "/styles/s26.webp",
           
-          "basePrompt": "A professional e-sport logo for ''Text'' inspired by animal power. The text ''Text'' is designed with sleek lines and bold curves, centered in a streamlined crest. Featuring a majestic bear with raised paws, it’s built for a polished, competitive team identity."
+          basePrompt: "A professional e-sport logo for ''Text'' inspired by animal power. The text ''Text'' is designed with sleek lines and bold curves, centered in a streamlined crest. Featuring a majestic bear with raised paws, it’s built for a polished, competitive team identity."
         },
         {
-          "src": "/styles/s27.webp",
+          src: "/styles/s27.webp",
           
-          "basePrompt": "Create an animal-themed e-sport design for ''Text''. The text ''Text'' is in bold, modern typography with subtle feather accents, integrated into a symmetrical badge. Paired with a diving falcon and claw marks, it’s set in a high-energy scheme, tailored for e-sport tournaments."
+          basePrompt: "Create an animal-themed e-sport design for ''Text''. The text ''Text'' is in bold, modern typography with subtle feather accents, integrated into a symmetrical badge. Paired with a diving falcon and claw marks, it’s set in a high-energy scheme, tailored for e-sport tournaments."
         },
         {
-          "src": "/styles/s28.webp",
+          src: "/styles/s28.webp",
           
-          "basePrompt": "A vibrant e-sport logo for ''Text'' inspired by animal ferocity. The text ''Text'' uses dynamic fonts with wild fur gradients, framed in a bold, diamond-shaped emblem. Surrounded by a leaping panther in action, it’s designed to stand out in competitive gaming scenes."
+          basePrompt: "A vibrant e-sport logo for ''Text'' inspired by animal ferocity. The text ''Text'' uses dynamic fonts with wild fur gradients, framed in a bold, diamond-shaped emblem. Surrounded by a leaping panther in action, it’s designed to stand out in competitive gaming scenes."
         },
         {
-          "src": "/styles/s29.webp",
+          src: "/styles/s29.webp",
           
-          "basePrompt": "Design a creative animal e-sport logo for ''Text''. The text ''Text'' features bold, tribal fonts with vibrant overlays, centered in a rugged, team-oriented crest. Integrated with a howling coyote and jagged claw accents, it’s a striking emblem for e-sport domination."
+          basePrompt: "Design a creative animal e-sport logo for ''Text''. The text ''Text'' features bold, tribal fonts with vibrant overlays, centered in a rugged, team-oriented crest. Integrated with a howling coyote and jagged claw accents, it’s a striking emblem for e-sport domination."
         },
       ],
       "Monogram": [
         {
-          "src": "/styles/s671.webp",
+          src: "/styles/s671.webp",
           
-          "basePrompt": "Gaming monogram logo with the letters ''Text'' intertwined in a bold futuristic style, metallic silver and electric blue gradient, sharp edges with neon glow, esports emblem, dark background, highly detailed, Fortnite/DOTA-inspired look."
+          basePrompt: "Gaming monogram logo with the letters ''Text'' intertwined in a bold futuristic style, metallic silver and electric blue gradient, sharp edges with neon glow, esports emblem, dark background, highly detailed, Fortnite/DOTA-inspired look."
         },
         {
-          "src": "/styles/s672.webp",
+          src: "/styles/s672.webp",
           
-          "basePrompt": "Monogram gaming logo with the letters ''Text'' designed in angular overlapping style, glowing purple and pink neon outlines, glitch effects, esports-ready, dynamic modern typography, placed inside a shield emblem."
+          basePrompt: "Monogram gaming logo with the letters ''Text'' designed in angular overlapping style, glowing purple and pink neon outlines, glitch effects, esports-ready, dynamic modern typography, placed inside a shield emblem."
         },
         {
-          "src": "/styles/s673.webp",
+          src: "/styles/s673.webp",
           
-          "basePrompt": "Stylized monogram logo with the letters ''Text'' carved into stone with glowing cracks, dark grey and fiery orange palette, aggressive fantasy vibe, bold serif font with runic touches, esports badge design."
+          basePrompt: "Stylized monogram logo with the letters ''Text'' carved into stone with glowing cracks, dark grey and fiery orange palette, aggressive fantasy vibe, bold serif font with runic touches, esports badge design."
         },
         {
-          "src": "/styles/s674.webp",
+          src: "/styles/s674.webp",
           
-          "basePrompt": "Gaming monogram logo with the letters ''Text'' in a cyberpunk style, sharp techno letters with neon cyan and magenta glow, minimal clean background, futuristic esports logo design."
+          basePrompt: "Gaming monogram logo with the letters ''Text'' in a cyberpunk style, sharp techno letters with neon cyan and magenta glow, minimal clean background, futuristic esports logo design."
         },
         {
-          "src": "/styles/s675.webp",
+          src: "/styles/s675.webp",
           
-          "basePrompt": "Monogram esports logo with the letters ''Text'' overlapping inside a circular emblem, gothic medieval style, dark red and black tones, dripping blood effect, bold serif typography, dramatic fantasy theme."
+          basePrompt: "Monogram esports logo with the letters ''Text'' overlapping inside a circular emblem, gothic medieval style, dark red and black tones, dripping blood effect, bold serif typography, dramatic fantasy theme."
         },
         {
-          "src": "/styles/s676.webp",
+          src: "/styles/s676.webp",
           
-          "basePrompt": "Gaming monogram logo with the letters ''Text'' fused together in bold blocky text, chrome metallic texture with glowing gold highlights, minimal modern background, esports professional look."
+          basePrompt: "Gaming monogram logo with the letters ''Text'' fused together in bold blocky text, chrome metallic texture with glowing gold highlights, minimal modern background, esports professional look."
         },
         {
-          "src": "/styles/s677.webp",
+          src: "/styles/s677.webp",
           
-          "basePrompt": "Stylized gaming monogram logo with the letters ''Text'', sharp wing-like extensions from the letters, dark purple and silver colors, fantasy style emblem, neon outline, epic esports branding."
+          basePrompt: "Stylized gaming monogram logo with the letters ''Text'', sharp wing-like extensions from the letters, dark purple and silver colors, fantasy style emblem, neon outline, epic esports branding."
         },
         {
-          "src": "/styles/s678.webp",
+          src: "/styles/s678.webp",
           
-          "basePrompt": "Retro pixel-art monogram logo with the letters ''Text'', blocky 8-bit font with glowing pixel edges, bright neon green and orange palette, gaming-inspired design, nostalgic but modern esports look."
+          basePrompt: "Retro pixel-art monogram logo with the letters ''Text'', blocky 8-bit font with glowing pixel edges, bright neon green and orange palette, gaming-inspired design, nostalgic but modern esports look."
         },
         {
-          "src": "/styles/s679.webp",
+          src: "/styles/s679.webp",
           
-          "basePrompt": "Aggressive esports monogram logo with the letters ''Text'', stylized snake fangs wrapping around the letters, glowing neon green and black palette, graffiti-styled typography, dark urban background."
+          basePrompt: "Aggressive esports monogram logo with the letters ''Text'', stylized snake fangs wrapping around the letters, glowing neon green and black palette, graffiti-styled typography, dark urban background."
         },
         {
-          "src": "/styles/s680.webp",
+          src: "/styles/s680.webp",
           
-          "basePrompt": "Gaming monogram logo with the letters ''Text'' in bold angular design, chrome silver with electric blue lightning effects around it, futuristic and clean design, esports-grade branding."
+          basePrompt: "Gaming monogram logo with the letters ''Text'' in bold angular design, chrome silver with electric blue lightning effects around it, futuristic and clean design, esports-grade branding."
         },
       ],
     // Continue with other art/design styles like Kawaii, Mascot Logo, etc.
@@ -1599,106 +1599,106 @@ Record<string, { src: string; basePrompt: string }[]>
   ],
   "Ninja": [
         {
-          "src": "/styles/s30.webp",
+          src: "/styles/s30.webp",
           
-          "basePrompt": "An e-sport logo for ''Text'' inspired by ninja themes. The text ''Text'' is styled in sharp, slanted typography with a shadowy outline, framed in a sleek circular badge. Featuring a masked ninja wielding a katana, the design is set against a faint bamboo forest texture, exuding stealth and competitive precision."
+          basePrompt: "An e-sport logo for ''Text'' inspired by ninja themes. The text ''Text'' is styled in sharp, slanted typography with a shadowy outline, framed in a sleek circular badge. Featuring a masked ninja wielding a katana, the design is set against a faint bamboo forest texture, exuding stealth and competitive precision."
         },
         {
-          "src": "/styles/s31.webp",
+          src: "/styles/s31.webp",
           
-          "basePrompt": "Design an e-sport logo for ''Text'' based on ninja motifs. The text ''Text'' uses bold, angular fonts with metallic shuriken accents, centered in a shield-like emblem. Integrated with a ninja in a striking pose, it’s set against a subtle moonlit sky outline, perfect for a pro gaming team."
+          basePrompt: "Design an e-sport logo for ''Text'' based on ninja motifs. The text ''Text'' uses bold, angular fonts with metallic shuriken accents, centered in a shield-like emblem. Integrated with a ninja in a striking pose, it’s set against a subtle moonlit sky outline, perfect for a pro gaming team."
         },
         {
-          "src": "/styles/s32.webp",
+          src: "/styles/s32.webp",
           
-          "basePrompt": "Create a ninja-themed e-sport logo for ''Text''. The text ''Text'' is in sleek, jagged fonts with neon smoke trails, encased in a geometric crest. Featuring a ninja hurling throwing stars, the design captures a swift, competitive edge with a clean, team-ready look."
+          basePrompt: "Create a ninja-themed e-sport logo for ''Text''. The text ''Text'' is in sleek, jagged fonts with neon smoke trails, encased in a geometric crest. Featuring a ninja hurling throwing stars, the design captures a swift, competitive edge with a clean, team-ready look."
         },
         {
-          "src": "/styles/s33.webp",
+          src: "/styles/s33.webp",
           
-          "basePrompt": "A dynamic e-sport logo for ''Text'' inspired by ninjas. The text ''Text'' is bold and stylized with a brushed ink texture, surrounded by a ninja silhouette mid-leap with flowing scarves. Framed in an octagonal badge, it’s set against a faint temple rooftop backdrop, built for e-sport branding."
+          basePrompt: "A dynamic e-sport logo for ''Text'' inspired by ninjas. The text ''Text'' is bold and stylized with a brushed ink texture, surrounded by a ninja silhouette mid-leap with flowing scarves. Framed in an octagonal badge, it’s set against a faint temple rooftop backdrop, built for e-sport branding."
         },
         {
-          "src": "/styles/s34.webp",
+          src: "/styles/s34.webp",
           
-          "basePrompt": "Design ''Text'' as a ninja e-sport logo. The text ''Text'' is crafted with swift, calligraphic fonts and a glowing edge, integrated into a hexagonal emblem with kunai motifs and smoke wisps. The design is agile and fierce, ideal for a competitive gaming squad."
+          basePrompt: "Design ''Text'' as a ninja e-sport logo. The text ''Text'' is crafted with swift, calligraphic fonts and a glowing edge, integrated into a hexagonal emblem with kunai motifs and smoke wisps. The design is agile and fierce, ideal for a competitive gaming squad."
         },
         {
-          "src": "/styles/s35.webp",
+          src: "/styles/s35.webp",
           
-          "basePrompt": "Create a stylized e-sport logo for ''Text'' based on ninja elements. The text ''Text'' features stealthy fonts with etched blade marks, paired with a minimalist ninja mask icon. Encased in a sharp, angular frame, it’s set against a vibrant, team-focused color scheme, perfect for e-sport jerseys."
+          basePrompt: "Create a stylized e-sport logo for ''Text'' based on ninja elements. The text ''Text'' features stealthy fonts with etched blade marks, paired with a minimalist ninja mask icon. Encased in a sharp, angular frame, it’s set against a vibrant, team-focused color scheme, perfect for e-sport jerseys."
         },
         {
-          "src": "/styles/s36.webp",
+          src: "/styles/s36.webp",
           
-          "basePrompt": "A professional e-sport logo for ''Text'' inspired by ninja agility. The text ''Text'' is designed with sleek lines and bold slashes, centered in a streamlined crest. Featuring a ninja with a tanto blade and a flowing cloak, it’s built for a polished, competitive team identity."
+          basePrompt: "A professional e-sport logo for ''Text'' inspired by ninja agility. The text ''Text'' is designed with sleek lines and bold slashes, centered in a streamlined crest. Featuring a ninja with a tanto blade and a flowing cloak, it’s built for a polished, competitive team identity."
         },
         {
-          "src": "/styles/s37.webp",
+          src: "/styles/s37.webp",
           
-          "basePrompt": "Create a ninja-themed e-sport design for ''Text''. The text ''Text'' is in bold, swift typography with subtle smoke accents, integrated into a symmetrical badge. Paired with a ninja star and a hooded figure, it’s set in a high-energy scheme, tailored for e-sport tournaments."
+          basePrompt: "Create a ninja-themed e-sport design for ''Text''. The text ''Text'' is in bold, swift typography with subtle smoke accents, integrated into a symmetrical badge. Paired with a ninja star and a hooded figure, it’s set in a high-energy scheme, tailored for e-sport tournaments."
         },
         {
-          "src": "/styles/s38.webp",
+          src: "/styles/s38.webp",
           
-          "basePrompt": "A vibrant e-sport logo for ''Text'' inspired by ninja stealth. The text ''Text'' uses dynamic fonts with shadowy gradients, framed in a bold, diamond-shaped emblem. Surrounded by a ninja in a crouching stance with glowing eyes, it’s designed to stand out in competitive gaming scenes."
+          basePrompt: "A vibrant e-sport logo for ''Text'' inspired by ninja stealth. The text ''Text'' uses dynamic fonts with shadowy gradients, framed in a bold, diamond-shaped emblem. Surrounded by a ninja in a crouching stance with glowing eyes, it’s designed to stand out in competitive gaming scenes."
         },
         {
-          "src": "/styles/s39.webp",
+          src: "/styles/s39.webp",
           
-          "basePrompt": "Design a creative ninja e-sport logo for ''Text''. The text ''Text'' features bold, brushed fonts with vibrant overlays, centered in a rugged, team-oriented crest. Integrated with a ninja wielding dual sais and a swirling smoke effect, it’s a striking emblem for e-sport domination."
+          basePrompt: "Design a creative ninja e-sport logo for ''Text''. The text ''Text'' features bold, brushed fonts with vibrant overlays, centered in a rugged, team-oriented crest. Integrated with a ninja wielding dual sais and a swirling smoke effect, it’s a striking emblem for e-sport domination."
         },
       ],
       "Space": [
         {
-            "src": "/styles/s681.webp",
+            src: "/styles/s681.webp",
             
-            "basePrompt": "A powerful astronaut mascot in futuristic armor, holding a glowing plasma weapon, with ''Text'' written in bold galactic-style font, glowing neon effects."
+            basePrompt: "A powerful astronaut mascot in futuristic armor, holding a glowing plasma weapon, with ''Text'' written in bold galactic-style font, glowing neon effects."
         },
         {
-            "src": "/styles/s682.webp",
+            src: "/styles/s682.webp",
             
-            "basePrompt": "A fierce alien warrior mascot with sharp glowing eyes, surrounded by stars and galaxies, with ''Text'' integrated into the design in sci-fi typography."
+            basePrompt: "A fierce alien warrior mascot with sharp glowing eyes, surrounded by stars and galaxies, with ''Text'' integrated into the design in sci-fi typography."
         },
         {
-            "src": "/styles/s683.webp",
+            src: "/styles/s683.webp",
             
-            "basePrompt": "A robotic space wolf mascot, cybernetic details, glowing blue and purple neon, with ''Text'' displayed in a bold cosmic font."
+            basePrompt: "A robotic space wolf mascot, cybernetic details, glowing blue and purple neon, with ''Text'' displayed in a bold cosmic font."
         },
         {
-            "src": "/styles/s684.webp",
+            src: "/styles/s684.webp",
             
-            "basePrompt": "A stylized astronaut mascot with a glowing visor, floating in space with energy waves, and ''Text'' incorporated in a futuristic style."
+            basePrompt: "A stylized astronaut mascot with a glowing visor, floating in space with energy waves, and ''Text'' incorporated in a futuristic style."
         },
         {
-            "src": "/styles/s685.webp",
+            src: "/styles/s685.webp",
             
-            "basePrompt": "A dragon mascot made of cosmic fire and stardust, glowing in red and blue nebula colors, with the text ''Text'' in strong metallic letters."
+            basePrompt: "A dragon mascot made of cosmic fire and stardust, glowing in red and blue nebula colors, with the text ''Text'' in strong metallic letters."
         },
         {
-            "src": "/styles/s686.webp",
+            src: "/styles/s686.webp",
             
-            "basePrompt": "A sleek space-themed logo with a glowing planet and orbit trails, ''Text'' in futuristic typography across the design."
+            basePrompt: "A sleek space-themed logo with a glowing planet and orbit trails, ''Text'' in futuristic typography across the design."
         },
         {
-            "src": "/styles/s687.webp",
+            src: "/styles/s687.webp",
             
-            "basePrompt": "A minimalist gaming logo with a neon spaceship flying through a galaxy, with ''Text'' glowing in sci-fi lettering."
+            basePrompt: "A minimalist gaming logo with a neon spaceship flying through a galaxy, with ''Text'' glowing in sci-fi lettering."
         },
         {
-            "src": "/styles/s688.webp",
+            src: "/styles/s688.webp",
             
-            "basePrompt": "A cyberpunk-inspired space logo with glitch effects, starry background, and ''Text'' in bold glowing font."
+            basePrompt: "A cyberpunk-inspired space logo with glitch effects, starry background, and ''Text'' in bold glowing font."
         },
         {
-            "src": "/styles/s689.webp",
+            src: "/styles/s689.webp",
             
-            "basePrompt": "A crystalized asteroid logo glowing with purple and blue lights, ''Text'' carved into the stone with luminous details."
+            basePrompt: "A crystalized asteroid logo glowing with purple and blue lights, ''Text'' carved into the stone with luminous details."
         },
         {
-            "src": "/styles/s690.webp",
+            src: "/styles/s690.webp",
             
-            "basePrompt": "A futuristic emblem with neon rings, digital stars, and ''Text'' in sharp, angular cosmic typography."
+            basePrompt: "A futuristic emblem with neon rings, digital stars, and ''Text'' in sharp, angular cosmic typography."
         },
       ],
     // Continue with other themes & motifs like Horror, Ninja, etc.
@@ -2004,106 +2004,106 @@ Record<string, { src: string; basePrompt: string }[]>
   ],
   "Pink": [
         {
-          "src": "/styles/s40.webp",
+          src: "/styles/s40.webp",
           
-          "basePrompt": "An e-sport logo for ''Text'' inspired by a pink color theme. The text ''Text'' is styled in bold, futuristic typography with a glowing pink outline, framed in a sleek circular badge. Featuring sharp geometric shapes and neon pink energy lines, the design is set against a dark, contrasting background, exuding a vibrant, competitive edge."
+          basePrompt: "An e-sport logo for ''Text'' inspired by a pink color theme. The text ''Text'' is styled in bold, futuristic typography with a glowing pink outline, framed in a sleek circular badge. Featuring sharp geometric shapes and neon pink energy lines, the design is set against a dark, contrasting background, exuding a vibrant, competitive edge."
         },
         {
-          "src": "/styles/s41.webp",
+          src: "/styles/s41.webp",
           
-          "basePrompt": "Design an e-sport logo for ''Text'' based on a pink aesthetic. The text ''Text'' uses sleek, angular fonts with metallic pink accents, centered in a shield-like emblem. Integrated with a stylized pink lightning bolt, it’s set against a subtle gradient backdrop, perfect for a bold gaming team."
+          basePrompt: "Design an e-sport logo for ''Text'' based on a pink aesthetic. The text ''Text'' uses sleek, angular fonts with metallic pink accents, centered in a shield-like emblem. Integrated with a stylized pink lightning bolt, it’s set against a subtle gradient backdrop, perfect for a bold gaming team."
         },
         {
-          "src": "/styles/s42.webp",
+          src: "/styles/s42.webp",
           
-          "basePrompt": "Create a pink-themed e-sport logo for ''Text''. The text ''Text'' is in sharp, modern fonts with a glossy pink finish, encased in a geometric crest. Featuring a pink flame motif, the design captures a fierce, competitive spirit with a clean, team-ready look."
+          basePrompt: "Create a pink-themed e-sport logo for ''Text''. The text ''Text'' is in sharp, modern fonts with a glossy pink finish, encased in a geometric crest. Featuring a pink flame motif, the design captures a fierce, competitive spirit with a clean, team-ready look."
         },
         {
-          "src": "/styles/s43.webp",
+          src: "/styles/s43.webp",
           
-          "basePrompt": "A dynamic e-sport logo for ''Text'' inspired by pink vibrancy. The text ''Text'' is bold and stylized with a shimmering pink texture, surrounded by pink crystal shards. Framed in an octagonal badge, it’s set against a faint cyberpunk cityscape, built for e-sport branding."
+          basePrompt: "A dynamic e-sport logo for ''Text'' inspired by pink vibrancy. The text ''Text'' is bold and stylized with a shimmering pink texture, surrounded by pink crystal shards. Framed in an octagonal badge, it’s set against a faint cyberpunk cityscape, built for e-sport branding."
         },
         {
-          "src": "/styles/s44.webp",
+          src: "/styles/s44.webp",
           
-          "basePrompt": "Design ''Text'' as a pink e-sport logo. The text ''Text'' is crafted with elegant, curved fonts and a glowing pink halo, integrated into a hexagonal emblem with pink smoke effects. The design is striking and energetic, ideal for a competitive gaming squad."
+          basePrompt: "Design ''Text'' as a pink e-sport logo. The text ''Text'' is crafted with elegant, curved fonts and a glowing pink halo, integrated into a hexagonal emblem with pink smoke effects. The design is striking and energetic, ideal for a competitive gaming squad."
         },
         {
-          "src": "/styles/s45.webp",
+          src: "/styles/s45.webp",
           
-          "basePrompt": "Create a stylized e-sport logo for ''Text'' based on a pink theme. The text ''Text'' features sleek fonts with pink neon edges, paired with a minimalist pink crown icon. Encased in a sharp, angular frame, it’s set against a vibrant, team-focused pink-and-black color scheme, perfect for e-sport jerseys."
+          basePrompt: "Create a stylized e-sport logo for ''Text'' based on a pink theme. The text ''Text'' features sleek fonts with pink neon edges, paired with a minimalist pink crown icon. Encased in a sharp, angular frame, it’s set against a vibrant, team-focused pink-and-black color scheme, perfect for e-sport jerseys."
         },
         {
-          "src": "/styles/s46.webp",
+          src: "/styles/s46.webp",
           
-          "basePrompt": "A professional e-sport logo for ''Text'' inspired by pink power. The text ''Text'' is designed with clean lines and bold pink gradients, centered in a streamlined crest. Featuring a pink phoenix silhouette, it’s built for a polished, competitive team identity."
+          basePrompt: "A professional e-sport logo for ''Text'' inspired by pink power. The text ''Text'' is designed with clean lines and bold pink gradients, centered in a streamlined crest. Featuring a pink phoenix silhouette, it’s built for a polished, competitive team identity."
         },
         {
-          "src": "/styles/s47.webp",
+          src: "/styles/s47.webp",
           
-          "basePrompt": "Create a pink-themed e-sport design for ''Text''. The text ''Text'' is in bold, modern typography with subtle pink sparkle accents, integrated into a symmetrical badge. Paired with a pink starburst effect, it’s set in a high-energy pink-and-white scheme, tailored for e-sport tournaments."
+          basePrompt: "Create a pink-themed e-sport design for ''Text''. The text ''Text'' is in bold, modern typography with subtle pink sparkle accents, integrated into a symmetrical badge. Paired with a pink starburst effect, it’s set in a high-energy pink-and-white scheme, tailored for e-sport tournaments."
         },
         {
-          "src": "/styles/s48.webp",
+          src: "/styles/s48.webp",
           
-          "basePrompt": "A vibrant e-sport logo for ''Text'' inspired by pink intensity. The text ''Text'' uses dynamic fonts with pink-to-purple gradients, framed in a bold, diamond-shaped emblem. Surrounded by pink electric arcs, it’s designed to stand out in competitive gaming scenes."
+          basePrompt: "A vibrant e-sport logo for ''Text'' inspired by pink intensity. The text ''Text'' uses dynamic fonts with pink-to-purple gradients, framed in a bold, diamond-shaped emblem. Surrounded by pink electric arcs, it’s designed to stand out in competitive gaming scenes."
         },
         {
-          "src": "/styles/s49.webp",
+          src: "/styles/s49.webp",
           
-          "basePrompt": "Design a creative pink e-sport logo for ''Text''. The text ''Text'' features bold, futuristic fonts with pink holographic overlays, centered in a rugged, team-oriented crest. Integrated with a pink panther head and glowing accents, it’s a striking emblem for e-sport domination."
+          basePrompt: "Design a creative pink e-sport logo for ''Text''. The text ''Text'' features bold, futuristic fonts with pink holographic overlays, centered in a rugged, team-oriented crest. Integrated with a pink panther head and glowing accents, it’s a striking emblem for e-sport domination."
         },
       ],
   "Purple": [
         {
-          "src": "/styles/s691.webp",
+          src: "/styles/s691.webp",
           
-          "basePrompt": "A fierce cyber wolf mascot with glowing purple neon eyes and sharp details, surrounded by electric purple aura, with bold metallic text 'Text' below."
+          basePrompt: "A fierce cyber wolf mascot with glowing purple neon eyes and sharp details, surrounded by electric purple aura, with bold metallic text 'Text' below."
         },
         {
-          "src": "/styles/s692.webp",
+          src: "/styles/s692.webp",
           
-          "basePrompt": "A purple dragon mascot with glowing wings made of smoke and fire, stylized for a gaming logo, with strong 3D chrome text 'Text' integrated into the design."
+          basePrompt: "A purple dragon mascot with glowing wings made of smoke and fire, stylized for a gaming logo, with strong 3D chrome text 'Text' integrated into the design."
         },
         {
-          "src": "/styles/s693.webp",
+          src: "/styles/s693.webp",
           
-          "basePrompt": "A futuristic samurai mascot in dark armor with glowing purple energy lines, holding a katana, with graffiti-style text 'Text' glowing beneath."
+          basePrompt: "A futuristic samurai mascot in dark armor with glowing purple energy lines, holding a katana, with graffiti-style text 'Text' glowing beneath."
         },
         {
-          "src": "/styles/s694.webp",
+          src: "/styles/s694.webp",
           
-          "basePrompt": "A mystical sorcerer mascot casting purple lightning, hood glowing with neon highlights, with epic fantasy text 'Text' in bold rune-style typography."
+          basePrompt: "A mystical sorcerer mascot casting purple lightning, hood glowing with neon highlights, with epic fantasy text 'Text' in bold rune-style typography."
         },
         {
-          "src": "/styles/s695.webp",
+          src: "/styles/s695.webp",
           
-          "basePrompt": "A roaring lion mascot with a mane made of glowing purple flames, designed for esports, with sharp cyber-font text 'Text' at the bottom."
+          basePrompt: "A roaring lion mascot with a mane made of glowing purple flames, designed for esports, with sharp cyber-font text 'Text' at the bottom."
         },
         {
-          "src": "/styles/s696.webp",
+          src: "/styles/s696.webp",
           
-          "basePrompt": "Design a bold purple shield emblem gaming logo with sharp edges, glowing accents, and futuristic details. Place the text 'Text' across the shield in esports-style font."
+          basePrompt: "Design a bold purple shield emblem gaming logo with sharp edges, glowing accents, and futuristic details. Place the text 'Text' across the shield in esports-style font."
         },
         {
-          "src": "/styles/s697.webp",
+          src: "/styles/s697.webp",
           
-          "basePrompt": "Create a purple skull emblem logo with neon highlights, smoke effects, and a menacing aura. Add the team name 'Text' below in cracked, edgy font."
+          basePrompt: "Create a purple skull emblem logo with neon highlights, smoke effects, and a menacing aura. Add the team name 'Text' below in cracked, edgy font."
         },
         {
-          "src": "/styles/s698.webp",
+          src: "/styles/s698.webp",
           
-          "basePrompt": "Generate a clean purple esports badge logo with modern gradients, lightning accents, and sleek typography. Place the text 'Text' at the center in bold futuristic style."
+          basePrompt: "Generate a clean purple esports badge logo with modern gradients, lightning accents, and sleek typography. Place the text 'Text' at the center in bold futuristic style."
         },
         {
-          "src": "/styles/s699.webp",
+          src: "/styles/s699.webp",
           
-          "basePrompt": "Design a strong purple wordmark gaming logo, with glowing edges, metallic effects, and sharp angles. The main focus is the text 'Text', styled to look powerful and competitive."
+          basePrompt: "Design a strong purple wordmark gaming logo, with glowing edges, metallic effects, and sharp angles. The main focus is the text 'Text', styled to look powerful and competitive."
         },
         {
-          "src": "/styles/s700.webp",
+          src: "/styles/s700.webp",
           
-          "basePrompt": "Create a purple animal emblem logo (eagle, lion, or snake) with glowing neon details, sharp edges, and a competitive gaming vibe. Add the name 'Text' below in bold esports font."
+          basePrompt: "Create a purple animal emblem logo (eagle, lion, or snake) with glowing neon details, sharp edges, and a competitive gaming vibe. Add the name 'Text' below in bold esports font."
         },
       ]
     // Other colors (Green, Orange, etc.) continue here ...
@@ -2471,44 +2471,44 @@ Record<string, { src: string; basePrompt: string }[]>
   ],
   "St Patrick's Day": [
         {
-          "src": "/styles/s50.webp",
-          "basePrompt": "An e-sport logo for ''Text'' inspired by St. Patrick’s Day. The text ''Text'' is styled in bold, Celtic-inspired typography with a glowing green outline, framed in a sleek circular badge. Featuring a shamrock with golden accents, the design is set against a faint emerald forest texture, exuding luck and competitive spirit."
+          src: "/styles/s50.webp",
+          basePrompt: "An e-sport logo for ''Text'' inspired by St. Patrick’s Day. The text ''Text'' is styled in bold, Celtic-inspired typography with a glowing green outline, framed in a sleek circular badge. Featuring a shamrock with golden accents, the design is set against a faint emerald forest texture, exuding luck and competitive spirit."
         },
         {
-          "src": "/styles/s51.webp",
-          "basePrompt": "Design an e-sport logo for ''Text'' based on St. Patrick’s Day motifs. The text ''Text'' uses sleek, angular fonts with metallic green edges, centered in a shield-like emblem. Integrated with a leprechaun’s hat and a pot of gold, it’s set against a subtle Irish countryside outline, perfect for a pro gaming team."
+          src: "/styles/s51.webp",
+          basePrompt: "Design an e-sport logo for ''Text'' based on St. Patrick’s Day motifs. The text ''Text'' uses sleek, angular fonts with metallic green edges, centered in a shield-like emblem. Integrated with a leprechaun’s hat and a pot of gold, it’s set against a subtle Irish countryside outline, perfect for a pro gaming team."
         },
         {
-          "src": "/styles/s52.webp",
-          "basePrompt": "Create a St. Patrick’s Day-themed e-sport logo for ''Text''. The text ''Text'' is in sharp, modern fonts with a glossy green finish, encased in a geometric crest. Featuring a Celtic knot and a four-leaf clover, the design captures a festive, competitive edge with a clean, team-ready look."
+          src: "/styles/s52.webp",
+          basePrompt: "Create a St. Patrick’s Day-themed e-sport logo for ''Text''. The text ''Text'' is in sharp, modern fonts with a glossy green finish, encased in a geometric crest. Featuring a Celtic knot and a four-leaf clover, the design captures a festive, competitive edge with a clean, team-ready look."
         },
         {
-          "src": "/styles/s53.webp",
-          "basePrompt": "A dynamic e-sport logo for ''Text'' inspired by St. Patrick’s Day. The text ''Text'' is bold and stylized with a shimmering green texture, surrounded by swirling shamrock vines. Framed in an octagonal badge, it’s set against a faint rainbow backdrop, built for e-sport branding."
+          src: "/styles/s53.webp",
+          basePrompt: "A dynamic e-sport logo for ''Text'' inspired by St. Patrick’s Day. The text ''Text'' is bold and stylized with a shimmering green texture, surrounded by swirling shamrock vines. Framed in an octagonal badge, it’s set against a faint rainbow backdrop, built for e-sport branding."
         },
         {
-          "src": "/styles/s54.webp",
-          "basePrompt": "Design ''Text'' as a St. Patrick’s Day e-sport logo. The text ''Text'' is crafted with elegant, runic fonts and a glowing green halo, integrated into a hexagonal emblem with golden coins and clover motifs. The design is vibrant and fierce, ideal for a competitive gaming squad."
+          src: "/styles/s54.webp",
+          basePrompt: "Design ''Text'' as a St. Patrick’s Day e-sport logo. The text ''Text'' is crafted with elegant, runic fonts and a glowing green halo, integrated into a hexagonal emblem with golden coins and clover motifs. The design is vibrant and fierce, ideal for a competitive gaming squad."
         },
         {
-          "src": "/styles/s55.webp",
-          "basePrompt": "Create a stylized e-sport logo for ''Text'' based on St. Patrick’s Day elements. The text ''Text'' features Celtic fonts with green neon edges, paired with a minimalist leprechaun silhouette. Encased in a sharp, angular frame, it’s set against a vibrant, team-focused green-and-gold color scheme, perfect for e-sport jerseys."
+          src: "/styles/s55.webp",
+          basePrompt: "Create a stylized e-sport logo for ''Text'' based on St. Patrick’s Day elements. The text ''Text'' features Celtic fonts with green neon edges, paired with a minimalist leprechaun silhouette. Encased in a sharp, angular frame, it’s set against a vibrant, team-focused green-and-gold color scheme, perfect for e-sport jerseys."
         },
         {
-          "src": "/styles/s56.webp",
-          "basePrompt": "A professional e-sport logo for ''Text'' inspired by St. Patrick’s Day luck. The text ''Text'' is designed with clean lines and bold green gradients, centered in a streamlined crest. Featuring a harp with shamrock accents, it’s built for a polished, competitive team identity."
+          src: "/styles/s56.webp",
+          basePrompt: "A professional e-sport logo for ''Text'' inspired by St. Patrick’s Day luck. The text ''Text'' is designed with clean lines and bold green gradients, centered in a streamlined crest. Featuring a harp with shamrock accents, it’s built for a polished, competitive team identity."
         },
         {
-          "src": "/styles/s57.webp",
-          "basePrompt": "Create a St. Patrick’s Day-themed e-sport design for ''Text''. The text ''Text'' is in bold, modern typography with subtle clover accents, integrated into a symmetrical badge. Paired with a golden horseshoe and green mist, it’s set in a high-energy green-and-black scheme, tailored for e-sport tournaments."
+          src: "/styles/s57.webp",
+          basePrompt: "Create a St. Patrick’s Day-themed e-sport design for ''Text''. The text ''Text'' is in bold, modern typography with subtle clover accents, integrated into a symmetrical badge. Paired with a golden horseshoe and green mist, it’s set in a high-energy green-and-black scheme, tailored for e-sport tournaments."
         },
         {
-          "src": "/styles/s58.webp",
-          "basePrompt": "A vibrant e-sport logo for ''Text'' inspired by St. Patrick’s Day festivity. The text ''Text'' uses dynamic fonts with green-to-gold gradients, framed in a bold, diamond-shaped emblem. Surrounded by a dancing leprechaun and shamrock bursts, it’s designed to stand out in competitive gaming scenes."
+          src: "/styles/s58.webp",
+          basePrompt: "A vibrant e-sport logo for ''Text'' inspired by St. Patrick’s Day festivity. The text ''Text'' uses dynamic fonts with green-to-gold gradients, framed in a bold, diamond-shaped emblem. Surrounded by a dancing leprechaun and shamrock bursts, it’s designed to stand out in competitive gaming scenes."
         },
         {
-          "src": "/styles/s59.webp",
-          "basePrompt": "Design a creative St. Patrick’s Day e-sport logo for ''Text''. The text ''Text'' features bold, Celtic fonts with vibrant green overlays, centered in a rugged, team-oriented crest. Integrated with a rainbow arch and a pot of gold, it’s a striking emblem for e-sport domination."
+          src: "/styles/s59.webp",
+          basePrompt: "Design a creative St. Patrick’s Day e-sport logo for ''Text''. The text ''Text'' features bold, Celtic fonts with vibrant green overlays, centered in a rugged, team-oriented crest. Integrated with a rainbow arch and a pot of gold, it’s a striking emblem for e-sport domination."
         },
       ]
     // You can add more holidays like St. Patrick’s Day, etc., following a similar style.

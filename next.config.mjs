@@ -27,21 +27,24 @@ const config = {
     defaultLocale: "en",
   },
   async redirects() {
-     return [
-        {
-          source: '/face-logo-generator', // The OLD path
-          destination: '/pfp-maker', // The NEW path
-          permanent: true, // This signifies a 301 redirect
-        },
-       // Add any other redirects you need here
-       // For example, if you also had a landing page for face-logo that's changing:
-       // {
-       //   source: '/old-face-logo-landing-page-url',
-       //   destination: '/ai-profile-picture-maker', // New landing page URL
-       //   permanent: true,
-       // },
-     ];
-   },
+    return [
+      {
+        source: '/face-logo-generator', // The OLD path
+        destination: '/pfp-maker', // The NEW path
+        permanent: true, // This signifies a 301 redirect
+      },
+      {
+        source: '/fortnite-logos',
+        destination: '/logos/games/fortnite-logo-maker',
+        permanent: true, // This sets the status code to 301
+      },
+      {
+        source: '/minecraft-logos',
+        destination: '/logos/games/minecraft-logo-maker',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default config;

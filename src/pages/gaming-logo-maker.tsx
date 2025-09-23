@@ -13,7 +13,7 @@ import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import Link from "next/link";
 import clsx from "clsx";
 import { SharePopup } from "~/component/SharePopup"
-import router from "next/router";
+import { useRouter } from "next/router";
 import { FaShareAlt } from "react-icons/fa";
 // Assuming Plan enum is relevant if gamingPlan on User model uses it.
 // If gamingPlan is just a string, you might not need this import here.
@@ -37,6 +37,7 @@ interface GamerStyleCategory {
 
 
 const GameLogoPage: NextPage = () => {
+  const router = useRouter();
   const { data: session } = useSession();
   const isLoggedIn = !!session;
 
@@ -80,82 +81,49 @@ const GameLogoPage: NextPage = () => {
   setError("");
 }, []); // Dependencies: only if setSelectedStyleImageSrc or setForm setters change, which they don't
 
-// Initialize activeTab to the first category
 useEffect(() => {
-  const categoryKeys = Object.keys(typedGamerStylesData); // Use the typed version
-  if (categoryKeys.length > 0 && categoryKeys[0]) {
-    setActiveTab(categoryKeys[0]);
-  }
-}, []); // typedGamerStylesData is stable, so no need to add it here if it's a static import
+    if (!router.isReady) return; 
 
-// Update activeSubTab when activeTab changes
-useEffect(() => {
-  if (!activeTab) { // If activeTab is empty string (initial state or reset)
-    setActiveSubTab("");
-    setSelectedStyleImageSrc(null);
-    setForm(prev => ({ ...prev, basePrompt: "" }));
-    return;
-  }
+    const hash = window.location.hash.substring(1); 
+    let hashFoundAndSet = false;
 
-  // Check if the activeTab key actually exists and has data
-  const subcategoriesForActiveTab = typedGamerStylesData[activeTab];
+    if (hash) {
+      for (const mainCategory in typedGamerStylesData) {
+        const subcategories = typedGamerStylesData[mainCategory];
+        if (subcategories && Object.prototype.hasOwnProperty.call(subcategories, hash)) {
+          setActiveTab(mainCategory);
+          setActiveSubTab(hash);
+          hashFoundAndSet = true;
+          
+          setTimeout(() => {
+            const element = document.getElementById(hash);
+            element?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+          }, 150);
 
-  if (!subcategoriesForActiveTab || typeof subcategoriesForActiveTab !== 'object') {
-    // This case means activeTab was a string, but not a valid key in typedGamerStylesData,
-    // or the data for that key is not an object (which would be a data structure error).
-    setActiveSubTab("");
-    setSelectedStyleImageSrc(null);
-    setForm(prev => ({ ...prev, basePrompt: "" }));
-    return;
-  }
-
-  // At this point, subcategoriesForActiveTab IS an object (GamerStyleSubCategory).
-  const subKeys = Object.keys(subcategoriesForActiveTab); // This is now safe.
-
-  if (subKeys.length > 0 && subKeys[0]) {
-    setActiveSubTab(subKeys[0]);
-    // The next useEffect will handle selecting the first style of this new subTab.
-  } else {
-    // No subcategories found for this activeTab
-    setActiveSubTab("");
-    setSelectedStyleImageSrc(null);
-    setForm(prev => ({ ...prev, basePrompt: "" }));
-  }
-}, [activeTab]); // Runs when activeTab changes
-
-// Update selected style when activeSubTab (or activeTab leading to new subTab) changes
-useEffect(() => {
-  if (!activeTab || !activeSubTab) {
-    setSelectedStyleImageSrc(null);
-    setForm(prev => ({ ...prev, basePrompt: "" }));
-    return;
-  }
-
-  const categoryData = typedGamerStylesData[activeTab];
-  if (!categoryData || typeof categoryData !== 'object') {
-    setSelectedStyleImageSrc(null); setForm(prev => ({ ...prev, basePrompt: "" })); return;
-  }
-
-  const stylesInCurrentSubTab = categoryData[activeSubTab];
-  if (!stylesInCurrentSubTab || !Array.isArray(stylesInCurrentSubTab)) {
-    setSelectedStyleImageSrc(null); setForm(prev => ({ ...prev, basePrompt: "" })); return;
-  }
-
-  if (stylesInCurrentSubTab.length > 0 && stylesInCurrentSubTab[0]) {
-    const firstStyle = stylesInCurrentSubTab[0];
-    // Ensure firstStyle and its properties exist before calling handleStyleSelect
-    if (firstStyle && typeof firstStyle.src === 'string' && typeof firstStyle.basePrompt === 'string') {
-      handleStyleSelect(firstStyle.basePrompt, firstStyle.src);
-    } else {
-      // First style item is malformed
-      setSelectedStyleImageSrc(null); setForm(prev => ({ ...prev, basePrompt: "" }));
+          break;
+        }
+      }
     }
-  } else {
-    // No styles in current subcategory
-    setSelectedStyleImageSrc(null);
-    setForm(prev => ({ ...prev, basePrompt: "" }));
-  }
-}, [activeTab, activeSubTab, handleStyleSelect]);   // Runs when activeTab or activeSubTab changes
+
+    if (!hashFoundAndSet) {
+      const firstCategory = Object.keys(typedGamerStylesData)[0];
+      if (firstCategory) {
+        setActiveTab(firstCategory);
+        const firstSubCategory = Object.keys(typedGamerStylesData[firstCategory]!)?.[0];
+        if (firstSubCategory) {
+          setActiveSubTab(firstSubCategory);
+        }
+      }
+    }
+  }, [router.isReady]);
+
+  useEffect(() => {
+    if (!activeTab || !activeSubTab) return;
+    const styles = typedGamerStylesData[activeTab]?.[activeSubTab];
+    if (styles && styles.length > 0 && styles[0]) {
+      handleStyleSelect(styles[0].basePrompt, styles[0].src);
+    }
+  }, [activeTab, activeSubTab, handleStyleSelect]);
 
   // Scroll handling effects
   useLayoutEffect(() => {
@@ -301,7 +269,7 @@ useEffect(() => {
                 <div className="relative mb-6 flex items-center">
                 {showLeftSubCategoryArrow && ( <button type="button" onClick={() => scrollSubCategories("left")} className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-300 dark:border-slate-600" aria-label="Scroll Subcategories Left"><AiOutlineLeft size={16} /></button> )}
                 <div ref={subcategoryScrollRef} onScroll={handleSubCategoryScroll} className="flex overflow-x-auto whitespace-nowrap no-scrollbar space-x-2 sm:space-x-3 py-2 flex-1 mx-3">
-                    {Object.keys(typedGamerStylesData[activeTab]!).map((subKey) => ( <button key={subKey} type="button" onClick={() => setActiveSubTab(subKey)} className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 shadow-sm hover:shadow ${activeSubTab === subKey ? "bg-purple-500 dark:bg-cyan-400 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-500"}`}>{subKey}</button>))}
+                    {Object.keys(typedGamerStylesData[activeTab]!).map((subKey) => ( <button key={subKey} type="button" id={subKey} onClick={() => setActiveSubTab(subKey)} className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 shadow-sm hover:shadow ${activeSubTab === subKey ? "bg-purple-500 dark:bg-cyan-400 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-500"}`}>{subKey}</button>))}
                 </div>
                 {showRightSubCategoryArrow && ( <button type="button" onClick={() => scrollSubCategories("right")} className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-300 dark:border-slate-600" aria-label="Scroll Subcategories Right"><AiOutlineRight size={16} /></button> )}
                 </div>

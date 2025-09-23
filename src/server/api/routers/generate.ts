@@ -60,7 +60,7 @@ const generateIcon = async (
       megapixels: "1",
       num_outputs: numberOfImages,
       aspect_ratio: aspectRatio,
-      output_format: "webp",
+      output_format: "png",
       output_quality: 80,
       num_inference_steps: 4,
     };
@@ -72,7 +72,7 @@ const generateIcon = async (
       megapixels: "1",
       num_outputs: numberOfImages,
       aspect_ratio: aspectRatio,
-      output_format: "webp",
+      output_format: "png",
       output_quality: 80,
       num_inference_steps: 28,
     };
