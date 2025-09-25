@@ -43,6 +43,16 @@ const config = {
         destination: '/logos/games/minecraft-logo-maker',
         permanent: true,
       },
+      {
+        source: '/fortnite-pfp-maker',
+        destination: '/pfp/games/fortnite-pfp-maker',
+        permanent: true, // This sets the status code to 301
+      },
+      {
+        source: '/minecraft-pfp-maker',
+        destination: '/pfp/games/minecraft-pfp-maker',
+        permanent: true,
+      },
     ];
   },
 };

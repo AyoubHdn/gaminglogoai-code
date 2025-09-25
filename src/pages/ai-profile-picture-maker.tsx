@@ -197,7 +197,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
                     {[
                         { title: "1. Upload Photo", desc: "Pick a clear, front-facing photo of yourself.", icon: <FaCameraRetro className="h-10 w-10 mx-auto mb-3"/> },
-                        { title: "2. Add Text (Optional)", desc: "Include your gamer tag or name.", icon: <FaGamepad className="h-10 w-10 mx-auto mb-3"/> },
+                        { title: "2. Add Text", desc: "Include your gamer tag or name.", icon: <FaGamepad className="h-10 w-10 mx-auto mb-3"/> },
                         { title: "3. Choose Art Style", desc: "Select from cartoon, anime, fantasy, and more.", icon: <FaPalette className="h-10 w-10 mx-auto mb-3"/> },
                         { title: "4. Generate!", desc: "Let our AI craft your unique PFP or avatar.", icon: <FaMagic className="h-10 w-10 mx-auto mb-3"/> }
                     ].map(step => (

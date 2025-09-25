@@ -14,13 +14,14 @@ import Link from "next/link";
 import clsx from "clsx";
 import imageCompression from 'browser-image-compression';
 import { SharePopup } from "~/component/SharePopup"
-import router from "next/router";
+import { useRouter } from "next/router";
 import { FaShareAlt } from "react-icons/fa";
 
 // Type definitions for Face Styles
 interface FaceStyleItem {
   src: string;
   basePrompt: string;
+  name?: string; // Optional name field
 }
 interface FaceStyleSubCategory {
   [subcategoryName: string]: FaceStyleItem[];
@@ -36,9 +37,11 @@ const typedFaceStylesData: FaceStyleCategory = faceStylesData as FaceStyleCatego
 
 const FaceLogoGeneratorPage: NextPage = () => {
   const { data: session } = useSession();
+  const router = useRouter();
   const isLoggedIn = !!session;
 
   const [inputText, setInputText] = useState<string>("");
+  const [textError, setTextError] = useState<string | null>(null);
   const [uploadedImageFile, setUploadedImageFile] = useState<File | null>(null);
   const [uploadedImagePreview, setUploadedImagePreview] = useState<string | null>(null);
 
@@ -150,33 +153,68 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
   }, []);
 
   useEffect(() => {
-    const categoryKeys = Object.keys(typedFaceStylesData);
-    if (categoryKeys.length > 0 && categoryKeys[0]) setActiveStyleTab(categoryKeys[0]);
-  }, []);
+    if (!router.isReady) return;
 
-  useEffect(() => {
-    if (!activeStyleTab || !typedFaceStylesData.hasOwnProperty(activeStyleTab)) {
-      setActiveStyleSubTab(""); setSelectedStyleBasePrompt(""); setSelectedStyleImagePreview(null); return;
+    const hash = decodeURIComponent(window.location.hash.substring(1));
+    let hashFoundAndSet = false;
+
+    if (hash) {
+      for (const mainCategory in typedFaceStylesData) {
+        const subcategories = typedFaceStylesData[mainCategory];
+        for (const subCategory in subcategories) {
+          const items = subcategories[subCategory];
+          const foundItem = items?.find(item => item.name === hash);
+
+          if (foundItem) {
+            console.log(`[DEBUG] Jump link found for "${hash}"! Setting tabs AND selecting style.`);
+            setActiveStyleTab(mainCategory);
+            setActiveStyleSubTab(subCategory);
+            
+            // THIS IS THE FIX:
+            // Directly select the specific style that was found by the hash.
+            handleFaceStyleSelect(foundItem.basePrompt, foundItem.src);
+
+            hashFoundAndSet = true;
+            
+            setTimeout(() => {
+              const element = document.getElementById(hash);
+              element?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+            }, 200);
+
+            break; // Exit inner loop
+          }
+        }
+        if (hashFoundAndSet) break; // Exit outer loop
+      }
     }
-    const subcategories = typedFaceStylesData[activeStyleTab];
-    if (subcategories && typeof subcategories === 'object') {
-      const subKeys = Object.keys(subcategories);
-      if (subKeys.length > 0 && subKeys[0]) setActiveStyleSubTab(subKeys[0]);
-      else { setActiveStyleSubTab(""); setSelectedStyleBasePrompt(""); setSelectedStyleImagePreview(null); }
-    } else { setActiveStyleSubTab(""); setSelectedStyleBasePrompt(""); setSelectedStyleImagePreview(null); }
-  }, [activeStyleTab]);
 
-  useEffect(() => {
-    if (!activeStyleTab || !activeStyleSubTab) { setSelectedStyleBasePrompt(""); setSelectedStyleImagePreview(null); return; }
-    const categoryData = typedFaceStylesData[activeStyleTab];
-    if (!categoryData || !categoryData[activeStyleSubTab]) { setSelectedStyleBasePrompt(""); setSelectedStyleImagePreview(null); return; }
-    const stylesArray = categoryData[activeStyleSubTab];
-    if (stylesArray && stylesArray.length > 0 && stylesArray[0]) {
-      const firstStyle = stylesArray[0];
-      if (firstStyle?.src && firstStyle.basePrompt) handleFaceStyleSelect(firstStyle.basePrompt, firstStyle.src);
-      else { setSelectedStyleBasePrompt(""); setSelectedStyleImagePreview(null); }
-    } else { setSelectedStyleBasePrompt(""); setSelectedStyleImagePreview(null); }
-  }, [activeStyleTab, activeStyleSubTab, handleFaceStyleSelect]);
+    // If no hash was found, set the default state
+    if (!hashFoundAndSet) {
+      const firstCategory = Object.keys(typedFaceStylesData)[0];
+      if (firstCategory) {
+        setActiveStyleTab(firstCategory);
+        const firstSubCategory = Object.keys(typedFaceStylesData[firstCategory]!)?.[0];
+        if (firstSubCategory) {
+          setActiveStyleSubTab(firstSubCategory);
+          // Note: The second useEffect will handle selecting the first item in this default case.
+        }
+      }
+    }
+}, [router.isReady, handleFaceStyleSelect]); // Added handleFaceStyleSelect to dependency array
+
+// KEEP THIS SECOND useEffect EXACTLY AS IT IS.
+// It handles the default selection when a user clicks a tab manually.
+useEffect(() => {
+    if (!activeStyleTab || !activeStyleSubTab) return;
+
+    const styles = typedFaceStylesData[activeStyleTab]?.[activeStyleSubTab];
+    // This logic now only runs for manual clicks or the initial default load,
+    // because the jump-link logic above has already selected the correct style.
+    // To prevent it from overriding our jump-link selection, we check if a style is already selected.
+    if (styles && styles.length > 0 && styles[0] && !selectedStyleImagePreview) {
+      handleFaceStyleSelect(styles[0].basePrompt, styles[0].src);
+    }
+}, [activeStyleTab, activeStyleSubTab, handleFaceStyleSelect, selectedStyleImagePreview]);
   
   useLayoutEffect(() => {
     const handleScroll = (ref: React.RefObject<HTMLDivElement>, setLeft: React.Dispatch<React.SetStateAction<boolean>>, setRight: React.Dispatch<React.SetStateAction<boolean>>) => {
@@ -227,9 +265,15 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
 
   // eslint-disable-next-line @typescript-eslint/require-await
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); setError(""); setImagesUrl([]);
+    e.preventDefault(); setError(""); setTextError(null); setImagesUrl([]);
     console.log("CLIENT: handleFormSubmit initiated."); // LOG 1
     if (!isLoggedIn) { void signIn("google"); return; }
+    if (!inputText.trim()) {
+        setTextError("Please enter the text you want in your logo.");
+        // Scroll to the input field to show the error
+        document.getElementById("logo-text-input")?.focus(); 
+        return; // Stop the submission
+    }
     if (!uploadedImageFile) { setError("Please upload a photo of your face."); return; }
     if (!selectedStyleBasePrompt) { setError("Please select an artistic style for your face logo."); return;}
     
@@ -315,7 +359,7 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
           <h2 className="text-2xl font-semibold mb-3 text-purple-700 dark:text-cyan-400">Get Started:</h2>
           <ol className="list-decimal list-inside space-y-2 text-slate-700 dark:text-slate-300">
             <li><strong className="text-slate-800 dark:text-slate-100">Upload Your Best Face Photo:</strong> Clear, well-lit, front-facing photos yield the best results.</li>
-            <li><strong className="text-slate-800 dark:text-slate-100">Add Your Gamer Tag (Optional):</strong> This text will be artfully integrated.</li>
+            <li><strong className="text-slate-800 dark:text-slate-100">Add Your Gamer Tag:</strong> This text will be artfully integrated.</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Pick an Art Style:</strong> Choose a theme to transform your photo (e.g., Cartoon, Anime, Vector).</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Select Quality Engine:</strong> &quot;Pro&quot; for great quality, &quot;Max&quot; for ultimate detail.</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Generate!</strong> Watch your face become a unique gaming logo.</li>
@@ -360,13 +404,24 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
           <section>
             <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white flex items-center">
               <span className="bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">2</span>
-              Add Text to Your Logo (Optional)
+              Add Text to Your Logo
             </h2>
             <FormGroup className="mb-0">
-              <Input value={inputText} onChange={(e) => setInputText(e.target.value)}
-                placeholder="e.g., Your Gamer Tag"
-                className="w-full p-3 text-base border-2 border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 dark:focus:ring-cyan-500 focus:border-transparent shadow-sm"
-                aria-label="Text to include in the logo" />
+              <Input id="logo-text-input" value={inputText} onChange={(e) => {
+                  setInputText(e.target.value);
+                  if (textError) setTextError(null); // Clear error on change
+                }}
+                placeholder="e.g., Your Gamer Tag (Required)"
+                className={clsx(
+                  "w-full p-3 text-base border-2 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:border-transparent shadow-sm",
+                  // --- CONDITIONAL STYLING ---
+                  textError 
+                    ? "border-red-500 dark:border-red-500 focus:ring-red-500" 
+                    : "border-slate-300 dark:border-slate-700 focus:ring-purple-500 dark:focus:ring-cyan-500"
+                )}
+                aria-label="Text to include in the logo"
+                aria-required="true" />
+              {textError && <p className="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">{textError}</p>}
             </FormGroup>
           </section>
 
@@ -394,20 +449,39 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
             )}
             <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-4">
               {(typedFaceStylesData[activeStyleTab]?.[activeStyleSubTab] ?? []).map((item, idx) => {
-                if (!item || !item.src || !item.basePrompt) { return <div key={`error-style-${idx}`} className="aspect-square bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-700 dark:text-red-300 rounded-lg text-xs p-2">Style Data Error</div>;}
-                const displayImagePath = item.src;
+                if (!item || !item.src || !item.basePrompt || !item.name) { return <div key={`error-style-${idx}`} className="aspect-square bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-700 dark:text-red-300 rounded-lg text-xs p-2">Data Error</div>;}
+                
+                // Use the name for the ID to enable jump-links
+                const elementId = item.name;
+                const displayImagePath = item.src; // Use high-quality preview
+
                 return (
+                  // CHANGED: The main container is now a flex column
                   <div key={`${activeStyleTab}-${activeStyleSubTab}-${item.src}-${idx}`}
-                    className={clsx(`relative rounded-xl shadow-md hover:shadow-xl dark:bg-slate-700/50 transition-all duration-300 cursor-pointer aspect-square overflow-hidden group border-2`,
+                    id={elementId} // CHANGED: Added ID for jump-links
+                    className={clsx(`flex flex-col rounded-xl shadow-md hover:shadow-xl dark:bg-slate-700/50 transition-all duration-300 cursor-pointer overflow-hidden border-2`, // Removed aspect-square from here
                                 selectedStyleImagePreview === item.src ? "border-purple-500 dark:border-cyan-500 scale-105" : "border-transparent hover:border-purple-300 dark:hover:border-cyan-300")}
                     onClick={() => handleFaceStyleSelect(item.basePrompt, item.src)}
-                    title={`Select style: ${(item.basePrompt || "Face art style").substring(0, 50)}...`} >
-                    <Image src={displayImagePath} alt={`Art style preview: ${(item.basePrompt || "Face art style").substring(0, 40)}...`}
-                      fill style={{ objectFit: "cover" }} className="transition-transform duration-300 group-hover:scale-110"
-                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                      loading="lazy"
-                      onError={(e) => { (e.target as HTMLImageElement).src = "/images/placeholder-style.png"; }} />
-                  </div> );
+                    title={`Select style: ${item.name}`} > 
+                    
+                    {/* NEW: Wrapper for the image to maintain aspect ratio */}
+                    <div className="relative w-full aspect-square group">
+                        <Image src={displayImagePath} alt={`Art style preview: ${item.name}`}
+                          fill style={{ objectFit: "cover" }} className="transition-transform duration-300 group-hover:scale-110"
+                          sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                          loading="lazy"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "/images/placeholder-style.png"; }} 
+                        />
+                    </div>
+
+                    {/* NEW: Container for the text label */}
+                    <div className="p-2 text-center bg-white dark:bg-slate-800">
+                        <p className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 truncate">
+                            {item.name}
+                        </p>
+                    </div>
+                  </div> 
+                );
               })}
             </div>
           </section>
@@ -453,7 +527,7 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
 
           {/* Submit Button */}
           <div className="mt-6">
-            <Button type="submit" isLoading={isGenerating} disabled={isGenerating || !uploadedImageFile || !selectedStyleBasePrompt}
+            <Button type="submit" isLoading={isGenerating} disabled={isGenerating || !uploadedImageFile || !selectedStyleBasePrompt || !inputText.trim()}
               className={`w-full text-lg font-semibold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoggedIn ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white dark:from-cyan-500 dark:to-blue-500 dark:hover:from-cyan-600 dark:hover:to-blue-600 dark:text-slate-900 focus:ring-purple-500 dark:focus:ring-cyan-400' : 'bg-slate-500 text-slate-100 cursor-not-allowed' } disabled:opacity-70 disabled:cursor-not-allowed`}>
               {isLoggedIn ? (isGenerating ? "Transforming Your Face..." : "Generate My Face Logo!") : "Sign In to Generate"}
             </Button>
@@ -475,7 +549,7 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 3a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V4a1 1 0 00-1-1H4zm10 0a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V4a1 1 0 00-1-1h-4zM4 11a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1v-4a1 1 0 00-1-1H4zm10 0a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1v-4a1 1 0 00-1-1h-4z" clipRule="evenodd" /></svg>
                         </button>
                         <button type="button" onClick={() => void handleDownload(imageUrl)} className="p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors" title="Download Logo" aria-label="Download Logo" disabled={isDownloading === imageUrl}>
-                           {isDownloading === imageUrl ? <div className="w-5 h-5 border-2 border-t-transparent border-current rounded-full animate-spin"></div> : <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>}
+                          {isDownloading === imageUrl ? <div className="w-5 h-5 border-2 border-t-transparent border-current rounded-full animate-spin"></div> : <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>}
                         </button>
                         <button
                         type="button"

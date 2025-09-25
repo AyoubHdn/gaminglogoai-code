@@ -1,22 +1,22 @@
 import { GetServerSideProps } from 'next';
 import { gamerStylesData } from '~/data/gamerStylesData'; // Adjust path if needed
+import { faceStylesData } from '~/data/faceStylesData';   // <-- NEW IMPORT
 import { createSlug } from '~/lib/utils'; // Adjust path if needed
 
 // This function generates the XML content for your sitemap.
 const generateSiteMap = (pages: string[]) => {
-  const baseUrl = 'https://gaminglogoai.com'; // Your website's base URL
+  const baseUrl = 'https://gaminglogoai.com';
 
-  // Define priorities for specific page types
   const getPriority = (page: string) => {
     if (page === '/') return '1.0';
     if (page.startsWith('/blog/')) return '0.7';
     if (page === '/blog') return '0.6';
     if (['/buy-credits', '/collection'].includes(page)) return '0.7';
-    // NEW: Give pSEO pages a solid priority
-    if (page.startsWith('/logos/')) return '0.6'; 
-    // Legal pages
+    
+    // UPDATED: Give all pSEO pages a solid priority
+    if (page.startsWith('/logos/') || page.startsWith('/pfp/')) return '0.6'; 
+    
     if (['/privacy-policy', '/terms-of-service', '/refund-policy'].includes(page)) return '0.3';
-    // Default priority for main landing pages & tools
     return '0.8'; 
   };
   
@@ -42,36 +42,20 @@ const generateSiteMap = (pages: string[]) => {
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   // --- List all your STATIC pages here ---
   const staticPages = [
-    // Core Pages
-    '/',
-    '/collection',
-    '/buy-credits',
-
-    // Main Landing Pages & Tools
-    '/gaming-logo',
-    '/ai-pfp-maker',
-    '/logo-styles',
-    '/gaming-logo-maker',
-    '/pfp-maker',
-
-    // Blog Pages
-    '/blog',
-    '/blog/how-to-create-an-epic-mascot-logo-with-ai-step-by-step',
-    '/blog/how-to-create-a-clan-logo',
-    '/blog/top-10-minecraft-logo-ideas',
-
-    // Legal Pages
-    '/privacy-policy',
-    '/terms-of-service',
-    '/refund-policy',
+    '/', '/collection', '/buy-credits',
+    '/gaming-logo', '/ai-pfp-maker', '/logo-styles',
+    '/gaming-logo-maker', '/pfp-maker',
+    '/blog', '/blog/how-to-create-an-epic-mascot-logo-with-ai-step-by-step',
+    '/blog/how-to-create-a-clan-logo', '/blog/top-10-minecraft-logo-ideas',
+    '/privacy-policy', '/terms-of-service', '/refund-policy',
   ];
 
-  // --- DYNAMICALLY GENERATE pSEO PAGES ---
-  const pSEOPages: string[] = [];
-  
-  // This array defines how to build URLs for each pSEO category
-  // It MUST match the structure in your `pSEO.ts` helper and page files
-  const pSEOCategories = [
+  // --- DYNAMICALLY GENERATE LOGO pSEO PAGES ---
+  const logoPseoPages: string[] = [];
+  const logoPseoCategories = [
+    // This is the old logic for sub-category pages for logos.
+    // If you refactor logos to use individual items, this will need to change.
+    // For now, it works as is.
     { parentKey: "Game Titles", categoryPath: "games", slugSuffix: "-logo-maker" },
     { parentKey: "Game Genres", categoryPath: "genres", slugSuffix: "-logo-design" },
     { parentKey: "Art", categoryPath: "styles", slugSuffix: "-logo-design" },
@@ -81,19 +65,43 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     { parentKey: "Real‐World / Cultural", categoryPath: "cultural", slugSuffix: "-esports-logo" },
   ] as const;
 
-  pSEOCategories.forEach(category => {
+  logoPseoCategories.forEach(category => {
     const dataSet = gamerStylesData[category.parentKey];
     if (dataSet) {
       Object.keys(dataSet).forEach(subCategoryName => {
         const slug = createSlug(subCategoryName, category.slugSuffix);
         const pageUrl = `/logos/${category.categoryPath}/${slug}`;
-        pSEOPages.push(pageUrl);
+        logoPseoPages.push(pageUrl);
       });
     }
   });
   
-  // Combine static and dynamic pages
-  const allPages = [...staticPages, ...pSEOPages];
+  // --- DYNAMICALLY GENERATE PFP pSEO PAGES ---
+  const pfpPseoPages: string[] = [];
+  const pfpPseoCategories = [
+      { parentKey: "Game Title", categoryPath: "games", slugSuffix: "-pfp-maker" },
+      { parentKey: "Art Style", categoryPath: "styles", slugSuffix: "-avatar-maker" },
+      { parentKey: "Theme & Motif", categoryPath: "themes", slugSuffix: "-avatar-maker" },
+      { parentKey: "Seasonal & Cultural", categoryPath: "seasonal", slugSuffix: "-pfp-maker" },
+  ] as const;
+
+  pfpPseoCategories.forEach(category => {
+      const dataSet = faceStylesData[category.parentKey as keyof typeof faceStylesData];
+      if(dataSet) {
+          // Flatten all individual style items into one array
+          const allItems = Object.values(dataSet).flat();
+          allItems.forEach(item => {
+              if (item && item.name) {
+                  const slug = createSlug(item.name, category.slugSuffix);
+                  const pageUrl = `/pfp/${category.categoryPath}/${slug}`;
+                  pfpPseoPages.push(pageUrl);
+              }
+          });
+      }
+  });
+  
+  // Combine static and all dynamic pages
+  const allPages = [...staticPages, ...logoPseoPages, ...pfpPseoPages];
 
   // Generate the sitemap XML
   const sitemap = generateSiteMap(allPages);
@@ -108,7 +116,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   };
 };
 
-// Default export to prevent errors. This component itself does nothing.
+// Default export to prevent errors.
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const Sitemap = () => {};
 export default Sitemap;
