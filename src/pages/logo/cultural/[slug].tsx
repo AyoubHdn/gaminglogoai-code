@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-// src/pages/logos/cultural/[slug].tsx
+// src/pages/logo/cultural/[slug].tsx
 import { type NextPage, GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import PseoLogoPageTemplate, { PseoLogoPageTemplateProps } from "src/component/pSEO/PseoLogoPageTemplate";
@@ -26,7 +26,7 @@ const CulturalLogoPage: NextPage<CulturalLogoPageServerProps> = ({ culture, imag
     pageTitle: `${culture} Esports Logos - AI-Generated Team & Clan Logos`,
     metaDescription: `Design a professional ${culture}-inspired esports logo with our AI generator. Perfect for national teams, cultural clans, and patriotic gamers.`,
     keywords: `${culture} esports logo, ${culture} gaming logo, patriotic logo, national team logo`,
-    canonicalUrl: `https://gaminglogoai.com/logos/cultural/${slug}`,
+    canonicalUrl: `https://gaminglogoai.com/logo/cultural/${slug}`,
     h1: <><span className="text-cyan-400">{culture}</span> Inspired Esports Logos</>,
     heroImageSrc: (images && images.length > 0 ? images[0]?.src ?? "/styles/default-cultural-icon.webp" : "/styles/default-cultural-icon.webp"),
     introParagraph: <>Represent with pride! Create a powerful esports logo inspired by <strong>{culture}</strong> themes. Perfect for national teams and community groups.</>,
@@ -76,7 +76,7 @@ export const getStaticProps: GetStaticProps<CulturalLogoPageServerProps> = async
   const images = culturalData[matchedCulture]?.map(img => ({ ...img, src: toHighQuality(img.src) })) || [];
 
   const relatedItems = getStaticRelatedItems({
-    excludeCategory: "Real‐World / Cultural",
+    tool: 'logo',
     excludeName: matchedCulture,
   });
 

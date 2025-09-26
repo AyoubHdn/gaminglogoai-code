@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-// src/pages/logos/styles/[slug].tsx
+// src/pages/logo/styles/[slug].tsx
 import { type NextPage, GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import PseoLogoPageTemplate, { PseoLogoPageTemplateProps } from "src/component/pSEO/PseoLogoPageTemplate";
@@ -28,7 +28,7 @@ const ArtStyleLogoPage: NextPage<ArtStyleLogoPageServerProps> = ({ artStyle, ima
     pageTitle: `${artStyle} Gaming Logo Design - Create ${artStyle}-Style Logos with AI`,
     metaDescription: `Design stunning ${artStyle} gaming logos with our AI generator. Create unique cartoonish, 8-bit, emblem, or kawaii logos for your brand in seconds.`,
     keywords: `${artStyle} logo design, ${artStyle} gaming logo, custom ${artStyle} logo, ai logo maker`,
-    canonicalUrl: `https://gaminglogoai.com/logos/styles/${slug}`,
+    canonicalUrl: `https://gaminglogoai.com/logo/styles/${slug}`,
     h1: <>Create an <span className="text-cyan-400">{artStyle}</span> Gaming Logo</>,
     heroImageSrc: images[0]?.src || "/styles/default-art-icon.webp",
     introParagraph: <>Unleash your creativity and design a professional <strong>{artStyle}</strong> style logo. Our AI makes it easy to capture the perfect aesthetic for your brand.</>,
@@ -71,7 +71,7 @@ export const getStaticProps: GetStaticProps<ArtStyleLogoPageServerProps> = async
   const images = artStylesData[matchedArtStyle]?.map(img => ({ ...img, src: toHighQuality(img.src) })) || [];
 
   const relatedItems = getStaticRelatedItems({
-    excludeCategory: "Art Styles",
+    tool: 'logo',
     excludeName: matchedArtStyle,
   });
 

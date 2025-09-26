@@ -3,6 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { FaChevronRight, FaMagic, FaPaintBrush, FaBolt, FaUsers, FaShieldAlt, FaCogs, FaQuestionCircle } from "react-icons/fa";
+import { RelatedItem } from '~/lib/pSEO';
 
 // Define the "contract" for what every pSEO page needs to provide
 export interface PseoLogoPageTemplateProps {
@@ -17,13 +18,7 @@ export interface PseoLogoPageTemplateProps {
   handleCtaClick: () => void;
   showcaseTitle: React.ReactNode;
   imageShowcaseGrid: { src: string; alt: string }[];
-  relatedItems: {
-    name: string;
-    slug: string;
-    exampleImage: string;
-    categoryPath: 'games' | 'genres' | 'styles' | 'themes' | 'colors' | 'holidays' | 'cultural';
-    description: string;
-  }[];
+  relatedItems: RelatedItem[]; 
   // NEW: Add dynamic titles for these sections
   faqTitle: React.ReactNode;
   finalCtaTitle: React.ReactNode;
@@ -123,7 +118,7 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {relatedItems.map((item) => (
-                <Link key={item.slug} href={`/logos/${item.categoryPath}/${item.slug}`} className="block p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex items-center group">
+                <Link key={item.slug} href={`/${item.tool}/${item.categoryPath}/${item.slug}`} className="block p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex items-center group">
                   <Image src={item.exampleImage} alt={`${item.name} logo example`} width={64} height={64} className="rounded-lg mr-4 object-cover" unoptimized={true} />
                   <div className="flex-grow">
                     <h3 className="text-lg font-semibold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-cyan-400">{item.name}</h3>

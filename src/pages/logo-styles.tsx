@@ -126,7 +126,7 @@ export const getStaticProps: GetStaticProps<{ styleCategories: SerializableStyle
     if (dataSet) {
       const subItemsPreview = Object.keys(dataSet).slice(0, 3).map(subCategoryName => ({
         name: subCategoryName,
-        targetUrl: `/logos/${config.categoryPath}/${createSlug(subCategoryName, config.slugSuffix)}`,
+        targetUrl: `/logo/${config.categoryPath}/${createSlug(subCategoryName, config.slugSuffix)}`,
       }));
 
       styleCategories.push({

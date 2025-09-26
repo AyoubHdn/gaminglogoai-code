@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-// src/pages/logos/genres/[slug].tsx
+// src/pages/logo/genres/[slug].tsx
 import { type NextPage, GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router"; // IMPORTANT: Import useRouter
 import PseoLogoPageTemplate, { PseoLogoPageTemplateProps } from "src/component/pSEO/PseoLogoPageTemplate";
@@ -30,7 +30,7 @@ const GenreLogoPage: NextPage<GenreLogoPageServerProps> = ({ genre, images, slug
     pageTitle: `${genre} Gaming Logo Design - AI-Powered Ideas`,
     metaDescription: `Generate unique ${genre} gaming logos for your team. Create stunning logos for MOBA, FPS, RPG, and other game genres instantly with AI.`,
     keywords: `${genre} gaming logo, ${genre} logo design, esports logo`,
-    canonicalUrl: `https://gaminglogoai.com/logos/genres/${slug}`,
+    canonicalUrl: `https://gaminglogoai.com/logo/genres/${slug}`,
     // JSX is created here
     h1: <><span className="text-cyan-400">{genre}</span> Gaming Logo Design</>,
     heroImageSrc: images[0]?.src || "/styles/default-gaming-icon.webp",
@@ -81,7 +81,7 @@ export const getStaticProps: GetStaticProps<GenreLogoPageServerProps> = async ({
   const images = gameGenresData[matchedGenre]?.map(img => ({ ...img, src: toHighQuality(img.src) })) || [];
 
 const relatedItems = getStaticRelatedItems({
-    excludeCategory: "Game Genres",
+    tool: 'logo',
     excludeName: matchedGenre,
   });
 

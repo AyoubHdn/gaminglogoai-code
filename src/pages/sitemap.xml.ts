@@ -14,7 +14,7 @@ const generateSiteMap = (pages: string[]) => {
     if (['/buy-credits', '/collection'].includes(page)) return '0.7';
     
     // UPDATED: Give all pSEO pages a solid priority
-    if (page.startsWith('/logos/') || page.startsWith('/pfp/')) return '0.6'; 
+    if (page.startsWith('/logo/') || page.startsWith('/pfp/')) return '0.6'; 
     
     if (['/privacy-policy', '/terms-of-service', '/refund-policy'].includes(page)) return '0.3';
     return '0.8'; 
@@ -70,7 +70,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     if (dataSet) {
       Object.keys(dataSet).forEach(subCategoryName => {
         const slug = createSlug(subCategoryName, category.slugSuffix);
-        const pageUrl = `/logos/${category.categoryPath}/${slug}`;
+        const pageUrl = `/logo/${category.categoryPath}/${slug}`;
         logoPseoPages.push(pageUrl);
       });
     }

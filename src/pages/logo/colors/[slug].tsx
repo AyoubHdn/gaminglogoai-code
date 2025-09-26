@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-// src/pages/logos/colors/[slug].tsx
+// src/pages/logo/colors/[slug].tsx
 import { type NextPage, GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import PseoLogoPageTemplate, { PseoLogoPageTemplateProps } from "src/component/pSEO/PseoLogoPageTemplate";
@@ -28,7 +28,7 @@ const ColorLogoPage: NextPage<ColorLogoPageServerProps> = ({ color, images, slug
     pageTitle: `${color} Gaming Logos - Design ${color}-Colored Logos with AI`,
     metaDescription: `Create powerful ${color} gaming logos with our AI generator. Design logos featuring your favorite colors to build a strong brand identity for your team or stream.`,
     keywords: `${color} gaming logo, ${color} logo design, ${color} esports logo, colored logo maker`,
-    canonicalUrl: `https://gaminglogoai.com/logos/colors/${slug}`,
+    canonicalUrl: `https://gaminglogoai.com/logo/colors/${slug}`,
     h1: <>Vibrant <span className="text-cyan-400">{color}</span> Gaming Logos</>,
     heroImageSrc: images[0]?.src || "/styles/default-color-icon.webp",
     introParagraph: <>Make your brand pop with a custom <strong>{color}</strong> logo. Color is key to a memorable identity, and our AI makes it easy to generate stunning designs.</>,
@@ -71,7 +71,7 @@ export const getStaticProps: GetStaticProps<ColorLogoPageServerProps> = async ({
   const images = colorsData[matchedColor]?.map(img => ({ ...img, src: toHighQuality(img.src) })) || [];
 
     const relatedItems = getStaticRelatedItems({
-      excludeCategory: "Colors",
+      tool: 'logo',
       excludeName: matchedColor,
     });
   return {

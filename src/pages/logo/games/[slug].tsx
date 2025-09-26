@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/require-await */
-// src/pages/logos/games/[slug].tsx
+// src/pages/logo/games/[slug].tsx
 import { type NextPage, GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import PseoLogoPageTemplate, { PseoLogoPageTemplateProps } from "src/component/pSEO/PseoLogoPageTemplate";
@@ -29,7 +29,7 @@ const GameTitleLogoPage: NextPage<GameTitleLogoPageServerProps> = ({ gameTitle, 
     pageTitle: `${gameTitle} Logo Maker - Create Custom Gaming Logos | GamingLogoAI`,
     metaDescription: `Design unique ${gameTitle} logos for your clan, team, or stream instantly with our AI logo generator. Get inspired by custom ${gameTitle} logo ideas.`,
     keywords: `${gameTitle} logo maker, gaming logo ${gameTitle}, esports logo ${gameTitle}, custom ${gameTitle} logo`,
-    canonicalUrl: `https://gaminglogoai.com/logos/games/${slug}`,
+    canonicalUrl: `https://gaminglogoai.com/logo/games/${slug}`,
     h1: <><span className="text-cyan-400">{gameTitle}</span> Logo Maker</>,
     heroImageSrc: images[0]?.src || "/styles/default-gaming-icon.webp",
     introParagraph: <>Forge a unique identity inspired by <strong>{gameTitle}</strong> with our AI-powered logo creator. Perfect for crafting a memorable <strong>clan logo</strong>.</>,
@@ -72,7 +72,7 @@ export const getStaticProps: GetStaticProps<GameTitleLogoPageServerProps> = asyn
   const images = gameTitlesData[matchedGameTitle]?.map(img => ({ ...img, src: toHighQuality(img.src) })) || [];
 
   const relatedItems = getStaticRelatedItems({
-    excludeCategory: "Game Titles",
+    tool: 'logo',
     excludeName: matchedGameTitle,
   });
 

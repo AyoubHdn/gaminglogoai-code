@@ -23,23 +23,22 @@ export interface RelatedItem {
 // Configuration for all our pSEO categories
 const categories = [
   // LOGO MAKER
-  { parentKey: "Game Titles", categoryPath: "games", slugSuffix: "-logo-maker", descriptionPrefix: "Logos inspired by", tool: "logo", source: gamerStylesData },
-  { parentKey: "Game Genres", categoryPath: "genres", slugSuffix: "-logo-design", descriptionPrefix: "Explore", tool: "logo", source: gamerStylesData },
-  { parentKey: "Art", categoryPath: "styles", slugSuffix: "-logo-design", descriptionPrefix: "Create logos in the", tool: "logo", source: gamerStylesData },
-  { parentKey: "Themes & Motifs", categoryPath: "themes", slugSuffix: "-gaming-logo", descriptionPrefix: "Design logos with a", tool: "logo", source: gamerStylesData },
-  { parentKey: "Colors", categoryPath: "colors", slugSuffix: "-gaming-logo", descriptionPrefix: "Browse our collection of", tool: "logo", source: gamerStylesData },
-  { parentKey: "Holidays & Seasonal", categoryPath: "holidays", slugSuffix: "-gaming-logo", descriptionPrefix: "Get festive with", tool: "logo", source: gamerStylesData },
-  { parentKey: "Real‐World / Cultural", categoryPath: "cultural", slugSuffix: "-esports-logo", descriptionPrefix: "Represent with", tool: "logo", source: gamerStylesData },
-  // PFP MAKER (using individual items)
-  { parentKey: "Game Title", categoryPath: "games", slugSuffix: "-pfp-maker", descriptionPrefix: "PFPs inspired by", tool: "pfp", source: faceStylesData },
-  { parentKey: "Art Style", categoryPath: "styles", slugSuffix: "-avatar-maker", descriptionPrefix: "Avatars in the", tool: "pfp", source: faceStylesData },
-  { parentKey: "Theme & Motif", categoryPath: "themes", slugSuffix: "-avatar-maker", descriptionPrefix: "Avatars with a", tool: "pfp", source: faceStylesData },
-  { parentKey: "Seasonal & Cultural", categoryPath: "seasonal", slugSuffix: "-pfp-maker", descriptionPrefix: "PFPs for", tool: "pfp", source: faceStylesData },
+  { parentKey: "Game Titles", categoryPath: "games", slugSuffix: "-logo-maker", descriptionPrefix: "Logos inspired by", tool: "logo", source: gamerStylesData, structure: 'keys' },
+  { parentKey: "Game Genres", categoryPath: "genres", slugSuffix: "-logo-design", descriptionPrefix: "Explore", tool: "logo", source: gamerStylesData, structure: 'keys' },
+  { parentKey: "Art", categoryPath: "styles", slugSuffix: "-logo-design", descriptionPrefix: "Create logos in the", tool: "logo", source: gamerStylesData, structure: 'keys' },
+  { parentKey: "Themes & Motifs", categoryPath: "themes", slugSuffix: "-gaming-logo", descriptionPrefix: "Design logos with a", tool: "logo", source: gamerStylesData, structure: 'keys' },
+  { parentKey: "Colors", categoryPath: "colors", slugSuffix: "-gaming-logo", descriptionPrefix: "Browse our collection of", tool: "logo", source: gamerStylesData, structure: 'keys' },
+  { parentKey: "Holidays & Seasonal", categoryPath: "holidays", slugSuffix: "-gaming-logo", descriptionPrefix: "Get festive with", tool: "logo", source: gamerStylesData, structure: 'keys' },
+  { parentKey: "Real‐World / Cultural", categoryPath: "cultural", slugSuffix: "-esports-logo", descriptionPrefix: "Represent with", tool: "logo", source: gamerStylesData, structure: 'keys' },
+  // PFP MAKER
+  { parentKey: "Game Title", categoryPath: "games", slugSuffix: "-pfp-maker", descriptionPrefix: "PFPs inspired by", tool: "pfp", source: faceStylesData, structure: 'items' },
+  { parentKey: "Art Style", categoryPath: "styles", slugSuffix: "-avatar-maker", descriptionPrefix: "PFPs in the", tool: "pfp", source: faceStylesData, structure: 'items' },
+  { parentKey: "Theme & Motif", categoryPath: "themes", slugSuffix: "-avatar-maker", descriptionPrefix: "PFPs with a", tool: "pfp", source: faceStylesData, structure: 'items' },
+  { parentKey: "Seasonal & Cultural", categoryPath: "seasonal", slugSuffix: "-pfp-maker", descriptionPrefix: "PFPs for", tool: "pfp", source: faceStylesData, structure: 'items' },
 ] as const;
 
-// A type-safe helper for handling image paths
 const getImagePath = (src: string | undefined, tool: 'logo' | 'pfp'): string => {
-  if (!src) return "/images/placeholder-style.png"; // Provide a fallback
+  if (!src) return "/images/placeholder-style.png";
   return tool === 'logo' ? src.replace('.webp', 'e.webp') : src;
 };
 
@@ -48,35 +47,48 @@ const getImagePath = (src: string | undefined, tool: 'logo' | 'pfp'): string => 
 let allPseoItems: RelatedItem[] | null = null;
 
 function getAllPseoItems(): RelatedItem[] {
-  // Use a simple cache so we don't recalculate this huge array every time
-  if (allPseoItems) {
-    return allPseoItems;
-  }
+  if (allPseoItems) return allPseoItems;
 
   const items: RelatedItem[] = [];
 
   for (const category of categories) {
-    const dataSet = category.source[category.parentKey];
+    const dataSet = category.source[category.parentKey as keyof typeof category.source];
     if (!dataSet) continue;
 
-    // We loop through the sub-categories (e.g., "Shooters", "Cartoon & Toon")
-    for (const subCategoryName in dataSet) {
-      // Check if the property is its own to avoid prototype chain issues
-      if (Object.prototype.hasOwnProperty.call(dataSet, subCategoryName)) {
-        const subCategoryItems = dataSet[subCategoryName] as unknown as StyleItem[];
-        
-        if (Array.isArray(subCategoryItems)) {
-          for (const item of subCategoryItems) {
-            // Ensure the item has a name, which is crucial for our new logic
-            if (item && item.name) {
-              items.push({
-                name: item.name,
-                slug: createSlug(item.name, category.slugSuffix),
-                exampleImage: getImagePath(item.src, category.tool),
-                tool: category.tool,
-                categoryPath: category.categoryPath,
-                description: `${category.descriptionPrefix} ${item.name}.`
-              });
+    if (category.structure === 'keys') {
+      // Logic for gamerStylesData where the name is the key
+      for (const itemName in dataSet) {
+        if (Object.prototype.hasOwnProperty.call(dataSet, itemName)) {
+          const itemArray = dataSet[itemName] as unknown as { src: string }[];
+          if (Array.isArray(itemArray) && itemArray.length > 0 && itemArray[0]) {
+            items.push({
+              name: itemName,
+              slug: createSlug(itemName, category.slugSuffix),
+              exampleImage: getImagePath(itemArray[0].src, category.tool),
+              tool: category.tool,
+              categoryPath: category.categoryPath,
+              description: `${category.descriptionPrefix} ${itemName}.`
+            });
+          }
+        }
+      }
+    } else { // structure === 'items'
+      // Logic for faceStylesData where the name is a property inside an item
+      for (const subCategoryName in dataSet) {
+        if (Object.prototype.hasOwnProperty.call(dataSet, subCategoryName)) {
+          const subCategoryItems = dataSet[subCategoryName] as unknown as StyleItem[];
+          if (Array.isArray(subCategoryItems)) {
+            for (const item of subCategoryItems) {
+              if (item && item.name) {
+                items.push({
+                  name: item.name,
+                  slug: createSlug(item.name, category.slugSuffix),
+                  exampleImage: getImagePath(item.src, category.tool),
+                  tool: category.tool,
+                  categoryPath: category.categoryPath,
+                  description: `${category.descriptionPrefix} ${item.name}.`
+                });
+              }
             }
           }
         }
@@ -99,27 +111,42 @@ export function getStaticRelatedItems(
 ): RelatedItem[] {
   const allItems = getAllPseoItems();
 
-  // Find the index of the current page in our master list
   const currentIndex = allItems.findIndex(
-    item => item.tool === options.tool && item.name === options.excludeName
+    item => item.tool === options.tool && item.name.toLowerCase() === options.excludeName.toLowerCase()
   );
 
   if (currentIndex === -1) {
-    // If the current item isn't found, return the first few items as a safe fallback
+    console.warn(`Could not find item with name "${options.excludeName}" and tool "${options.tool}" in master list.`);
+    // Fallback: get any 6 items
     return allItems.slice(0, count);
   }
+
+  // Separate items by tool type
+  const sameToolItems = allItems.filter(item => item.tool === options.tool);
+  const otherToolItems = allItems.filter(item => item.tool !== options.tool);
+
+  // Find the index of the current item within its own tool type
+  const currentToolIndex = sameToolItems.findIndex(item => item.name.toLowerCase() === options.excludeName.toLowerCase());
   
-  // Create a new array that excludes the current item
-  const filteredItems = allItems.filter((_, index) => index !== currentIndex);
+  // Filter out the current item
+  const filteredSameToolItems = sameToolItems.filter((_, index) => index !== currentToolIndex);
 
-  // Create a "rotated" array that starts from the item AFTER the current one.
-  // This makes the related items feel relevant but is 100% deterministic.
-  const rotatedItems = [
-    ...filteredItems.slice(currentIndex),
-    ...filteredItems.slice(0, currentIndex)
+  // Rotate the array of same-tool items to get deterministic variety
+  const rotatedSameToolItems = [
+    ...filteredSameToolItems.slice(currentToolIndex),
+    ...filteredSameToolItems.slice(0, currentToolIndex)
   ];
+  
+  // Start building the final list, prioritizing items of the same tool
+  const finalRelatedItems = [...rotatedSameToolItems];
 
-  return rotatedItems.slice(0, count);
+  // If we still don't have enough items, fill the rest with items from the other tool
+  if (finalRelatedItems.length < count) {
+    const needed = count - finalRelatedItems.length;
+    finalRelatedItems.push(...otherToolItems.slice(0, needed));
+  }
+
+  return finalRelatedItems.slice(0, count);
 }
 
 /**

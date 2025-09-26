@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-// src/pages/logos/themes/[slug].tsx
+// src/pages/logo/themes/[slug].tsx
 import { type NextPage, GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import PseoLogoPageTemplate, { PseoLogoPageTemplateProps } from "src/component/pSEO/PseoLogoPageTemplate";
@@ -28,7 +28,7 @@ const ThemeLogoPage: NextPage<ThemeLogoPageServerProps> = ({ theme, images, slug
     pageTitle: `${theme} Gaming Logos - Create ${theme}-Themed Logos with AI`,
     metaDescription: `Generate powerful ${theme}-themed gaming logos. From epic Fantasy dragons to scary Horror mascots, our AI brings your creative vision to life.`,
     keywords: `${theme} gaming logo, ${theme} logo maker, ${theme} themed logo, fantasy logo, horror logo`,
-    canonicalUrl: `https://gaminglogoai.com/logos/themes/${slug}`,
+    canonicalUrl: `https://gaminglogoai.com/logo/themes/${slug}`,
     h1: <><span className="text-cyan-400">{theme}</span> Themed Gaming Logos</>,
     heroImageSrc: images[0]?.src || "/styles/default-theme-icon.webp",
     introParagraph: <>Summon the perfect mascot for your brand with our <strong>{theme}</strong> themed logo generator. Ideal for clans and streamers looking for a powerful identity.</>,
@@ -71,7 +71,7 @@ export const getStaticProps: GetStaticProps<ThemeLogoPageServerProps> = async ({
   const images = themesData[matchedTheme]?.map(img => ({ ...img, src: toHighQuality(img.src) })) || [];
 
     const relatedItems = getStaticRelatedItems({
-      excludeCategory: "Themes & Motifs",
+      tool: 'logo',
       excludeName: matchedTheme,
     });
 

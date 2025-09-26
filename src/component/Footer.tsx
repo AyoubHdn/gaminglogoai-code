@@ -26,11 +26,11 @@ export function Footer() {
 
   // Curate a list of your most important/popular niche landing pages to feature
   const popularNiches = [
-    { name: "Fortnite Logos", url: "/logos/games/fortnite-logo-maker" },
+    { name: "Fortnite Logos", url: "/logo/games/fortnite-logo-maker" },
     { name: "Fortnite PFP", url: "/pfp/games/fortnite-pfp-maker" },
-    { name: "Minecraft Logos", url: "/logos/games/minecraft-logo-maker" },
+    { name: "Minecraft Logos", url: "/logo/games/minecraft-logo-maker" },
     { name: "Minecraft PFP", url: "/pfp/games/minecraft-pfp-maker" },
-    { name: "Free Fire Logos", url: "/logos/games/free-fire-logo-maker" }, // Example URL
+    { name: "Free Fire Logos", url: "/logo/games/free-fire-logo-maker" }, // Example URL
     //{ name: "Esports Emblems", url: "/gaming-logos/esports-emblems" }, // Example URL
     //{ name: "Valorant Logos", url: "/gaming-logos/valorant" }, // Example URL
     // Add 1-2 more if you like, but keep the list concise

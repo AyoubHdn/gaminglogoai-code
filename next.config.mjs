@@ -35,12 +35,12 @@ const config = {
       },
       {
         source: '/fortnite-logos',
-        destination: '/logos/games/fortnite-logo-maker',
+        destination: '/logo/games/fortnite-logo-maker',
         permanent: true, // This sets the status code to 301
       },
       {
         source: '/minecraft-logos',
-        destination: '/logos/games/minecraft-logo-maker',
+        destination: '/logo/games/minecraft-logo-maker',
         permanent: true,
       },
       {

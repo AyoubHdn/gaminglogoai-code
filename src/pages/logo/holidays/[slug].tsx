@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/require-await */
-// src/pages/logos/holidays/[slug].tsx
+// src/pages/logo/holidays/[slug].tsx
 import { type NextPage, GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import PseoLogoPageTemplate, { PseoLogoPageTemplateProps } from "src/component/pSEO/PseoLogoPageTemplate";
@@ -28,7 +28,7 @@ const HolidayLogoPage: NextPage<HolidayLogoPageServerProps> = ({ holiday, images
     pageTitle: `${holiday} Gaming Logos - Create Seasonal & Holiday Logos`,
     metaDescription: `Celebrate with a custom ${holiday} gaming logo! Perfect for seasonal events, holiday streams, and festive team branding. Create yours instantly with AI.`,
     keywords: `${holiday} gaming logo, ${holiday} logo, seasonal logo maker, halloween logo, christmas logo`,
-    canonicalUrl: `https://gaminglogoai.com/logos/holidays/${slug}`,
+    canonicalUrl: `https://gaminglogoai.com/logo/holidays/${slug}`,
     h1: <><span className="text-cyan-400">{holiday}</span> Themed Gaming Logos</>,
     heroImageSrc: images[0]?.src || "/styles/default-holiday-icon.webp",
     introParagraph: <>Get in the spirit with a custom <strong>{holiday}</strong> logo! Perfect for special events, tournament branding, or just having fun with your stream&lsquo;s identity.</>,
@@ -71,7 +71,7 @@ export const getStaticProps: GetStaticProps<HolidayLogoPageServerProps> = async 
   const images = holidaysData[matchedHoliday]?.map(img => ({ ...img, src: toHighQuality(img.src) })) || [];
 
   const relatedItems = getStaticRelatedItems({
-    excludeCategory: "Holidays & Seasonal",
+    tool: 'logo',
     excludeName: matchedHoliday,
   });
 
