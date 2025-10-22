@@ -70,8 +70,8 @@ const FaceLogoGeneratorPage: NextPage = () => {
   const [showRightStyleSubCategoryArrow, setShowRightStyleSubCategoryArrow] = useState<boolean>(false);
 
   const modelOptions: { name: string; value: FaceAIModel; cost: number; desc: string; recommended?: boolean }[] = [
-    { name: "Pro Face Engine", value: "flux-kontext-pro", cost: 6, desc: "High-quality face stylization with good detail.", recommended: true },
-    { name: "Max Face Engine", value: "flux-kontext-max", cost: 12, desc: "Ultimate detail & realism for face features, best for complex styles." },
+    { name: "Pro Face Engine", value: "flux-kontext-pro", cost: 4, desc: "High-quality face stylization with good detail.", recommended: true },
+    { name: "Max Face Engine", value: "flux-kontext-max", cost: 6, desc: "Ultimate detail & realism for face features, best for complex styles." },
   ];
 
   const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => { // 2. Make it async

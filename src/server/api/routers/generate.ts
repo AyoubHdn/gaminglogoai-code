@@ -120,7 +120,7 @@ export const generateRouter = createTRPCRouter({
       // Define credit costs
       const modelConfig = {
         "flux-schnell": { credits: 1 },
-        "flux-dev": { credits: 4 },
+        "flux-dev": { credits: 2 },
       }[input.model];
 
       if (!modelConfig) {

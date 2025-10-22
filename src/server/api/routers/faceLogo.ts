@@ -152,8 +152,8 @@ export const faceLogoRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       console.log("FACELOGO_ROUTER: [1] generateFaceLogo mutation ENTERED. User:", ctx.session.user.id, "Model:", input.model);
       const modelCosts: Record<typeof input.model, number> = {
-        "flux-kontext-pro": 6, // Example cost
-        "flux-kontext-max": 12, // Example cost
+        "flux-kontext-pro": 4, // Example cost
+        "flux-kontext-max": 6, // Example cost
       };
       const creditsNeeded = modelCosts[input.model];
       console.log("FACELOGO_ROUTER: [2] Credits needed:", creditsNeeded);

@@ -332,7 +332,7 @@ useEffect(() => {
                   {
                     name: "Context Pro Engine", // Renamed from Balanced/Optimized
                     value: "flux-kontext-pro" as AIModel, // UPDATED to your new model
-                    cost: 4, // Adjust cost if different for kontext-pro
+                    cost: 2, // Adjust cost if different for kontext-pro
                     desc: "Uses style image for higher fidelity and context. Recommended.",
                     recommended: true,
                     // Uses the 'e' suffixed image, assuming you have previews for it
