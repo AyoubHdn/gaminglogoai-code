@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 import fetch from "node-fetch";
 import fs from "fs";
 import path from "path";
@@ -11,6 +11,7 @@ import sharp from "sharp";
 import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer-core";
 import AWS from "aws-sdk";
+
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { TWITCH_BANNER_STYLES } from "~/data/twitchBannerStyles";
 import { env } from "~/env.mjs";
@@ -23,11 +24,8 @@ const s3 = new AWS.S3({
   region: env.NEXT_PUBLIC_AWS_REGION_GAMING,
 });
 
-const BUCKET: string | undefined = env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING;
-
-if (!BUCKET) {
-  throw new Error("S3 bucket for gaming banners is not configured.");
-}
+const BUCKET = env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING;
+if (!BUCKET) throw new Error("S3 bucket missing for gaming banners");
 
 function escapeXml(str: string) {
   return str.replace(/[<>&"']/g, (c) => ({
@@ -52,14 +50,13 @@ export const twitchBannerRouter = createTRPCRouter({
       const { styleId, channelName, tagline = "", logoUrl = "" } = input;
 
       // 1. Load style
-      const style = TWITCH_BANNER_STYLES.find((s) => s.id === styleId);
-      if (!style)
-        throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid style" });
+      const style = TWITCH_BANNER_STYLES.find(s => s.id === styleId);
+      if (!style) throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid style" });
 
       const W = style.styleRules.canvasWidth;
       const H = style.styleRules.canvasHeight;
 
-      // 2. Credits
+      // 2. Deduct credits
       const creditsNeeded = style.creditCost ?? 2;
       const { count } = await ctx.prisma.user.updateMany({
         where: { id: ctx.session.user.id, gamingCredits: { gte: creditsNeeded } },
@@ -75,123 +72,102 @@ export const twitchBannerRouter = createTRPCRouter({
 
       let bgBuffer = fs.readFileSync(bgPath);
 
-      // 4. Optional Logo compositing
-      if (style.styleRules.photo && logoUrl) {
+      // 4. Optional logo composite
+      if (logoUrl && style.styleRules.photo) {
         try {
           const resp = await fetch(logoUrl);
           const buf = Buffer.from(await resp.arrayBuffer());
           const { x, y, width, height } = style.styleRules.photo;
 
-          const resized = await sharp(buf).resize(width, height).png().toBuffer();
+          const resized = await sharp(buf)
+            .resize(width, height)
+            .png()
+            .toBuffer();
 
           bgBuffer = await sharp(bgBuffer)
             .composite([{ input: resized, left: x, top: y }])
             .png()
             .toBuffer();
-        } catch (e) {
-          console.error("Logo composite failed:", e);
+        } catch (err) {
+          console.error("Logo composite failed:", err);
         }
       }
 
-      // SAFE resize background for Puppeteer (prevents Chromium crash)
+      // Resize final background
       const resizedBackground = await sharp(bgBuffer)
-        .resize(style.styleRules.canvasWidth, style.styleRules.canvasHeight, {
-          fit: "cover",
-        })
+        .resize(W, H, { fit: "cover" })
         .png()
         .toBuffer();
 
-      const backgroundDataUrl = `data:image/png;base64,${resizedBackground.toString("base64")}`;
+      const backgroundDataUrl =
+        `data:image/png;base64,${resizedBackground.toString("base64")}`;
 
-      // 5. Load fonts safely
+      // 5. Prepare fonts
       const fonts = style.styleRules.fonts;
-      if (!fonts || Object.keys(fonts).length === 0) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "No fonts defined in style rules.",
-        });
-      }
 
-      const fontFaces = Object.entries(fonts)
-        .map(([key, font]) => {
+      const fontFaces = Object.values(fonts)
+        .map((font) => {
           const fp = path.join(process.cwd(), "public", "fonts", font.file);
-          if (!fs.existsSync(fp)) {
-            console.warn(`Missing font file: ${fp}`);
-            return "";
-          }
-          const base = fs.readFileSync(fp).toString("base64");
-          return `@font-face {
-            font-family: '${escapeXml(font.family)}';
-            src: url(data:font/ttf;base64,${base}) format('truetype');
-          }`;
+          const base64 = fs.readFileSync(fp).toString("base64");
+          return `
+            @font-face {
+              font-family: '${escapeXml(font.family)}';
+              src: url(data:font/ttf;base64,${base64}) format('truetype');
+            }
+          `;
         })
         .join("\n");
 
-      // --- 6. SAFE ELEMENT ACCESS ---
+      // 6. Text elements
       const elements = style.styleRules.elements;
-      if (!elements) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Missing text elements in style.",
-        });
-      }
-
-      const channelNameRule = elements.channelName;
+      const channelRule = elements.channelName;
       const taglineRule = elements.tagline;
 
-      if (!channelNameRule) {
+      if (!channelRule) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Style is missing channelName element.",
         });
       }
 
-      // tagline is optional (just skip rendering)
-      const hasTagline = tagline && tagline.trim().length > 0;
 
-      // --- SAFE FONT RESOLUTION ---
-      function resolveFont(ruleFontFamily: string) {
-        const found = fonts[ruleFontFamily];
-        if (!found) {
-          console.warn(`Font family '${ruleFontFamily}' not found. Falling back to sans-serif.`);
-          return { family: "sans-serif" };
-        }
-        return found;
+      const channelFont = fonts[channelRule.fontFamily];
+      if (!channelFont) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Style is missing channelName font.",
+        });
       }
+      const taglineFont = taglineRule ? fonts[taglineRule.fontFamily] : null;
+      
 
-      const channelFont = resolveFont(channelNameRule.fontFamily);
-      const taglineFont = taglineRule ? resolveFont(taglineRule.fontFamily) : null;
-
-      // --- 7. BUILD SVG ---
       const svg = `
       <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
         <style>${fontFaces}</style>
 
-        <image href="${backgroundDataUrl}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice" />
+        <image href="${backgroundDataUrl}" x="0" y="0" width="${W}" height="${H}" />
 
         <text
-          x="${channelNameRule.x}"
-          y="${channelNameRule.y}"
+          x="${channelRule.x}"
+          y="${channelRule.y}"
           font-family="${escapeXml(channelFont.family)}"
-          font-size="${channelNameRule.fontSize}"
-          fill="${channelNameRule.color}"
-          letter-spacing="${channelNameRule.letterSpacing ?? 0}"
-          text-anchor="${channelNameRule.textAnchor ?? "start"}"
-          font-weight="${channelNameRule.fontWeight ?? "bold"}"
+          font-size="${channelRule.fontSize}"
+          fill="${channelRule.color}"
+          text-anchor="${channelRule.textAnchor ?? "start"}"
+          font-weight="${channelRule.fontWeight ?? "bold"}"
         >
           ${escapeXml(channelName.toUpperCase())}
         </text>
 
         ${
-          hasTagline && taglineRule && taglineFont
+          tagline && taglineRule
             ? `
         <text
           x="${taglineRule.x}"
           y="${taglineRule.y}"
-          font-family="${escapeXml(taglineFont.family)}"
+          font-family="${escapeXml(taglineFont!.family)}"
           font-size="${taglineRule.fontSize}"
           fill="${taglineRule.color}"
-          letter-spacing="${taglineRule.letterSpacing ?? 0}"
           text-anchor="${taglineRule.textAnchor ?? "start"}"
           font-weight="${taglineRule.fontWeight ?? "normal"}"
         >
@@ -203,53 +179,38 @@ export const twitchBannerRouter = createTRPCRouter({
       </svg>
       `;
 
-
-      // 7. Puppeteer Render
-      let finalImageBuffer: Buffer;
+      // 7. Render SVG with puppeteer-core + chromium
+      let finalBuffer: Buffer;
       try {
-      const canvasWidth = style.styleRules.canvasWidth ?? 1200;
-      const canvasHeight = style.styleRules.canvasHeight ?? 480;
-
-      const browser = await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: {
-          width: canvasWidth,
-          height: canvasHeight,
-        },
-        executablePath:
-          process.env.NODE_ENV === "development"
-            ? (await import("puppeteer")).executablePath()  // local: full Chrome
-            : await chromium.executablePath(),             // production: serverless chromium
-        headless: true,
-      });
+        const browser = await puppeteer.launch({
+          args: chromium.args,
+          headless: true,
+          defaultViewport: { width: W, height: H },
+          executablePath: await chromium.executablePath(),   // 🟢 SAME AS WEDDING PRODUCTION BRANCH
+        });
 
         const page = await browser.newPage();
-        await page.setViewport({ width: W, height: H, deviceScaleFactor: 2 });
-
         await page.setContent(svg, { waitUntil: "domcontentloaded" });
 
-        const screenshot = await page.screenshot({ type: "png", omitBackground: false });
+        const screenshot = await page.screenshot({ type: "png" });
         await browser.close();
 
-        finalImageBuffer = Buffer.from(screenshot);
+        finalBuffer = Buffer.from(screenshot);
       } catch (err) {
-        console.error("Puppeteer error:", err);
+        console.error("❌ Puppeteer error:", err);
         throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Render failed" });
       }
 
-      // 8. Save DB + S3
+      // 8. Upload to S3
       const icon = await ctx.prisma.icon.create({
-        data: {
-          prompt: `TwitchBanner:${styleId}:${channelName}`,
-          userId: ctx.session.user.id,
-        },
+        data: { prompt: `Twitch:${styleId}:${channelName}`, userId: ctx.session.user.id },
       });
 
       await s3
         .putObject({
           Bucket: BUCKET,
           Key: icon.id,
-          Body: finalImageBuffer,
+          Body: finalBuffer,
           ContentType: "image/png",
         })
         .promise();
