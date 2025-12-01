@@ -6,6 +6,8 @@ import { iconRouter } from "./routers/icons";
 import { mauticRouter } from "~/server/api/routers/mautic";
 import { faceLogoRouter } from "~/server/api/routers/faceLogo";
 import { nanoFaceRouter } from "~/server/api/routers/nanoFace";
+import { s3Router } from "./routers/s3";
+import { twitchBannerRouter } from "./routers/twitchBanner";
 
 /**
  * This is the primary router for your server.
@@ -20,6 +22,8 @@ export const appRouter = createTRPCRouter({
   icons: iconRouter,
   mautic: mauticRouter,
   nanoFace: nanoFaceRouter,
+  s3: s3Router,
+  twitchBanner: twitchBannerRouter,
 });
 
 // export type definition of API
