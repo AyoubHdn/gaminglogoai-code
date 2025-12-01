@@ -9,7 +9,7 @@ import fs from "fs";
 import path from "path";
 import sharp from "sharp";
 import chromium from "@sparticuz/chromium";
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import AWS from "aws-sdk";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { TWITCH_BANNER_STYLES } from "~/data/twitchBannerStyles";
@@ -207,19 +207,19 @@ export const twitchBannerRouter = createTRPCRouter({
       // 7. Puppeteer Render
       let finalImageBuffer: Buffer;
       try {
+      const canvasWidth = style.styleRules.canvasWidth ?? 1200;
+      const canvasHeight = style.styleRules.canvasHeight ?? 480;
+
       const browser = await puppeteer.launch({
-        args: [
-          ...chromium.args,
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-dev-shm-usage",
-          "--disable-gpu",
-        ],
-        defaultViewport: null,
+        args: chromium.args,
+        defaultViewport: {
+          width: canvasWidth,
+          height: canvasHeight,
+        },
         executablePath:
           process.env.NODE_ENV === "development"
-            ? (await import("puppeteer")).executablePath()
-            : await chromium.executablePath(),
+            ? (await import("puppeteer")).executablePath()  // local: full Chrome
+            : await chromium.executablePath(),             // production: serverless chromium
         headless: true,
       });
 
