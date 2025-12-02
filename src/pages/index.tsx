@@ -6,7 +6,7 @@ import Link from "next/link"; // Use Link for navigation
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FaChevronRight, FaMagic, FaPaintBrush, FaBolt, FaUsers, FaShieldAlt, FaUserCircle } from "react-icons/fa"; // Example Icons
-
+import { s3Style } from "~/utils/s3Paths";
 
 const HomePage: NextPage = () => {
   const { data: session } = useSession();
@@ -236,19 +236,19 @@ function WhoIsThisForSection() {
     {
       name: "Esports Teams & Clans",
       description: "Generate a professional team logo that builds unity and intimidates the competition. Perfect for jerseys, banners, and social media branding.",
-      icon: "/styles/s432e.webp", // ** CREATE a 64x64 icon for this **
+      icon: s3Style("/styles/s432e.webp"), // ** CREATE a 64x64 icon for this **
       alt: "Icon for an esports team shield",
     },
     {
       name: "Twitch & YouTube Streamers",
       description: "Create a unique streamer logo or a custom PFP that grabs attention. Build a recognizable brand for your channel from day one.",
-      icon: "/styles/f7.webp", // ** CREATE a 64x64 icon for this **
+      icon: s3Style("/styles/f7.webp"), // ** CREATE a 64x64 icon for this **
       alt: "Icon representing a streaming camera or play button",
     },
     {
       name: "Content Creators & Gamers",
       description: "Whether you need a cool gaming avatar, a YouTube channel logo, or a custom PFP, our AI logo maker provides endless creative options.",
-      icon: "/styles/f28.webp", // ** CREATE a 64x64 icon for this **
+      icon: s3Style("/styles/f28.webp"), // ** CREATE a 64x64 icon for this **
       alt: "Icon of a gamer with a headset",
     },
   ];
@@ -287,7 +287,7 @@ function StyleShowcaseSection() {
     {
       title: "Create an Epic Gaming Mascot",
       description: "Bring your team to life with a fierce dragon, a stealthy ninja, or any other powerful mascot. Our AI can generate thousands of unique characters to represent your clan.",
-      imageUrl: "/styles/s486e.webp", // ** REPLACE with a great mascot logo **
+      imageUrl: s3Style("/styles/s486e.webp"), // ** REPLACE with a great mascot logo **
       alt: "An AI-generated fierce dragon gaming mascot logo",
       ctaText: "Design a Mascot Logo",
       ctaLink: "/gaming-logo-maker", // Example of pre-filtering

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaChevronRight, FaUserAstronaut, FaCameraRetro, FaMagic, FaPalette, FaQuestionCircle, FaUserCheck, FaSmileBeam, FaShieldVirus, FaBolt, FaGamepad } from "react-icons/fa"; // Example Icons, added FaCameraRetro
+import { s3Style } from "~/utils/s3Paths";
 
 const AIPFPGeneratorLandingPage: NextPage = () => {
   const router = useRouter();
@@ -26,10 +27,10 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
   // ** YOU NEED TO CREATE THESE EXAMPLE IMAGES **
   // Show before/after if possible, or just the AI-generated results from example faces
   const exampleTransformations = [
-    { src: "/styles/f4.webp", alt: "Example of a photo transformed into a cartoon PFP", caption: "Cartoon Style PFPs" },
-    { src: "/styles/f32.webp", alt: "Example of a photo transformed into an anime avatar", caption: "Anime Character Avatars" },
-    { src: "/styles/f22.webp", alt: "Example of a photo transformed into a cyberpunk PFP", caption: "Cyberpunk Your Face" },
-    { src: "/styles/f21.webp", alt: "Example of a photo transformed into a fantasy PFP", caption: "Fantasy Hero Portraits" },
+    { src: s3Style("/styles/f4.webp"), alt: "Example of a photo transformed into a cartoon PFP", caption: "Cartoon Style PFPs" },
+    { src: s3Style("/styles/f32.webp"), alt: "Example of a photo transformed into an anime avatar", caption: "Anime Character Avatars" },
+    { src: s3Style("/styles/f22.webp"), alt: "Example of a photo transformed into a cyberpunk PFP", caption: "Cyberpunk Your Face" },
+    { src: s3Style("/styles/f21.webp"), alt: "Example of a photo transformed into a fantasy PFP", caption: "Fantasy Hero Portraits" },
   ];
 
   function TestimonialSection() {
@@ -45,7 +46,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
       quote: "Finally, a gaming profile picture that actually looks like me but in a cool cartoon style. Took less than a minute to create.", 
       name: "Deadshot_Dave", 
       role: "Discord Community Admin",
-      image: "/styles/f25.webp" // ** CREATE a 100x100 example PFP **
+      image: s3Style("/styles/f25.webp") // ** CREATE a 100x100 example PFP **
     },
     { 
       quote: "The Minecraft style is top-notch! I made a new PFP for my YouTube and Instagram and got so many compliments.", 

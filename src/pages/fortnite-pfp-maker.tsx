@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "~/component/Button";
 import { FaChevronRight, FaCamera, FaPalette, FaMagic } from "react-icons/fa"; // Example Icons
+import { s3Style } from "~/utils/s3Paths";
 
 // This array showcases your best photo-to-Fortnite-PFP transformations.
 // You need to generate these using your /pfp-tool with Fortnite-related style prompts.
@@ -50,7 +51,7 @@ const FortnitePfpMakerLandingPage: NextPage = () => {
             <div className="mb-8 inline-block relative w-40 h-40 sm:w-48 sm:h-48">
                 {/* Showcase a before/after */}
                 <Image src="/handsome-man.webp" alt="A real person's photo before transformation" width={100} height={100} className="rounded-full absolute top-0 left-0 w-1/2 h-1/2 border-2 border-white shadow-lg" />
-                <Image src="/styles/ff25.webp" alt="The same photo transformed into a cool Fortnite PFP" width={200} height={200} className="rounded-full absolute bottom-0 right-0 w-3/4 h-3/4 border-4 border-cyan-400 shadow-xl" />
+                <Image src={s3Style("/styles/ff25.webp")} alt="The same photo transformed into a cool Fortnite PFP" width={200} height={200} className="rounded-full absolute bottom-0 right-0 w-3/4 h-3/4 border-4 border-cyan-400 shadow-xl" />
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg [text-shadow:_2px_2px_4px_rgb(0_0_0_/_50%)]">
               AI <span className="text-cyan-400">Fortnite PFP</span> Maker
