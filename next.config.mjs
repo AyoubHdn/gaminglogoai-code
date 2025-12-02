@@ -11,8 +11,12 @@ const config = {
   reactStrictMode: true,
 
   images: {
-    domains: [
-      "gaminglogoai-images.s3.us-east-1.amazonaws.com",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "gaminglogoai-images.s3.us-east-1.amazonaws.com",
+        pathname: "/**",
+      },
     ],
   },
 

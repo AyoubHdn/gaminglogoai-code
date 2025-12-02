@@ -1,53 +1,42 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
+// ~/server/api/routers/s3.ts
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { z } from "zod";
-import { S3Client } from "@aws-sdk/client-s3";
-import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
+import AWS from "aws-sdk";
+import { env } from "~/env.mjs";
+import { v4 as uuid } from "uuid";
 
-const s3 = new S3Client({
-  region: process.env.NEXT_PUBLIC_AWS_REGION_GAMING,
+const s3 = new AWS.S3({
   credentials: {
-    accessKeyId: process.env.ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY as string,
+    accessKeyId: env.ACCESS_KEY_ID,
+    secretAccessKey: env.SECRET_ACCESS_KEY,
   },
+  region: env.NEXT_PUBLIC_AWS_REGION_GAMING,
 });
 
 export const s3Router = createTRPCRouter({
-  createPresignedUrl: protectedProcedure
+  createUploadUrl: protectedProcedure
     .input(
       z.object({
-        filename: z.string(),
-        filetype: z.string(),
+        tool: z.enum(["faces", "text", "banners", "twitch", "pfp"]),
+        extension: z.string().default("png"),
       })
     )
-    .mutation(async ({ input }) => {
-      if (!process.env.S3_BUCKET_NAME) {
-        throw new Error("S3_BUCKET_NAME is not configured.");
-      }
+    .mutation(async ({ ctx, input }) => {
+      const { tool, extension } = input;
+      const userId = ctx.session.user.id;
 
-      // Generate unique key
-      const fileKey = `uploads/${Date.now()}-${input.filename.replace(/\s+/g, "_")}`;
+      const key = `user-uploads/${tool}/${userId}/${uuid()}.${extension}`;
 
-      // Configure upload settings
-      const presigned = await createPresignedPost(s3, {
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: fileKey,
-        Conditions: [
-          ["content-length-range", 0, 15 * 1024 * 1024], // Limit to 15MB
-          ["starts-with", "$Content-Type", ""],
-        ],
-        Fields: {
-          "Content-Type": input.filetype,
-        },
-        Expires: 300, // 5 minutes
+      const uploadUrl = await s3.getSignedUrlPromise("putObject", {
+        Bucket: env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING,
+        Key: key,
+        ContentType: extension === "png" ? "image/png" : "image/jpeg",
+        Expires: 300,
       });
 
-      const publicUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION_GAMING}.amazonaws.com/${fileKey}`;
-
       return {
-        url: presigned.url,
-        fields: presigned.fields,
-        publicUrl,
+        uploadUrl,
+        fileUrl: `https://${env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING}.s3.${env.NEXT_PUBLIC_AWS_REGION_GAMING}.amazonaws.com/${key}`,
       };
     }),
 });
