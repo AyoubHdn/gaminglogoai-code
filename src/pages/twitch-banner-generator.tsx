@@ -41,7 +41,7 @@ const TwitchBannerGeneratorPage: NextPage = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // TRPC mutations
-  const createPresignedUrl = api.s3.createPresignedUrl.useMutation();
+  const createPresignedUrl = api.s3.createUploadUrl.useMutation();
   const generateBanner = api.twitchBanner.generate.useMutation({
     onSuccess(data) {
       setGeneratedBannerUrl(data?.[0]?.imageUrl ?? null);
