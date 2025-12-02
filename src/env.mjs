@@ -35,7 +35,6 @@ const server = z.object({
   MAUTIC_USERNAME: z.string(),
   MAUTIC_PASSWORD: z.string(),
   CRON_SECRET: z.string(),
-  
 });
 
 /**

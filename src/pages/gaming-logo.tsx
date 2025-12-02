@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaChevronRight, FaPaintBrush, FaBolt, FaUsers, FaShieldAlt, FaMagic, FaQuestionCircle, FaGamepad, FaCogs, FaStar } from "react-icons/fa"; // Example Icons
+import { s3Style } from "~/utils/s3Paths";
 
 const GamingLogoLandingPage: NextPage = () => {
   const router = useRouter();
@@ -24,10 +25,10 @@ const GamingLogoLandingPage: NextPage = () => {
   ];
 
   const exampleShowcase = [
-    { src: "/styles/s22e.webp", alt: "Example of an AI generated mascot gaming logo", caption: "Fierce Mascot Logos" }, // ** REPLACE with actual example images **
-    { src: "/styles/s429e.webp", alt: "Example of an AI generated text-based esports logo", caption: "Sleek Esports Emblems" },
-    { src: "/styles/s407e.webp", alt: "Example of an AI generated retro pixel art gaming logo", caption: "Retro & Pixel Styles" },
-    { src: "/styles/s380e.webp", alt: "Example of an AI generated Moba gaming logo", caption: "Modern Moba Designs" },
+    { src: s3Style("/styles/s22e.webp"), alt: "Example of an AI generated mascot gaming logo", caption: "Fierce Mascot Logos" }, // ** REPLACE with actual example images **
+    { src: s3Style("/styles/s429e.webp"), alt: "Example of an AI generated text-based esports logo", caption: "Sleek Esports Emblems" },
+    { src: s3Style("/styles/s407e.webp"), alt: "Example of an AI generated retro pixel art gaming logo", caption: "Retro & Pixel Styles" },
+    { src: s3Style("/styles/s380e.webp"), alt: "Example of an AI generated Moba gaming logo", caption: "Modern Moba Designs" },
   ];
 
   const testimonials = [
@@ -37,9 +38,9 @@ const GamingLogoLandingPage: NextPage = () => {
   ];
 
   const styleCategories = [
-    { name: "By Game Title", description: "Logos inspired by Fortnite, Minecraft, Apex Legends, CoD, and more.", icon: <FaGamepad/>, examples: ["/styles/s643e.webp", "/styles/s640e.webp"] },
-    { name: "By Art Style", description: "Explore styles like cartoon, pixel art, emblems, and bold typography.", icon: <FaPaintBrush/>, examples: ["/styles/s441e.webp", "/styles/s407e.webp"] },
-    { name: "By Theme & Motif", description: "Create logos based on fantasy, sci-fi, horror, or warrior themes.", icon: <FaShieldAlt/>, examples: ["/styles/s491e.webp", "/styles/s471e.webp"] },
+    { name: "By Game Title", description: "Logos inspired by Fortnite, Minecraft, Apex Legends, CoD, and more.", icon: <FaGamepad/>, examples: [s3Style("/styles/s643e.webp"), s3Style("/styles/s640e.webp")] },
+    { name: "By Art Style", description: "Explore styles like cartoon, pixel art, emblems, and bold typography.", icon: <FaPaintBrush/>, examples: [s3Style("/styles/s441e.webp"), s3Style("/styles/s407e.webp")] },
+    { name: "By Theme & Motif", description: "Create logos based on fantasy, sci-fi, horror, or warrior themes.", icon: <FaShieldAlt/>, examples: [s3Style("/styles/s491e.webp"), s3Style("/styles/s471e.webp")] },
   ];
 
   const faqItems = [
@@ -82,7 +83,7 @@ const GamingLogoLandingPage: NextPage = () => {
           
           <div className="container mx-auto px-4 sm:px-6 relative z-20">
             <Image
-              src="/styles/s385e.webp" // ** REPLACE with your main GamingLogoAI icon/mascot if you have one **
+              src={s3Style("/styles/s385e.webp")} // ** REPLACE with your main GamingLogoAI icon/mascot if you have one **
               alt="Gaming Logo AI Icon"
               width={140}
               height={140}

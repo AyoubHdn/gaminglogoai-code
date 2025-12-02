@@ -6,19 +6,20 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "~/component/Button";
 import { FaChevronRight, FaCubes, FaPaintBrush, FaDownload } from "react-icons/fa"; // Example Icons
+import { s3Style } from "~/utils/s3Paths";
 
 // This array showcases your best Minecraft-style logo examples.
 // These should be pre-generated using your tool and the styles you listed.
 const minecraftStyleExamples = [
   // ** REPLACE these with ACTUAL paths to your best Minecraft-style example images **
-  { src: "/Styles/s701e.webp", alt: "AI generated Minecraft block emblem logo" },
-  { src: "/Styles/s702e.webp", alt: "Minecraft server logo with a diamond pickaxe created by AI" },
-  { src: "/Styles/s703e.webp", alt: "Custom Minecraft creeper mascot logo for a YouTube channel" },
-  { src: "/Styles/s704e.webp", alt: "Minecraft logo for a clan featuring a pixelated sword" },
-  { src: "/Styles/s705e.webp", alt: "AI Minecraft logo maker example with a hero character" },
-  { src: "/Styles/s706e.webp", alt: "Cool Enderman-inspired logo for Minecraft" },
-  { src: "/Styles/s707e.webp", alt: "Minecraft logo for YouTube with a blocky animal mascot" },
-  { src: "/Styles/s708e.webp", alt: "Pixel badge logo for a Minecraft server" },
+  { src: s3Style("/styles/s701e.webp"), alt: "AI generated Minecraft block emblem logo" },
+  { src: s3Style("/styles/s702e.webp"), alt: "Minecraft server logo with a diamond pickaxe created by AI" },
+  { src: s3Style("/styles/s703e.webp"), alt: "Custom Minecraft creeper mascot logo for a YouTube channel" },
+  { src: s3Style("/styles/s704e.webp"), alt: "Minecraft logo for a clan featuring a pixelated sword" },
+  { src: s3Style("/styles/s705e.webp"), alt: "AI Minecraft logo maker example with a hero character" },
+  { src: s3Style("/styles/s706e.webp"), alt: "Cool Enderman-inspired logo for Minecraft" },
+  { src: s3Style("/styles/s707e.webp"), alt: "Minecraft logo for YouTube with a blocky animal mascot" },
+  { src: s3Style("/styles/s708e.webp"), alt: "Pixel badge logo for a Minecraft server" },
 ];
 
 const MinecraftLogoLandingPage: NextPage = () => {
@@ -51,7 +52,7 @@ const MinecraftLogoLandingPage: NextPage = () => {
           
           <div className="container mx-auto px-4 sm:px-6 relative z-20">
             <Image
-              src="/styles/s701e.webp" // ** A great single Minecraft logo example (e.g., a creeper mascot) **
+              src={s3Style("/styles/s701e.webp")} // ** A great single Minecraft logo example (e.g., a creeper mascot) **
               alt="An AI-generated Minecraft server logo"
               width={150}
               height={150}
