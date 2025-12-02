@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -37,153 +38,166 @@ function escapeXml(str: string) {
 
 export const twitchBannerRouter = createTRPCRouter({
   generate: protectedProcedure
-    .input(
-      z.object({
-        styleId: z.string(),
-        channelName: z.string(),
-        tagline: z.string().optional(),
-        logoUrl: z.string().optional(),
-      })
-    )
+    .input(z.object({
+      styleId: z.string(),
+      channelName: z.string(),
+      tagline: z.string().optional(),
+      logoUrl: z.string().optional(),
+    }))
     .mutation(async ({ ctx, input }) => {
-      const { styleId, channelName, tagline = "", logoUrl = "" } = input;
+      console.log("🟦 [TB] START GENERATE", input);
 
-      const style = TWITCH_BANNER_STYLES.find((s) => s.id === styleId);
-      if (!style) throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid style" });
-
-      const W = style.styleRules.canvasWidth;
-      const H = style.styleRules.canvasHeight;
-
-      // deduct credits
-      const creditsNeeded = style.creditCost ?? 2;
-      const { count } = await ctx.prisma.user.updateMany({
-        where: { id: ctx.session.user.id, gamingCredits: { gte: creditsNeeded } },
-        data: { gamingCredits: { decrement: creditsNeeded } },
-      });
-      if (count <= 0) throw new TRPCError({ code: "BAD_REQUEST", message: "Not enough credits" });
-
-      // load background
-      const bgPath = path.join(process.cwd(), "public", style.backgroundSrc.replace(/^\//, ""));
-      if (!fs.existsSync(bgPath)) throw new Error("Missing background");
-
-      let bgBuffer = fs.readFileSync(bgPath);
-
-      // composite uploaded logo
-      if (style.styleRules.photo && logoUrl) {
-        try {
-          const resp = await fetch(logoUrl);
-          const buf = Buffer.from(await resp.arrayBuffer());
-          const { x, y, width, height } = style.styleRules.photo;
-
-          const resized = await sharp(buf).resize(width, height).png().toBuffer();
-
-          bgBuffer = await sharp(bgBuffer)
-            .composite([{ input: resized, left: x, top: y }])
-            .png()
-            .toBuffer();
-        } catch (e) {
-          console.error("Logo composite failed:", e);
-        }
-      }
-
-      const backgroundDataUrl =
-        `data:image/png;base64,${bgBuffer.toString("base64")}`;
-
-      // fonts
-      const fontFaces = Object.entries(style.styleRules.fonts)
-        .map(([_, font]) => {
-          const fp = path.join(process.cwd(), "public", "fonts", font.file);
-          if (!fs.existsSync(fp)) return "";
-
-          const b64 = fs.readFileSync(fp).toString("base64");
-          return `@font-face {
-              font-family: '${escapeXml(font.family)}';
-              src: url(data:font/ttf;base64,${b64}) format('truetype');
-          }`;
-        })
-        .join("\n");
-
-      const el = style.styleRules.elements;
-
-      const channelRule = el.channelName;
-      const taglineRule = el.tagline;
-
-      if (!channelRule) throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid style configuration" });
-
-      const svg = `
-      <svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-        <style>${fontFaces}</style>
-        <image href="${backgroundDataUrl}" x="0" y="0" width="${W}" height="${H}" />
-
-        <text
-          x="${channelRule.x}"
-          y="${channelRule.y}"
-          font-family="${escapeXml(style.styleRules.fonts[channelRule.fontFamily]?.family ?? 'sans-serif')}"
-          font-size="${channelRule.fontSize}"
-          fill="${channelRule.color}"
-          text-anchor="${channelRule.textAnchor ?? "start"}"
-          font-weight="${channelRule.fontWeight ?? "bold"}"
-        >
-        ${escapeXml(channelName.toUpperCase())}
-        </text>
-
-        ${taglineRule ? `
-        <text
-          x="${taglineRule.x}"
-          y="${taglineRule.y}"
-          font-family="${escapeXml(style.styleRules.fonts[taglineRule.fontFamily]?.family ?? 'sans-serif')}"
-          font-size="${taglineRule.fontSize}"
-          fill="${taglineRule.color}"
-          text-anchor="${taglineRule.textAnchor ?? "start"}"
-          font-weight="${taglineRule.fontWeight ?? "normal"}"
-        >
-        ${escapeXml(tagline.toUpperCase())}
-        </text>` : ""}
-      </svg>
-      `;
-
-      // puppeteer render
-      let finalImageBuffer: Buffer;
       try {
-        const browser = await puppeteer.launch({
-          args: chromium.args,
-          executablePath: await chromium.executablePath(),
-          headless: true,
+        const { styleId, channelName, tagline = "", logoUrl = "" } = input;
+
+        console.log("🟩 [TB] Loading style…");
+        const style = TWITCH_BANNER_STYLES.find((s) => s.id === styleId);
+        if (!style) {
+          console.log("❌ [TB] STYLE NOT FOUND");
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid style" });
+        }
+
+        const W = style.styleRules.canvasWidth;
+        const H = style.styleRules.canvasHeight;
+
+        console.log("🟩 [TB] Deducting credits…");
+        const creditsNeeded = style.creditCost ?? 2;
+        const { count } = await ctx.prisma.user.updateMany({
+          where: { id: ctx.session.user.id, gamingCredits: { gte: creditsNeeded } },
+          data: { gamingCredits: { decrement: creditsNeeded } },
+        });
+        if (count <= 0) {
+          console.log("❌ [TB] Not enough credits");
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Not enough credits" });
+        }
+
+        console.log("🟩 [TB] Loading background:", style.backgroundSrc);
+        const bgPath = path.join(process.cwd(), "public", style.backgroundSrc.replace(/^\//, ""));
+
+        if (!fs.existsSync(bgPath)) {
+          console.log("❌ [TB] Background not found at:", bgPath);
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Background image missing" });
+        }
+
+        let bgBuffer = fs.readFileSync(bgPath);
+
+        // LOGO COMPOSITE
+        if (style.styleRules.photo && logoUrl) {
+          console.log("🟦 [TB] Fetching user logo:", logoUrl);
+          try {
+            const resp = await fetch(logoUrl);
+            if (!resp.ok) throw new Error("Fetch failed: " + resp.status);
+            const buf = Buffer.from(await resp.arrayBuffer());
+
+            console.log("🟩 [TB] Resizing logo…");
+            const { x, y, width, height } = style.styleRules.photo;
+            const resized = await sharp(buf).resize(width, height).png().toBuffer();
+
+            console.log("🟩 [TB] Compositing logo…");
+            bgBuffer = await sharp(bgBuffer)
+              .composite([{ input: resized, left: x, top: y }])
+              .png()
+              .toBuffer();
+          } catch (e) {
+            console.error("❌ [TB] Logo composite failed:", e);
+          }
+        }
+
+        console.log("🟩 [TB] Resizing background for puppeteer…");
+        const resizedBackground = await sharp(bgBuffer)
+          .resize(W, H, { fit: "cover" })
+          .png()
+          .toBuffer();
+
+        const bgDataUrl = `data:image/png;base64,${resizedBackground.toString("base64")}`;
+
+        // FONTS
+        console.log("🟩 [TB] Loading fonts…");
+        const fonts = style.styleRules.fonts;
+        if (!fonts || Object.keys(fonts).length === 0) {
+          console.log("❌ [TB] No fonts found in style");
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "No fonts defined in style rules.",
+          });
+        }
+
+        const fontFaces = Object.entries(fonts).map(([k, f]) => {
+          const fp = path.join(process.cwd(), "public", "fonts", f.file);
+          if (!fs.existsSync(fp)) {
+            console.log("❌ [TB] Missing font file:", fp);
+            return "";
+          }
+          return "";
         });
 
+        console.log("🟩 [TB] Building SVG…");
+
+        if (!style.styleRules.elements?.channelName) {
+          console.log("❌ [TB] Channel name element not configured in style");
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Channel name element not configured in style rules.",
+          });
+        }
+
+        const channelNameEl = style.styleRules.elements.channelName;
+        const svg = `
+          <svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+            <image href="${bgDataUrl}" width="${W}" height="${H}" />
+            <text x="${channelNameEl.x}"
+                  y="${channelNameEl.y}"
+                  font-size="${channelNameEl.fontSize}"
+                  fill="${channelNameEl.color}">
+              ${channelName.toUpperCase()}
+            </text>
+          </svg>
+        `;
+
+        console.log("🟩 [TB] Launching Chromium…");
+
+        let browser;
+        try {
+          browser = await puppeteer.launch({
+            args: chromium.args,
+            executablePath: await chromium.executablePath(),
+            headless: true,
+          });
+        } catch (err) {
+          console.error("❌ [TB] Chromium launch failed:", err);
+          throw new Error("Chromium launch failed");
+        }
+
+        console.log("🟩 [TB] Rendering SVG…");
+
         const page = await browser.newPage();
-        await page.setViewport({ width: W, height: H, deviceScaleFactor: 2 });
+        await page.setViewport({ width: W, height: H });
         await page.setContent(svg, { waitUntil: "domcontentloaded" });
 
-        const shot = await page.screenshot({ type: "png" });
+        const screenshot = await page.screenshot({ type: "png" });
         await browser.close();
 
-        finalImageBuffer = Buffer.from(shot);
-      } catch (err) {
-        console.error("PUPPETEER FAIL:", err);
-        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Render failed" });
-      }
+        console.log("🟩 [TB] Uploading banner to S3…");
 
-      const icon = await ctx.prisma.icon.create({
-        data: {
-          prompt: `TwitchBanner:${styleId}:${channelName}`,
-          userId: ctx.session.user.id,
-        },
-      });
+        const icon = await ctx.prisma.icon.create({
+          data: {
+            prompt: `TwitchBanner:${styleId}:${channelName}`,
+            userId: ctx.session.user.id,
+          },
+        });
 
-      await s3
-        .putObject({
-          Bucket: BUCKET,
+        await s3.putObject({
+          Bucket: env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING,
           Key: icon.id,
-          Body: finalImageBuffer,
+          Body: screenshot,
           ContentType: "image/png",
-        })
-        .promise();
+        }).promise();
 
-      return [
-        {
-          imageUrl: `https://${BUCKET}.s3.${env.NEXT_PUBLIC_AWS_REGION_GAMING}.amazonaws.com/${icon.id}`,
-        },
-      ];
+        console.log("🟩 [TB] DONE!");
+        return [{ imageUrl: `https://${env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING}.s3.${env.NEXT_PUBLIC_AWS_REGION_GAMING}.amazonaws.com/${icon.id}` }];
+      } catch (err) {
+        console.error("❌ [TB] FINAL ERROR:", err);
+        throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Banner generation failed." });
+      }
     }),
 });
