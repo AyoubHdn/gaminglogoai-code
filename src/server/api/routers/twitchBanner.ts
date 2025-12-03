@@ -81,20 +81,40 @@ export const twitchBannerRouter = createTRPCRouter({
       }
 
       // 4. Composite uploaded logo (if exists)
-      if (style.styleRules.photo && logoUrl) {
+      if (style.supportsPhoto && logoUrl && style.styleRules.photo) {
         try {
           const resp = await fetch(logoUrl);
-          const buf = Buffer.from(await resp.arrayBuffer());
+          const userBuf = Buffer.from(await resp.arrayBuffer());
+
           const { x, y, width, height } = style.styleRules.photo;
 
-          const resized = await sharp(buf).resize(width, height).png().toBuffer();
-
-          bgBuffer = await sharp(bgBuffer)
-            .composite([{ input: resized, left: x, top: y }])
+          // Resize user image
+          const resizedUser = await sharp(userBuf)
+            .resize(width, height)
             .png()
             .toBuffer();
+
+          // STEP 1 — place USER PHOTO on a blank transparent canvas
+          const canvas = await sharp({
+            create: {
+              width: style.styleRules.canvasWidth,
+              height: style.styleRules.canvasHeight,
+              channels: 4,
+              background: { r: 0, g: 0, b: 0, alpha: 0 }
+            }
+          })
+            .composite([{ input: resizedUser, left: x, top: y }])
+            .png()
+            .toBuffer();
+
+          // STEP 2 — composite BACKGROUND ON TOP
+          bgBuffer = await sharp(bgBuffer)
+            .composite([{ input: canvas, left: 0, top: 0 }])
+            .png()
+            .toBuffer();
+
         } catch (err) {
-          console.error("Composite error:", err);
+          console.error("Composite UNDERLAY test error:", err);
         }
       }
 

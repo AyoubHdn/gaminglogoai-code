@@ -28,17 +28,23 @@ export interface StyleRules {
 export interface TwitchBannerStyle {
   id: string;
   name: string;
+  previewSrc: string;
   backgroundSrc: string;
   styleRules: StyleRules;
   creditCost: number;
+  supportsPhoto: boolean;
+  category: string;
 }
 
 export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   {
-    id: "blueModern",
+    id: "blueModern1",
     name: "Blue Modern Gamer",
+    previewSrc: "/twitch/banner/blue_modern-prv.png",
     backgroundSrc: "/twitch/banner/blue_modern.webp",
     creditCost: 2,
+    supportsPhoto: true,
+    category: "With Logo",
     styleRules: {
       canvasWidth: 1200,
       canvasHeight: 480,
@@ -75,5 +81,51 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
       }
     }
   }
+  ,
+
+  {
+    id: "blueModern",
+    name: "Blue Modern Gamer",
+    previewSrc: "/twitch/banner/blue_modern-prv.png",
+    backgroundSrc: "/twitch/banner/blue_modern.webp",
+    creditCost: 2,
+    supportsPhoto: false,
+    category: "Without Logo",
+    styleRules: {
+      canvasWidth: 1200,
+      canvasHeight: 480,
+
+      fonts: {
+        headline: { family: "Anton", file: "Anton-Regular.ttf" },
+        body: { family: "Anton", file: "Anton-Regular.ttf" }
+      },
+
+      elements: {
+        channelName: {
+          x: 360,
+          y: 200,
+          fontSize: 140,
+          color: "#FFFFFF",
+          fontFamily: "headline",
+          textAnchor: "start"
+        },
+        tagline: {
+          x: 360,
+          y: 280,
+          fontSize: 36,
+          color: "#FFFFFF",
+          fontFamily: "body",
+          textAnchor: "start"
+        }
+      },
+
+      photo: {
+        x: 750,
+        y: 30,
+        width: 360,
+        height: 420
+      }
+    }
+  },
 
 ];

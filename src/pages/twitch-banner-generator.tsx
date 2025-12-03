@@ -37,8 +37,19 @@ const TwitchBannerGeneratorPage: NextPage = () => {
   const [generatedBannerUrl, setGeneratedBannerUrl] = useState<string | null>(null);
   const [showSharePopupFor, setShowSharePopupFor] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState<string | null>(null);
+  const [supportsPhoto, setSupportsPhoto] = useState<boolean>(true);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [selectedCategory, setSelectedCategory] = useState("With Logo");
+
+  const filteredStyles = TWITCH_BANNER_STYLES.filter(style =>
+    selectedCategory === "With Logo"
+      ? style.supportsPhoto === true
+      : style.supportsPhoto === false
+  );
+
+  const selectedStyle = TWITCH_BANNER_STYLES.find(s => s.id === selectedStyleId);
 
   // TRPC mutations
   const createPresignedUrl = api.s3.createUploadUrl.useMutation();
@@ -66,8 +77,34 @@ const TwitchBannerGeneratorPage: NextPage = () => {
     }
   }, [uploadedFile]);
 
-  // Helpers
-  const selectedStyle: TwitchBannerStyle | undefined = TWITCH_BANNER_STYLES.find(s => s.id === selectedStyleId);
+  useEffect(() => {
+    // When switching category, auto-select the first style of that category
+    const first = filteredStyles[0];
+    if (first) {
+      setSelectedStyleId(first.id);
+
+      // Clear uploaded photo if new category does not support photos
+      if (!first.supportsPhoto) {
+        setUploadedFile(null);
+        setPreviewUrl(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+      }
+    }
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    const style = TWITCH_BANNER_STYLES.find(s => s.id === selectedStyleId);
+    const canUpload = style?.supportsPhoto === true;
+    setSupportsPhoto(canUpload);
+
+    // If the new style does NOT support photo → clear previous upload
+    if (!canUpload) {
+      setUploadedFile(null);
+      setPreviewUrl(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }, [selectedStyleId]);
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] ?? null;
@@ -174,22 +211,73 @@ const TwitchBannerGeneratorPage: NextPage = () => {
         </div>
 
         <form className="flex flex-col gap-8" onSubmit={(e) => { e.preventDefault(); void handleGenerate(); }}>
-          {/* templates (flat grid) */}
+
+          {/* TEMPLATE SELECTOR */}
           <section>
             <h2 className="text-2xl font-semibold mb-4">Choose a Template</h2>
+
+            {/* CATEGORY BUTTONS */}
+            <div className="flex gap-3 mb-6">
+              {["With Logo", "Without Logo"].map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={clsx(
+                    "px-4 py-2 rounded-lg border text-sm font-medium transition",
+                    selectedCategory === cat
+                      ? "bg-purple-600 border-purple-600 text-white"
+                      : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
+                  )}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* TEMPLATE GRID — filteredStyles decides what to show */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {TWITCH_BANNER_STYLES.map((s) => (
+              {filteredStyles.length === 0 && (
+                <div className="text-slate-500 col-span-full">
+                  No templates available in this category.
+                </div>
+              )}
+
+              {filteredStyles.map((s) => (
                 <button
                   key={s.id}
                   type="button"
-                  onClick={() => setSelectedStyleId(s.id)}
-                  className={clsx("flex flex-col rounded-lg overflow-hidden border-2 transition-transform hover:scale-105 focus:outline-none", selectedStyleId === s.id ? "border-purple-500 shadow-xl" : "border-transparent")}
+                  onClick={() => {
+                    setSelectedStyleId(s.id);
+
+                    if (!s.supportsPhoto) {
+                      setUploadedFile(null);
+                      setPreviewUrl(null);
+                      if (fileInputRef.current) fileInputRef.current.value = "";
+                    }
+                  }}
+
+                  className={clsx(
+                    "flex flex-col rounded-lg overflow-hidden border-2 transition-transform hover:scale-105 focus:outline-none",
+                    selectedStyleId === s.id
+                      ? "border-purple-500 shadow-xl"
+                      : "border-transparent"
+                  )}
                 >
                   <div className="relative w-full aspect-[5/2] bg-gray-100">
-                    <Image src={s.backgroundSrc} alt={s.name} fill style={{ objectFit: "cover" }} className="block" unoptimized />
+                    <Image
+                      src={s.previewSrc}
+                      alt={s.name}
+                      fill
+                      style={{ objectFit: "cover" }}
+                      className="block"
+                      unoptimized
+                    />
                   </div>
                   <div className="p-2 text-center bg-white dark:bg-slate-800">
-                    <div className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{s.name}</div>
+                    <div className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">
+                      {s.name}
+                    </div>
                   </div>
                 </button>
               ))}
@@ -214,26 +302,53 @@ const TwitchBannerGeneratorPage: NextPage = () => {
               </div>
 
               <div>
+                {supportsPhoto && (
                 <FormGroup>
                   <label className="block mb-2 font-medium">Upload Photo (optional)</label>
-                  <label className="mt-1 flex flex-col justify-center items-center h-44 px-4 py-6 border-2 border-dashed rounded-lg cursor-pointer text-center hover:bg-slate-50 dark:hover:bg-slate-800/60">
+
+                  <label className="mt-1 flex flex-col justify-center items-center h-44 px-4 py-6
+                    border-2 border-dashed rounded-lg cursor-pointer text-center
+                    hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                  >
                     <div className="text-center">
                       <FiUploadCloud className="mx-auto h-10 w-10 text-gray-400" />
-                      <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">{uploadedFile ? "Change photo" : "Upload a photo (PNG, JPG, WEBP)"}</div>
-                      <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" onChange={handleFileChange} />
+                      <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                        {uploadedFile ? "Change photo" : "Upload a photo (PNG, JPG, WEBP)"}
+                      </div>
+
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        className="sr-only"
+                        onChange={handleFileChange}
+                      />
+
                       <div className="text-xs text-gray-400 mt-1">Max 10MB</div>
                     </div>
                   </label>
+
                   {previewUrl && (
                     <div className="mt-3 flex items-center gap-3">
-                      <Image src={previewUrl} alt="preview" width={120} height={120} className="rounded-md object-cover border" unoptimized />
+                      <Image src={previewUrl} alt="preview" width={120} height={120}
+                        className="rounded-md object-cover border" unoptimized />
                       <div>
                         <div className="text-sm">{uploadedFile?.name}</div>
-                        <button type="button" className="text-xs mt-2 underline text-slate-600" onClick={() => { setUploadedFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}>Remove</button>
+                        <button
+                          type="button"
+                          className="text-xs mt-2 underline text-slate-600"
+                          onClick={() => {
+                            setUploadedFile(null);
+                            if (fileInputRef.current) fileInputRef.current.value = "";
+                          }}
+                        >
+                          Remove
+                        </button>
                       </div>
                     </div>
                   )}
                 </FormGroup>
+              )}
               </div>
             </div>
           </section>
