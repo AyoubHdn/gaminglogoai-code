@@ -37,48 +37,6 @@ export interface TwitchBannerStyle {
 }
 
 export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
-  {
-  id: "cyberpunkNeon",
-  name: "Cyberpunk Neon Frame",
-  previewSrc: "/twitch/banner/cyberpunk-prv.png",
-  backgroundSrc: "/twitch/banner/cyberpunk_bg.webp",
-  creditCost: 2,
-  supportsPhoto: true,
-  category: "With Logo",
-  styleRules: {
-    canvasWidth: 1200,
-    canvasHeight: 480,
-    photo: {
-      x: 830,
-      y: 60,
-      width: 270,
-      height: 270
-    },
-    fonts: {
-      headline: { family: "Anton", file: "Anton-Regular.ttf" },
-      body: { family: "Anton", file: "Anton-Regular.ttf" }
-    },
-    elements: {
-      channelName: {
-        x: 350,
-        y: 220,
-        fontSize: 120,
-        color: "#0ff",
-        fontFamily: "headline",
-        textAnchor: "start",
-        letterSpacing: 2
-      },
-      tagline: {
-        x: 350,
-        y: 290,
-        fontSize: 32,
-        color: "#fff",
-        fontFamily: "body",
-        textAnchor: "start"
-      }
-    }
-  }
-},
 {
   id: "cyberpunkNeon",
   name: "Cyberpunk Neon Frame",
@@ -121,7 +79,6 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
     }
   }
 },
-
   {
     id: "blueModern",
     name: "Blue Modern Gamer",
