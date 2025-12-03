@@ -38,8 +38,10 @@ export const s3Router = createTRPCRouter({
         Fields: {
           key,
           "Content-Type": input.filetype,
+          acl: "public-read"
         },
         Conditions: [
+          { acl: "public-read" },
           ["starts-with", "$Content-Type", ""],
           ["content-length-range", 0, 10 * 1024 * 1024],
         ],
