@@ -67,62 +67,67 @@ export const twitchBannerRouter = createTRPCRouter({
       if (count <= 0) throw new TRPCError({ code: "BAD_REQUEST", message: "Not enough credits" });
 
       // 3. Load background
+      // 3. Load background EXACTLY as-is (no resize, no removeAlpha)
       let bgBuffer: Buffer;
 
       if (style.backgroundSrc.startsWith("http")) {
-        // from S3 after moving styles folder
         const resp = await fetch(style.backgroundSrc);
         if (!resp.ok) throw new Error("Cannot load background from S3");
-        bgBuffer = await sharp(Buffer.from(await resp.arrayBuffer()))
-        .png() // convert to PNG with full alpha
-        .removeAlpha() // remove transparency completely
-        .toBuffer();
+
+        bgBuffer = Buffer.from(await resp.arrayBuffer());
 
       } else {
-        // Local fallback
         const bgPath = path.join(process.cwd(), "public", style.backgroundSrc.replace(/^\//, ""));
         bgBuffer = fs.readFileSync(bgPath);
       }
 
-      // 4. Composite uploaded logo (if exists)
-      // 4. Composite uploaded logo (if exists)
-      if (style.supportsPhoto && logoUrl && style.styleRules.photo) {
-        try {
-          const { x, y, width, height } = style.styleRules.photo;
-
-          // fetch user image
-          const resp = await fetch(logoUrl);
-          const userBuf = Buffer.from(await resp.arrayBuffer());
-
-          // resize user image to container size
-          const resizedUser = await sharp(userBuf)
-            .resize(width, height, { fit: "cover" })
-            .toBuffer();
-
-          // place user image **BEHIND** background
-          bgBuffer = await sharp(bgBuffer)
-            .composite([
-              {
-                input: resizedUser,
-                left: x,
-                top: y,
-                blend: "dest-over"     // 👈 IMPORTANT — puts user BEHIND the background
-              }
-            ])
-            .png()
-            .toBuffer();
-
-        } catch (err) {
-          console.error("PHOTO BACKGROUND COMPOSITE ERROR:", err);
-        }
-      }
-
-      // Prevent puppeteer crash by resizing big images
-      const resizedBackground = await sharp(bgBuffer)
+      // 🔥 Ensure background is EXACTLY the size of the canvas (no extra pixels)
+      bgBuffer = await sharp(bgBuffer)
+        .resize(W, H, {
+          fit: "contain",
+          withoutEnlargement: true,
+        })
         .png()
         .toBuffer();
+        
+        // 4. Composite uploaded logo (if exists)
+        if (style.supportsPhoto && logoUrl && style.styleRules.photo) {
+          try {
+            const { x, y, width, height } = style.styleRules.photo;
 
-      const backgroundDataUrl = `data:image/png;base64,${resizedBackground.toString("base64")}`;
+            const resp = await fetch(logoUrl);
+            const userBuf = Buffer.from(await resp.arrayBuffer());
+
+            const resizedUser = await sharp(userBuf)
+              .resize(width, height, { fit: "cover" })
+              .png()
+              .toBuffer();
+
+            // User photo UNDER background is WRONG — background must go first.
+            // We need USER FIRST → BACKGROUND AFTER → TEXT ABOVE
+            bgBuffer = await sharp({
+              create: {
+                width: W,
+                height: H,
+                channels: 4,
+                background: { r: 0, g: 0, b: 0, alpha: 0 }
+              }
+            })
+              .composite([
+                // 1. user photo
+                { input: resizedUser, left: x, top: y },
+
+                // 2. original background
+                { input: bgBuffer, left: 0, top: 0 }
+              ])
+              .png()
+              .toBuffer();
+
+          } catch (err) {
+            console.error("PHOTO COMPOSITE ERROR:", err);
+          }
+        }
+      const backgroundDataUrl = `data:image/png;base64,${bgBuffer.toString("base64")}`;
 
       // 5. Embed fonts
       const fonts = style.styleRules.fonts;
