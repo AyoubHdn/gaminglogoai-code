@@ -73,7 +73,11 @@ export const twitchBannerRouter = createTRPCRouter({
         // from S3 after moving styles folder
         const resp = await fetch(style.backgroundSrc);
         if (!resp.ok) throw new Error("Cannot load background from S3");
-        bgBuffer = Buffer.from(await resp.arrayBuffer());
+        bgBuffer = await sharp(Buffer.from(await resp.arrayBuffer()))
+        .png() // convert to PNG with full alpha
+        .removeAlpha() // remove transparency completely
+        .toBuffer();
+
       } else {
         // Local fallback
         const bgPath = path.join(process.cwd(), "public", style.backgroundSrc.replace(/^\//, ""));
@@ -218,10 +222,10 @@ export const twitchBannerRouter = createTRPCRouter({
         });
 
         const page = await browser.newPage();
-        await page.setViewport({ width: W, height: H, deviceScaleFactor: 2 });
+        await page.setViewport({ width: W, height: H });
         await page.setContent(svg, { waitUntil: "domcontentloaded" });
 
-        const screenshot = await page.screenshot({ type: "png" });
+        const screenshot = await page.screenshot({ type: "png", omitBackground: false });
         await browser.close();
 
         finalImageBuffer = Buffer.from(screenshot);
