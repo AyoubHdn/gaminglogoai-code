@@ -49,29 +49,31 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
     canvasWidth: 1200,
     canvasHeight: 480,
     photo: {
-      x: 830,
-      y: 60,
-      width: 270,
-      height: 270
+      x: 725,
+      y: 73,
+      width: 330,
+      height: 330
     },
     fonts: {
-      headline: { family: "Anton", file: "Anton-Regular.ttf" },
-      body: { family: "Anton", file: "Anton-Regular.ttf" }
+      headline: { family: "Arial Black", file: "arial_black.ttf" },
+      body: { family: "ARIAL", file: "ARIAL.TTF" }
     },
     elements: {
       channelName: {
-        x: 350,
-        y: 220,
-        fontSize: 120,
-        color: "#0ff",
+        x: 75,
+        y: 245,
+        fontSize: 78,
+        fontWeight: "800",
+        color: "#00ffff",
         fontFamily: "headline",
         textAnchor: "start",
         letterSpacing: 2
       },
       tagline: {
-        x: 350,
-        y: 290,
-        fontSize: 32,
+        x: 120,
+        y: 295,
+        fontSize: 34,
+        fontWeight: "bold",
         color: "#fff",
         fontFamily: "body",
         textAnchor: "start"
@@ -79,49 +81,4 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
     }
   }
 },
-  {
-    id: "blueModern",
-    name: "Blue Modern Gamer",
-    previewSrc: "/twitch/banner/blue_modern-prv.png",
-    backgroundSrc: "/twitch/banner/blue_modern.webp",
-    creditCost: 2,
-    supportsPhoto: false,
-    category: "Without Logo",
-    styleRules: {
-      canvasWidth: 1200,
-      canvasHeight: 480,
-
-      fonts: {
-        headline: { family: "Anton", file: "Anton-Regular.ttf" },
-        body: { family: "Anton", file: "Anton-Regular.ttf" }
-      },
-
-      elements: {
-        channelName: {
-          x: 360,
-          y: 200,
-          fontSize: 140,
-          color: "#FFFFFF",
-          fontFamily: "headline",
-          textAnchor: "start"
-        },
-        tagline: {
-          x: 360,
-          y: 280,
-          fontSize: 36,
-          color: "#FFFFFF",
-          fontFamily: "body",
-          textAnchor: "start"
-        }
-      },
-
-      photo: {
-        x: 750,
-        y: 30,
-        width: 360,
-        height: 420
-      }
-    }
-  },
-
 ];
