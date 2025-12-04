@@ -55,7 +55,7 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
       height: 330
     },
     fonts: {
-      headline: { family: "Arial Black", file: "arial_black.ttf" },
+      headline: { family: "Orbitron", file: "Orbitron-Regular.ttf" },
       body: { family: "ARIAL", file: "ARIAL.TTF" }
     },
     elements: {

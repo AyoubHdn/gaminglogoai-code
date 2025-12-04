@@ -90,8 +90,13 @@ export const twitchBannerRouter = createTRPCRouter({
           const W = style.styleRules.canvasWidth;
           const H = style.styleRules.canvasHeight;
 
+          // Auto-trim white borders around the uploaded image
+          const trimmedUser = await sharp(userBuf)
+            .trim() // automatically remove blank/white border
+            .toBuffer();
+
           // 1️⃣ Resize user image to fit the area
-          const resizedUser = await sharp(userBuf)
+          const resizedUser = await sharp(trimmedUser)
             .resize(width, height, { fit: "cover" })
             .png()
             .toBuffer();
