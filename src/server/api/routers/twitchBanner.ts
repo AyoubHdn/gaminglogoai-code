@@ -89,7 +89,7 @@ export const twitchBannerRouter = createTRPCRouter({
         })
         .png()
         .toBuffer();
-        
+
         // 4. Composite uploaded logo (if exists)
         if (style.supportsPhoto && logoUrl && style.styleRules.photo) {
           try {
@@ -205,7 +205,7 @@ export const twitchBannerRouter = createTRPCRouter({
       </svg>
       `;
 
-      // 8. Puppeteer rendering (same as wedding)
+      // 8. Puppeteer rendering (fixed — removes white lines)
       let finalImageBuffer: Buffer;
       try {
         const browser = await puppeteer.launch({
@@ -216,10 +216,41 @@ export const twitchBannerRouter = createTRPCRouter({
         });
 
         const page = await browser.newPage();
-        await page.setViewport({ width: W, height: H });
+
+        // 🔥 Force Puppeteer to render EXACT canvas size with no scaling
+        await page.setViewport({
+          width: W,
+          height: H,
+          deviceScaleFactor: 1,   // << IMPORTANT
+        });
+
+        // 🔥 Remove ALL default margins/padding that Chromium adds secretly
+        await page.addStyleTag({
+          content: `
+            html, body {
+              margin: 0 !important;
+              padding: 0 !important;
+              background: transparent !important;
+              overflow: hidden !important;
+            }
+            svg {
+              display: block;
+            }
+          `
+        });
+
         await page.setContent(svg, { waitUntil: "domcontentloaded" });
 
-        const screenshot = await page.screenshot({ type: "png", omitBackground: false });
+        // Small delay fixes Chromium race condition
+        await new Promise(resolve => setTimeout(resolve, 30));
+
+        // 🔥 Clip screenshot exactly to pixel grid (fixes top/left lines)
+        const screenshot = await page.screenshot({
+          type: "png",
+          omitBackground: false,
+          clip: { x: 0, y: 0, width: W, height: H }, // << HARD FIX
+        });
+
         await browser.close();
 
         finalImageBuffer = Buffer.from(screenshot);
