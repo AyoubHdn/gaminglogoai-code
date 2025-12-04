@@ -215,7 +215,7 @@ export const twitchBannerRouter = createTRPCRouter({
 
         const page = await browser.newPage();
         // IMPORTANT: set high deviceScaleFactor for crisp text like wedding
-        await page.setViewport({ width: W, height: H, deviceScaleFactor: 2 });
+        await page.setViewport({ width: W, height: H, deviceScaleFactor: 1 });
         await page.setContent(svg, { waitUntil: "domcontentloaded" });
 
         const screenshotData = await page.screenshot({ omitBackground: true });

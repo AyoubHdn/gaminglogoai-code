@@ -51,6 +51,24 @@ const TwitchBannerGeneratorPage: NextPage = () => {
 
   const selectedStyle = TWITCH_BANNER_STYLES.find(s => s.id === selectedStyleId);
 
+  const channelLimit = selectedStyle?.maxChannelChars ?? 20;
+  const taglineLimit = selectedStyle?.maxTaglineChars ?? 35;
+
+  const handleChannelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  if (value.length <= channelLimit) {
+    setChannelName(value);
+  }
+};
+
+const handleTaglineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value;
+  if (value.length <= taglineLimit) {
+    setTagline(value);
+  }
+};
+
+
   // TRPC mutations
   const createPresignedUrl = api.s3.createUploadUrl.useMutation();
   const generateBanner = api.twitchBanner.generate.useMutation({
@@ -144,6 +162,16 @@ const TwitchBannerGeneratorPage: NextPage = () => {
         setIsGenerating(false);
         return;
       }
+    }
+
+    if (channelName.length > channelLimit) {
+      setError(`Channel name must be under ${channelLimit} characters.`);
+      return;
+    }
+
+    if (tagline.length > taglineLimit) {
+      setError(`Tagline must be under ${taglineLimit} characters.`);
+      return;
     }
 
     // Call backend generation
@@ -292,12 +320,18 @@ const TwitchBannerGeneratorPage: NextPage = () => {
               <div>
                 <FormGroup>
                   <label className="block mb-2 font-medium">Channel Name *</label>
-                  <Input value={channelName} onChange={(e) => setChannelName(e.target.value)} placeholder="e.g., ProGamer" required />
+                  <Input value={channelName} onChange={handleChannelChange} placeholder="e.g., ProGamer" required />
+                  <div className="text-xs text-gray-400">
+                    {channelName.length}/{channelLimit} characters
+                  </div>
                 </FormGroup>
 
                 <FormGroup className="mt-4">
                   <label className="block mb-2 font-medium">Tagline (optional)</label>
-                  <Input value={tagline} onChange={(e) => setTagline(e.target.value)} placeholder="e.g., Live every night 9PM UTC" />
+                  <Input value={tagline} onChange={handleTaglineChange} placeholder="e.g., Live every night 9PM UTC" />
+                  <div className="text-xs text-gray-400">
+                    {tagline.length}/{taglineLimit} characters
+                  </div>
                 </FormGroup>
               </div>
 
@@ -323,6 +357,11 @@ const TwitchBannerGeneratorPage: NextPage = () => {
                         className="sr-only"
                         onChange={handleFileChange}
                       />
+                      {selectedStyle?.supportsPhoto && (
+                        <p className="text-sm text-yellow-400 bg-yellow-900/20 border border-yellow-600 rounded-md px-3 py-2 mt-2">
+                          💡 <strong>Tip:</strong> For the best result, upload a <strong>1:1 square image</strong> (e.g., 800×800).
+                        </p>
+                      )}
 
                       <div className="text-xs text-gray-400 mt-1">Max 10MB</div>
                     </div>

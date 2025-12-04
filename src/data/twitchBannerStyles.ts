@@ -34,6 +34,8 @@ export interface TwitchBannerStyle {
   creditCost: number;
   supportsPhoto: boolean;
   category: string;
+  maxChannelChars: number;
+  maxTaglineChars: number;
 }
 
 export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
@@ -45,6 +47,9 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   creditCost: 2,
   supportsPhoto: true,
   category: "With Logo",
+  maxChannelChars: 11,
+  maxTaglineChars: 24,
+  
   styleRules: {
     canvasWidth: 1200,
     canvasHeight: 480,
