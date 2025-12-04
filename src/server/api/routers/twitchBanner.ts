@@ -119,7 +119,6 @@ export const twitchBannerRouter = createTRPCRouter({
 
       // Prevent puppeteer crash by resizing big images
       const resizedBackground = await sharp(bgBuffer)
-        .resize(W, H, { fit: "cover" })
         .png()
         .toBuffer();
 
