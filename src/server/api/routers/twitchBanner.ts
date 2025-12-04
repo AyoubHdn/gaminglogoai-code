@@ -85,47 +85,37 @@ export const twitchBannerRouter = createTRPCRouter({
       }
 
       // 4. Composite uploaded logo (if exists)
+      // 4. Composite uploaded logo (if exists)
       if (style.supportsPhoto && logoUrl && style.styleRules.photo) {
-      try {
-        const { x, y, width, height } = style.styleRules.photo;
+        try {
+          const { x, y, width, height } = style.styleRules.photo;
 
-        // 1. Fetch user image
-        const resp = await fetch(logoUrl);
-        const userBuf = Buffer.from(await resp.arrayBuffer());
+          // fetch user image
+          const resp = await fetch(logoUrl);
+          const userBuf = Buffer.from(await resp.arrayBuffer());
 
-        // 2. Create circular mask SVG
-        const maskSvg = `
-          <svg width="${width}" height="${height}">
-            <circle cx="${width / 2}" cy="${height / 2}" r="${Math.min(width, height) / 2}" fill="white"/>
-          </svg>
-        `;
+          // resize user image to container size
+          const resizedUser = await sharp(userBuf)
+            .resize(width, height, { fit: "cover" })
+            .toBuffer();
 
-        // 3. Resize + mask the user image
-        const userCircle = await sharp(userBuf)
-          .resize(width, height)
-          .composite([
-            {
-              input: Buffer.from(maskSvg),
-              blend: "dest-in" // this makes the image circular
-            }
-          ])
-          .png()
-          .toBuffer();
+          // place user image **BEHIND** background
+          bgBuffer = await sharp(bgBuffer)
+            .composite([
+              {
+                input: resizedUser,
+                left: x,
+                top: y,
+                blend: "dest-over"     // 👈 IMPORTANT — puts user BEHIND the background
+              }
+            ])
+            .png()
+            .toBuffer();
 
-        // 4. Place circular image UNDER background (this is what you want)
-        bgBuffer = await sharp(bgBuffer)
-          .composite([
-            { input: userCircle, left: x, top: y } // put behind background
-          ])
-          .png()
-          .toBuffer();
-
-      } catch (err) {
-        console.error("Circular crop error:", err);
+        } catch (err) {
+          console.error("PHOTO BACKGROUND COMPOSITE ERROR:", err);
+        }
       }
-    }
-
-
 
       // Prevent puppeteer crash by resizing big images
       const resizedBackground = await sharp(bgBuffer)
