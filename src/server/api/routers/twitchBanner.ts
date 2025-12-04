@@ -83,86 +83,45 @@ export const twitchBannerRouter = createTRPCRouter({
       // 4. Composite uploaded logo (if exists)
       if (style.supportsPhoto && logoUrl && style.styleRules.photo) {
       try {
+        const { x, y, width, height } = style.styleRules.photo;
+
+        // 1. Fetch user image
         const resp = await fetch(logoUrl);
-        if (!resp.ok) throw new Error("Failed to fetch user image");
         const userBuf = Buffer.from(await resp.arrayBuffer());
 
-        const { x, y, width, height } = style.styleRules.photo;
-        const canvasW = style.styleRules.canvasWidth;
-        const canvasH = style.styleRules.canvasHeight;
+        // 2. Create circular mask SVG
+        const maskSvg = `
+          <svg width="${width}" height="${height}">
+            <circle cx="${width / 2}" cy="${height / 2}" r="${Math.min(width, height) / 2}" fill="white"/>
+          </svg>
+        `;
 
-        // 1) Resize user image to fit the photo box (cover to fill)
-        const resizedUser = await sharp(userBuf)
-          .resize(width, height, { fit: "cover" }) // cover is usually best
+        // 3. Resize + mask the user image
+        const userCircle = await sharp(userBuf)
+          .resize(width, height)
+          .composite([
+            {
+              input: Buffer.from(maskSvg),
+              blend: "dest-in" // this makes the image circular
+            }
+          ])
           .png()
           .toBuffer();
 
-        // 2) Create a transparent canvas and place the resized user image at (x,y)
-        const userCanvas = await sharp({
-          create: {
-            width: canvasW,
-            height: canvasH,
-            channels: 4,
-            background: { r: 0, g: 0, b: 0, alpha: 0 } // fully transparent
-          }
-        })
-          .composite([{ input: resizedUser, left: x, top: y }])
+        // 4. Place circular image UNDER background (this is what you want)
+        bgBuffer = await sharp(bgBuffer)
+          .composite([
+            { input: userCircle, left: x, top: y } // put behind background
+          ])
           .png()
           .toBuffer();
 
-        // 3) Determine circle center and radius
-        // If the style defines a circle inside the photo box, adjust accordingly.
-        // We'll place a circle centered inside the photo box:
-        const cx = Math.round(x + width / 2);
-        const cy = Math.round(y + height / 2);
-        const r = Math.round(Math.max(width, height) / 2);
-
-        // 4) Check whether background already has transparency at the circle location.
-        // Quick heuristic: check pixel alpha at circle center.
-        const bgMeta = await sharp(bgBuffer).metadata();
-        let bgHasAlphaHole = false;
-        if (bgMeta.hasAlpha) {
-          const pixel = await sharp(bgBuffer)
-            .extract({ left: Math.max(0, cx), top: Math.max(0, cy), width: 1, height: 1 })
-            .raw()
-            .toBuffer()
-            .catch(() => null);
-
-          if (pixel && pixel.length >= 4) {
-            const alpha = pixel[3];
-            if (alpha === 0) bgHasAlphaHole = true; // transparent already
-          }
-        }
-
-        // 5) If background does not already have the hole, punch it out.
-        // We'll use an SVG mask and 'dest-out' to remove the circle area.
-        let bgWithHole = bgBuffer;
-        if (!bgHasAlphaHole) {
-          const holeSvg = `
-            <svg width="${canvasW}" height="${canvasH}" xmlns="http://www.w3.org/2000/svg">
-              <rect width="100%" height="100%" fill="white"/>
-              <circle cx="${cx}" cy="${cy}" r="${r}" fill="black"/>
-            </svg>`;
-          // 'dest-out' removes the non-transparent parts of the input from the destination.
-          bgWithHole = await sharp(bgBuffer)
-            .composite([{ input: Buffer.from(holeSvg), blend: "dest-out", left: 0, top: 0 }])
-            .png()
-            .toBuffer();
-        }
-
-        // 6) Composite the background-with-hole on top of the user canvas.
-        // Because the background now has an alpha hole, the user's portrait will be visible through it.
-        const finalComposite = await sharp(userCanvas)
-          .composite([{ input: bgWithHole, left: 0, top: 0 }])
-          .png()
-          .toBuffer();
-
-        // Replace bgBuffer with composed result so the rest of your flow continues
-        bgBuffer = finalComposite;
       } catch (err) {
-        console.error("Composite UNDERLAY (circle hole) error:", err);
+        console.error("Circular crop error:", err);
       }
     }
+
+
 
       // Prevent puppeteer crash by resizing big images
       const resizedBackground = await sharp(bgBuffer)
