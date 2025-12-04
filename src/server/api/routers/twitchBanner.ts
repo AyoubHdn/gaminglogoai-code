@@ -90,54 +90,45 @@ export const twitchBannerRouter = createTRPCRouter({
           const W = style.styleRules.canvasWidth;
           const H = style.styleRules.canvasHeight;
 
-          // Resize user image to fit the photo area
+          // 1️⃣ Resize user image to fit the area
           const resizedUser = await sharp(userBuf)
             .resize(width, height, { fit: "cover" })
             .png()
             .toBuffer();
 
-          // STEP 1 — place USER PHOTO on a blank transparent canvas (so it's underneath)
+          // 2️⃣ Draw user image on transparent canvas FIRST (UNDER)
           const userCanvas = await sharp({
             create: {
               width: W,
               height: H,
               channels: 4,
-              background: { r: 0, g: 0, b: 0, alpha: 0 }
-            }
+              background: { r: 0, g: 0, b: 0, alpha: 0 },
+            },
           })
-            .composite([{ input: resizedUser, left: x, top: y }])
+            .composite([
+              {
+                input: resizedUser,
+                top: y,
+                left: x,
+              },
+            ])
             .png()
             .toBuffer();
 
-          // --- Create an SVG circle that matches the photo area ---
-          // We'll use it to punch a hole from the background using blend: 'dest-out'
-          const cx = Math.round(x + width / 2);
-          const cy = Math.round(y + height / 2);
-          // radius: use half of max(width,height). you can subtract a few pixels if you have a metallic frame thickness
-          const r = Math.round(Math.max(width, height) / 2);
-
-          const svgHole = `<svg width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-            <rect width="100%" height="100%" fill="black" fill-opacity="0" />
-            <circle cx="${cx}" cy="${cy}" r="${r}" fill="white" />
-          </svg>`;
-
-          // STEP 2 — punch hole in background (dest-out removes destination where source is opaque)
-          const bgWithHole = await sharp(bgBuffer)
-            // ensure bgBuffer has alpha channel
-            .ensureAlpha()
-            .composite([{ input: Buffer.from(svgHole), blend: "dest-out" }])
-            .png()
-            .toBuffer();
-
-          // STEP 3 — composite the background-with-hole ON TOP of the user canvas
-          // That leaves the user visible through the hole.
+          // 3️⃣ Place BACKGROUND ON TOP — user stays behind
           bgBuffer = await sharp(userCanvas)
-            .composite([{ input: bgWithHole, left: 0, top: 0 }])
+            .composite([
+              {
+                input: bgBuffer, // BACKGROUND
+                left: 0,
+                top: 0,
+              },
+            ])
             .png()
             .toBuffer();
 
         } catch (err) {
-          console.error("Composite UNDERLAY test error:", err);
+          console.error("UNDERLAY error:", err);
         }
       }
 
