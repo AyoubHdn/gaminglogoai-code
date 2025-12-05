@@ -86,4 +86,51 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
     }
   }
 },
+{
+  id: "futuristicStream",
+  name: "Futuristic Stream",
+  previewSrc: "/twitch/banner/futuristic_stream_prv.png",
+  backgroundSrc: "/twitch/banner/futuristic_stream_bg.webp",
+  creditCost: 2,
+  supportsPhoto: true,
+  category: "With Logo",
+  maxChannelChars: 12,
+  maxTaglineChars: 28,
+  
+  styleRules: {
+    canvasWidth: 1200,
+    canvasHeight: 480,
+    photo: {
+      x: 170,
+      y: 125,
+      width: 230,
+      height: 230
+    },
+    fonts: {
+      headline: { family: "Orbitron", file: "Orbitron-Regular.ttf" },
+      body: { family: "ARIAL", file: "ARIAL.TTF" }
+    },
+    elements: {
+      channelName: {
+        x: 480,
+        y: 245,
+        fontSize: 75,
+        fontWeight: "900",
+        color: "#FFFFFF",
+        fontFamily: "headline",
+        textAnchor: "start",
+        letterSpacing: 2
+      },
+      tagline: {
+        x: 485,
+        y: 300,
+        fontSize: 45,
+        fontWeight: "400",
+        color: "#FFFFFF",
+        fontFamily: "body",
+        textAnchor: "start"
+      }
+    }
+  }
+},
 ];
