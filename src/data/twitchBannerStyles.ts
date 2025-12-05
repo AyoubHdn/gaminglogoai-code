@@ -134,10 +134,10 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   }
 },
 {
-  id: "futuristicStream",
-  name: "Futuristic Stream",
-  previewSrc: "/twitch/banner/futuristic_stream_prv.png",
-  backgroundSrc: "/twitch/banner/futuristic_stream_bg.webp",
+  id: "neonRetro",
+  name: "Neon Retro",
+  previewSrc: "/twitch/banner/neon_retro_prv.png",
+  backgroundSrc: "/twitch/banner/neon_retro_bg.webp",
   creditCost: 2,
   supportsPhoto: true,
   category: "With Logo",
