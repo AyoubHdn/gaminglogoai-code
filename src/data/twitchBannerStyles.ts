@@ -313,8 +313,8 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   creditCost: 2,
   supportsPhoto: false,
   category: "Without Logo",
-  maxChannelChars: 13,
-  maxTaglineChars: 67,
+  maxChannelChars: 10,
+  maxTaglineChars: 60,
   
   styleRules: {
     canvasWidth: 1200,
