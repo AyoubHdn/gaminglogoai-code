@@ -136,7 +136,7 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
 };
 
   const handleScroll = (
-    ref: React.RefObject<HTMLDivElement>,
+    ref: React.RefObject<HTMLDivElement | null>,
     setLeft: React.Dispatch<React.SetStateAction<boolean>>,
     setRight: React.Dispatch<React.SetStateAction<boolean>>
   ) => {
@@ -217,7 +217,7 @@ useEffect(() => {
 }, [activeStyleTab, activeStyleSubTab, handleFaceStyleSelect, selectedStyleImagePreview]);
   
   useLayoutEffect(() => {
-    const handleScroll = (ref: React.RefObject<HTMLDivElement>, setLeft: React.Dispatch<React.SetStateAction<boolean>>, setRight: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const handleScroll = (ref: React.RefObject<HTMLDivElement | null>, setLeft: React.Dispatch<React.SetStateAction<boolean>>, setRight: React.Dispatch<React.SetStateAction<boolean>>) => {
         if (!ref.current) return; const { scrollLeft, scrollWidth, clientWidth } = ref.current;
         setLeft(scrollLeft > 5); setRight(scrollLeft + clientWidth < scrollWidth - 5);
     };

@@ -47,7 +47,7 @@ const mdxComponents = {
     return (
       <span className="block my-8 relative aspect-video shadow-lg rounded-lg overflow-hidden">
         <Image
-          src={props.src}
+          src={typeof props.src === "string" ? props.src : ""}
           alt={props.alt || "Blog content image"}
           fill
           style={{ objectFit: "contain" }} // Use "contain" for blog images to see whole image
