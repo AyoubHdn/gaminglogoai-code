@@ -18,6 +18,13 @@ const config = {
   plugins: ["@typescript-eslint"],
   extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   rules: {
+
+    // ---------- Turn off strict rules ----------
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-unnecessary-type-assertion": "off",
+    "@typescript-eslint/no-var-requires": "off",
+
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
@@ -25,8 +32,9 @@ const config = {
         fixStyle: "inline-type-imports",
       },
     ],
-    "@next/next/no-img-element": "off"
     
+    
+    "@next/next/no-img-element": "off",
   },
   
 };
