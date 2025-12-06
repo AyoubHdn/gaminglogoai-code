@@ -1,17 +1,14 @@
 // next-sitemap.config.js
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://gaminglogoai.com', // ** YOUR GAMINGLOGOAI.COM PRODUCTION DOMAIN **
+  siteUrl: 'https://gaminglogoai.com',
   generateRobotsTxt: true, 
-  // This will generate a robots.txt including:
-  // User-agent: *
-  // Allow: /
-  // Sitemap: https://gaminglogoai.com/sitemap.xml
+  sitemapSize: 5000,
 
-  // Optional: Exclude any pages you don't want in the sitemap
-  // exclude: ['/admin/*', '/api/*'], // Exclude API routes, admin sections
-
-  // Optional: Default change frequency and priority
-  // changefreq: 'weekly',
-  // priority: 0.7,
+  additionalSitemaps: [
+    "https://gaminglogoai.com/sitemap-static.xml",
+    "https://gaminglogoai.com/sitemap-logo.xml",
+    "https://gaminglogoai.com/sitemap-pfp.xml",
+    "https://gaminglogoai.com/sitemap-tools.xml",
+  ],
 };

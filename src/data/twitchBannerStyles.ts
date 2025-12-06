@@ -374,7 +374,7 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
     elements: {
       channelName: {
         x: 600,
-        y: 310,
+        y: 300,
         fontSize: 180,
         fontWeight: "900",
         color: "#000000",
