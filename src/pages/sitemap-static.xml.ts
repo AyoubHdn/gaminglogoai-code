@@ -11,10 +11,6 @@ const staticPages = [
   "/blog", "/blog/how-to-create-a-clan-logo",
   "/blog/how-to-create-an-epic-mascot-logo-with-ai-step-by-step",
   "/blog/top-10-minecraft-logo-ideas",
-  // generators (medium priority)
-  "/gaming-logo-maker",
-  "/pfp-maker",
-  "/twitch-banner-generator",
 ];
 
 const priorityMap: Record<string, string> = {
@@ -22,9 +18,6 @@ const priorityMap: Record<string, string> = {
   "/ai-profile-picture-maker": "1.0",
   "/gaming-logo": "1.0",
   "/twitch-banner-maker": "1.0", // when landing page ready
-  "/gaming-logo-maker": "0.8",
-  "/pfp-maker": "0.8",
-  "/twitch-banner-generator": "0.8",
   "/collection": "0.7",
   "/buy-credits": "0.7",
   "/blog": "0.6",
