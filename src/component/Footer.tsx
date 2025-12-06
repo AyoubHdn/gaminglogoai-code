@@ -23,6 +23,11 @@ export function Footer() {
       landingUrl: "/ai-profile-picture-maker", // The main "PFP" landing page
       toolUrl: "/pfp-maker",        // The actual PFP tool
     },
+    {
+      name: "Twitch Banner Maker",
+      landingUrl: "/twitch-banner-maker", // The main "Twitch Banner" landing page
+      toolUrl: "/twitch-banner-generator", // The actual Twitch Banner tool
+    },
   ];
 
   // Curate a list of your most important/popular niche landing pages to feature

@@ -101,6 +101,62 @@ const HomePage: NextPage = () => {
       </section>
     );
   }
+
+  function TwitchBannerSection() {
+    return (
+      <section className="py-16 md:py-20 px-4 sm:px-8 bg-slate-50 dark:bg-slate-950">
+        <div className="container mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
+            Design Stunning <span className="text-purple-600 dark:text-cyan-400">Twitch Banners</span> in Seconds
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto items-center">
+            
+            {/* Image Preview */}
+            <div className="relative rounded-xl overflow-hidden shadow-2xl group aspect-video">
+              <Image
+                src="/twitch/banner/blue_tech_glitch_prv.png" // << replace with your S3 preview later
+                alt="AI Twitch Banner Example"
+                fill
+                style={{ objectFit: "cover" }}
+                className="transition-transform duration-500 group-hover:scale-105"
+                unoptimized={true}
+              />
+            </div>
+
+            {/* Text + Features */}
+            <div>
+              <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                Professional Twitch Channel Branding — Made by AI
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                Elevate your Twitch stream with eye-catching AI-generated banner art.
+                Customize colors, styles, characters, and layouts — perfect for streamers
+                who want a professional look **without hiring a designer**.
+              </p>
+
+              <ul className="space-y-3 text-sm text-slate-700 dark:text-slate-300 mb-8">
+                <li>🎨 <strong>Wide style library</strong>: neon, cyberpunk, cute, minimal, esports, and more</li>
+                <li>⚡ <strong>Instant high-quality render</strong> powered by advanced AI</li>
+                <li>🖼️ Perfect Twitch dimensions (user doesn’t need to crop)</li>
+                <li>🎁 Includes <strong>1 free banner credit on signup</strong></li>
+              </ul>
+
+              <Link
+                href="/twitch-banner-generator"
+                className="inline-block px-8 py-3 bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg"
+                id="cta-home-twitch-banner"
+              >
+                Create Your Twitch Banner →
+              </Link>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   function KeyFeaturesSection() {
     const features = [
       { title: "Unique AI Concepts", description: "Fresh logo ideas every time, no templates.", icon: "/icons/feature-ai-brain.webp" },
@@ -369,6 +425,7 @@ function StyleShowcaseSection() {
       <main className="container mx-auto overflow-x-hidden">
         <HeroBanner />
         <LogoTypesSection />
+        <TwitchBannerSection />
         <WhoIsThisForSection />
         <StyleShowcaseSection />
         <KeyFeaturesSection />

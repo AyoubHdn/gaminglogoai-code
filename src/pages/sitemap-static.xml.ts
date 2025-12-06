@@ -6,6 +6,7 @@ const staticPages = [
   "/collection", "/buy-credits",
   "/ai-profile-picture-maker",  // landing
   "/gaming-logo",               // landing
+  "/twitch-banner-maker",       // landing
   "/privacy-policy", "/terms-of-service", "/refund-policy",
   "/blog", "/blog/how-to-create-a-clan-logo",
   "/blog/how-to-create-an-epic-mascot-logo-with-ai-step-by-step",
@@ -20,7 +21,7 @@ const priorityMap: Record<string, string> = {
   "/": "1.0",
   "/ai-profile-picture-maker": "1.0",
   "/gaming-logo": "1.0",
-  //"/twitch-banner-generator": "1.0", // when landing page ready
+  "/twitch-banner-maker": "1.0", // when landing page ready
   "/gaming-logo-maker": "0.8",
   "/pfp-maker": "0.8",
   "/twitch-banner-generator": "0.8",

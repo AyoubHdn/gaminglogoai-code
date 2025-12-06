@@ -47,6 +47,7 @@ export function Header() {
   const generatorDropdownLinks = [
     { href: "/gaming-logo", label: "Text-Based Logos", description: "Create logos from text & styles.", icon: <FaPaintBrush className="text-purple-500 dark:text-cyan-400" /> },
     { href: "/ai-profile-picture-maker", label: "Photo-To-Avatar PFPs", description: "Transform your photo into an avatar.", icon: <AiOutlineUser className="text-purple-500 dark:text-cyan-400" /> },
+    { href: "/twitch-banner-maker", label: "Twitch Banners", description: "Create custom Twitch banners with AI.", icon: <FaPaintBrush className="text-purple-500 dark:text-cyan-400" /> },
   ];
 
   // Other main navigation links
