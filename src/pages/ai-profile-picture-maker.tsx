@@ -2,9 +2,8 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { FaChevronRight, FaUserAstronaut, FaCameraRetro, FaMagic, FaPalette, FaQuestionCircle, FaUserCheck, FaSmileBeam, FaShieldVirus, FaBolt, FaGamepad } from "react-icons/fa"; // Example Icons, added FaCameraRetro
+import { FaChevronRight, FaUserAstronaut, FaCameraRetro, FaMagic, FaPalette, FaQuestionCircle, FaUserCheck, FaShieldVirus, FaBolt, FaGamepad } from "react-icons/fa"; // Example Icons, added FaCameraRetro
 import { s3Style } from "~/utils/s3Paths";
 
 const AIPFPGeneratorLandingPage: NextPage = () => {
