@@ -180,6 +180,54 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
     }
   }
 },
+{
+  id: "futuristicNeon",
+  name: "Futuristic Neon",
+  previewSrc: "/twitch/banner/futuristic_neon_prv.png",
+  backgroundSrc: "/twitch/banner/futuristic_neon_bg.webp",
+  creditCost: 2,
+  supportsPhoto: true,
+  category: "With Logo",
+  maxChannelChars: 13,
+  maxTaglineChars: 33,
+  
+  styleRules: {
+    canvasWidth: 1200,
+    canvasHeight: 480,
+    photo: {
+      x: 110,
+      y: 95,
+      width: 290,
+      height: 290
+    },
+    fonts: {
+      headline: { family: "Orbitron", file: "Orbitron-Regular.ttf" },
+      body: { family: "ARIAL", file: "ARIAL.TTF" }
+    },
+    elements: {
+      channelName: {
+        x: 490,
+        y: 250,
+        fontSize: 75,
+        fontWeight: "bold",
+        color: "#FFFFFF",
+        fontFamily: "headline",
+        textAnchor: "start",
+        letterSpacing: 3
+      },
+      tagline: {
+        x: 490,
+        y: 290,
+        fontSize: 34,
+        fontWeight: "400",
+        color: "#e0c2ff",
+        fontFamily: "body",
+        textAnchor: "start",
+        letterSpacing: 2
+      }
+    }
+  }
+},
 // no logo designs
 {
   id: "pastelPlay",
