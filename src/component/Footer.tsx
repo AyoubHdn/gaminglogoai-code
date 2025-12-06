@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 // Assuming PrimaryLink is your themed Link component that handles modern Next/Link behavior
 import { PrimaryLink } from "./PrimaryLink"; 
-import { FaXTwitter, FaFacebook, FaPinterest } from "react-icons/fa6"; // Import social icons
+import { FaTwitter, FaFacebook, FaPinterest } from "react-icons/fa6"; // Import social icons
 
 export function Footer() {
   const siteName = "GamingLogoAI.com";
@@ -51,7 +51,7 @@ export function Footer() {
   ];
 
   const socialLinks = [
-    { name: "Twitter", href: "https://x.com/gaming_logo_ai", icon: <FaXTwitter /> },
+    { name: "Twitter", href: "https://x.com/gaming_logo_ai", icon: <FaTwitter /> },
     { name: "Facebook", href: "https://www.facebook.com/profile.php?id=61580488384893", icon: <FaFacebook /> },
     { name: "Pinterest", href: "https://au.pinterest.com/gaminglogoai/", icon: <FaPinterest /> },
   ];
