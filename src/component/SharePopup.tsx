@@ -1,7 +1,8 @@
 // src/component/SharePopup.tsx
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { FaTwitter, FaDiscord, FaRedditAlien, FaFacebook, FaWhatsapp, FaEnvelope, FaLink, FaTimes } from 'react-icons/fa';
+import { FaXTwitter } from "react-icons/fa6";
+import { FaRedditAlien, FaFacebook, FaWhatsapp, FaEnvelope, FaLink, FaTimes } from 'react-icons/fa';
 
 interface SharePopupProps {
   imageUrl: string;
@@ -32,14 +33,12 @@ export const SharePopup: React.FC<SharePopupProps> = ({
   const textToShareWithImage = `${shareText} See it: ${imageUrl} Create yours at ${siteName}! ${fullGeneratorUrl} #GamingLogoAI`;
 
   const socialPlatforms = [
-    { name: 'Twitter', icon: <FaTwitter />, color: "bg-sky-500 hover:bg-sky-600", shareUrl: `https://twitter.com/intent/tweet?text=${encodeURIComponent(textToShareWithImage)}&url=${encodeURIComponent(imageUrl)}` }, // Twitter often prefers text + image URL
+    { name: 'Twitter', icon: <FaXTwitter />, color: "bg-sky-500 hover:bg-sky-600", shareUrl: `https://twitter.com/intent/tweet?text=${encodeURIComponent(textToShareWithImage)}&url=${encodeURIComponent(imageUrl)}` }, // Twitter often prefers text + image URL
     { name: 'Reddit', icon: <FaRedditAlien />, color: "bg-orange-500 hover:bg-orange-600", shareUrl: `https://www.reddit.com/submit?url=${encodeURIComponent(imageUrl)}&title=${encodeURIComponent(shareTitle)}` }, // shareTitle needs to be defined
     { name: 'Facebook', icon: <FaFacebook />, color: "bg-blue-700 hover:bg-blue-800", shareUrl: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(imageUrl)}"e=${encodeURIComponent(textToShare)}` },
     { name: 'WhatsApp', icon: <FaWhatsapp />, color: "bg-green-500 hover:bg-green-600", shareUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(textToShareWithImage)}` },
     { name: 'Email', icon: <FaEnvelope />, color: "bg-slate-500 hover:bg-slate-600", shareUrl: `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(textToShareWithImage)}` },
   ];
- 
-
 
   const handleCopyLink = async () => {
     try {
