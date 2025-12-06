@@ -99,7 +99,7 @@ const TwitchBannerLandingPage: NextPage = () => {
         {/* HERO */}
         <section className="relative py-20 md:py-32 text-center text-white overflow-hidden">
           <Image
-            src="/hero/twitch-banner-bg.webp"
+            src="/twitch/twitch-banner-bg.webp"
             alt="Twitch banner background"
             layout="fill"
             objectFit="cover"

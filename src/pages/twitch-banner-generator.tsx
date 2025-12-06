@@ -222,7 +222,7 @@ const handleTaglineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8">
         {/* HERO */}
         <header className="text-center mb-8">
-          <Image src="/twitch-banner-header.webp" alt="Twitch Banner Generator Hero" width={1000} height={220} className="mx-auto rounded-lg shadow-lg" unoptimized />
+          <Image src="/twitch/twitch-banner-bg.webp" alt="Twitch Banner Generator Hero" width={1000} height={220} className="mx-auto rounded-lg shadow-lg" unoptimized />
           <h1 className="text-4xl sm:text-5xl font-extrabold mt-6">AI Twitch Banner Generator</h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 mt-2 max-w-3xl mx-auto">
             Create a stunning Twitch channel banner in seconds. Choose a style, type your channel name, optionally upload a photo, and generate your banner.
