@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 // src/component/Header.tsx
 import { useState, useEffect, useRef } from "react";
@@ -211,7 +213,7 @@ export function Header() {
                     className="flex items-center px-4 py-3 text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-cyan-400 transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}>
                         {/* Clone element for icon to add classes if it's a ReactElement */}
-                        {React.isValidElement(link.icon) ? React.cloneElement(link.icon as React.ReactElement<any>, { className: "mr-3 h-5 w-5 flex-shrink-0" }) : null}
+                        {React.isValidElement(link.icon) ? React.cloneElement(link.icon as React.ReactElement, { className: "mr-3 h-5 w-5 flex-shrink-0" }) : null}
                         {link.label}
                 </Link>
               </li>

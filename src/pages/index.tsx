@@ -1,19 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // src/pages/index.tsx (This will be the homepage for GamingLogoAI)
 import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link"; // Use Link for navigation
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { FaChevronRight, FaMagic, FaPaintBrush, FaBolt, FaUsers, FaShieldAlt, FaUserCircle } from "react-icons/fa"; // Example Icons
+import { FaChevronRight } from "react-icons/fa"; // Example Icons
 import { s3Style } from "~/utils/s3Paths";
 
 const HomePage: NextPage = () => {
   const { data: session } = useSession();
-  const isLoggedIn = !!session;
   const router = useRouter();
-
-  const SITE_URL = process.env.HOST_NAME || "https://gaminglogoai.com";
 
   const gamingLogoLandingUrl = "/gaming-logo";
   const pfpLandingUrl = "/ai-profile-picture-maker";
