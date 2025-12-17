@@ -35,6 +35,7 @@ const server = z.object({
   MAUTIC_USERNAME: z.string(),
   MAUTIC_PASSWORD: z.string(),
   CRON_SECRET: z.string(),
+  MYLEAD_SECURITY_KEY: z.string(),
 });
 
 /**
@@ -78,6 +79,7 @@ const processEnv = {
   CRON_SECRET: process.env.CRON_SECRET,
   NEXT_PUBLIC_AWS_REGION_GAMING: process.env.NEXT_PUBLIC_AWS_REGION_GAMING,
   NEXT_PUBLIC_S3_BUCKET_NAME_GAMING: process.env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING,
+  MYLEAD_SECURITY_KEY: process.env.MYLEAD_SECURITY_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

@@ -64,6 +64,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     icons         Icon[]
+    cpaUnlocks    CpaUnlock[]
 }
 
 model Icon {
@@ -81,3 +82,36 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+enum CpaStatus {
+    pending
+    approved
+    rejected
+}
+
+enum CpaNetwork {
+    mylead
+}
+
+model CpaUnlock {
+    id            String     @id @default(cuid())
+    userId        String
+    user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    token         String     @unique
+    network       CpaNetwork
+    status        CpaStatus  @default(pending)
+
+    offerId       String?
+    offerName     String?
+    transactionId String?
+
+    payout        Float?
+    currency      String?
+    country       String?
+    leadIp        String?
+
+    createdAt     DateTime   @default(now())
+    approvedAt    DateTime?
+}
+
