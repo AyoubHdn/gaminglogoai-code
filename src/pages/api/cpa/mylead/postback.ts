@@ -15,26 +15,30 @@ function verifyMyLeadHash(
     (req.headers["x-forwarded-proto"] as string) ?? "https";
 
   const host = req.headers.host;
-  if (!host) return false;
+  const url = req.url;
 
-  const fullUrl = `${protocol}://${host}${req.url}`;
+  const fullUrl = `${protocol}://${host}${url}`;
 
   const localHash = crypto
     .createHmac("sha256", securityKey)
     .update(fullUrl)
     .digest("hex");
 
-  const remoteHashHeader = req.headers["x-mylead-security-hash"];
+  const remoteHash = req.headers["x-mylead-security-hash"];
 
-  if (typeof remoteHashHeader !== "string") {
+  // 🔴 TEMP DEBUG LOGS (IMPORTANT)
+  console.log("MYLEAD DEBUG");
+  console.log("Full URL:", fullUrl);
+  console.log("Local hash:", localHash);
+  console.log("Remote hash:", remoteHash);
+  console.log("Headers:", req.headers);
+  console.log("Query:", req.query);
+
+  if (typeof remoteHash !== "string") {
     return false;
   }
 
-  // Use constant-time comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(localHash, "utf8"),
-    Buffer.from(remoteHashHeader, "utf8")
-  );
+  return localHash === remoteHash;
 }
 
 export default async function handler(
