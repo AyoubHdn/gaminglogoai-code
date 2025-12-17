@@ -11,14 +11,12 @@ function verifyMyLeadHash(
   req: NextApiRequest,
   securityKey: string
 ): boolean {
-  // Detect protocol correctly behind Vercel / proxies
   const protocol =
     (req.headers["x-forwarded-proto"] as string) ?? "https";
 
   const host = req.headers.host;
   if (!host) return false;
 
-  // FULL URL exactly as MyLead sent it
   const fullUrl = `${protocol}://${host}${req.url}`;
 
   const localHash = crypto
@@ -26,13 +24,17 @@ function verifyMyLeadHash(
     .update(fullUrl)
     .digest("hex");
 
-  const remoteHash = req.headers["x-mylead-security-hash"];
+  const remoteHashHeader = req.headers["x-mylead-security-hash"];
 
-  if (!remoteHash || typeof remoteHash !== "string") {
+  if (typeof remoteHashHeader !== "string") {
     return false;
   }
 
-  return localHash === remoteHash;
+  // Use constant-time comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(localHash, "utf8"),
+    Buffer.from(remoteHashHeader, "utf8")
+  );
 }
 
 export default async function handler(
@@ -54,7 +56,7 @@ export default async function handler(
   }
 
   const {
-    lead_status,
+    status,
     ml_sub1,
     payout_decimal,
     currency,
@@ -65,8 +67,7 @@ export default async function handler(
     lead_ip,
   } = req.query;
 
-  // 2️⃣ Only process approved leads
-  if (lead_status !== "approved") {
+  if (status !== "approved") {
     return res.status(200).send("Ignored");
   }
 
