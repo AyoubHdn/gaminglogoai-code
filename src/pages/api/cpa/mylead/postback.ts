@@ -64,16 +64,16 @@ export default async function handler(
     ml_sub1,
     payout_decimal,
     currency,
-    offer_id,
-    offer_name,
     transaction_id,
-    country,
-    lead_ip,
+    destination_program_id,
+    destination_program_name,
+    country_code,
+    ip,
   } = req.query;
 
   const isApproved =
     status === "approved" ||
-    status === "1";
+    status === "0";
 
   if (!isApproved) {
     return res.status(200).send("Ignored");
@@ -100,38 +100,56 @@ export default async function handler(
 
   // 5️⃣ Atomic update (credit + mark approved)
   await prisma.$transaction([
-    prisma.user.update({
-      where: { id: unlock.userId },
-      data: {
-        gamingCredits: { increment: 1 },
-      },
-    }),
-    prisma.cpaUnlock.update({
-      where: { id: unlock.id },
-      data: {
-        status: "approved",
-        payout:
-          typeof payout_decimal === "string"
-            ? Number(payout_decimal)
-            : null,
-        currency:
-          typeof currency === "string" ? currency : null,
-        offerId:
-          typeof offer_id === "string" ? offer_id : null,
-        offerName:
-          typeof offer_name === "string" ? offer_name : null,
-        transactionId:
-          typeof transaction_id === "string"
-            ? transaction_id
-            : null,
-        country:
-          typeof country === "string" ? country : null,
-        leadIp:
-          typeof lead_ip === "string" ? lead_ip : null,
-        approvedAt: new Date(),
-      },
-    }),
-  ]);
+  prisma.user.update({
+    where: { id: unlock.userId },
+    data: {
+      gamingCredits: { increment: 1 },
+    },
+  }),
+
+  prisma.cpaUnlock.update({
+    where: { id: unlock.id },
+    data: {
+      status: "approved",
+      transactionId:
+        typeof transaction_id === "string"
+          ? transaction_id
+          : null,
+
+      payout:
+        typeof payout_decimal === "string"
+          ? Number(payout_decimal)
+          : null,
+
+      currency:
+        typeof currency === "string"
+          ? currency
+          : null,
+
+      offerId:
+        typeof destination_program_id === "string"
+          ? destination_program_id
+          : null,
+
+      offerName:
+        typeof destination_program_name === "string"
+          ? destination_program_name
+          : null,
+
+      country:
+        typeof country_code === "string"
+          ? country_code
+          : null,
+
+      leadIp:
+        typeof ip === "string"
+          ? ip
+          : null,
+
+      approvedAt: new Date(),
+    },
+  }),
+]);
 
   return res.status(200).send("OK");
 }
