@@ -20,7 +20,8 @@ export default function CpaTestPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed");
+        const text = await res.text();
+        throw new Error(text || "Request failed");
       }
 
       // Redirect to MyLead
