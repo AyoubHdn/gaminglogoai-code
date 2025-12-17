@@ -11,10 +11,15 @@ function verifyMyLeadHash(
   req: NextApiRequest,
   securityKey: string
 ): boolean {
-  const baseUrl = process.env.BASE_URL;
-  if (!baseUrl) return false;
+  // Detect protocol correctly behind Vercel / proxies
+  const protocol =
+    (req.headers["x-forwarded-proto"] as string) ?? "https";
 
-  const fullUrl = `${baseUrl}${req.url}`;
+  const host = req.headers.host;
+  if (!host) return false;
+
+  // FULL URL exactly as MyLead sent it
+  const fullUrl = `${protocol}://${host}${req.url}`;
 
   const localHash = crypto
     .createHmac("sha256", securityKey)
