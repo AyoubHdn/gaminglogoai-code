@@ -71,7 +71,11 @@ export default async function handler(
     lead_ip,
   } = req.query;
 
-  if (status !== "approved") {
+  const isApproved =
+    status === "approved" ||
+    status === "1";
+
+  if (!isApproved) {
     return res.status(200).send("Ignored");
   }
 
