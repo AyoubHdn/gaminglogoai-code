@@ -22,19 +22,33 @@ export default async function handler(
     return res.status(401).send("Unauthorized");
   }
 
+  const offerIdParam = Array.isArray(req.query.offerId) ? req.query.offerId[0] : req.query.offerId;
+
+  const existing = await prisma.cpaUnlock.findFirst({
+    where: {
+        userId: session.user.id,
+        status: "pending",
+    },
+    });
+
+    if (existing) {
+    return res.status(400).json({
+        error: "You already have a pending free credit task",
+    });
+    }
+
   // 2️⃣ Select an active CPAGrip offer (simple version)
+
   const offer = await prisma.offer.findFirst({
     where: {
+      network: "cpagrip",
+      externalId: offerIdParam,
       active: true,
-      network: "cpagrip", // IMPORTANT
-    },
-    orderBy: {
-      priority: "asc",
     },
   });
 
   if (!offer) {
-    return res.status(404).send("No offer available");
+    return res.status(404).json({ error: "Offer not found" });
   }
 
   // 3️⃣ Create secure tracking token

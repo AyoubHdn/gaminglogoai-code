@@ -4,7 +4,7 @@ import Head from "next/head";
 import { getDeviceInfo } from "~/lib/getDevice";
 
 interface Offer {
-  id: string;
+  externalId: string;
   title: string;
   description: string;
 }
@@ -60,7 +60,7 @@ export default function FreeCreditUnlock() {
               className="mt-4 px-6 py-3 bg-purple-600 text-white rounded"
               onClick={() => {
                 window.open(
-                  `/api/cpa/mylead/unlock?offerId=${offer.id}`,
+                  `/api/cpa/cpagrip/unlock?offerId=${offer.externalId}`,
                   "_blank"
                 );
               }}

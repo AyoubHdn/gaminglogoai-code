@@ -21,7 +21,10 @@ export default async function handler(
   const country = getCountry(req);
 
   const offers = await prisma.offer.findMany({
-    where: { active: true },
+    where: {
+      active: true,
+      network: "cpagrip",
+    },
   });
 
   const offer = selectBestOffer(
