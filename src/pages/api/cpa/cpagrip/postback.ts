@@ -57,7 +57,7 @@ export default async function handler(
           typeof payout === "string" || typeof payout === "number"
             ? Number(payout)
             : null,
-        offerExternalId:
+        offerId:
           typeof offer_id === "string" ? offer_id : null,
         approvedAt: new Date(),
       },

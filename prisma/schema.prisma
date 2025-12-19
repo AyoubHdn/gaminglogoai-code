@@ -95,30 +95,27 @@ enum CpaNetwork {
 }
 
 model CpaUnlock {
-    id              String     @id @default(cuid())
+    id            String     @id @default(cuid())
+    userId        String
+    user          User       @relation(fields: [userId], references: [id])
 
-    userId          String
-    user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    token         String     @unique
+    network       CpaNetwork
+    status        CpaStatus  @default(pending)
 
-    token           String     @unique
-    network         CpaNetwork
-    status          CpaStatus  @default(pending)
+    offerId       String?
+    offerName     String?
+    transactionId String?
 
-    offerExternalId String?
-    offerTitle      String?
-    transactionId   String?
+    payout        Float?
+    currency      String?
+    country       String?
+    leadIp        String?
 
-    payout          Float?
-    currency        String?
-    country         String?
-    leadIp          String?
-
-    createdAt       DateTime   @default(now())
-    approvedAt      DateTime?
-
-    @@index([userId, status])
-    @@index([token])
+    createdAt     DateTime   @default(now())
+    approvedAt    DateTime?
 }
+
 
 enum OfferDevice {
     mobile

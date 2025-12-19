@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import { useState } from "react";
 
 export default function CpaTestPage() {
@@ -13,20 +13,20 @@ export default function CpaTestPage() {
     setError(null);
 
     try {
-      const res = await fetch("/api/cpa/mylead/unlock", {
+      const res = await fetch("/api/cpa/cpagrip/unlock", {
         method: "POST",
       });
-
-      const data = await res.json();
 
       if (!res.ok) {
         const text = await res.text();
         throw new Error(text || "Request failed");
       }
 
-      // Redirect to MyLead
+      const data = await res.json();
+
+      // Redirect user to CPA offer
       window.location.href = data.redirectUrl;
-    } catch (err: unknown) {
+    } catch (err) {
       setError((err as Error).message);
       setLoading(false);
     }
@@ -35,7 +35,7 @@ export default function CpaTestPage() {
   return (
     <div style={{ padding: 40 }}>
       <h1>CPA Test Page</h1>
-      <p>Click to unlock 1 credit via MyLead.</p>
+      <p>Click to unlock 1 free credit.</p>
 
       <button
         onClick={unlock}
