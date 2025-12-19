@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "~/server/db";
+
+export const config = {
+  api: {
+    bodyParser: true,
+  },
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,14 +18,29 @@ export default async function handler(
     return res.status(405).end();
   }
 
-  const { password, payout, offer_id, tracking_id } = req.body;
+  const password =
+    req.body?.password ??
+    req.query?.password ??
+    req.body?.PASSWORD;
 
-  // 1️⃣ Verify CPAGrip password
-  if (password !== process.env.CPAGRIP_POSTBACK_PASSWORD) {
+  const tracking_id =
+    req.body?.tracking_id ??
+    req.query?.tracking_id;
+
+  const payout =
+    req.body?.payout ??
+    req.query?.payout;
+
+  const offer_id =
+    req.body?.offer_id ??
+    req.query?.offer_id;
+
+  // 1️⃣ Verify password
+  if (String(password) !== String(process.env.CPAGRIP_POSTBACK_PASSWORD)) {
     return res.status(403).send("Invalid password");
   }
 
-  // 2️⃣ Validate tracking ID (token)
+  // 2️⃣ Validate tracking ID
   if (!tracking_id || typeof tracking_id !== "string") {
     return res.status(400).send("Missing tracking_id");
   }
@@ -31,7 +51,6 @@ export default async function handler(
   });
 
   if (!unlock) {
-    // IMPORTANT: always return 200 to avoid retries
     return res.status(200).send("Unknown token");
   }
 
@@ -40,7 +59,7 @@ export default async function handler(
     return res.status(200).send("Already credited");
   }
 
-  // 5️⃣ Atomic transaction: credit user + mark unlock approved
+  // 5️⃣ Credit user + mark approved
   await prisma.$transaction([
     prisma.user.update({
       where: { id: unlock.userId },
@@ -52,13 +71,8 @@ export default async function handler(
       where: { id: unlock.id },
       data: {
         status: "approved",
-        network: "cpagrip",
-        payout:
-          typeof payout === "string" || typeof payout === "number"
-            ? Number(payout)
-            : null,
-        offerId:
-          typeof offer_id === "string" ? offer_id : null,
+        payout: payout ? Number(payout) : null,
+        offerId: offer_id?.toString(),
         approvedAt: new Date(),
       },
     }),
