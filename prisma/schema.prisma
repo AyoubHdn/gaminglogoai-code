@@ -91,30 +91,33 @@ enum CpaStatus {
 
 enum CpaNetwork {
     mylead
+    cpagrip
 }
 
 model CpaUnlock {
-    id            String     @id @default(cuid())
-    userId        String
-    user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id              String     @id @default(cuid())
 
-    token         String     @unique
-    network       CpaNetwork
-    status        CpaStatus  @default(pending)
+    userId          String
+    user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    offerId       String?
-    offerName     String?
-    transactionId String?
+    token           String     @unique
+    network         CpaNetwork
+    status          CpaStatus  @default(pending)
 
-    payout        Float?
-    currency      String?
-    country       String?
-    leadIp        String?
+    offerExternalId String?
+    offerTitle      String?
+    transactionId   String?
 
-    createdAt     DateTime   @default(now())
-    approvedAt    DateTime?
+    payout          Float?
+    currency        String?
+    country         String?
+    leadIp          String?
+
+    createdAt       DateTime   @default(now())
+    approvedAt      DateTime?
 
     @@index([userId, status])
+    @@index([token])
 }
 
 enum OfferDevice {
@@ -136,25 +139,36 @@ enum OfferType {
 }
 
 model Offer {
-    id          String      @id @default(cuid())
+    id              String      @id @default(cuid())
 
-    network     CpaNetwork  // reuse existing enum (mylead)
-    externalId  String      // offer ID from MyLead
-    title       String
-    description String
+    network         CpaNetwork
+    externalId      String      // ID from CPAGrip / MyLead
+    title           String
+    description     String?
 
-    payout      Float?
-    currency    String?
+    payout          Float?
+    currency        String?
 
-    device      OfferDevice
-    os          OfferOS
-    type        OfferType
+    device          OfferDevice
+    os              OfferOS     // if multiple, store "any"
+    type            OfferType   // CPI / PPI
+    conversion      OfferConversion
 
-    countries   String[]    // ISO country codes, empty = global
-    priority    Int         @default(100)
-    active      Boolean     @default(true)
+    countries       String[]    // ISO codes; empty = global
+    priority        Int         @default(100)
+    dailyCap        Int?
+    active          Boolean     @default(true)
 
-    createdAt   DateTime    @default(now())
+    createdAt       DateTime    @default(now())
 
-    @@index([network, active])
+    @@unique([network, externalId])
+    @@index([network, active, priority])
+}
+
+enum OfferConversion {
+    install
+    survey
+    single_opt_in
+    complete_task
+    register
 }
