@@ -113,5 +113,48 @@ model CpaUnlock {
 
     createdAt     DateTime   @default(now())
     approvedAt    DateTime?
+
+    @@index([userId, status])
 }
 
+enum OfferDevice {
+    mobile
+    desktop
+}
+
+enum OfferOS {
+    android
+    ios
+    windows
+    mac
+    any
+}
+
+enum OfferType {
+    CPI
+    PPI
+}
+
+model Offer {
+    id          String      @id @default(cuid())
+
+    network     CpaNetwork  // reuse existing enum (mylead)
+    externalId  String      // offer ID from MyLead
+    title       String
+    description String
+
+    payout      Float?
+    currency    String?
+
+    device      OfferDevice
+    os          OfferOS
+    type        OfferType
+
+    countries   String[]    // ISO country codes, empty = global
+    priority    Int         @default(100)
+    active      Boolean     @default(true)
+
+    createdAt   DateTime    @default(now())
+
+    @@index([network, active])
+}
