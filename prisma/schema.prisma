@@ -156,6 +156,8 @@ model Offer {
     dailyCap        Int?
     active          Boolean     @default(true)
 
+    trackingUrl  String?
+
     createdAt       DateTime    @default(now())
 
     @@unique([network, externalId])

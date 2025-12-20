@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -40,12 +41,19 @@ export default function FreeCreditUnlock() {
       const res = await fetch("/api/cpa/cpagrip/unlock", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           offerId: offer.externalId,
         }),
       });
 
-      const data = await res.json();
+      let data: any = null;
+
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(await res.text());
+      }
 
       if (!res.ok) {
         throw new Error(data.error || "Unlock failed");
