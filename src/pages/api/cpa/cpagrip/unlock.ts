@@ -67,7 +67,7 @@ export default async function handler(
 
   // 4️⃣ Build CPAGrip redirect URL
   // Replace BASE_TRACKING_URL with real CPAGrip tracking link
-  const redirectUrl = `${process.env.CPAGRIP_TRACKING_BASE_URL}&tracking_id=${token}`;
+  const redirectUrl = `${offer.trackingUrl}&tracking_id=${token}`;
 
   // 5️⃣ Return redirect URL to frontend
   return res.status(200).json({ redirectUrl });
