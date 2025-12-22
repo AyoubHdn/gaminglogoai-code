@@ -103,6 +103,7 @@ model CpaUnlock {
     token         String     @unique
     network       CpaNetwork
     status        CpaStatus  @default(pending)
+    result        CpaResult?
 
     offerId       String?
     offerName     String?
