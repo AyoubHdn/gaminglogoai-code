@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
@@ -11,6 +10,7 @@ type Result =
   | "screenout_bonus"
   | "screenout_no_bonus"
   | "rejected"
+  | "pending"
   | "error";
 
 export default function FreeCreditResult() {
@@ -18,9 +18,9 @@ export default function FreeCreditResult() {
   const [payout, setPayout] = useState<number>(0);
 
   useEffect(() => {
-    fetch("/api/cpa/result", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => {
+    fetch("/api/cpa/cpx/result", { credentials: "include" })
+      .then(res => res.json())
+      .then(data => {
         if (!data || data.error) {
           setResult("error");
           return;
@@ -34,12 +34,22 @@ export default function FreeCreditResult() {
           } else {
             setResult("screenout_no_bonus");
           }
-          setPayout(data.payout);
+          setPayout(data.payout ?? 0);
+          return;
+        }
+
+        if (data.status === "screenout") {
+          setResult("screenout_no_bonus");
           return;
         }
 
         if (data.status === "rejected") {
           setResult("rejected");
+          return;
+        }
+
+        if (data.status === "pending") {
+          setResult("pending");
           return;
         }
 
@@ -57,6 +67,10 @@ export default function FreeCreditResult() {
 
       <div className="max-w-lg mx-auto mt-20 text-center">
         {result === "loading" && <p>Checking your reward…</p>}
+
+        {result === "pending" && (
+          <p>⏳ Verifying your reward… Please wait.</p>
+        )}
 
         {result === "completed" && (
           <>
@@ -81,7 +95,7 @@ export default function FreeCreditResult() {
               ⚠️ Survey Ended Early
             </h1>
             <p className="mt-3">
-              You still earned a small reward (${payout.toFixed(2)}).
+              You earned a small bonus (${payout.toFixed(2)}).
             </p>
             <Link
               href="/free-credit"

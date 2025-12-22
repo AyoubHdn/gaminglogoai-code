@@ -1,7 +1,8 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+// /pages/api/cpa/cpx/result.ts
 import { getServerSession } from "next-auth";
 import { authOptions } from "~/server/auth";
 import { prisma } from "~/server/db";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,19 +17,33 @@ export default async function handler(
   const unlock = await prisma.cpaUnlock.findFirst({
     where: {
       userId: session.user.id,
+      network: "cpx",
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: { createdAt: "desc" },
   });
 
   if (!unlock) {
-    return res.status(404).json({ error: "No unlock found" });
+    return res.json({ status: "pending" });
   }
 
-  return res.json({
-    status: unlock.status,            // pending | approved | rejected
-    payout: unlock.payout ?? 0,
-    approvedAt: unlock.approvedAt,
-  });
+  if (unlock.status === "approved" && unlock.payout && unlock.payout > 0) {
+    return res.json({
+      status: "approved",
+      payout: unlock.payout,
+    });
+  }
+
+  if (unlock.status === "approved" && (!unlock.payout || unlock.payout === 0)) {
+    return res.json({
+      status: "screenout",
+    });
+  }
+
+  if (unlock.status === "rejected") {
+    return res.json({
+      status: "rejected",
+    });
+  }
+
+  return res.json({ status: "pending" });
 }
