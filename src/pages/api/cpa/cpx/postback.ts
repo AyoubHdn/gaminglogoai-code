@@ -4,10 +4,18 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "~/server/db";
 import crypto from "crypto";
 
+
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const cleanQuery = Object.fromEntries(
+  Object.entries(req.query).map(([k, v]) => [
+    k.trim(),
+    typeof v === "string" ? v.trim() : v,
+  ])
+);
   try {
     const {
       status,
@@ -17,7 +25,7 @@ export default async function handler(
       amount_local,
       ip_click,
       hash,
-    } = req.query;
+    } = cleanQuery;
 
     // 1️⃣ Basic validation
     if (!user_id || !trans_id || !hash) {
