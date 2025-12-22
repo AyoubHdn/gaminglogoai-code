@@ -15,81 +15,85 @@ function mapCpxType(type: string | undefined, payout: number) {
   return "screenout_no_bonus";
 }
 
+const CPX_SECRET = process.env.CPX_SECRET!;
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const {
-    status,
-    trans_id,
-    user_id,
-    amount_usd,
-    amount_local,
-    ip_click,
-    type,
-    hash,
-  } = req.query;
+  try {
+    const {
+      status,
+      trans_id,
+      user_id,
+      type,
+      amount_local,
+      amount_usd,
+      ip_click,
+      hash,
+    } = req.query;
 
-  // 1. Validate hash
-  const expectedHash = crypto
-    .createHash("md5")
-    .update(`${trans_id}-${process.env.CPX_SECRET}`)
-    .digest("hex");
+    // ---- 1. Required params check ----
+    if (!trans_id || !user_id || !hash) {
+      return res.status(400).json({ error: "Missing required params" });
+    }
 
-  if (hash !== expectedHash) {
-    return res.status(403).json({ error: "Invalid hash" });
-  }
+    // ---- 2. Hash validation (AUTHORITATIVE) ----
+    const expectedHash = crypto
+      .createHash("md5")
+      .update(`${trans_id}-${CPX_SECRET}`)
+      .digest("hex");
 
-  // 2. Find pending unlock
-  const unlock = await prisma.cpaUnlock.findFirst({
-    where: {
-      userId: String(user_id),
-      network: "cpx",
-      status: "pending",
-    },
-  });
+    if (hash !== expectedHash) {
+      return res.status(403).json({ error: "Invalid hash" });
+    }
 
-  if (!unlock) {
-    return res.json({ message: "No pending unlock" });
-  }
+    // ---- 3. Find latest pending unlock for user ----
+    const unlock = await prisma.cpaUnlock.findFirst({
+      where: {
+        userId: String(user_id),
+        network: "cpx",
+        status: "pending",
+      },
+      orderBy: { createdAt: "desc" },
+    });
 
-  // 3. Reversal
-  if (String(status) === "2") {
+    if (!unlock) {
+      return res.status(200).json({ message: "No pending unlock" });
+    }
+
+    const payoutUsd = Number(amount_usd ?? 0);
+    const result = mapCpxType(String(type), payoutUsd);
+
+    // ---- 4. Status mapping ----
+    let newStatus: "approved" | "rejected" = "approved";
+    if (status === "2") newStatus = "rejected";
+
+    // ---- 5. Update unlock ----
     await prisma.cpaUnlock.update({
       where: { id: unlock.id },
       data: {
-        status: "rejected",
-        result: "reversed",
+        status: newStatus,
+        transactionId: String(trans_id),
+        payout: payoutUsd,
+        currency: "USD",
+        leadIp: String(ip_click ?? ""),
+        approvedAt: newStatus === "approved" ? new Date() : null,
+        result, // <- enum CpaResult
       },
     });
 
-    return res.json({ ok: true });
+    // ---- 6. Credit logic ----
+    if (newStatus === "approved" && result !== "screenout_no_bonus") {
+      await prisma.user.update({
+        where: { id: String(user_id) },
+        data: { gamingCredits: { increment: 1 } },
+      });
+    }
+
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    console.error("CPX postback error:", err);
+    return res.status(500).json({ error: "Server error" });
   }
-
-  // 4. Normal completion / screenout
-  const payout = Number(amount_usd ?? 0);
-  const result = mapCpxType(String(type), payout);
-
-  await prisma.cpaUnlock.update({
-    where: { id: unlock.id },
-    data: {
-      status: "approved",
-      result,
-      transactionId: String(trans_id),
-      payout,
-      currency: "USD",
-      leadIp: String(ip_click),
-      approvedAt: new Date(),
-    },
-  });
-
-  // 5. Credit logic (business decision)
-  if (result === "complete" || result === "screenout_bonus") {
-    await prisma.user.update({
-      where: { id: unlock.userId },
-      data: { gamingCredits: { increment: 1 } },
-    });
-  }
-
-  return res.json({ ok: true });
 }
