@@ -92,6 +92,7 @@ enum CpaStatus {
 enum CpaNetwork {
     mylead
     cpagrip
+    cpx
 }
 
 model CpaUnlock {
