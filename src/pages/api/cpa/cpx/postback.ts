@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import { prisma } from "~/server/db";
 
-const CPX_SECRET = process.env.CPX_SECRET!;
+const CPX_SECRET = process.env.CPX_SECURITY_HASH!;
 
 const getParam = (p: string | string[] | undefined) =>
   Array.isArray(p) ? p[0] : p;
@@ -33,7 +33,7 @@ export default async function handler(
 
     const expectedHash = crypto
       .createHash("md5")
-      .update(`${trans_id}${CPX_SECRET}`)
+      .update(`${user_id}${CPX_SECRET}`)
       .digest("hex");
 
     if (hash !== expectedHash) {
