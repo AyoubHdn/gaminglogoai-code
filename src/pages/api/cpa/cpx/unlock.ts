@@ -46,11 +46,18 @@ export default async function handler(
     },
   });
 
-  // 4️⃣ Build CPX redirect URL
+  // 4️⃣ CPX secure hash (REQUIRED)
+  const secureHash = crypto
+    .createHash("md5")
+    .update(`${session.user.id}${process.env.CPX_SECRET}`)
+    .digest("hex");
+
+  // 5️⃣ Build CPX redirect URL
   const redirectUrl =
     `https://offers.cpx-research.com/index.php` +
     `?app_id=${process.env.CPX_APP_ID}` +
     `&ext_user_id=${session.user.id}` +
+    `&secure_hash=${secureHash}` +
     `&subid_1=gaminglogoai`;
 
   return res.status(200).json({ redirectUrl });

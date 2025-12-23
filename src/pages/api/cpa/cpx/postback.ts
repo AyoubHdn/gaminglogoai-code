@@ -22,9 +22,9 @@ export default async function handler(
     const status = getParam(req.query.status);
     const trans_id = getParam(req.query.trans_id);
     const user_id = getParam(req.query.user_id);
-    const type = getParam(req.query.type);
     const amount_usd = getParam(req.query.amount_usd);
     const ip_click = getParam(req.query.ip_click);
+    const type = getParam(req.query.type);
     const hash = getParam(req.query.hash);
 
     if (!trans_id || !user_id || !hash) {
