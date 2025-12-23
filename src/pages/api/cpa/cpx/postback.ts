@@ -33,7 +33,7 @@ export default async function handler(
 
     const expectedHash = crypto
       .createHash("md5")
-      .update(`${trans_id}${CPX_SECRET}`)
+      .update(`${trans_id}-${CPX_SECRET}`)
       .digest("hex");
 
     if (hash !== expectedHash) {
