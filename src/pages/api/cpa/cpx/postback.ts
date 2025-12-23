@@ -1,44 +1,36 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// /api/cpa/cpx/postback.ts
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "~/server/db";
 import crypto from "crypto";
+import { prisma } from "~/server/db";
 
-// /api/cpa/cpx/postback.ts
+const CPX_SECRET = process.env.CPX_SECRET!;
 
-function mapCpxType(type: string | undefined, payout: number) {
+const getParam = (p: string | string[] | undefined) =>
+  Array.isArray(p) ? p[0] : p;
+
+function mapCpxType(type: string | undefined) {
   if (type === "complete") return "complete";
-  if (type === "bonus") return "screenout_bonus";
-  if (type === "out_okay") return "screenout_bonus";
+  if (type === "bonus" || type === "out_okay") return "screenout_bonus";
   if (type === "out_quality") return "screenout_no_bonus";
   return "screenout_no_bonus";
 }
-
-const CPX_SECRET = process.env.CPX_SECRET!;
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    const {
-      status,
-      trans_id,
-      user_id,
-      type,
-      amount_local,
-      amount_usd,
-      ip_click,
-      hash,
-    } = req.query;
+    const status = getParam(req.query.status);
+    const trans_id = getParam(req.query.trans_id);
+    const user_id = getParam(req.query.user_id);
+    const type = getParam(req.query.type);
+    const amount_usd = getParam(req.query.amount_usd);
+    const ip_click = getParam(req.query.ip_click);
+    const hash = getParam(req.query.hash);
 
-    // ---- 1. Required params check ----
     if (!trans_id || !user_id || !hash) {
-      return res.status(400).json({ error: "Missing required params" });
+      return res.status(400).json({ error: "Missing params" });
     }
 
-    // ---- 2. Hash validation (AUTHORITATIVE) ----
     const expectedHash = crypto
       .createHash("md5")
       .update(`${trans_id}-${CPX_SECRET}`)
@@ -48,13 +40,8 @@ export default async function handler(
       return res.status(403).json({ error: "Invalid hash" });
     }
 
-    // ---- 3. Find latest pending unlock for user ----
     const unlock = await prisma.cpaUnlock.findFirst({
-      where: {
-        userId: String(user_id),
-        network: "cpx",
-        status: "pending",
-      },
+      where: { userId: user_id, network: "cpx", status: "pending" },
       orderBy: { createdAt: "desc" },
     });
 
@@ -62,38 +49,34 @@ export default async function handler(
       return res.status(200).json({ message: "No pending unlock" });
     }
 
-    const payoutUsd = Number(amount_usd ?? 0);
-    const result = mapCpxType(String(type), payoutUsd);
+    const payout = Number(amount_usd ?? 0);
+    const result = mapCpxType(type);
 
-    // ---- 4. Status mapping ----
-    let newStatus: "approved" | "rejected" = "approved";
-    if (status === "2") newStatus = "rejected";
+    const finalStatus = status === "2" ? "rejected" : "approved";
 
-    // ---- 5. Update unlock ----
     await prisma.cpaUnlock.update({
       where: { id: unlock.id },
       data: {
-        status: newStatus,
-        transactionId: String(trans_id),
-        payout: payoutUsd,
+        status: finalStatus,
+        transactionId: trans_id,
+        payout,
         currency: "USD",
-        leadIp: String(ip_click ?? ""),
-        approvedAt: newStatus === "approved" ? new Date() : null,
-        result, // <- enum CpaResult
+        leadIp: ip_click,
+        approvedAt: finalStatus === "approved" ? new Date() : null,
+        result,
       },
     });
 
-    // ---- 6. Credit logic ----
-    if (newStatus === "approved" && result !== "screenout_no_bonus") {
+    if (finalStatus === "approved" && result !== "screenout_no_bonus") {
       await prisma.user.update({
-        where: { id: String(user_id) },
+        where: { id: user_id },
         data: { gamingCredits: { increment: 1 } },
       });
     }
 
     return res.status(200).json({ success: true });
-  } catch (err) {
-    console.error("CPX postback error:", err);
+  } catch (e) {
+    console.error("CPX postback error", e);
     return res.status(500).json({ error: "Server error" });
   }
 }
