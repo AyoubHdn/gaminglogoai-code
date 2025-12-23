@@ -121,33 +121,32 @@ export default function FreeCreditResult() {
         {result === "screenout_bonus" && (
           <>
             <h1 className="text-2xl font-bold text-yellow-500">
-              ⚠️ Survey Ended Early
+              Survey Ended Early
             </h1>
             <p className="mt-3">
-              You earned a small bonus (${payout.toFixed(2)}).
+              You earned <strong>1 free credit</strong>.
             </p>
-            <Link
-              href="/free-credit"
-              className="inline-block mt-6 px-6 py-3 bg-purple-600 text-white rounded"
-            >
-              Try Another Survey
-            </Link>
+            <GeneratorLinks />
           </>
         )}
 
         {result === "screenout_no_bonus" && (
           <>
-            <h1 className="text-2xl font-bold text-gray-600">
-              ❌ Not Eligible
+            <h1 className="text-2xl font-bold text-gray-700">
+              Survey Not a Match
             </h1>
-            <p className="mt-3">
-              This survey wasn’t a match. No reward this time.
+            <p className="mt-3 text-gray-600">
+              This survey wasn’t the right fit for your profile.
+              Don’t worry — this happens often and is completely normal.
+            </p>
+            <p className="mt-2 text-gray-500 text-sm">
+              Try another survey to earn your free credit.
             </p>
             <Link
-              href="/dashboard"
-              className="inline-block mt-6 px-6 py-3 bg-gray-700 text-white rounded"
+              href="/unlock/free-credit"
+              className="inline-block mt-6 px-6 py-3 bg-purple-600 text-white rounded"
             >
-              Back to Dashboard
+              Try Another Survey
             </Link>
           </>
         )}
