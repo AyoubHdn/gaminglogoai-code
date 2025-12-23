@@ -1,8 +1,40 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+
+
+  const GENERATORS = [
+  {
+    href: "/gaming-logo-maker",
+    title: "Gaming Logo Generator",
+    description: "Create a professional gaming logo in seconds",
+  },
+  {
+    href: "/twitch-banner-generator",
+    title: "Twitch Banner Generator",
+    description: "Design a custom Twitch banner for your channel",
+  },
+];
+
+function GeneratorLinks() {
+  return (
+    <div className="mt-6 grid gap-4">
+      {GENERATORS.map((g) => (
+        <Link
+          key={g.href}
+          href={g.href}
+          className="block border rounded-lg p-4 hover:border-purple-600 transition"
+        >
+          <h3 className="font-semibold text-lg">{g.title}</h3>
+          <p className="text-sm text-gray-500 mt-1">{g.description}</p>
+        </Link>
+      ))}
+    </div>
+  );
+}
 
 type Result =
   | "loading"
@@ -16,6 +48,8 @@ type Result =
 export default function FreeCreditResult() {
   const [result, setResult] = useState<Result>("loading");
   const [payout, setPayout] = useState<number>(0);
+
+
 
   useEffect(() => {
     fetch("/api/cpa/cpx/result", { credentials: "include" })
@@ -80,12 +114,7 @@ export default function FreeCreditResult() {
             <p className="mt-3">
               You earned <strong>1 free credit</strong>.
             </p>
-            <Link
-              href="/generate"
-              className="inline-block mt-6 px-6 py-3 bg-purple-600 text-white rounded"
-            >
-              Generate My Logo
-            </Link>
+            <GeneratorLinks />
           </>
         )}
 
