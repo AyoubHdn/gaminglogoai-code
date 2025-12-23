@@ -49,7 +49,7 @@ export default async function handler(
   // 4️⃣ CPX secure hash (REQUIRED)
   const secureHash = crypto
     .createHash("md5")
-    .update(`${session.user.id}${process.env.CPX_SECRET}`)
+    .update(`${session.user.id}${process.env.CPX_SECURITY_HASH}`)
     .digest("hex");
 
   // 5️⃣ Build CPX redirect URL
