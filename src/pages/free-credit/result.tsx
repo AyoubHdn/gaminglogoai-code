@@ -61,7 +61,7 @@ export default function FreeCreditResult() {
         }
 
         if (data.status === "approved") {
-          if (data.payout >= 0.5) {
+          if (data.payout > 0) {
             setResult("completed");
           } else if (data.payout > 0) {
             setResult("screenout_bonus");

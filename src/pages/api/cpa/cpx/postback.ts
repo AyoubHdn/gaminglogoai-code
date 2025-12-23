@@ -7,12 +7,24 @@ const CPX_SECRET = process.env.CPX_SECURITY_HASH!;
 const getParam = (p: string | string[] | undefined) =>
   Array.isArray(p) ? p[0] : p;
 
-function mapCpxType(type: string | undefined) {
-  if (type === "complete") return "complete";
-  if (type === "bonus" || type === "out_okay") return "screenout_bonus";
-  if (type === "out_quality") return "screenout_no_bonus";
+function mapCpxType(type: string | undefined, payout: number) {
+  // Completed survey
+  if (type === "complete") {
+    return "complete";
+  }
+
+  // Screenout cases (CPX sends type=out)
+  if (type === "out") {
+    if (payout > 0) {
+      return "screenout_bonus";
+    }
+    return "screenout_no_bonus";
+  }
+
+  // Fallback safety
   return "screenout_no_bonus";
 }
+
 
 export default async function handler(
   req: NextApiRequest,
@@ -53,7 +65,7 @@ export default async function handler(
     }
 
     const payout = Number(amount_usd ?? 0);
-    const result = mapCpxType(type);
+    const result = mapCpxType(type, payout);
 
     const finalStatus = status === "2" ? "rejected" : "approved";
 
