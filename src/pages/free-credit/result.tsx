@@ -1,31 +1,79 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 
+
+  const GENERATORS = [
+  {
+    href: "/gaming-logo-maker",
+    title: "Gaming Logo Generator",
+    description: "Create a professional gaming logo in seconds",
+  },
+  {
+    href: "/twitch-banner-generator",
+    title: "Twitch Banner Generator",
+    description: "Design a custom Twitch banner for your channel",
+  },
+];
+
+function GeneratorLinks() {
+  return (
+    <div className="mt-6 grid gap-4">
+      {GENERATORS.map((g) => (
+        <Link
+          key={g.href}
+          href={g.href}
+          className="block border rounded-lg p-4 hover:border-purple-600 transition"
+        >
+          <h3 className="font-semibold text-lg">{g.title}</h3>
+          <p className="text-sm text-gray-500 mt-1">{g.description}</p>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 type Result =
   | "loading"
   | "completed"
-  | "screenout_no_bonus"
   | "screenout_bonus"
+  | "screenout_no_bonus"
   | "rejected"
   | "pending"
   | "error";
 
 export default function FreeCreditResult() {
   const [result, setResult] = useState<Result>("loading");
+  const [payout, setPayout] = useState<number>(0);
+
+
 
   useEffect(() => {
     fetch("/api/cpa/cpx/result", { credentials: "include" })
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         if (!data || data.error) {
           setResult("error");
           return;
         }
 
-        if (data.status === "pending") {
-          setResult("pending");
+        if (data.status === "approved") {
+          if (data.payout >= 0.5) {
+            setResult("completed");
+          } else if (data.payout > 0) {
+            setResult("screenout_bonus");
+          } else {
+            setResult("screenout_no_bonus");
+          }
+          setPayout(data.payout ?? 0);
+          return;
+        }
+
+        if (data.status === "screenout") {
+          setResult("screenout_no_bonus");
           return;
         }
 
@@ -34,19 +82,8 @@ export default function FreeCreditResult() {
           return;
         }
 
-        // ✅ Backend is authoritative
-        // Any payout > 0 already mapped to:
-        // result = "complete" | "screenout_bonus"
-        if (
-          data.result === "complete" ||
-          data.result === "screenout_bonus"
-        ) {
-          setResult("completed");
-          return;
-        }
-
-        if (data.result === "screenout_no_bonus") {
-          setResult("screenout_no_bonus");
+        if (data.status === "pending") {
+          setResult("pending");
           return;
         }
 
@@ -63,54 +100,32 @@ export default function FreeCreditResult() {
       </Head>
 
       <div className="max-w-lg mx-auto mt-20 text-center">
-        {/* Loading */}
         {result === "loading" && <p>Checking your reward…</p>}
 
-        {/* Pending */}
         {result === "pending" && (
-          <p className="text-gray-600">
-            ⏳ Verifying your reward… Please wait.
-          </p>
+          <p>⏳ Verifying your reward… Please wait.</p>
         )}
 
-        {/* ✅ Completed (complete OR bonus OR out_okay) */}
         {result === "completed" && (
           <>
             <h1 className="text-2xl font-bold text-green-600">
-              🎉 Free Credit Unlocked!
+              🎉 Survey Completed!
             </h1>
             <p className="mt-3">
-              You earned <strong>1 free credit</strong>. Choose what to generate:
+              You earned <strong>1 free credit</strong>.
             </p>
-
-            <div className="mt-6 flex flex-col gap-3">
-              <Link
-                href="/gaming-logo-maker"
-                className="px-6 py-3 bg-purple-600 text-white rounded"
-              >
-                Generate Gaming Logo
-              </Link>
-
-              <Link
-                href="/twitch-banner-generator"
-                className="px-6 py-3 bg-indigo-600 text-white rounded"
-              >
-                Generate Twitch Banner
-              </Link>
-            </div>
+            <GeneratorLinks />
           </>
         )}
 
-        {/* ❌ Screenout without bonus (out_quality) */}
-        {result === "screenout_no_bonus" && (
+        {result === "screenout_bonus" && (
           <>
-            <h1 className="text-2xl font-bold text-gray-600">
-              ❌ Not Eligible This Time
+            <h1 className="text-2xl font-bold text-yellow-500">
+              ⚠️ Survey Ended Early
             </h1>
             <p className="mt-3">
-              This survey wasn’t a good match. You can try another one.
+              You earned a small bonus (${payout.toFixed(2)}).
             </p>
-
             <Link
               href="/free-credit"
               className="inline-block mt-6 px-6 py-3 bg-purple-600 text-white rounded"
@@ -120,16 +135,14 @@ export default function FreeCreditResult() {
           </>
         )}
 
-        {/* ❌ Rejected / reversed */}
-        {result === "rejected" && (
+        {result === "screenout_no_bonus" && (
           <>
-            <h1 className="text-2xl font-bold text-red-600">
-              ⚠️ Reward Reversed
+            <h1 className="text-2xl font-bold text-gray-600">
+              ❌ Not Eligible
             </h1>
             <p className="mt-3">
-              This reward was canceled by the provider.
+              This survey wasn’t a match. No reward this time.
             </p>
-
             <Link
               href="/dashboard"
               className="inline-block mt-6 px-6 py-3 bg-gray-700 text-white rounded"
@@ -139,7 +152,23 @@ export default function FreeCreditResult() {
           </>
         )}
 
-        {/* Error */}
+        {result === "rejected" && (
+          <>
+            <h1 className="text-2xl font-bold text-red-600">
+              ⚠️ Reward Reversed
+            </h1>
+            <p className="mt-3">
+              This reward was canceled by the provider.
+            </p>
+            <Link
+              href="/dashboard"
+              className="inline-block mt-6 px-6 py-3 bg-gray-700 text-white rounded"
+            >
+              Back to Dashboard
+            </Link>
+          </>
+        )}
+
         {result === "error" && (
           <>
             <h1 className="text-2xl font-bold text-red-600">
