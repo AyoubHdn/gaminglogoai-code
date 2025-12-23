@@ -33,12 +33,15 @@ export default async function handler(
 
     const expectedHash = crypto
       .createHash("md5")
-      .update(`${trans_id}${user_id}${CPX_SECRET}`)
+      .update(`${trans_id}${CPX_SECRET}`)
       .digest("hex");
 
     if (hash !== expectedHash) {
       return res.status(403).json({ error: "Invalid hash" });
     }
+
+    console.log("CPX hash:", hash);
+    console.log("Expected:", expectedHash);
 
     const unlock = await prisma.cpaUnlock.findFirst({
       where: { userId: user_id, network: "cpx", status: "pending" },
