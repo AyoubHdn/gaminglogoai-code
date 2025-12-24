@@ -19,7 +19,25 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // 2️⃣ Prevent multiple pending unlocks
+  // 🔹 NEW: expire old pending surveys (30 minutes TTL)
+  const now = new Date();
+  const expireBefore = new Date(now.getTime() - 30 * 60 * 1000);
+
+  await prisma.cpaUnlock.updateMany({
+    where: {
+      userId: session.user.id,
+      network: "cpx",
+      status: "pending",
+      createdAt: {
+        lt: expireBefore,
+      },
+    },
+    data: {
+      status: "rejected",
+    },
+  });
+
+  // 2️⃣ Prevent multiple pending unlocks (still valid ones)
   const existing = await prisma.cpaUnlock.findFirst({
     where: {
       userId: session.user.id,

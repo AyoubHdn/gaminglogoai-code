@@ -116,6 +116,7 @@ model CpaUnlock {
 
     createdAt     DateTime   @default(now())
     approvedAt    DateTime?
+    expiredAt     DateTime? 
 }
 
 
