@@ -38,11 +38,16 @@ export default async function handler(
   });
 
   // 2️⃣ Prevent multiple pending unlocks (still valid ones)
+  const pendingCutoff = new Date(now.getTime() - 27 * 60 * 1000);
+
   const existing = await prisma.cpaUnlock.findFirst({
     where: {
       userId: session.user.id,
       network: "cpx",
       status: "pending",
+      createdAt: {
+        gt: pendingCutoff, // ONLY block if recent
+      },
     },
   });
 
