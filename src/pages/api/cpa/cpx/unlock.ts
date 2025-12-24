@@ -19,8 +19,9 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // 🔹 NEW: expire old pending surveys (30 minutes TTL)
   const now = new Date();
+
+  // 🔹 Expire old pending surveys (30 minutes TTL)
   const expireBefore = new Date(now.getTime() - 30 * 60 * 1000);
 
   await prisma.cpaUnlock.updateMany({
@@ -28,16 +29,12 @@ export default async function handler(
       userId: session.user.id,
       network: "cpx",
       status: "pending",
-      createdAt: {
-        lt: expireBefore,
-      },
+      createdAt: { lt: expireBefore },
     },
-    data: {
-      status: "rejected",
-    },
+    data: { status: "rejected" },
   });
 
-  // 2️⃣ Prevent multiple pending unlocks (still valid ones)
+  // 2️⃣ Check for still-valid pending survey
   const pendingCutoff = new Date(now.getTime() - 30 * 60 * 1000);
 
   const existing = await prisma.cpaUnlock.findFirst({
@@ -45,15 +42,19 @@ export default async function handler(
       userId: session.user.id,
       network: "cpx",
       status: "pending",
-      createdAt: {
-        gt: pendingCutoff, // ONLY block if recent
-      },
+      createdAt: { gt: pendingCutoff },
     },
+    orderBy: { createdAt: "desc" },
   });
 
   if (existing) {
+    const elapsedMs = now.getTime() - existing.createdAt.getTime();
+    const remainingMs = Math.max(0, 30 * 60 * 1000 - elapsedMs);
+    const remainingMinutes = Math.ceil(remainingMs / 60000);
+
     return res.status(400).json({
       error: "You already have a pending survey",
+      retryAfterMinutes: remainingMinutes,
     });
   }
 
@@ -69,7 +70,7 @@ export default async function handler(
     },
   });
 
-  // 5️⃣ Build CPX redirect URL
+  // 4️⃣ Build CPX redirect URL
   const redirectUrl =
     `https://offers.cpx-research.com/index.php` +
     `?app_id=${process.env.CPX_APP_ID}` +
