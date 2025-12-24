@@ -21,7 +21,7 @@ export default async function handler(
 
   // 🔹 NEW: expire old pending surveys (30 minutes TTL)
   const now = new Date();
-  const expireBefore = new Date(now.getTime() - 30 * 60 * 1000);
+  const expireBefore = new Date(now.getTime() - 1 * 60 * 1000);
 
   await prisma.cpaUnlock.updateMany({
     where: {
@@ -38,7 +38,7 @@ export default async function handler(
   });
 
   // 2️⃣ Prevent multiple pending unlocks (still valid ones)
-  const pendingCutoff = new Date(now.getTime() - 27 * 60 * 1000);
+  const pendingCutoff = new Date(now.getTime() - 1 * 60 * 1000);
 
   const existing = await prisma.cpaUnlock.findFirst({
     where: {
