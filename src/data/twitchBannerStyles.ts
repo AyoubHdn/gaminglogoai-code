@@ -58,6 +58,12 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
 
   aiEnhancements: [
       {
+        id: "cinematic",
+        name: "Cinematic Glow",
+        prompt:
+          "Enhance this Twitch banner with cinematic neon lighting, high contrast, sharp typography, glowing accents, professional esports look, ultra clean composition",
+      },
+      {
         id: "cyberpunk",
         name: "Cyberpunk Style",
         prompt:
@@ -111,6 +117,21 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   category: "With Logo",
   maxChannelChars: 12,
   maxTaglineChars: 28,
+
+  aiEnhancements: [
+  {
+    id: "red-tech-glow",
+    name: "Enhanced Red Tech Glow",
+    prompt: `
+  Enhance the existing Twitch banner with stronger red neon glow and sharper tech details.
+  Increase contrast and clarity without changing text or layout.
+  Add subtle red light bloom around circular elements.
+  Improve metallic reflections and clean edges.
+  Do NOT alter text content, font, or positioning.
+  Preserve original composition exactly.
+  `,
+  }],
+
   
   styleRules: {
     canvasWidth: 1200,
@@ -158,6 +179,20 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   category: "With Logo",
   maxChannelChars: 22,
   maxTaglineChars: 31,
+
+  aiEnhancements: [
+    {
+    id: "retro-neon-boost",
+    name: "Retro Neon Boost",
+    prompt: `
+  Enhance neon glow intensity and synthwave colors.
+  Improve grid perspective depth and glow falloff.
+  Increase vibrancy while keeping text readable.
+  Add cinematic bloom to neon elements only.
+  Do not change text content or placement.
+  `,
+  }
+  ],
   
   styleRules: {
     canvasWidth: 1200,
@@ -205,6 +240,20 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   category: "With Logo",
   maxChannelChars: 13,
   maxTaglineChars: 33,
+
+    aiEnhancements: [
+      {
+      id: "purple-logo-polish",
+      name: "Logo Focus Enhancement",
+      prompt: `
+    Enhance lighting and glow around the circular logo frame.
+    Improve color richness and smooth gradients.
+    Add subtle purple neon bloom without overpowering the text.
+    Preserve transparency areas and logo placement.
+    Do not modify text or logo shape.
+    `,
+    }
+        ],
   
   styleRules: {
     canvasWidth: 1200,
@@ -254,6 +303,19 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   category: "Without Logo",
   maxChannelChars: 13,
   maxTaglineChars: 28,
+  aiEnhancements: [
+    {
+      id: "pastel-softness",
+      name: "Pastel Soft Polish",
+      prompt: `
+    Enhance pastel colors and softness.
+    Smooth gradients and improve character line clarity.
+    Maintain cozy, cute atmosphere.
+    Do not oversharpen or add harsh lighting.
+    Preserve text style and friendly tone.
+    `,
+    }
+  ],
   
   styleRules: {
     canvasWidth: 1200,
@@ -295,6 +357,19 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   category: "Without Logo",
   maxChannelChars: 16,
   maxTaglineChars: 41,
+  aiEnhancements: [
+    {
+      id: "blue-cyber-depth",
+      name: "Cyber Depth Boost",
+      prompt: `
+    Enhance the banner with deeper blue tones and refined cyber lighting.
+    Increase depth between foreground text and geometric background.
+    Sharpen glowing polygon edges and digital particles.
+    Add subtle futuristic light rays without changing layout.
+    Keep text perfectly readable and unchanged.
+    `,
+    }
+  ],
   
   styleRules: {
     canvasWidth: 1200,
@@ -336,6 +411,19 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   category: "Without Logo",
   maxChannelChars: 13,
   maxTaglineChars: 67,
+  aiEnhancements: [
+    {
+      id: "clean-clarity",
+      name: "Ultra Clean Clarity",
+      prompt: `
+    Improve sharpness, contrast, and text clarity.
+    Enhance subtle shadows for depth while keeping a minimal aesthetic.
+    Remove any visual noise or blur.
+    Preserve flat design and exact text layout.
+    Do not add new effects or elements.
+    `,
+    }
+  ],
   
   styleRules: {
     canvasWidth: 1200,
@@ -378,6 +466,19 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   category: "Without Logo",
   maxChannelChars: 10,
   maxTaglineChars: 60,
+  aiEnhancements: [
+    {
+      id: "epic-energy",
+      name: "Epic Energy Boost",
+      prompt: `
+    Enhance lightning effects and dramatic contrast.
+    Increase glow around text and energy elements.
+    Add cinematic lighting depth without obscuring text.
+    Preserve bold typography and message clarity.
+    No layout or wording changes.
+    `,
+    }
+  ],
   
   styleRules: {
     canvasWidth: 1200,

@@ -82,6 +82,10 @@ const TwitchBannerLandingPage: NextPage = () => {
       q: "Can I change fonts and colors?",
       a: "Some templates let you tweak colors and font weights; others are fixed to preserve the designer aesthetic. We show available options per style in the editor.",
     },
+    {
+      q: "How does AI enhancement work?",
+      a: "After generating your Twitch banner, you can optionally enhance it with AI. The enhancement adds cinematic lighting and visual effects while keeping your design intact. AI enhancement uses additional credits."
+    }
   ];
 
   return (
@@ -168,6 +172,67 @@ const TwitchBannerLandingPage: NextPage = () => {
                   <p className="absolute bottom-0 p-3 text-white text-sm font-semibold drop-shadow-lg">{ex.caption}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* AI ENHANCEMENT SECTION */}
+        <section className="py-20 bg-white dark:bg-slate-900">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
+              Enhance Your Twitch Banner with <span className="text-purple-600 dark:text-cyan-400">AI</span>
+            </h2>
+
+            <p className="text-center max-w-3xl mx-auto text-slate-600 dark:text-slate-300 mb-12">
+              After generating your Twitch banner, you can apply an optional AI enhancement
+              to add cinematic lighting, neon glow, and professional esports effects.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {/* BEFORE */}
+              <div className="rounded-xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-700">
+                <div className="bg-slate-900 text-white text-sm px-4 py-2 font-semibold">
+                  Before Enhancement
+                </div>
+                <Image
+                  src="/twitch/enhance-before.webp"
+                  alt="Twitch banner before AI enhancement"
+                  width={1200}
+                  height={480}
+                  className="w-full h-auto"
+                  unoptimized
+                />
+              </div>
+
+              {/* AFTER */}
+              <div className="rounded-xl overflow-hidden shadow-xl border border-purple-500/40">
+                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm px-4 py-2 font-semibold">
+                  After AI Enhancement
+                </div>
+                <Image
+                  src="/twitch/enhance-after.webp"
+                  alt="Twitch banner after AI enhancement"
+                  width={1200}
+                  height={480}
+                  className="w-full h-auto"
+                  unoptimized
+                />
+              </div>
+            </div>
+
+            <div className="mt-12 text-center">
+              <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6">
+                AI enhancement uses an advanced image-to-image model to refine lighting,
+                contrast, and visual effects — without changing your text or layout.
+              </p>
+
+              <button
+                onClick={handleStart}
+                className="px-8 py-4 bg-gradient-to-r from-purple-500 to-purple-700 dark:from-cyan-400 dark:to-cyan-600
+                text-white font-bold rounded-lg text-lg hover:scale-105 transition-all shadow-lg"
+              >
+                Try AI Enhancement
+              </button>
             </div>
           </div>
         </section>

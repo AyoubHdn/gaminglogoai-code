@@ -160,7 +160,12 @@ const enhanceBanner = api.enhancement.enhanceImage.useMutation({
 
   const handleGenerate = async () => {
     setError("");
-    if (!isLoggedIn) { void signIn(); return; }
+    if (!isLoggedIn) {
+      void signIn(undefined, {
+        callbackUrl: router.asPath,
+      });
+      return;
+    }
     if (!channelName.trim()) { setError("Channel name is required."); return; }
     if (!selectedStyle) { setError("Please select a style."); return; }
 
@@ -482,6 +487,15 @@ const enhanceBanner = api.enhancement.enhanceImage.useMutation({
             <p className="text-sm text-gray-500 mb-4">
               Apply a professional AI enhancement to your banner.
             </p>
+
+            <div className="mb-4">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full
+                text-xs font-semibold
+                bg-purple-100 text-purple-700
+                dark:bg-cyan-900/40 dark:text-cyan-300">
+                ✨ AI Enhancement · <strong>5 Credits</strong>
+              </span>
+            </div>
 
             <div className="flex gap-4 overflow-x-auto">
               {aiEnhancements.map((ai) => (
