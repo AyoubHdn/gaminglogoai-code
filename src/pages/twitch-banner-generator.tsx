@@ -12,7 +12,7 @@ import { FormGroup } from "~/component/FormGroup";
 import { Input } from "~/component/Input";
 import { api } from "~/utils/api";
 import { useSession, signIn } from "next-auth/react";
-import { TWITCH_BANNER_STYLES, type TwitchBannerStyle } from "~/data/twitchBannerStyles";
+import { TWITCH_BANNER_STYLES } from "~/data/twitchBannerStyles";
 import { FiUploadCloud } from "react-icons/fi";
 import clsx from "clsx";
 import { SharePopup } from "~/component/SharePopup";
@@ -39,6 +39,9 @@ const TwitchBannerGeneratorPage: NextPage = () => {
   const [isDownloading, setIsDownloading] = useState<string | null>(null);
   const [supportsPhoto, setSupportsPhoto] = useState<boolean>(true);
 
+  const [enhancedBannerUrl, setEnhancedBannerUrl] = useState<string | null>(null);
+  const [selectedAiStyleId, setSelectedAiStyleId] = useState<string | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [selectedCategory, setSelectedCategory] = useState("With Logo");
@@ -50,6 +53,7 @@ const TwitchBannerGeneratorPage: NextPage = () => {
   );
 
   const selectedStyle = TWITCH_BANNER_STYLES.find(s => s.id === selectedStyleId);
+  const aiEnhancements = selectedStyle?.aiEnhancements ?? [];
 
   const channelLimit = selectedStyle?.maxChannelChars ?? 20;
   const taglineLimit = selectedStyle?.maxTaglineChars ?? 35;
@@ -68,6 +72,14 @@ const handleTaglineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   }
 };
 
+const enhanceBanner = api.enhancement.enhanceImage.useMutation({
+  onSuccess(data) {
+    setEnhancedBannerUrl(data?.[0]?.imageUrl ?? null);
+  },
+  onError(err) {
+    setError(err.message ?? "Enhancement failed.");
+  },
+});
 
   // TRPC mutations
   const createPresignedUrl = api.s3.createUploadUrl.useMutation();
@@ -84,6 +96,16 @@ const handleTaglineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setIsGenerating(false);
     }
   });
+
+  useEffect(() => {
+    if (generatedBannerUrl && aiEnhancements.length > 0 && !selectedAiStyleId) {
+      const firstEnhancement = aiEnhancements[0];
+      if (firstEnhancement) {
+        setSelectedAiStyleId(firstEnhancement.id);
+      }
+    }
+  }, [generatedBannerUrl, aiEnhancements, selectedAiStyleId]);
+
 
   useEffect(() => {
     if (uploadedFile) {
@@ -151,7 +173,7 @@ const handleTaglineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       try {
         const presigned = await createPresignedUrl.mutateAsync({ filename: uploadedFile.name, filetype: uploadedFile.type });
         const formData = new FormData();
-        Object.entries(presigned.fields).forEach(([k, v]) => formData.append(k, v as any));
+        Object.entries(presigned.fields).forEach(([k, v]) => formData.append(k, v));
         formData.append("file", uploadedFile);
         const uploadRes = await fetch(presigned.url, { method: "POST", body: formData });
         if (!uploadRes.ok) throw new Error("Upload failed.");
@@ -412,23 +434,95 @@ const handleTaglineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         </form>
 
         {/* Result */}
-        {generatedBannerUrl && (
+        {(generatedBannerUrl || enhancedBannerUrl) && (
           <section id="result-section" className="mt-10">
-            <h2 className="text-2xl font-semibold mb-4">Your Banner</h2>
+            <h2 className="text-2xl font-semibold mb-4">
+              {enhancedBannerUrl ? "Your Enhanced Banner" : "Your Banner"}
+            </h2>
+
             <div className="rounded-lg border overflow-hidden shadow-lg">
-              <Image src={generatedBannerUrl} alt="Generated Twitch banner" width={1200} height={480} className="w-full h-auto" unoptimized />
+              <Image
+                src={enhancedBannerUrl || generatedBannerUrl || ""}
+                alt="Generated Twitch banner"
+                width={1200}
+                height={480}
+                className="w-full h-auto"
+                unoptimized
+              />
+
               <div className="p-4 flex gap-3 items-center">
-                <Button onClick={() => void handleDownload(generatedBannerUrl)} className="px-4 py-2" disabled={!!isDownloading}>
+                <Button
+                  onClick={() => void handleDownload(enhancedBannerUrl || generatedBannerUrl || "")}
+                  className="px-4 py-2"
+                  disabled={!!isDownloading}
+                >
                   {isDownloading ? "Downloading..." : "Download PNG"}
                 </Button>
-                <Button onClick={() => openShare(generatedBannerUrl)} className="px-4 py-2">
+
+                <Button onClick={() => openShare((enhancedBannerUrl || generatedBannerUrl) ?? undefined)} className="px-4 py-2">
                   Share
                 </Button>
-                <a href={generatedBannerUrl} target="_blank" rel="noreferrer" className="ml-auto text-sm text-slate-600 underline">Open in new tab</a>
+
+                <a
+                  href={enhancedBannerUrl || generatedBannerUrl || ""}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="ml-auto text-sm text-slate-600 underline"
+                >
+                  Open in new tab
+                </a>
               </div>
             </div>
           </section>
         )}
+
+        {generatedBannerUrl && aiEnhancements?.length > 0 && (
+          <section className="mt-8 p-6 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+            <h3 className="text-xl font-semibold mb-2">Enhance with AI</h3>
+            <p className="text-sm text-gray-500 mb-4">
+              Apply a professional AI enhancement to your banner.
+            </p>
+
+            <div className="flex gap-4 overflow-x-auto">
+              {aiEnhancements.map((ai) => (
+                <button
+                  key={ai.id}
+                  onClick={() => setSelectedAiStyleId(ai.id)}
+                  className={clsx(
+                    "px-4 py-2 rounded-lg border",
+                    selectedAiStyleId === ai.id
+                      ? "bg-purple-600 text-white"
+                      : "bg-white dark:bg-slate-700"
+                  )}
+                >
+                  {ai.name}
+                </button>
+              ))}
+            </div>
+
+            <Button
+              className="mt-4"
+              isLoading={enhanceBanner.isPending}
+              disabled={enhanceBanner.isPending}
+              onClick={() => {
+                const ai = aiEnhancements.find(
+                  (a) => a.id === selectedAiStyleId
+                );
+                if (!ai) return;
+
+                enhanceBanner.mutate({
+                  prompt: ai.prompt,
+                  model: "flux-kontext-max",
+                  referenceImageUrl: generatedBannerUrl,
+                });
+              }}
+            >
+              {enhanceBanner.isPending ? "Enhancing..." : "Apply AI Enhancement"}
+            </Button>
+
+          </section>
+        )}
+
 
         {/* Share popup */}
         {showSharePopupFor && router.isReady && (

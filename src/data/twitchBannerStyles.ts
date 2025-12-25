@@ -1,3 +1,4 @@
+// src/data/twitchBannerStyles.ts
 export interface StyleRules {
   canvasWidth: number;
   canvasHeight: number;
@@ -36,6 +37,11 @@ export interface TwitchBannerStyle {
   category: string;
   maxChannelChars: number;
   maxTaglineChars: number;
+  aiEnhancements?: Array<{
+    id: string;
+    name: string;
+    prompt: string;
+  }>;
 }
 
 export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
@@ -49,6 +55,15 @@ export const TWITCH_BANNER_STYLES: TwitchBannerStyle[] = [
   category: "With Logo",
   maxChannelChars: 11,
   maxTaglineChars: 24,
+
+  aiEnhancements: [
+      {
+        id: "cyberpunk",
+        name: "Cyberpunk Style",
+        prompt:
+          "Transform this Twitch banner into a cyberpunk-inspired design, futuristic lighting, holographic effects, vibrant neon colors, professional streamer branding",
+      },
+    ],
   
   styleRules: {
     canvasWidth: 1200,
