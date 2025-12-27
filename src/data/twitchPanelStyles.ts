@@ -39,153 +39,311 @@ export interface TwitchPanelStyle {
  */
 export const TWITCH_PANEL_STYLES: TwitchPanelStyle[] = [
   {
-    id: "clean-minimal",
-    name: "Clean Minimal",
-    previewSrc: "/twitch/panels/clean_minimal_prv.png",
-    backgroundSrc: "/twitch/panels/clean_minimal_bg.png",
+    id: "blue-digital-flow",
+    name: "Blue Digital Flow",
+    previewSrc: "/twitch/panels/cyberpunk-prv.png",
+    backgroundSrc: "/twitch/panels/cyberpunk-bg.png",
     creditCost: 1,
     category: "Minimal",
-    maxTitleChars: 16,
+    maxTitleChars: 9,
 
     aiEnhancements: [
       {
-        id: "polished-ui",
-        name: "Polished UI",
+        id: "polished-text",
+        name: "Polished Text",
         prompt:
-          "Enhance this Twitch panel with ultra clean UI design, sharp typography, subtle shadows, professional streamer branding, minimalist aesthetic",
+          "Enhance the text only by smoothing gradients, strengthening glow, improving clarity, and refining light diffusion, without modifying the flowing digital background.",
       },
     ],
 
     styleRules: {
-      canvasWidth: 320,
-      canvasHeight: 100,
+      canvasWidth: 640,
+      canvasHeight: 200,
       fonts: {
-        title: { family: "Inter", file: "Inter-Bold.ttf" },
+        title: { family: "Arial Black", file: "arial_black.ttf" },
       },
       elements: {
         title: {
-          x: 160,
-          y: 52,
-          fontSize: 28,
-          color: "#111827",
-          fontFamily: "title",
-          textAnchor: "middle",
-          fontWeight: "700",
-          letterSpacing: 0.5,
-        },
-      },
-    },
-  },
-
-  {
-    id: "neon-glow",
-    name: "Neon Glow",
-    previewSrc: "/twitch/panels/neon_glow_prv.webp",
-    backgroundSrc: "/twitch/panels/neon_glow_bg.webp",
-    creditCost: 1,
-    category: "Neon",
-    maxTitleChars: 14,
-
-    aiEnhancements: [
-      {
-        id: "cyber-neon",
-        name: "Cyber Neon",
-        prompt:
-          "Enhance this Twitch panel with neon glow, cyberpunk lighting, vibrant highlights, esports streamer branding, high contrast UI",
-      },
-    ],
-
-    styleRules: {
-      canvasWidth: 320,
-      canvasHeight: 100,
-      fonts: {
-        title: { family: "Orbitron", file: "Orbitron-Bold.ttf" },
-      },
-      elements: {
-        title: {
-          x: 160,
-          y: 54,
-          fontSize: 26,
-          color: "#00FFFF",
-          fontFamily: "title",
-          textAnchor: "middle",
-          letterSpacing: 1.5,
-        },
-      },
-    },
-  },
-
-  {
-    id: "dark-tech",
-    name: "Dark Tech",
-    previewSrc: "/twitch/panels/dark_tech_prv.webp",
-    backgroundSrc: "/twitch/panels/dark_tech_bg.webp",
-    creditCost: 1,
-    category: "Dark",
-    maxTitleChars: 15,
-
-    aiEnhancements: [
-      {
-        id: "high-contrast",
-        name: "High Contrast",
-        prompt:
-          "Enhance this Twitch panel with dark UI, high contrast typography, subtle tech patterns, modern streamer branding",
-      },
-    ],
-
-    styleRules: {
-      canvasWidth: 320,
-      canvasHeight: 100,
-      fonts: {
-        title: { family: "Rajdhani", file: "Rajdhani-Bold.ttf" },
-      },
-      elements: {
-        title: {
-          x: 160,
-          y: 52,
-          fontSize: 27,
+          x: 320,
+          y: 135,
+          fontSize: 90,
           color: "#FFFFFF",
           fontFamily: "title",
           textAnchor: "middle",
-          letterSpacing: 1,
+          fontWeight: "900",
+          letterSpacing: 2,
+        },
+      },
+    },
+  },
+  {
+    id: "blue-tech-geometry",
+    name: "Blue Tech Geometry",
+    previewSrc: "/twitch/panels/blue_tech_glitch_prv.png",
+    backgroundSrc: "/twitch/panels/blue_tech_glitch_bg.png",
+    creditCost: 1,
+    category: "Minimal",
+    maxTitleChars: 9,
+
+    aiEnhancements: [
+      {
+        id: "polished-text",
+        name: "Polished Text",
+        prompt:
+          "Enhance the text only with crisp edges, stronger glow, improved contrast, and clean futuristic lighting while preserving the geometric tech background exactly as it is.",
+      },
+    ],
+
+    styleRules: {
+      canvasWidth: 640,
+      canvasHeight: 200,
+      fonts: {
+        title: { family: "Arial Black", file: "arial_black.ttf" },
+      },
+      elements: {
+        title: {
+          x: 320,
+          y: 135,
+          fontSize: 90,
+          color: "#FFFFFF",
+          fontFamily: "title",
+          textAnchor: "middle",
+          fontWeight: "900",
+          letterSpacing: 2,
+        },
+      },
+    },
+  },
+
+    {
+    id: "futuristic-neon",
+    name: "Futuristic Neon",
+    previewSrc: "/twitch/panels/futuristic_neon_prv.png",
+    backgroundSrc: "/twitch/panels/futuristic_neon_bg.png",
+    creditCost: 1,
+    category: "Minimal",
+    maxTitleChars: 9,
+
+    aiEnhancements: [
+      {
+        id: "polished-text",
+        name: "Polished Text",
+        prompt:
+          "Enhance the text only with sharper outlines, subtle inner glow, improved brightness balance, and futuristic UI polish while leaving the HUD-style background untouched.",
+      },
+    ],
+
+    styleRules: {
+      canvasWidth: 640,
+      canvasHeight: 200,
+      fonts: {
+        title: { family: "Arial Black", file: "arial_black.ttf" },
+      },
+      elements: {
+        title: {
+          x: 320,
+          y: 135,
+          fontSize: 90,
+          color: "#FFFFFF",
+          fontFamily: "title",
+          textAnchor: "middle",
+          fontWeight: "900",
+          letterSpacing: 2,
         },
       },
     },
   },
 
   {
-    id: "soft-gradient",
-    name: "Soft Gradient",
-    previewSrc: "/twitch/panels/soft_gradient_prv.webp",
-    backgroundSrc: "/twitch/panels/soft_gradient_bg.webp",
+    id: "futuristic-stream",
+    name: "Futuristic Stream",
+    previewSrc: "/twitch/panels/futuristic_stream_prv.png",
+    backgroundSrc: "/twitch/panels/futuristic_stream_bg.png",
     creditCost: 1,
-    category: "Gradient",
-    maxTitleChars: 18,
+    category: "Minimal",
+    maxTitleChars: 9,
 
     aiEnhancements: [
       {
-        id: "smooth-colors",
-        name: "Smooth Colors",
+        id: "polished-text",
+        name: "Polished Text",
         prompt:
-          "Enhance this Twitch panel with smooth gradient blending, soft lighting, modern UI, elegant streamer branding",
+          "Enhance the text only by increasing sharpness, glow intensity, and contrast with a cyber-tech finish, keeping the red hexagonal background exactly the same.",
       },
     ],
 
     styleRules: {
-      canvasWidth: 320,
-      canvasHeight: 100,
+      canvasWidth: 640,
+      canvasHeight: 200,
       fonts: {
-        title: { family: "Poppins", file: "Poppins-SemiBold.ttf" },
+        title: { family: "Orbitron", file: "Orbitron-Regular.ttf" },
       },
       elements: {
         title: {
-          x: 160,
-          y: 50,
-          fontSize: 24,
-          color: "#FFFFFF",
+          x: 320,
+          y: 135,
+          fontSize: 90,
+          color: "#ffcccc",
           fontFamily: "title",
           textAnchor: "middle",
-          letterSpacing: 0.8,
+          fontWeight: "900",
+          letterSpacing: 2,
+        },
+      },
+    },
+  },
+
+    {
+    id: "minimal-snowfall",
+    name: "Minimal Snowfall",
+    previewSrc: "/twitch/panels/minimal_snowfall_prv.png",
+    backgroundSrc: "/twitch/panels/minimal_snowfall_bg.png",
+    creditCost: 1,
+    category: "Minimal",
+    maxTitleChars: 9,
+
+    aiEnhancements: [
+      {
+        id: "polished-text",
+        name: "Polished Text",
+        prompt:
+          "Enhance the text only by improving edge definition, depth, and contrast, preserving the bold classic look while keeping the snowy background unchanged.",
+      },
+    ],
+
+    styleRules: {
+      canvasWidth: 640,
+      canvasHeight: 200,
+      fonts: {
+        title: { family: "Arial Rounded MT Bold", file: "arialroundedmtbold.ttf" },
+      },
+      elements: {
+        title: {
+          x: 320,
+          y: 135,
+          fontSize: 90,
+          color: "#f0f0f0",
+          fontFamily: "title",
+          textAnchor: "middle",
+          fontWeight: "900",
+          letterSpacing: 2,
+        },
+      },
+    },
+  },
+
+    {
+    id: "neon-retro",
+    name: "Neon Retro",
+    previewSrc: "/twitch/panels/neon_retro_prv.png",
+    backgroundSrc: "/twitch/panels/neon_retro_bg.png",
+    creditCost: 1,
+    category: "Minimal",
+    maxTitleChars: 9,
+
+    aiEnhancements: [
+      {
+        id: "polished-text",
+        name: "Polished Text",
+        prompt:
+          "Enhance the text only with stronger neon glow, subtle RGB separation, cleaner outlines, and retro lighting polish while keeping the synthwave grid background intact.",
+      },
+    ],
+
+    styleRules: {
+      canvasWidth: 640,
+      canvasHeight: 200,
+      fonts: {
+        title: { family: "Arial Black", file: "arial_black.ttf" },
+      },
+      elements: {
+        title: {
+          x: 320,
+          y: 135,
+          fontSize: 90,
+          color: "#ffffff",
+          fontFamily: "title",
+          textAnchor: "middle",
+          fontWeight: "900",
+          letterSpacing: 2,
+        },
+      },
+    },
+  },
+
+      {
+    id: "pastel-play",
+    name: "Pastel Play",
+    previewSrc: "/twitch/panels/pastel_play_prv.png",
+    backgroundSrc: "/twitch/panels/pastel_play_bg.png",
+    creditCost: 1,
+    category: "Minimal",
+    maxTitleChars: 9,
+
+    aiEnhancements: [
+      {
+        id: "polished-text",
+        name: "Polished Text",
+        prompt:
+          "Enhance the text only by smoothing shapes, improving color consistency, increasing readability, and refining softness while leaving the pastel background untouched.",
+      },
+    ],
+
+    styleRules: {
+      canvasWidth: 640,
+      canvasHeight: 200,
+      fonts: {
+        title: { family: "Arial Rounded MT Bold", file: "arialroundedmtbold.ttf" },
+      },
+      elements: {
+        title: {
+          x: 320,
+          y: 135,
+          fontSize: 90,
+          color: "#9E8DBB",
+          fontFamily: "title",
+          textAnchor: "middle",
+          fontWeight: "900",
+          letterSpacing: 2,
+        },
+      },
+    },
+  },
+
+        {
+    id: "pink-storm",
+    name: "Pink Storm",
+    previewSrc: "/twitch/panels/pink_storm_prv.png",
+    backgroundSrc: "/twitch/panels/pink_storm_bg.png",
+    creditCost: 1,
+    category: "Minimal",
+    maxTitleChars: 9,
+
+    aiEnhancements: [
+      {
+        id: "polished-text",
+        name: "Polished Text",
+        prompt:
+          "Enhance the text only by intensifying neon glow, sharpening edges, increasing contrast, and adding energetic light bloom to the lettering while keeping the stormy background exactly unchanged.",
+      },
+    ],
+
+    styleRules: {
+      canvasWidth: 640,
+      canvasHeight: 200,
+      fonts: {
+        title: { family: "Impact", file: "impact.ttf" },
+      },
+      elements: {
+        title: {
+          x: 320,
+          y: 135,
+          fontSize: 90,
+          color: "#000000",
+          fontFamily: "title",
+          textAnchor: "middle",
+          fontWeight: "900",
+          letterSpacing: 2,
         },
       },
     },
