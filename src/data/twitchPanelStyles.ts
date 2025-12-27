@@ -65,8 +65,8 @@ export const TWITCH_PANEL_STYLES: TwitchPanelStyle[] = [
       elements: {
         title: {
           x: 320,
-          y: 135,
-          fontSize: 90,
+          y: 100,
+          fontSize: 80,
           color: "#FFFFFF",
           fontFamily: "title",
           textAnchor: "middle",
@@ -103,8 +103,8 @@ export const TWITCH_PANEL_STYLES: TwitchPanelStyle[] = [
       elements: {
         title: {
           x: 320,
-          y: 135,
-          fontSize: 90,
+          y: 100,
+          fontSize: 80,
           color: "#FFFFFF",
           fontFamily: "title",
           textAnchor: "middle",
@@ -142,8 +142,8 @@ export const TWITCH_PANEL_STYLES: TwitchPanelStyle[] = [
       elements: {
         title: {
           x: 320,
-          y: 135,
-          fontSize: 90,
+          y: 100,
+          fontSize: 80,
           color: "#FFFFFF",
           fontFamily: "title",
           textAnchor: "middle",
@@ -181,8 +181,8 @@ export const TWITCH_PANEL_STYLES: TwitchPanelStyle[] = [
       elements: {
         title: {
           x: 320,
-          y: 135,
-          fontSize: 90,
+          y: 100,
+          fontSize: 80,
           color: "#ffcccc",
           fontFamily: "title",
           textAnchor: "middle",
@@ -220,8 +220,8 @@ export const TWITCH_PANEL_STYLES: TwitchPanelStyle[] = [
       elements: {
         title: {
           x: 320,
-          y: 135,
-          fontSize: 90,
+          y: 100,
+          fontSize: 80,
           color: "#f0f0f0",
           fontFamily: "title",
           textAnchor: "middle",
@@ -259,8 +259,8 @@ export const TWITCH_PANEL_STYLES: TwitchPanelStyle[] = [
       elements: {
         title: {
           x: 320,
-          y: 135,
-          fontSize: 90,
+          y: 100,
+          fontSize: 80,
           color: "#ffffff",
           fontFamily: "title",
           textAnchor: "middle",
@@ -298,8 +298,8 @@ export const TWITCH_PANEL_STYLES: TwitchPanelStyle[] = [
       elements: {
         title: {
           x: 320,
-          y: 135,
-          fontSize: 90,
+          y: 100,
+          fontSize: 80,
           color: "#9E8DBB",
           fontFamily: "title",
           textAnchor: "middle",
@@ -337,8 +337,8 @@ export const TWITCH_PANEL_STYLES: TwitchPanelStyle[] = [
       elements: {
         title: {
           x: 320,
-          y: 135,
-          fontSize: 90,
+          y: 100,
+          fontSize: 80,
           color: "#000000",
           fontFamily: "title",
           textAnchor: "middle",
