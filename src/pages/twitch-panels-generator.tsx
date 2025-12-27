@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -41,6 +42,8 @@ const TwitchPanelsGeneratorPage: NextPage = () => {
   const [enhancedUrl, setEnhancedUrl] = useState<string | null>(null);
 
   const [shareFor, setShareFor] = useState<string | null>(null);
+
+  const [isDownloading, setIsDownloading] = useState(false);
 
   /* ------------------------------------------------------------------ */
   /* Derived */
@@ -86,9 +89,45 @@ const TwitchPanelsGeneratorPage: NextPage = () => {
     }
   }, [generatedUrl, aiEnhancements, selectedAiId]);
 
+  useEffect(() => {
+    if (enhancedUrl) {
+      setTimeout(() => {
+        document
+          .getElementById("result")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 120);
+    }
+  }, [enhancedUrl]);
+
   /* ------------------------------------------------------------------ */
   /* Handlers */
   /* ------------------------------------------------------------------ */
+
+  const handleDownload = async (url: string) => {
+  setIsDownloading(true);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Download failed");
+
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = `twitch-panel-${title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(blobUrl);
+  } catch (err) {
+    setError("Could not download image");
+  } finally {
+    setIsDownloading(false);
+  }
+};
+
+
   const handleGenerate = async () => {
     setError("");
 
@@ -231,13 +270,44 @@ const TwitchPanelsGeneratorPage: NextPage = () => {
               <Image
                 src={enhancedUrl || generatedUrl || ""}
                 alt="Generated Twitch panel"
-                width={320}
-                height={100}
+                width={640}
+                height={200}
                 unoptimized
               />
             </div>
+
+            {/* ACTION BUTTONS */}
+            <div className="mt-4 flex flex-wrap gap-3 items-center">
+              <Button
+                onClick={() =>
+                  handleDownload(enhancedUrl || generatedUrl || "")
+                }
+                disabled={isDownloading}
+              >
+                {isDownloading ? "Downloading..." : "Download PNG"}
+              </Button>
+
+              <Button
+                onClick={() =>
+                  window.open(enhancedUrl || generatedUrl || "", "_blank")
+                }
+                variant="secondary"
+              >
+                Open Full Size
+              </Button>
+
+              <Button
+                variant="secondary"
+                onClick={() =>
+                  setShareFor(enhancedUrl || generatedUrl || "")
+                }
+              >
+                Share
+              </Button>
+            </div>
           </section>
         )}
+
 
         {/* AI ENHANCE */}
         {generatedUrl && aiEnhancements.length > 0 && (
