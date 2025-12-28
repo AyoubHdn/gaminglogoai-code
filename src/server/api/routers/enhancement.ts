@@ -45,12 +45,13 @@ const replicate = new Replicate({ auth: env.REPLICATE_API_TOKEN });
 const modelMap = {
   "flux-kontext-pro": "black-forest-labs/flux-kontext-pro",
   "flux-kontext-max": "black-forest-labs/flux-kontext-max",
+  "nano-banana-pro": "google/nano-banana-pro",
 };
 
 // --- START: THE FINAL, ROBUST HELPER FUNCTION (INSPIRED BY faceLogo.ts) ---
 async function enhanceImageWithAI(
   prompt: string,
-  modelName: "flux-kontext-pro" | "flux-kontext-max",
+  modelName: "flux-kontext-pro" | "flux-kontext-max" | "nano-banana-pro",
   referenceS3Url: string
 ): Promise<Buffer> { // Returns a Buffer directly
   const replicatePath = modelMap[modelName];
@@ -123,7 +124,7 @@ export const enhancementRouter = createTRPCRouter({
   enhanceImage: protectedProcedure
     .input(z.object({
         prompt: z.string(),
-        model: z.enum(["flux-kontext-pro", "flux-kontext-max"]),
+        model: z.enum(["flux-kontext-pro", "flux-kontext-max", "nano-banana-pro"]),
         referenceImageUrl: z.string().url(),
     }))
     .mutation(async ({ ctx, input }) => {
