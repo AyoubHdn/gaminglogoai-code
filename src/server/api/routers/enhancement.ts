@@ -64,6 +64,7 @@ async function enhanceImageWithAI(
       ? {
           prompt,
           image_input: [referenceS3Url], // ✅ REQUIRED by Nano Banana
+          aspect_ratio: "match_input_image",
           resolution: "2K",
           output_format: "png",
           safety_filter_level: "block_only_high",
