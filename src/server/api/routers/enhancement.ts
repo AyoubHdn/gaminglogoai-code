@@ -59,12 +59,21 @@ async function enhanceImageWithAI(
     throw new TRPCError({ code: "BAD_REQUEST", message: `Model ${modelName} not configured.` });
   }
 
-  const replicateApiInput: Record<string, unknown> = {
-    prompt,
-    input_image: referenceS3Url, // Use the direct S3 URL
-    aspect_ratio: 'match_input_image',
-    output_format: "png",
-  };
+  const replicateApiInput: Record<string, unknown> =
+    modelName === "nano-banana-pro"
+      ? {
+          prompt,
+          image_input: [referenceS3Url], // ✅ REQUIRED by Nano Banana
+          resolution: "2K",
+          output_format: "png",
+          safety_filter_level: "block_only_high",
+        }
+      : {
+          prompt,
+          input_image: referenceS3Url, // ✅ Flux models
+          aspect_ratio: "match_input_image",
+          output_format: "png",
+        };
 
   console.log(`[ENHANCE_HELPER] Calling Replicate with model: ${replicatePath}`);
   const outputFromReplicate: unknown = await replicate.run(replicatePath as `${string}/${string}`, { input: replicateApiInput });
