@@ -32,7 +32,8 @@ const HomePage: NextPage = () => {
             The Ultimate <span className="text-cyan-400">AI Gaming Logo Generator</span>
           </h1>
           <p className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">
-            Instantly create unique logos for your esports team, stream, or gamer profile with our advanced **gaming logo maker AI**. Design text logos, mascots, and more!
+            Instantly create professional <strong>gaming logos</strong>, <strong>Twitch banners</strong>, and <strong>Twitch panels</strong> using AI.
+            Perfect for esports teams, streamers, and content creators who want a complete gaming brand.
           </p>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <button
@@ -154,6 +155,59 @@ const HomePage: NextPage = () => {
       </section>
     );
   }
+  function TwitchPanelsSection() {
+    return (
+      <section className="py-16 md:py-20 px-4 sm:px-8 bg-white dark:bg-slate-900">
+        <div className="container mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
+            Create Clean <span className="text-purple-600 dark:text-cyan-400">Twitch Panels</span> Instantly
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto items-center">
+            
+            {/* Text */}
+            <div>
+              <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                About · Donate · Rules · Socials — Done Right
+              </h3>
+
+              <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                Design professional Twitch panels in the correct <strong>320×100 format</strong>.
+                No design tools, no Photoshop — just type your text and let AI do the rest.
+              </p>
+
+              <ul className="space-y-3 text-sm text-slate-700 dark:text-slate-300 mb-8">
+                <li>📐 Perfect Twitch panel dimensions (320×100)</li>
+                <li>🎨 Minimal, neon, dark & gradient styles</li>
+                <li>⚡ Instant generation with AI</li>
+                <li>✨ Optional AI enhancement for premium look</li>
+              </ul>
+
+              <Link
+                href="/twitch-panels-generator"
+                className="inline-block px-8 py-3 bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg"
+                id="cta-home-twitch-panels"
+              >
+                Create Twitch Panels →
+              </Link>
+            </div>
+
+            {/* Image Preview */}
+            <div className="relative rounded-xl overflow-hidden shadow-2xl aspect-[16/5]">
+              <Image
+                src="/twitch/panels/blue_tech_glitch_prv.webp" 
+                alt="AI Twitch Panels Examples"
+                fill
+                style={{ objectFit: "cover" }}
+                unoptimized
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
 
   function KeyFeaturesSection() {
     const features = [
@@ -424,6 +478,7 @@ function StyleShowcaseSection() {
         <HeroBanner />
         <LogoTypesSection />
         <TwitchBannerSection />
+        <TwitchPanelsSection />
         <WhoIsThisForSection />
         <StyleShowcaseSection />
         <KeyFeaturesSection />

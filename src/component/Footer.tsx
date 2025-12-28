@@ -28,15 +28,20 @@ export function Footer() {
       landingUrl: "/twitch-banner-maker", // The main "Twitch Banner" landing page
       toolUrl: "/twitch-banner-generator", // The actual Twitch Banner tool
     },
+    {
+      name: "Twitch Panel Maker",
+      landingUrl: "/twitch-panels-maker", // The main "Twitch Panel" landing page
+      toolUrl: "/twitch-panels-generator", // The actual Twitch Panel tool
+    },
   ];
 
   // Curate a list of your most important/popular niche landing pages to feature
   const popularNiches = [
-    { name: "Fortnite Logos", url: "/logo/games/fortnite-logo-maker" },
     { name: "Fortnite PFP", url: "/pfp/games/fortnite-pfp-maker" },
     { name: "Minecraft Logos", url: "/logo/games/minecraft-logo-maker" },
-    { name: "Minecraft PFP", url: "/pfp/games/minecraft-pfp-maker" },
-    { name: "Free Fire Logos", url: "/logo/games/free-fire-logo-maker" }, // Example URL
+    { name: "Call of Duty PFP", url: "/pfp/games/call-of-duty-pfp-maker" },
+    { name: "Free Fire Logos", url: "/logo/games/free-fire-logo-maker" },
+    { name: "Gears of War PFP", url: "/pfp/games/gears-of-war-pfp-maker" },
     //{ name: "Esports Emblems", url: "/gaming-logos/esports-emblems" }, // Example URL
     //{ name: "Valorant Logos", url: "/gaming-logos/valorant" }, // Example URL
     // Add 1-2 more if you like, but keep the list concise

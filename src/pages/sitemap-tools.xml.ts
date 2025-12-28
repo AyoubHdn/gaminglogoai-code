@@ -5,6 +5,7 @@ const toolPages = [
   "/gaming-logo-maker",
   "/pfp-maker",
   "/twitch-banner-generator",
+  "/twitch-panels-generator",
 ];
 
 const generateXml = (urls: string[]) => `

@@ -4,9 +4,10 @@ import { GetServerSideProps } from "next";
 const staticPages = [
   "/", 
   "/collection", "/buy-credits",
-  "/ai-profile-picture-maker",  // landing
-  "/gaming-logo",               // landing
-  "/twitch-banner-maker",       // landing
+  "/ai-profile-picture-maker",  
+  "/gaming-logo",               
+  "/twitch-banner-maker",
+  "/twitch-panels-maker",    
   "/privacy-policy", "/terms-of-service", "/refund-policy",
   "/blog", "/blog/how-to-create-a-clan-logo",
   "/blog/how-to-create-an-epic-mascot-logo-with-ai-step-by-step",
