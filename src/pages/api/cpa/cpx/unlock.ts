@@ -24,7 +24,9 @@ async function isVpnOrProxy(ip: string | null): Promise<boolean> {
     return Boolean(
       data?.is_vpn === true ||
       data?.is_proxy === true ||
-      data?.is_tor === true
+      data?.is_tor === true ||
+      data?.is_datacenter === true ||
+      data?.company?.type === "hosting"
     );
 
   } catch {
