@@ -15,8 +15,10 @@ async function isVpnOrProxy(ip: string | null): Promise<boolean> {
 
   try {
     const res = await fetch(
-      `https://ipapi.is/json/${ip}?key=${process.env.IPAPI_KEY}`
+      `https://api.ipapi.is/?q=${ip}&key=${process.env.IPAPI_KEY}`,
+      { method: "GET" }
     );
+
     const data = await res.json();
     console.log("IPAPI response:", data);
     return Boolean(
