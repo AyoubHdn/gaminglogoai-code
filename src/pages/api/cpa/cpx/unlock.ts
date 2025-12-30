@@ -1,3 +1,7 @@
+export const config = {
+  runtime: "nodejs",
+};
+
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -14,7 +18,7 @@ async function isVpnOrProxy(ip: string | null): Promise<boolean> {
       `https://ipapi.is/json/${ip}?key=${process.env.IPAPI_KEY}`
     );
     const data = await res.json();
-
+    console.log("IPAPI response:", data);
     return Boolean(
       data?.security?.vpn ||
       data?.security?.proxy ||
@@ -25,6 +29,7 @@ async function isVpnOrProxy(ip: string | null): Promise<boolean> {
     // Fail-open (CPX prefers availability over false blocks)
     return false;
   }
+  
 }
 
 export default async function handler(
@@ -55,6 +60,7 @@ export default async function handler(
         "Please disable VPN or proxy to access surveys. This helps ensure survey availability for your region.",
     });
   }
+
 
   const now = new Date();
 
