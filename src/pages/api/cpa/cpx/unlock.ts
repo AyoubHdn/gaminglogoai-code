@@ -20,11 +20,11 @@ async function isVpnOrProxy(ip: string | null): Promise<boolean> {
     const data = await res.json();
     console.log("IPAPI response:", data);
     return Boolean(
-      data?.security?.vpn ||
-      data?.security?.proxy ||
-      data?.security?.tor ||
-      data?.security?.hosting
+      data?.is_vpn === true ||
+      data?.is_proxy === true ||
+      data?.is_tor === true
     );
+
   } catch {
     // Fail-open (CPX prefers availability over false blocks)
     return false;
