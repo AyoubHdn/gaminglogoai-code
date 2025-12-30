@@ -16,13 +16,13 @@ async function isVpnOrProxy(ip: string | null): Promise<boolean> {
     const data = await res.json();
 
     return Boolean(
-      data?.is_vpn ||
-      data?.is_proxy ||
-      data?.is_tor ||
-      data?.is_datacenter
+      data?.security?.vpn ||
+      data?.security?.proxy ||
+      data?.security?.tor ||
+      data?.security?.hosting
     );
   } catch {
-    // Fail-open: do not block if API fails
+    // Fail-open (CPX prefers availability over false blocks)
     return false;
   }
 }
@@ -41,7 +41,7 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-    // 🔐 VPN / Proxy protection (CPX requirement)
+  // 🔐 VPN / Proxy protection (CPX requirement)
   const ip =
     (req.headers["x-forwarded-for"] as string)?.split(",")[0] ??
     req.socket.remoteAddress ??
@@ -55,7 +55,6 @@ export default async function handler(
         "Please disable VPN or proxy to access surveys. This helps ensure survey availability for your region.",
     });
   }
-
 
   const now = new Date();
 
