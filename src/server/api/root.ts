@@ -10,6 +10,7 @@ import { s3Router } from "./routers/s3";
 import { twitchBannerRouter } from "./routers/twitchBanner";
 import { enhancementRouter } from "./routers/enhancement";
 import { twitchPanelRouter } from "./routers/twitchPanel";
+import { twitchStreamScreenRouter } from "./routers/twitchStreamScreen";
 /**
  * This is the primary router for your server.
  *
@@ -27,6 +28,7 @@ export const appRouter = createTRPCRouter({
   twitchBanner: twitchBannerRouter,
   enhancement: enhancementRouter,
   twitchPanel: twitchPanelRouter,
+  twitchStreamScreen: twitchStreamScreenRouter,
 });
 
 // export type definition of API

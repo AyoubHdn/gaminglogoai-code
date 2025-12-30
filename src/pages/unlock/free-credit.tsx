@@ -27,6 +27,11 @@ export default function FreeCreditUnlock() {
       let data: any;
       try {
         data = await res.json();
+        if (res.status === 403 && data?.error) {
+          setError(data.error);
+          return;
+        }
+
       } catch {
         throw new Error("Invalid server response");
       }

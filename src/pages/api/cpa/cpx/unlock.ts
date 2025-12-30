@@ -1,9 +1,31 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "~/server/auth";
 import { prisma } from "~/server/db";
 import crypto from "crypto";
+
+async function isVpnOrProxy(ip: string | null): Promise<boolean> {
+  if (!ip) return false;
+
+  try {
+    const res = await fetch(
+      `https://ipapi.is/json/${ip}?key=${process.env.IPAPI_KEY}`
+    );
+    const data = await res.json();
+
+    return Boolean(
+      data?.is_vpn ||
+      data?.is_proxy ||
+      data?.is_tor ||
+      data?.is_datacenter
+    );
+  } catch {
+    // Fail-open: do not block if API fails
+    return false;
+  }
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,6 +40,22 @@ export default async function handler(
   if (!session?.user?.id) {
     return res.status(401).json({ error: "Unauthorized" });
   }
+
+    // 🔐 VPN / Proxy protection (CPX requirement)
+  const ip =
+    (req.headers["x-forwarded-for"] as string)?.split(",")[0] ??
+    req.socket.remoteAddress ??
+    null;
+
+  const vpnDetected = await isVpnOrProxy(ip);
+
+  if (vpnDetected) {
+    return res.status(403).json({
+      error:
+        "Please disable VPN or proxy to access surveys. This helps ensure survey availability for your region.",
+    });
+  }
+
 
   const now = new Date();
 
