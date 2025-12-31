@@ -69,7 +69,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
         id: "polished-text",
         name: "Polished Text",
         prompt:
-          "Twitch streaming screen background, abstract tech futuristic style, dark blue background, glowing cyan 3D geometric crystal triangles floating in space, cybernetic cables framing the edges, falling digital matrix rain particles, deep depth of field, empty center for text, unreal engine 5 render, 8k",
+          "Bold futuristic sans-serif typography in pure white, with a subtle digital glitch effect (horizontal distortion cuts and broken segments), sharp edges, strong contrast, centered layout, modern cyber-tech style, clean and readable, suitable for gaming or streaming branding, without changing the background",
       },
     ],
     styleRules: {
@@ -116,7 +116,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
         id: "polished-text",
         name: "Polished Text",
         prompt:
-          "Twitch streaming screen background, abstract neon polygon wireframe style, glowing electric blue and magenta geometric lines and triangular meshes on the left and right borders, deep dark blue void background in the center, high tech, digital art, 8k resolution, minimalist",
+          "Bold modern sans-serif typography with a soft neon glow, smooth rounded edges, gradient fill transitioning from cyan to purple/pink, high luminosity, subtle outer glow, clean futuristic cyberpunk style, centered and highly readable, suitable for gaming and streaming branding, without altering the background",
       },
     ],
     styleRules: {
@@ -163,7 +163,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
         id: "polished-text",
         name: "Polished Text",
         prompt:
-          "Twitch streaming screen background, sci-fi futuristic HUD interface style, sleek purple and violet gradient background, faint glowing digital circuit lines and tech overlay elements in the corners, clean empty center for text, high tech, digital screen, 8k resolution, smooth",
+          "Clean futuristic sans-serif typography with rounded corners, soft neon glow in purple/magenta tones, smooth uniform stroke weight, subtle inner glow, high readability, minimal cyber-tech aesthetic, centered layout suitable for gaming and streaming titles, without modifying the background",
       },
     ],
     styleRules: {
@@ -210,7 +210,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
         id: "polished-text",
         name: "Polished Text",
         prompt:
-          "Twitch streaming screen background, dark red sci-fi technology style, abstract red hexagon patterns and digital circuitry lines in the corners, deep crimson gradient background, empty central space for typography, modern esports aesthetic, 8k resolution, cinematic lighting",
+          "Bold futuristic sans-serif typography with sharp geometric edges, solid red color, subtle neon glow and soft outer bloom, high contrast, clean stroke weight, centered layout, aggressive cyber-tech and esports style suitable for gaming and streaming titles. without changing the background",
       },
     ],
     styleRules: {
@@ -257,7 +257,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
         id: "polished-text",
         name: "Polished Text",
         prompt:
-          "Twitch streaming screen background, playful retro cartoon style, dark night sky background with soft falling snow or stars, slight paper texture, clean empty center for text, cozy atmosphere, minimalist vector art style, 8k resolution,",
+          "Bold rounded sans-serif typography with a vintage poster feel, off-white/cream fill, subtle paper grain texture, soft red offset drop shadow creating a mild 3D effect, smooth edges, high readability, friendly retro-modern style suitable for titles and subtitles. without changing the background",
       },
     ],
     styleRules: {
@@ -305,7 +305,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
         id: "polished-text",
         name: "Polished Text",
         prompt:
-          "Twitch streaming screen background, playful retro cartoon style, dark night sky background with soft falling snow or stars, slight paper texture, clean empty center for text, cozy atmosphere, minimalist vector art style, 8k resolution",
+          "Bold futuristic sans-serif typography with a neon gradient fill (cyan to magenta), strong outer glow, subtle horizontal glitch accents, smooth rounded geometry, luminous edges, high contrast, classic synthwave / retro-futuristic style suitable for gaming and streaming titles. without changing the background",
       },
     ],
     styleRules: {
@@ -353,7 +353,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
         id: "polished-text",
         name: "Polished Text",
         prompt:
-          "Twitch streaming screen background, pastel aesthetic, soft abstract liquid shapes in lavender and cream and pale pink, gentle gradients, clean empty center for text, minimalist, cozy vibes, lo-fi hip hop style art, 8k resolution, smooth vector look,",
+          "Soft rounded sans-serif typography with thick friendly letterforms, flat pastel purple color, smooth curves, no shadow or glow, high legibility, playful and minimal modern style suitable for cute, lifestyle, or casual content. without altering the background",
       },
     ],
     styleRules: {
@@ -401,7 +401,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
         id: "polished-text",
         name: "Polished Text",
         prompt:
-          "Twitch streaming screen background, dark purple storm theme, realistic lightning bolts striking from the sides, rolling dark violet storm clouds, electric atmosphere, empty center for text, cinematic lighting, 8k resolution, weather photography style",
+          "Bold heavy sans-serif typography with solid black fill, thick neon pink outline, strong outer glow, high contrast edges, clean letterforms, dramatic luminous effect, centered layout, powerful cyber / gaming title style. without changing the background",
       },
     ],
     styleRules: {

@@ -391,7 +391,7 @@ const TwitchStreamScreensGeneratorPage: NextPage = () => {
 
                 enhanceScreen.mutate({
                   prompt: ai.prompt,
-                  model: "flux-kontext-max",
+                  model: "nano-banana-pro",
                   referenceImageUrl: generatedUrl,
                 });
               }}
