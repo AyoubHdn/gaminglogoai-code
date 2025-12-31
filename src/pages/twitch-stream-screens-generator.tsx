@@ -240,7 +240,7 @@ const TwitchStreamScreensGeneratorPage: NextPage = () => {
           <section>
             <h2 className="text-2xl font-semibold mb-4">Choose a Style</h2>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {TWITCH_STREAM_SCREEN_STYLES.map((s) => (
                 <button
                   key={s.id}
