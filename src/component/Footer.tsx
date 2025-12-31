@@ -33,6 +33,11 @@ export function Footer() {
       landingUrl: "/twitch-panels-maker", // The main "Twitch Panel" landing page
       toolUrl: "/twitch-panels-generator", // The actual Twitch Panel tool
     },
+    {
+      name: "Twitch Stream Screens Maker",
+      landingUrl: "/twitch-stream-screens-maker", // The main "Twitch Stream Screens" landing page
+      toolUrl: "/twitch-stream-screens-generator", // The actual Twitch Stream Screens tool
+    },
   ];
 
   // Curate a list of your most important/popular niche landing pages to feature

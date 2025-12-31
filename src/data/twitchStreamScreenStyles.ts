@@ -424,7 +424,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
         },
         subtitle: {
           x: 960,
-          y: 660,
+          y: 670,
           fontSize: 100,
           color: "#000000",
           fontFamily: "subtitle",

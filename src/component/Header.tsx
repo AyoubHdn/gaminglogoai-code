@@ -17,16 +17,8 @@ import {
   AiOutlineLogout,
   AiOutlineDown,
 } from "react-icons/ai";
-import {
-  FaPaintBrush,
-  //FaImages,
-  FaTwitch,
-  //FaYoutube,
-  //FaDiscord,
-  //FaLayerGroup,
-} from "react-icons/fa";
-import { CgProfile
-} from "react-icons/cg";
+import { FaPaintBrush, FaTwitch } from "react-icons/fa";
+import { CgProfile } from "react-icons/cg";
 
 /* ------------------------------------------------------------------ */
 /* Header */
@@ -67,12 +59,9 @@ export function Header() {
   /* ------------------------------------------------------------------ */
   /* Navigation data */
   /* ------------------------------------------------------------------ */
-
   const toolsLinks = [
     { href: "/gaming-logo", label: "Logo Maker", icon: <FaPaintBrush /> },
     { href: "/ai-profile-picture-maker", label: "Profile Picture", icon: <CgProfile /> },
-    //{ href: "/twitch-banner-maker", label: "Banner Maker", icon: <FaImages /> },
-    //{ href: "/twitch-panels-generator", label: "Panels", icon: <FaLayerGroup /> },
   ];
 
   const platformLinks = [
@@ -82,18 +71,16 @@ export function Header() {
       items: [
         { href: "/twitch-banner-maker", label: "Twitch Banner" },
         { href: "/twitch-panels-maker", label: "Twitch Panels" },
+        { href: "/twitch-stream-screens-maker", label: "Twitch Stream Screens" },
       ],
     },
-    /*{
-      platform: "YouTube",
-      icon: <FaYoutube className="text-red-600" />,
-      items: [{ href: "#", label: "Coming Soon" }],
-    },
-    {
-      platform: "Discord",
-      icon: <FaDiscord className="text-indigo-500" />,
-      items: [{ href: "#", label: "Coming Soon" }],
-    },*/
+  ];
+
+  const staticLinks = [
+    { href: "/logo-styles", label: "Browse All Styles" },
+    { href: "/community", label: "Community" },
+    { href: "/buy-credits", label: "Pricing" },
+    ...(isLoggedIn ? [{ href: "/collection", label: "My Designs" }] : []),
   ];
 
   /* ------------------------------------------------------------------ */
@@ -111,26 +98,17 @@ export function Header() {
           </span>
         </Link>
 
-        {/* DESKTOP NAV */}
+        {/* DESKTOP NAV (unchanged) */}
         <nav className="hidden md:flex items-center gap-2">
-
-          {/* TOOLS */}
+          {/* Tools */}
           <div className="relative" ref={toolsRef}>
-            <button
-              onClick={() => setToolsOpen(v => !v)}
-              className="flex items-center gap-1 px-3 py-2 text-sm font-medium hover:text-purple-600"
-            >
+            <button onClick={() => setToolsOpen(v => !v)} className="flex items-center gap-1 px-3 py-2 text-sm font-medium hover:text-purple-600">
               Tools <AiOutlineDown />
             </button>
             {toolsOpen && (
               <div className="absolute mt-2 w-64 rounded-xl bg-white dark:bg-slate-800 shadow-xl p-2">
                 {toolsLinks.map(l => (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    onClick={() => setToolsOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700"
-                  >
+                  <Link key={l.href} href={l.href} onClick={() => setToolsOpen(false)} className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700">
                     <span className="text-purple-600">{l.icon}</span>
                     {l.label}
                   </Link>
@@ -139,29 +117,21 @@ export function Header() {
             )}
           </div>
 
-          {/* PLATFORMS */}
+          {/* Platforms */}
           <div className="relative" ref={platformsRef}>
-            <button
-              onClick={() => setPlatformsOpen(v => !v)}
-              className="flex items-center gap-1 px-3 py-2 text-sm font-medium hover:text-purple-600"
-            >
+            <button onClick={() => setPlatformsOpen(v => !v)} className="flex items-center gap-1 px-3 py-2 text-sm font-medium hover:text-purple-600">
               Platforms <AiOutlineDown />
             </button>
             {platformsOpen && (
               <div className="absolute mt-2 w-72 rounded-xl bg-white dark:bg-slate-800 shadow-xl p-4">
                 {platformLinks.map(p => (
-                  <div key={p.platform} className="mb-4">
-                    <div className="flex items-center gap-2 mb-1 text-sm font-semibold">
+                  <div key={p.platform}>
+                    <div className="flex items-center gap-2 mb-1 font-semibold text-sm">
                       {p.icon}
                       {p.platform}
                     </div>
                     {p.items.map(i => (
-                      <Link
-                        key={i.label}
-                        href={i.href}
-                        onClick={() => setPlatformsOpen(false)}
-                        className="block px-6 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-sm"
-                      >
+                      <Link key={i.href} href={i.href} onClick={() => setPlatformsOpen(false)} className="block px-6 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 text-sm">
                         {i.label}
                       </Link>
                     ))}
@@ -171,24 +141,11 @@ export function Header() {
             )}
           </div>
 
-          {/* STATIC LINKS */}
-          <Link href="/logo-styles" className="px-3 py-2 text-sm hover:text-purple-600">
-            Browse All Styles
-          </Link>
-
-          <Link href="/community" className="px-3 py-2 text-sm hover:text-purple-600">
-            Community
-          </Link>
-
-          <Link href="/buy-credits" className="px-3 py-2 text-sm hover:text-purple-600">
-            Pricing
-          </Link>
-
-          {isLoggedIn && (
-            <Link href="/collection" className="px-3 py-2 text-sm hover:text-purple-600">
-              My Designs
+          {staticLinks.map(l => (
+            <Link key={l.href} href={l.href} className="px-3 py-2 text-sm hover:text-purple-600">
+              {l.label}
             </Link>
-          )}
+          ))}
         </nav>
 
         {/* DESKTOP ACTIONS */}
@@ -222,6 +179,7 @@ export function Header() {
       {mobileOpen && (
         <div ref={mobileRef} className="md:hidden bg-white dark:bg-slate-900 border-t px-4 py-6 space-y-6">
 
+          {/* CREDITS */}
           {isLoggedIn && (
             <div className="flex justify-between items-center bg-slate-100 dark:bg-slate-800 border rounded-lg px-4 py-3">
               <div className="flex items-center gap-2">
@@ -229,16 +187,13 @@ export function Header() {
                 <span className="font-semibold">{credits.data ?? 0}</span>
                 <span className="text-xs">Credits</span>
               </div>
-              <Link
-                href="/buy-credits"
-                onClick={() => setMobileOpen(false)}
-                className="text-xs bg-purple-600 text-white px-3 py-1 rounded-md"
-              >
+              <Link href="/buy-credits" onClick={() => setMobileOpen(false)} className="text-xs bg-purple-600 text-white px-3 py-1 rounded-md">
                 Get More
               </Link>
             </div>
           )}
 
+          {/* TOOLS */}
           <div>
             <p className="text-xs font-semibold uppercase mb-2">Tools</p>
             {toolsLinks.map(l => (
@@ -249,11 +204,12 @@ export function Header() {
             ))}
           </div>
 
+          {/* PLATFORMS */}
           <div>
             <p className="text-xs font-semibold uppercase mb-2">Platforms</p>
-            {platformLinks.map(p =>
+            {platformLinks.flatMap(p =>
               p.items.map(i => (
-                <Link key={`${p.platform}-${i.label}`} href={i.href} onClick={() => setMobileOpen(false)} className="flex items-center gap-3 py-2">
+                <Link key={i.href} href={i.href} onClick={() => setMobileOpen(false)} className="flex items-center gap-3 py-2">
                   {p.icon}
                   {i.label}
                 </Link>
@@ -261,11 +217,17 @@ export function Header() {
             )}
           </div>
 
-          <Link href="/logo-styles" onClick={() => setMobileOpen(false)}>Browse All Styles</Link>
-          <Link href="/community" onClick={() => setMobileOpen(false)}>Community</Link>
-          <Link href="/buy-credits" onClick={() => setMobileOpen(false)}>Pricing</Link>
-          {isLoggedIn && <Link href="/collection" onClick={() => setMobileOpen(false)}>My Designs</Link>}
+          {/* PAGES */}
+          <div>
+            <p className="text-xs font-semibold uppercase mb-2">Pages</p>
+            {staticLinks.map(l => (
+              <Link key={l.href} href={l.href} onClick={() => setMobileOpen(false)} className="block py-2">
+                {l.label}
+              </Link>
+            ))}
+          </div>
 
+          {/* AUTH */}
           {isLoggedIn ? (
             <button onClick={() => { void signOut(); setMobileOpen(false); }} className="text-red-500">
               Sign Out

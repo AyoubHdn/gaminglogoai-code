@@ -6,6 +6,7 @@ const toolPages = [
   "/pfp-maker",
   "/twitch-banner-generator",
   "/twitch-panels-generator",
+  "/twitch-stream-screens-generator",
 ];
 
 const generateXml = (urls: string[]) => `

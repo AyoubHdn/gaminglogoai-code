@@ -3,11 +3,12 @@ import { GetServerSideProps } from "next";
 
 const staticPages = [
   "/", 
-  "/collection", "/buy-credits",
+  "/collection", "/buy-credits", "/logo-styles",
   "/ai-profile-picture-maker",  
   "/gaming-logo",               
   "/twitch-banner-maker",
-  "/twitch-panels-maker",    
+  "/twitch-panels-maker",
+  "/twitch-stream-screens-maker",
   "/privacy-policy", "/terms-of-service", "/refund-policy",
   "/blog", "/blog/how-to-create-a-clan-logo",
   "/blog/how-to-create-an-epic-mascot-logo-with-ai-step-by-step",
@@ -18,7 +19,10 @@ const priorityMap: Record<string, string> = {
   "/": "1.0",
   "/ai-profile-picture-maker": "1.0",
   "/gaming-logo": "1.0",
-  "/twitch-banner-maker": "1.0", // when landing page ready
+  "/twitch-banner-maker": "1.0",
+  "/twitch-panels-maker": "1.0",
+  "/twitch-stream-screens-maker": "1.0",
+  "/logo-styles": "0.8",
   "/collection": "0.7",
   "/buy-credits": "0.7",
   "/blog": "0.6",

@@ -1,3 +1,4 @@
+// twitch-stream-screens-generator.tsx
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -284,6 +285,9 @@ const TwitchStreamScreensGeneratorPage: NextPage = () => {
                 }
                 placeholder="STARTING SOON"
               />
+              <div className="text-xs text-gray-400 mt-1">
+                {title.length}/{maxTitle} characters
+              </div>
             </FormGroup>
 
             <FormGroup className="mt-4">
@@ -298,6 +302,9 @@ const TwitchStreamScreensGeneratorPage: NextPage = () => {
                 }
                 placeholder="We’ll be live shortly"
               />
+              <div className="text-xs text-gray-400 mt-1">
+                {subtitle.length}/{maxSubtitle} characters
+              </div>
             </FormGroup>
           </section>
 
