@@ -11,6 +11,7 @@ import { twitchBannerRouter } from "./routers/twitchBanner";
 import { enhancementRouter } from "./routers/enhancement";
 import { twitchPanelRouter } from "./routers/twitchPanel";
 import { twitchStreamScreenRouter } from "./routers/twitchStreamScreen";
+import { emoteRouter } from "./routers/emoteGenerator";
 /**
  * This is the primary router for your server.
  *
@@ -29,6 +30,7 @@ export const appRouter = createTRPCRouter({
   enhancement: enhancementRouter,
   twitchPanel: twitchPanelRouter,
   twitchStreamScreen: twitchStreamScreenRouter,
+  emoteBase: emoteRouter,
 });
 
 // export type definition of API

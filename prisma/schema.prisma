@@ -65,6 +65,7 @@ model User {
     sessions      Session[]
     icons         Icon[]
     cpaUnlocks    CpaUnlock[]
+    emotes        Emote[]
 }
 
 model Icon {
@@ -180,4 +181,15 @@ enum CpaResult {
     screenout_bonus
     screenout_no_bonus
     reversed
+}
+
+model Emote {
+    id        String   @id @default(cuid())
+    userId    String
+    type      String   // BASE | EXPRESSION
+    style     String?
+    imageKey  String
+    createdAt DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
