@@ -126,14 +126,15 @@ export const emoteRouter = createTRPCRouter({
       /* ------------------ Replicate call ------------------ */
       const output = (await replicate.run("openai/gpt-image-1", {
         input: {
-          prompt: input.prompt,
-          input_images: [inputImageUrl],
-          input_fidelity: "high",
-          aspect_ratio: "1:1",
-          background: "transparent",
-          output_format: "png",
-          number_of_images: 1,
-          user_id: user.id,
+            openai_api_key: env.OPENAI_API_KEY,
+            prompt: input.prompt,
+            input_images: [inputImageUrl],
+            input_fidelity: "high",
+            aspect_ratio: "1:1",
+            background: "transparent",
+            output_format: "png",
+            number_of_images: 1,
+            user_id: user.id,
         },
       })) as string[];
 
