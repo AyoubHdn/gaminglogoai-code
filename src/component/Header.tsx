@@ -62,6 +62,7 @@ export function Header() {
   const toolsLinks = [
     { href: "/gaming-logo", label: "Logo Maker", icon: <FaPaintBrush /> },
     { href: "/ai-profile-picture-maker", label: "Profile Picture", icon: <CgProfile /> },
+    { href: "/twitch-graphics", label: "Twitch Graphics", icon: <FaTwitch /> },
   ];
 
   const platformLinks = [

@@ -10,6 +10,7 @@ const staticPages = [
   "/twitch-panels-maker",
   "/twitch-stream-screens-maker",
   "/twitch-emote-maker",
+  "/twitch-graphics",
   "/privacy-policy", "/terms-of-service", "/refund-policy",
   "/blog", "/blog/how-to-create-a-clan-logo",
   "/blog/how-to-create-an-epic-mascot-logo-with-ai-step-by-step",
@@ -24,10 +25,14 @@ const priorityMap: Record<string, string> = {
   "/twitch-panels-maker": "1.0",
   "/twitch-stream-screens-maker": "1.0",
   "/twitch-emote-maker": "1.0",
+  "/twitch-graphics": "0.9",
   "/logo-styles": "0.8",
   "/collection": "0.7",
   "/buy-credits": "0.7",
   "/blog": "0.6",
+  "/privacy-policy": "0.5",
+  "/terms-of-service": "0.5",
+  "/refund-policy": "0.5",
 };
 
 const getPriority = (url: string): string =>
