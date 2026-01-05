@@ -3,12 +3,19 @@ import { signIn, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import React, { useState } from "react";
-import { useBuyCredits } from "~/hook/useBuyCredits"; // Assuming hook path is correct
+import {
+  FaCheckCircle,
+  FaChevronRight,
+  FaPaintBrush,
+  FaSmile,
+  FaImages,
+  FaUserCircle,
+} from "react-icons/fa";
+import { useBuyCredits } from "~/hook/useBuyCredits";
 
 const BuyCreditsPage: React.FC = () => {
-  
-  const { data: session, status: sessionStatus } = useSession(); // Get session status
-  const isLoggedIn = !!session; // Or sessionStatus === "authenticated"
+  const { data: session, status: sessionStatus } = useSession();
+  const isLoggedIn = !!session;
 
   const { buyCredits } = useBuyCredits();
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
@@ -20,7 +27,6 @@ const BuyCreditsPage: React.FC = () => {
     description: string;
     plan: "starter" | "pro" | "elite";
     popular?: boolean;
-    pricePerImage?: string;
   };
 
   const offers: Offer[] = [
@@ -28,14 +34,14 @@ const BuyCreditsPage: React.FC = () => {
       name: "Starter Pack",
       images: 20,
       price: 1.99,
-      description: "Perfect for trying out designs or small projects.",
+      description: "Perfect for trying the tools or creating a few essentials.",
       plan: "starter",
     },
     {
       name: "Pro Gamer Pack",
       images: 50,
       price: 3.99,
-      description: "Best value for regular logo creation and variations.",
+      description: "Best choice for small streamers building a full Twitch profile.",
       plan: "pro",
       popular: true,
     },
@@ -43,40 +49,25 @@ const BuyCreditsPage: React.FC = () => {
       name: "Elite Studio Pack",
       images: 100,
       price: 6.99,
-      description: "Ideal for extensive design needs or multiple projects.",
+      description: "For full branding, emote packs, or multiple projects.",
       plan: "elite",
     },
-  ].map((offer) => ({
-    ...offer,
-    pricePerImage: (offer.price / offer.images).toFixed(2),
-  })) as Offer[];
+  ];
 
   const handleBuy = async (plan: "starter" | "pro" | "elite") => {
     if (!isLoggedIn) {
-      // If not logged in, prompt to sign in.
-      // You can also pass a callbackUrl to redirect back to buy-credits after sign-in.
-      const callbackUrl = window.location.pathname; // Current page
-      void signIn("google", { callbackUrl }); // Or your preferred provider
+      void signIn("google", { callbackUrl: "/buy-credits" });
       return;
     }
 
     try {
       setLoadingPlan(plan);
       await buyCredits(plan);
-    } catch (error) {
-      console.error("Error during purchase:", error);
-      // More specific error handling could be done here based on error type
-      if (error instanceof Error && error.message.toLowerCase().includes("authentication required")) {
-        alert("Please sign in to purchase credits.");
-      } else {
-        alert("Something went wrong with the purchase. Please try again.");
-      }
     } finally {
       setLoadingPlan(null);
     }
   };
 
-  // Handle loading state for the session
   if (sessionStatus === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-slate-900">
@@ -88,100 +79,192 @@ const BuyCreditsPage: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Buy Credits - Gaming Logo AI | Affordable Logo Design Packs</title>
+        <title>Buy Credits & Build Your Stream Branding</title>
         <meta
           name="description"
-          content="Get more credits for Gaming Logo AI. Choose from Starter, Pro Gamer, or Elite Studio packs to generate unique gaming logos."
+          content="Buy credits and design your Twitch logo, banner, profile picture, panels, stream screens, and emotes. One simple credit system. No subscriptions."
         />
-        <meta name="keywords" content="gaming logo credits, buy logo credits, ai logo generator pricing, gaming logo packs" />
-        <link rel="icon" href="/favicon.ico" /> {/* New favicon */}
+        <link rel="canonical" href="https://gaminglogoai.com/buy-credits" />
       </Head>
-      {/* Dark mode: bg-slate-900, Light mode: bg-gray-100 */}
-      <main className="flex min-h-screen mt-16 sm:mt-24 flex-col container mx-auto gap-4 px-4 sm:px-8 py-8 bg-gray-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-6 text-slate-900 dark:text-white">
-            Level Up Your Credits!
+
+      <main className="min-h-screen bg-gray-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 px-4 py-16">
+
+        {/* -------------------------------------------------- */}
+        {/* HERO */}
+        {/* -------------------------------------------------- */}
+        <section className="max-w-4xl mx-auto text-center mb-16">
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-6 text-slate-900 dark:text-white">
+            Buy Credits & Build Your Stream Branding
           </h1>
-          <p className="text-center text-slate-600 dark:text-slate-400 mb-4">
-            Please review our{" "}
-            <Link href="/refund-policy" className="text-purple-600 dark:text-purple-400 hover:underline">
-              Refund Policy
-            </Link>{" "}
-            before purchasing credits.
+
+          <p className="text-lg text-slate-600 dark:text-slate-400 mb-6">
+            Design your <strong>logo</strong>, <strong>banner</strong>,{" "}
+            <strong>profile picture</strong>, <strong>panels</strong>,{" "}
+            <strong>stream screens</strong>, and <strong>emotes</strong> —
+            all with one simple credit system.
           </p>
-          <p className="text-center text-slate-700 dark:text-slate-300 mb-10">
-            Grab a credit pack and start designing your epic gaming logos.
-          </p>
-          <div className="grid md:grid-cols-3 gap-6">
-            {offers.map((offer, index) => {
-              const oldPrice = (offer.price * 2).toFixed(2);
-              return (
-                <div
-                  key={index}
-                  className={`relative border rounded-lg p-6 shadow-xl 
-                              bg-white dark:bg-slate-800 
-                              transition-all duration-300 hover:shadow-purple-500/30 dark:hover:shadow-cyan-500/30
-                              ${
-                                offer.popular
-                                  ? "border-purple-600 dark:border-cyan-500 ring-2 ring-purple-500 dark:ring-cyan-400"
-                                  : "border-gray-300 dark:border-slate-700"
-                              }`}
-                >
-                  {/* Discount badge */}
-                  <div className="absolute top-0 right-0 -mt-3 -mr-3">
-                    <span className="bg-red-500 text-white text-xs font-bold uppercase px-3 py-1 rounded-full shadow-md">
-                      50% OFF
-                    </span>
-                  </div>
-                  {offer.popular && (
-                    <div className="bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 text-xs font-semibold uppercase px-3 py-1 rounded-full inline-block mb-4 shadow">
-                      Most Popular
-                    </div>
-                  )}
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                    {offer.name}
-                  </h2>
-                  <p className="text-slate-600 dark:text-slate-400 mb-4 text-sm">
-                    {offer.description}
-                  </p>
-                  <div className="mb-6">
-                    <p className="text-md text-slate-500 dark:text-slate-500 line-through">
-                      Old Price: ${oldPrice}
-                    </p>
-                    <p className="text-4xl font-bold text-slate-800 dark:text-white">
-                      ${offer.price.toFixed(2)}
-                    </p>
-                  </div>
-                  <p className="text-slate-700 dark:text-slate-300 mb-2 font-semibold">
-                    {offer.images} Credits
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                    (Just ${offer.pricePerImage} per logo)
-                  </p>
-                  <p className="text-center text-sm text-red-500 dark:text-red-400 mb-4 font-bold">
-                    Limited Time Offer!
-                  </p>
-                  <button
-                    id={`plan_${offer.plan}`}
-                    onClick={() => {
-                      void handleBuy(offer.plan);
-                    }}
-                    className={`w-full font-semibold py-3 px-4 rounded-lg transition-all duration-300 ease-in-out
-                                text-white dark:text-slate-900
-                                ${offer.popular 
-                                  ? 'bg-purple-600 hover:bg-purple-700 dark:bg-cyan-500 dark:hover:bg-cyan-600' 
-                                  : 'bg-slate-700 hover:bg-slate-800 dark:bg-purple-500 dark:hover:bg-purple-600'}
-                                disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 
-                                ${offer.popular ? 'focus:ring-purple-500 dark:focus:ring-cyan-400' : 'focus:ring-slate-500 dark:focus:ring-purple-400'}`}
-                    disabled={loadingPlan === offer.plan}
-                  >
-                    {loadingPlan === offer.plan ? "Processing..." : `Get ${offer.name}`}
-                  </button>
-                </div>
-              );
-            })}
+
+          <div className="flex flex-wrap justify-center gap-4 text-sm text-slate-600 dark:text-slate-400">
+            <span className="flex items-center gap-2">
+              <FaCheckCircle className="text-purple-600" /> No subscriptions
+            </span>
+            <span className="flex items-center gap-2">
+              <FaCheckCircle className="text-purple-600" /> No design skills needed
+            </span>
+            <span className="flex items-center gap-2">
+              <FaCheckCircle className="text-purple-600" /> Credits never expire
+            </span>
           </div>
-        </div>
+        </section>
+
+        {/* -------------------------------------------------- */}
+        {/* HOW CREDITS WORK */}
+        {/* -------------------------------------------------- */}
+        <section className="max-w-5xl mx-auto mb-20">
+          <h2 className="text-3xl font-bold mb-6 text-center">
+            How Credits Work
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-10">
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow">
+              <ul className="space-y-3 text-sm">
+                <li>• Credits are shared across all tools</li>
+                <li>• Each tool uses credits based on complexity</li>
+                <li>• Use credits anytime, on any tool</li>
+                <li>• New tools will use the same credits</li>
+              </ul>
+            </div>
+
+            <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow">
+              <ul className="space-y-3 text-sm">
+                <li className="flex gap-2">
+                  <FaPaintBrush /> Text Logo: 1–2 credits
+                  <p className="text-sm text-slate-500">
+                    (Just ~$0.1 per logo)
+                  </p>
+                </li>
+                <li className="flex gap-2">
+                  <FaUserCircle /> Profile Picture: 4–6 credits
+                  <p className="text-sm text-slate-500">
+                    (Just ~$0.4 per pfp)
+                  </p>
+                </li>
+                <li className="flex gap-2">
+                  <FaImages /> Banner / Panel / Screen: 1 credit
+                  <p className="text-sm text-slate-500">
+                    (Just ~$0.1 per image)
+                  </p>
+                </li>
+                <li className="flex gap-2">
+                  <FaSmile /> Emotes: 3 credits per emote
+                  <p className="text-sm text-slate-500">
+                    (Just ~$0.3 per emote)
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* -------------------------------------------------- */}
+        {/* CREDIT PACKS */}
+        {/* -------------------------------------------------- */}
+        <section className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Choose Your Credit Pack
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {offers.map((offer) => (
+              <div
+                key={offer.plan}
+                className={`relative bg-white dark:bg-slate-800 rounded-xl p-6 shadow-xl border
+                  ${offer.popular
+                    ? "border-purple-600 ring-2 ring-purple-500"
+                    : "border-slate-300 dark:border-slate-700"}`}
+              >
+                {offer.popular && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white text-xs font-bold px-4 py-1 rounded-full">
+                    Most Popular
+                  </span>
+                )}
+
+                <h3 className="text-2xl font-bold mb-2">{offer.name}</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                  {offer.description}
+                </p>
+
+                <p className="text-4xl font-extrabold mb-2">
+                  ${offer.price.toFixed(2)}
+                </p>
+
+                <p className="text-sm mb-6">{offer.images} Credits</p>
+
+                <button
+                  onClick={() => void handleBuy(offer.plan)}
+                  disabled={loadingPlan === offer.plan}
+                  className={`w-full py-3 font-semibold rounded-lg transition
+                    ${offer.popular
+                      ? "bg-purple-600 hover:bg-purple-700 text-white"
+                      : "bg-slate-700 hover:bg-slate-800 text-white"}
+                    disabled:opacity-50`}
+                >
+                  {loadingPlan === offer.plan
+                    ? "Processing..."
+                    : `Get ${offer.name}`}
+                </button>
+
+                <div className="mt-6 text-xs text-slate-500">
+                  <p className="mb-1">What you can make:</p>
+                  {offer.plan === "starter" && (
+                    <ul className="list-disc list-inside">
+                      <li>Logo + Banner</li>
+                      <li>OR 1 Profile Picture</li>
+                      <li>OR a few emotes</li>
+                    </ul>
+                  )}
+                  {offer.plan === "pro" && (
+                    <ul className="list-disc list-inside">
+                      <li>Logo</li>
+                      <li>Banner + Panels</li>
+                      <li>Profile Picture</li>
+                      <li>Stream Screens</li>
+                      <li>Emote packs</li>
+                    </ul>
+                  )}
+                  {offer.plan === "elite" && (
+                    <ul className="list-disc list-inside">
+                      <li>Complete stream branding</li>
+                      <li>Emote packs</li>
+                      <li>Multiple projects</li>
+                    </ul>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* -------------------------------------------------- */}
+        {/* FINAL CTA */}
+        {/* -------------------------------------------------- */}
+        <section className="max-w-4xl mx-auto text-center mt-24">
+          <h2 className="text-3xl font-bold mb-4">
+            Start Designing Now
+          </h2>
+
+          <p className="text-slate-600 dark:text-slate-400 mb-8">
+            Pick a pack, use your credits, and upgrade your stream before your next live session.
+          </p>
+
+          <Link
+            href="/twitch-graphics"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg"
+          >
+            Explore Twitch Tools <FaChevronRight />
+          </Link>
+        </section>
+
       </main>
     </>
   );
