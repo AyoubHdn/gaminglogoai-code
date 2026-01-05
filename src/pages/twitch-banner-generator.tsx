@@ -432,7 +432,7 @@ const enhanceBanner = api.enhancement.enhanceImage.useMutation({
 
           <div className="flex gap-3 items-center">
             <Button isLoading={isGenerating} className="px-6 py-3" onClick={() => void handleGenerate()}>
-              {isGenerating ? "Generating banner..." : `Generate Banner`}
+              {isGenerating ? "Generating banner..." : `Generate Banner (${selectedStyle?.creditCost ?? 1} Credit)`}
             </Button>
             <div className="text-sm text-gray-500">Tip: try different templates to find the best layout for your name.</div>
           </div>

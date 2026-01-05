@@ -257,7 +257,7 @@ const TwitchPanelsGeneratorPage: NextPage = () => {
           )}
 
           <Button isLoading={isGenerating} className="px-6 py-3">
-            {isGenerating ? "Generating..." : "Generate Panel"}
+            {isGenerating ? "Generating..." : "Generate Panel (1 Credit)"}
           </Button>
         </form>
 

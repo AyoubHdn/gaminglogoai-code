@@ -315,7 +315,7 @@ const TwitchStreamScreensGeneratorPage: NextPage = () => {
           )}
 
           <Button isLoading={isGenerating}>
-            {isGenerating ? "Generating..." : "Generate Screen"}
+            {isGenerating ? "Generating..." : "Generate Screen (1 Credit)"}
           </Button>
         </form>
 
