@@ -15,14 +15,17 @@ const CommunityPage: NextPage = () => {
 
   const s3BucketUrl = `https://${env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING}.s3.${env.NEXT_PUBLIC_AWS_REGION_GAMING}.amazonaws.com`;
 
-  const openPopup = (imageUrl: string) => {
-    setPopupImage(imageUrl);
+  const openPopup = (icon: { id: string; imageKey?: string | null }) => {
+    setPopupImage(getS3ImageUrl(icon));
   };
 
   const closePopup = () => {
     setPopupImage(null);
   };
 
+    const getS3ImageUrl = (icon: { id: string; imageKey?: string | null }) => {
+    return `${s3BucketUrl}/${icon.imageKey ?? icon.id}`;
+  };
 
   return (
     <>
@@ -75,16 +78,16 @@ const CommunityPage: NextPage = () => {
         {iconsQuery.data && iconsQuery.data.length > 0 && (
             <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {iconsQuery.data.map((icon) => (
-                <li key={icon.id} className="relative group bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden aspect-square cursor-pointer"
-                    onClick={() => openPopup(`${s3BucketUrl}/${icon.id}`)}
+                <li key={getS3ImageUrl(icon)} className="relative group bg-white dark:bg-slate-800 rounded-lg shadow-md overflow-hidden aspect-square cursor-pointer"
+                    onClick={() => openPopup(icon)}
                     title={`View logo: ${icon.prompt || 'Community Gaming Logo'}`}
                     >
                 <Image
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     width={512}
                     height={512}
-                    alt={icon.prompt ?? `Community gaming logo ${icon.id}`}
-                    src={`${s3BucketUrl}/${icon.id}`}
+                    alt={icon.prompt ?? `Community gaming logo ${getS3ImageUrl(icon)}`}
+                    src={getS3ImageUrl(icon)}
                     priority={false}
                 />
                  <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">

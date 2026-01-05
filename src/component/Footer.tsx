@@ -38,6 +38,11 @@ export function Footer() {
       landingUrl: "/twitch-stream-screens-maker", // The main "Twitch Stream Screens" landing page
       toolUrl: "/twitch-stream-screens-generator", // The actual Twitch Stream Screens tool
     },
+    {
+      name: "Twitch Emote Maker",
+      landingUrl: "/twitch-emote-maker", // The main "Twitch Emote" landing page
+      toolUrl: "/emote-generator", // The actual Twitch Emote tool
+    },
   ];
 
   // Curate a list of your most important/popular niche landing pages to feature

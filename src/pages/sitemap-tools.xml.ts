@@ -7,6 +7,7 @@ const toolPages = [
   "/twitch-banner-generator",
   "/twitch-panels-generator",
   "/twitch-stream-screens-generator",
+  "/emote-generator",
 ];
 
 const generateXml = (urls: string[]) => `

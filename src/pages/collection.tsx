@@ -34,18 +34,22 @@ const CollectionPage: NextPage = () => {
 
   const s3BucketUrl = `https://${s3BucketName}.s3.${awsRegion}.amazonaws.com`;
 
-  const openPopup = (iconId: string) => {
-    setPopupImage(`${s3BucketUrl}/${iconId}`);
+  const openPopup = (icon: { id: string; imageKey?: string | null }) => {
+    setPopupImage(getS3ImageUrl(icon));
   };
 
   const closePopup = () => {
     setPopupImage(null);
   };
 
-  const handleDownload = async (iconId: string, prompt?: string | null) => {
-    setIsDownloading(iconId);
+  const getS3ImageUrl = (icon: { id: string; imageKey?: string | null }) => {
+    return `${s3BucketUrl}/${icon.imageKey ?? icon.id}`;
+  };
+
+  const handleDownload = async (icon: { id: string; imageKey?: string | null }, prompt?: string | null) => {
+    setIsDownloading(icon.id);
     try {
-      const imageUrl = `${s3BucketUrl}/${iconId}`;
+      const imageUrl = getS3ImageUrl(icon);
       const response = await fetch(imageUrl, { mode: "cors" }); // S3 needs CORS configured for this
       if (!response.ok) {
         throw new Error(
@@ -195,7 +199,7 @@ const CollectionPage: NextPage = () => {
         {iconsQuery.data && iconsQuery.data.length > 0 && (
           <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {iconsQuery.data.map((icon) => {
-              const fullIconS3Url = `${s3BucketUrl}/${icon.id}`;
+              const fullIconS3Url = getS3ImageUrl(icon);
               return (
                 <li
                   key={icon.id}
@@ -212,7 +216,7 @@ const CollectionPage: NextPage = () => {
                   {/* Overlay for buttons, appears on hover */}
                   <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black bg-opacity-0 transition-opacity duration-300 group-hover:bg-opacity-50">
                     <button
-                      onClick={() => openPopup(icon.id)}
+                      onClick={() => openPopup(icon)}
                       className="rounded-full bg-slate-700 p-3 text-white
                                opacity-0 shadow-lg transition-opacity duration-300 hover:bg-purple-600 focus:outline-none group-hover:opacity-100 dark:hover:bg-cyan-500"
                       title="View Fullscreen"
@@ -233,7 +237,7 @@ const CollectionPage: NextPage = () => {
                     </button>
                     <button
                       onClick={() => {
-                        void handleDownload(icon.id, icon.prompt);
+                        void handleDownload(icon, icon.prompt);
                       }}
                       disabled={isDownloading === icon.id}
                       className={`rounded-full bg-slate-700 p-3 text-white

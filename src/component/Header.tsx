@@ -72,6 +72,7 @@ export function Header() {
         { href: "/twitch-banner-maker", label: "Twitch Banner" },
         { href: "/twitch-panels-maker", label: "Twitch Panels" },
         { href: "/twitch-stream-screens-maker", label: "Twitch Stream Screens" },
+        { href: "/twitch-emote-maker", label: "Twitch Emotes" },
       ],
     },
   ];

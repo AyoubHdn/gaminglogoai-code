@@ -38,7 +38,6 @@ const server = z.object({
   MYLEAD_SECURITY_KEY: z.string(),
   CPAGRIP_POSTBACK_PASSWORD: z.string(),
   IPAPI_KEY: z.string(),
-  OPENAI_API_KEY: z.string(),
 });
 
 /**
@@ -85,7 +84,6 @@ const processEnv = {
   MYLEAD_SECURITY_KEY: process.env.MYLEAD_SECURITY_KEY,
   CPAGRIP_POSTBACK_PASSWORD: process.env.CPAGRIP_POSTBACK_PASSWORD,
   IPAPI_KEY: process.env.IPAPI_KEY,
-  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 
