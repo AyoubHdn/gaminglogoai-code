@@ -493,7 +493,7 @@ const enhanceBanner = api.enhancement.enhanceImage.useMutation({
                 text-xs font-semibold
                 bg-purple-100 text-purple-700
                 dark:bg-cyan-900/40 dark:text-cyan-300">
-                ✨ AI Enhancement · <strong>5 Credits</strong>
+                ✨ AI Enhancement · <strong>3 Credits</strong>
               </span>
             </div>
 
@@ -526,7 +526,7 @@ const enhanceBanner = api.enhancement.enhanceImage.useMutation({
 
                 enhanceBanner.mutate({
                   prompt: ai.prompt,
-                  model: "flux-kontext-max",
+                  model: "nano-banana-pro",
                   referenceImageUrl: generatedBannerUrl,
                 });
               }}

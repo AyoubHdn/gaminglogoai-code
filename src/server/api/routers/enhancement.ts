@@ -138,7 +138,7 @@ export const enhancementRouter = createTRPCRouter({
         referenceImageUrl: z.string().url(),
     }))
     .mutation(async ({ ctx, input }) => {
-        const creditCost = 5;
+        const creditCost = 3;
 
     // 1️⃣ Deduct credits
     const { count } = await ctx.prisma.user.updateMany({

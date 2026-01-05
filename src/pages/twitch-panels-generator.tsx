@@ -314,7 +314,7 @@ const TwitchPanelsGeneratorPage: NextPage = () => {
           <section className="mt-8 p-6 rounded-xl bg-slate-50 dark:bg-slate-800/60">
             <h3 className="text-xl font-semibold mb-2">Enhance with AI</h3>
             <p className="text-sm text-gray-500 mb-3">
-              ✨ AI Enhancement · <strong>5 Credits</strong>
+              ✨ AI Enhancement · <strong>3 Credits</strong>
             </p>
 
             <div className="flex gap-3 mb-4">
