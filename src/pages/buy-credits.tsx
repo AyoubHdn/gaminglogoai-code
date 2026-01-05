@@ -136,33 +136,37 @@ const BuyCreditsPage: React.FC = () => {
             </div>
 
             <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow">
-              <ul className="space-y-3 text-sm">
-                <li className="flex gap-2">
-                  <FaPaintBrush /> Text Logo: 1–2 credits
-                  <p className="text-sm text-slate-500">
-                    (Just ~$0.1 per logo)
-                  </p>
+              <ul className="space-y-4 text-sm">
+                <li className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <FaPaintBrush /> Text Logo (1–2 credits)
+                  </span>
+                  <span className="text-slate-500">~$0.10</span>
                 </li>
-                <li className="flex gap-2">
-                  <FaUserCircle /> Profile Picture: 4–6 credits
-                  <p className="text-sm text-slate-500">
-                    (Just ~$0.4 per pfp)
-                  </p>
+
+                <li className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <FaUserCircle /> Profile Picture (4–6 credits)
+                  </span>
+                  <span className="text-slate-500">~$0.40</span>
                 </li>
-                <li className="flex gap-2">
-                  <FaImages /> Banner / Panel / Screen: 1 credit
-                  <p className="text-sm text-slate-500">
-                    (Just ~$0.1 per image)
-                  </p>
+
+                <li className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <FaImages /> Banner / Panel / Screen (1 credit)
+                  </span>
+                  <span className="text-slate-500">~$0.10</span>
                 </li>
-                <li className="flex gap-2">
-                  <FaSmile /> Emotes: 3 credits per emote
-                  <p className="text-sm text-slate-500">
-                    (Just ~$0.3 per emote)
-                  </p>
+
+                <li className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <FaSmile /> Emotes (3 credits)
+                  </span>
+                  <span className="text-slate-500">~$0.30</span>
                 </li>
               </ul>
             </div>
+
           </div>
         </section>
 
