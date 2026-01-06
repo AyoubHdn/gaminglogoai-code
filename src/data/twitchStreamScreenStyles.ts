@@ -61,7 +61,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
     screenType: "starting",
     previewSrc: "/twitch/screens/blue_tech_glitch_prv.webp",
     backgroundSrc: "/twitch/screens/blue_tech_glitch_bg.webp",
-    creditCost: 2,
+    creditCost: 1,
     maxTitleChars: 18,
     maxSubtitleChars: 46,
     aiEnhancements: [
@@ -108,7 +108,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
     screenType: "starting",
     previewSrc: "/twitch/screens/cyberpunk-prv.webp",
     backgroundSrc: "/twitch/screens/cyberpunk-bg.webp",
-    creditCost: 2,
+    creditCost: 1,
     maxTitleChars: 18,
     maxSubtitleChars: 46,
     aiEnhancements: [
@@ -155,7 +155,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
     screenType: "starting",
     previewSrc: "/twitch/screens/futuristic_neon_prv.webp",
     backgroundSrc: "/twitch/screens/futuristic_neon_bg.webp",
-    creditCost: 2,
+    creditCost: 1,
     maxTitleChars: 18,
     maxSubtitleChars: 46,
     aiEnhancements: [
@@ -202,7 +202,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
     screenType: "starting",
     previewSrc: "/twitch/screens/futuristic_stream_prv.webp",
     backgroundSrc: "/twitch/screens/futuristic_stream_bg.webp",
-    creditCost: 2,
+    creditCost: 1,
     maxTitleChars: 18,
     maxSubtitleChars: 46,
     aiEnhancements: [
@@ -249,7 +249,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
     screenType: "starting",
     previewSrc: "/twitch/screens/minimal_snowfall_prv.webp",
     backgroundSrc: "/twitch/screens/minimal_snowfall_bg.webp",
-    creditCost: 2,
+    creditCost: 1,
     maxTitleChars: 18,
     maxSubtitleChars: 46,
     aiEnhancements: [
@@ -297,7 +297,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
     screenType: "starting",
     previewSrc: "/twitch/screens/neon_retro_prv.webp",
     backgroundSrc: "/twitch/screens/neon_retro_bg.webp",
-    creditCost: 2,
+    creditCost: 1,
     maxTitleChars: 18,
     maxSubtitleChars: 46,
     aiEnhancements: [
@@ -345,7 +345,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
     screenType: "starting",
     previewSrc: "/twitch/screens/pastel_play_prv.webp",
     backgroundSrc: "/twitch/screens/pastel_play_bg.webp",
-    creditCost: 2,
+    creditCost: 1,
     maxTitleChars: 18,
     maxSubtitleChars: 46,
     aiEnhancements: [
@@ -393,7 +393,7 @@ export const TWITCH_STREAM_SCREEN_STYLES: TwitchStreamScreenStyle[] = [
     screenType: "starting",
     previewSrc: "/twitch/screens/pink_storm_prv.webp",
     backgroundSrc: "/twitch/screens/pink_storm_bg.webp",
-    creditCost: 2,
+    creditCost: 1,
     maxTitleChars: 18,
     maxSubtitleChars: 46,
     aiEnhancements: [
