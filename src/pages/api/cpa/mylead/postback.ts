@@ -11,34 +11,35 @@ function verifyMyLeadHash(
   req: NextApiRequest,
   securityKey: string
 ): boolean {
-  const protocol =
-    (req.headers["x-forwarded-proto"] as string) ?? "https";
-
-  const host = req.headers.host;
-  const url = req.url;
-
-  const fullUrl = `${protocol}://${host}${url}`;
-
-  const localHash = crypto
-    .createHmac("sha256", securityKey)
-    .update(fullUrl)
-    .digest("hex");
-
   const remoteHash = req.headers["x-mylead-security-hash"];
-
-  // 🔴 TEMP DEBUG LOGS (IMPORTANT)
-  console.log("MYLEAD DEBUG");
-  console.log("Full URL:", fullUrl);
-  console.log("Local hash:", localHash);
-  console.log("Remote hash:", remoteHash);
-  console.log("Headers:", req.headers);
-  console.log("Query:", req.query);
 
   if (typeof remoteHash !== "string") {
     return false;
   }
 
-  return localHash === remoteHash;
+  // Build canonical query string (sorted)
+  const params = new URLSearchParams();
+
+  Object.keys(req.query)
+    .sort()
+    .forEach((key) => {
+      const value = req.query[key];
+      if (typeof value === "string") {
+        params.append(key, value);
+      }
+    });
+
+  const canonicalQuery = params.toString();
+
+  const localHash = crypto
+    .createHmac("sha256", securityKey)
+    .update(canonicalQuery)
+    .digest("hex");
+
+  return crypto.timingSafeEqual(
+    Buffer.from(localHash),
+    Buffer.from(remoteHash)
+  );
 }
 
 export default async function handler(
@@ -56,7 +57,7 @@ export default async function handler(
   );
 
   if (!isValid) {
-    console.log("⚠️ MYLEAD HASH BYPASSED FOR TEST");
+    return res.status(403).send("Invalid signature");
   }
 
   const {
