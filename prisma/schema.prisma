@@ -65,6 +65,7 @@ model User {
     sessions      Session[]
     icons         Icon[]
     cpaUnlocks    CpaUnlock[]
+    lastCpaNetwork CpaNetwork?
 }
 
 model Icon {

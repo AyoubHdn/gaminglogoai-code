@@ -1,6 +1,5 @@
 # *
 User-agent: *
-Allow: /
 Disallow: /free-credit
 Disallow: /free-credit/
 Disallow: /free-credit/result
