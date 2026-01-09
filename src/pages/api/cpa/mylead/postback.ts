@@ -17,23 +17,22 @@ function verifyMyLeadHash(
     return false;
   }
 
-  // Build canonical query string (sorted)
-  const params = new URLSearchParams();
+  const url = req.url;
+  if (!url) {
+    return false;
+  }
 
-  Object.keys(req.query)
-    .sort()
-    .forEach((key) => {
-      const value = req.query[key];
-      if (typeof value === "string") {
-        params.append(key, value);
-      }
-    });
+  const queryIndex = url.indexOf("?");
+  if (queryIndex === -1) {
+    return false;
+  }
 
-  const canonicalQuery = params.toString();
+  // RAW query string EXACTLY as MyLead sent it
+  const rawQueryString = url.slice(queryIndex + 1);
 
   const localHash = crypto
     .createHmac("sha256", securityKey)
-    .update(canonicalQuery)
+    .update(rawQueryString)
     .digest("hex");
 
   return crypto.timingSafeEqual(
