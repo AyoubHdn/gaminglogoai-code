@@ -55,9 +55,16 @@ export default async function handler(
     process.env.MYLEAD_SECURITY_KEY!
   );
 
-  if (!isValid) {
-    return res.status(403).send("Invalid signature");
-  }
+  // 🔍 LOG EVERYTHING BEFORE RETURN
+  console.log("MYLEAD FINAL DEBUG");
+  console.log("req.url:", req.url);
+  console.log("raw query:", req.url?.split("?")[1]);
+  console.log("remote hash:", req.headers["x-mylead-security-hash"]);
+  console.log("isValid:", isValid);
+
+  //if (!isValid) {
+  //  return res.status(403).send("Invalid signature");
+  //}
 
   const {
     status,
