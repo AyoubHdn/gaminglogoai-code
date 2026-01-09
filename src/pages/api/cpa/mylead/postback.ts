@@ -22,17 +22,14 @@ function verifyMyLeadHash(
     return false;
   }
 
-  const queryIndex = url.indexOf("?");
-  if (queryIndex === -1) {
-    return false;
-  }
-
-  // RAW query string EXACTLY as MyLead sent it
-  const rawQueryString = url.slice(queryIndex + 1);
+  // MyLead signs: PATH + "?" + QUERY (NO protocol, NO host)
+  // Example:
+  // /api/cpa/mylead/postback?transaction_id=...
+  const signedPayload = url;
 
   const localHash = crypto
     .createHmac("sha256", securityKey)
-    .update(rawQueryString)
+    .update(signedPayload)
     .digest("hex");
 
   return crypto.timingSafeEqual(
@@ -62,9 +59,9 @@ export default async function handler(
   console.log("remote hash:", req.headers["x-mylead-security-hash"]);
   console.log("isValid:", isValid);
 
-  //if (!isValid) {
-  //  return res.status(403).send("Invalid signature");
-  //}
+  if (!isValid) {
+    return res.status(403).send("Invalid signature");
+  }
 
   const {
     status,
