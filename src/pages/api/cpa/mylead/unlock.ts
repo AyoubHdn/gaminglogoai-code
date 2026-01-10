@@ -5,9 +5,9 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
-import crypto from "crypto";
 import { prisma } from "~/server/db";
 import { authOptions } from "~/server/auth";
+import { myleadUnlock } from "../myleadUnlock";
 
 export default async function handler(
   req: NextApiRequest,
@@ -39,18 +39,7 @@ export default async function handler(
     });
   }
 
-  const token = `gla_${session.user.id}_${crypto.randomUUID()}`;
-
-  await prisma.cpaUnlock.create({
-    data: {
-      userId: session.user.id,
-      token,
-      network: "mylead",
-    },
-  });
-
-  const redirectUrl = `https://top-deal.me/a/BBpNNT87z4uNJPO?ml_sub1=${token}`;
-
-  return res.status(200).json({ redirectUrl });
+  const result = await myleadUnlock(session.user.id);
+  return res.status(200).json(result);
 }
 

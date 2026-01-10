@@ -8,7 +8,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "~/server/auth";
 import { prisma } from "~/server/db";
-import crypto from "crypto";
+import { cpxUnlock } from "../cpxUnlock";
 
 async function isVpnOrProxy(ip: string | null): Promise<boolean> {
   if (!ip) return false;
@@ -105,24 +105,7 @@ export default async function handler(
     });
   }
 
-  // 3️⃣ Create unlock record
-  const token = crypto.randomUUID();
+  const result = await cpxUnlock(session.user.id);
+  return res.status(200).json(result);
 
-  await prisma.cpaUnlock.create({
-    data: {
-      userId: session.user.id,
-      token,
-      network: "cpx",
-      status: "pending",
-    },
-  });
-
-  // 4️⃣ Build CPX redirect URL
-  const redirectUrl =
-    `https://offers.cpx-research.com/index.php` +
-    `?app_id=${process.env.CPX_APP_ID}` +
-    `&ext_user_id=${session.user.id}` +
-    `&subid_1=gaminglogoai`;
-
-  return res.status(200).json({ redirectUrl });
 }
