@@ -14,7 +14,7 @@ export async function myleadUnlock(userId: string) {
   });
 
   const redirectUrl =
-    `https://top-deal.me/a/BBpNNT87z4uNJPO?ml_sub1=${token}`;
+    `https://price-low.eu/a/OYkMMu2BVWcrAvB?ml_sub1=${token}`;
 
   return { redirectUrl };
 }
