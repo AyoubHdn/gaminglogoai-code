@@ -49,8 +49,7 @@ export default async function handler(
     },
   });
 
-  const redirectUrl =
-    `https://mylead.link/XXXX?ml_sub1=${token}`;
+  const redirectUrl = `https://top-deal.me/a/BBpNNT87z4uNJPO?ml_sub1=${token}`;
 
   return res.status(200).json({ redirectUrl });
 }

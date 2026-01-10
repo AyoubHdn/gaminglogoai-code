@@ -93,7 +93,6 @@ enum CpaStatus {
 
 enum CpaNetwork {
     mylead
-    cpagrip
     cpx
 }
 
@@ -182,4 +181,10 @@ enum CpaResult {
     screenout_bonus
     screenout_no_bonus
     reversed
+}
+
+model CpaSwitch {
+    id        Int      @id @default(1)
+    lastUsed  CpaNetwork
+    updatedAt DateTime @updatedAt
 }

@@ -19,7 +19,7 @@ export default function FreeCreditUnlock() {
     setRetryAfter(null);
 
     try {
-      const res = await fetch("/api/cpa/cpx/unlock", {
+      const res = await fetch("/api/cpa/unlock", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
