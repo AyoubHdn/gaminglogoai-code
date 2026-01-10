@@ -24,6 +24,8 @@ export default function FreeCreditUnlock() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
+      
+      console.log("CLICK START SURVEY");
 
       let data: any;
       try {
@@ -57,7 +59,7 @@ export default function FreeCreditUnlock() {
       if (!res.ok) {
         throw new Error(data.error || "Unlock failed");
       }
-
+      console.log("FREE CREDIT RESPONSE", data);
       // ✅ Redirect to CPX
       window.location.href = data.redirectUrl;
     } catch (err) {
