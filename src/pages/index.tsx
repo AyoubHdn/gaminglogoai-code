@@ -208,6 +208,59 @@ const HomePage: NextPage = () => {
     );
   }
 
+  function TwitchEmotesSection() {
+    return (
+      <section className="py-16 md:py-20 px-4 sm:px-8 bg-slate-50 dark:bg-slate-950">
+        <div className="container mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
+            Create Expressive <span className="text-purple-600 dark:text-cyan-400">Twitch Emotes</span> from Your Face
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto items-center">
+            
+            {/* Image Preview */}
+            <div className="relative rounded-xl overflow-hidden shadow-2xl">
+              <Image
+                src="/twitch/emotes/emotes-boy.png"
+                alt="Custom Twitch emotes generated from a real face using AI"
+                width={600}
+                height={400}
+                className="rounded-xl"
+                unoptimized
+              />
+            </div>
+
+            {/* Text */}
+            <div>
+              <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                From Photo to GG, LOL, HYPE & More
+              </h3>
+
+              <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                Upload a real photo and let AI transform it into a full set of expressive
+                Twitch emotes. Perfect for chat reactions, subscriber perks, and personal branding.
+              </p>
+
+              <ul className="space-y-3 text-sm text-slate-700 dark:text-slate-300 mb-8">
+                <li>😄 Generate multiple emote expressions from one character</li>
+                <li>🧠 AI-designed cartoon & anime styles made for chat</li>
+                <li>📐 Optimized for Twitch emote sizes (28 / 56 / 112)</li>
+                <li>🧼 Transparent background — ready to upload</li>
+              </ul>
+
+              <Link
+                href="/twitch-emote-maker"
+                className="inline-block px-8 py-3 bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg"
+                id="cta-home-twitch-emotes"
+              >
+                Create Twitch Emotes →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   function KeyFeaturesSection() {
     const features = [
@@ -479,6 +532,7 @@ function StyleShowcaseSection() {
         <LogoTypesSection />
         <TwitchBannerSection />
         <TwitchPanelsSection />
+        <TwitchEmotesSection />
         <WhoIsThisForSection />
         <StyleShowcaseSection />
         <KeyFeaturesSection />
