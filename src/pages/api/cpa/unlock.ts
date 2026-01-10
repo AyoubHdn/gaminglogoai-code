@@ -27,10 +27,22 @@ export default async function handler(
   });
 
   if (pending) {
+    // DO NOT create a new unlock
+    // Just resend the user to the same network
     if (pending.network === "cpx") {
-      return res.status(200).json(await cpxUnlock(userId));
+      return res.status(200).json({
+        redirectUrl:
+          `https://offers.cpx-research.com/index.php` +
+          `?app_id=${process.env.CPX_APP_ID}` +
+          `&ext_user_id=${userId}` +
+          `&subid_1=gaminglogoai`,
+      });
     }
-    return res.status(200).json(await myleadUnlock(userId));
+
+    return res.status(200).json({
+      redirectUrl:
+        `https://price-low.eu/a/OYkMMu2BVWcrAvB?ml_sub1=${pending.token}`,
+    });
   }
 
   // 2️⃣ Round robin
