@@ -18,17 +18,20 @@ export default async function handler(
 
   const userId = session.user.id;
 
-  // 1️⃣ CHECK FOR EXISTING PENDING UNLOCK (MOST IMPORTANT)
+  console.log("CPA UNLOCK ENTRY", {
+    userId,
+  });
+
   const pending = await prisma.cpaUnlock.findFirst({
-    where: {
-      userId,
-      status: "pending",
-    },
+    where: { userId, status: "pending" },
     orderBy: { createdAt: "desc" },
   });
 
+  console.log("CPA UNLOCK PENDING", pending);
+
   if (pending) {
-    // 🔁 Reuse SAME network
+    console.log("CPA UNLOCK REUSING NETWORK", pending.network);
+
     if (pending.network === "cpx") {
       return res.redirect(307, "/api/cpa/cpx/unlock");
     }
@@ -38,26 +41,33 @@ export default async function handler(
     }
   }
 
-  // 2️⃣ NO PENDING → APPLY ROUND-ROBIN
+  // Round robin
   const nextNetwork = await prisma.$transaction(async (tx) => {
-    const state = await tx.cpaSwitch.findUnique({
-      where: { id: 1 },
-    });
+    
+  const state = await tx.cpaSwitch.findUnique({
+    where: { id: 1 },
+  });
 
-    if (!state) {
-      throw new Error("CpaSwitch not initialized");
-    }
+  if (!state) {
+    throw new Error("CpaSwitch row is missing");
+  }
 
-    const next =
-      state.lastUsed === "cpx" ? "mylead" : "cpx";
+console.log("CPA SWITCH STATE", state);
+
+const next =
+  state.lastUsed === "cpx" ? "mylead" : "cpx";
 
     await tx.cpaSwitch.update({
       where: { id: 1 },
       data: { lastUsed: next },
     });
 
+    console.log("CPA SWITCH NEXT", next);
+
     return next;
   });
+
+  console.log("CPA UNLOCK FINAL NETWORK", nextNetwork);
 
   // 3️⃣ REDIRECT TO CHOSEN NETWORK
   if (nextNetwork === "cpx") {
