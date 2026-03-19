@@ -6,6 +6,13 @@ import { z } from "zod";
 const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-02-24.acacia",
 });
+
+const creditsByPlan = {
+  starter: 20,
+  pro: 50,
+  elite: 100,
+} as const;
+
 const plans = {
   starter: env.PRICE_ID_STARTER,
   pro: env.PRICE_ID_PRO,
@@ -27,6 +34,8 @@ export const checkoutRouter = createTRPCRouter({
         payment_method_types: ["card"],
         metadata: {
           userId: ctx.session.user.id,
+          plan: input.plan,
+          credits: String(creditsByPlan[input.plan]),
         },
         line_items: [
           {

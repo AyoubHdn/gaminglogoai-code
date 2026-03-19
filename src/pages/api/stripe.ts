@@ -10,6 +10,28 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-02-24.acacia",
 });
 
+const planMetadataMap = {
+  starter: { credits: 20, plan: "Starter" as const },
+  pro: { credits: 50, plan: "Pro" as const },
+  elite: { credits: 100, plan: "Elite" as const },
+};
+
+const priceIdMap: Record<string, { credits: number; plan: "Starter" | "Pro" | "Elite" }> = {
+  [env.PRICE_ID_STARTER]: planMetadataMap.starter,
+  [env.PRICE_ID_PRO]: planMetadataMap.pro,
+  [env.PRICE_ID_ELITE]: planMetadataMap.elite,
+};
+
+function getFulfillmentFromMetadata(metadata?: Stripe.Metadata | null) {
+  const planKey = metadata?.plan;
+  if (planKey && planKey in planMetadataMap) {
+    return planMetadataMap[planKey as keyof typeof planMetadataMap];
+  }
+
+  const credits = Number.parseInt(metadata?.credits ?? "", 10);
+  return Object.values(planMetadataMap).find((item) => item.credits === credits) ?? null;
+}
+
 export const config = {
   api: {
     bodyParser: false,
@@ -40,9 +62,9 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   switch (event.type) {
-    case "checkout.session.completed":
+    case "checkout.session.completed": {
       console.log("Processing checkout.session.completed event...");
-      const completedEvent = event.data.object;
+      const completedEvent = event.data.object as Stripe.Checkout.Session;
 
       const userId = completedEvent.metadata?.userId;
       if (!userId) {
@@ -52,77 +74,56 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
 
       console.log(`User ID from metadata: ${userId}`);
 
-      let lineItems;
-      try {
-        lineItems = await stripe.checkout.sessions.listLineItems(completedEvent.id);
-      } catch (err) {
-        console.error("Error fetching line items:", err);
-        return res.status(500).send("Failed to fetch line items.");
+      let fulfillment = getFulfillmentFromMetadata(completedEvent.metadata);
+
+      if (!fulfillment) {
+        try {
+          const lineItems = await stripe.checkout.sessions.listLineItems(completedEvent.id, {
+            limit: 1,
+          });
+          const priceId = lineItems.data[0]?.price?.id;
+          console.log("Price ID from line items:", priceId);
+          fulfillment = priceId ? priceIdMap[priceId] ?? null : null;
+        } catch (err) {
+          console.error("Error fetching line items:", err);
+          return res.status(500).send("Failed to fetch line items.");
+        }
       }
 
-      const priceId = lineItems.data[0]?.price?.id;
-      console.log("Price ID from line items:", priceId);
-      console.log("Comparing with env.PRICE_ID_STARTER:", env.PRICE_ID_STARTER, "Match:", priceId === env.PRICE_ID_STARTER);
-
-      if (!priceId) {
-        console.error("Missing priceId in line items.");
-        return;
+      if (!fulfillment) {
+        console.warn(`Unhandled checkout session ${completedEvent.id}; no matching plan metadata or price ID.`);
+        return res.status(200).json({ received: true, ignored: true });
       }
 
-      const creditsMap: Record<string, number> = {
-        [env.PRICE_ID_STARTER]: 20,
-        [env.PRICE_ID_PRO]: 50,
-        [env.PRICE_ID_ELITE]: 100,
-      };
-
-      const planMap: Record<number, string> = {
-        20: "Starter",
-        50: "Pro",
-        100: "Elite",
-      };
-
-      const incrementCredits = creditsMap[priceId] ?? 0;
-      const plan = planMap[incrementCredits] ?? "None";
-
-      if (incrementCredits === 0) {
-        console.warn(`Unhandled priceId: ${priceId}`);
-        return;
-      }
-
+      const { credits: incrementCredits, plan } = fulfillment;
       console.log(`Credits to increment: ${incrementCredits}, Plan: ${plan}`);
 
       try {
-        const userBeforeUpdate = await prisma.user.findUnique({
-          where: { id: userId },
-          select: { gamingCredits: true, gamingPlan: true, email: true, name: true }
-        });
-
-        console.log("User before update:", userBeforeUpdate);
-
         const updatedUser = await prisma.user.update({
           where: { id: userId },
           data: {
             gamingCredits: {
               increment: incrementCredits,
             },
-            gamingPlan: plan as "None" | "Starter" | "Pro" | "Elite", // Type-safe with Plan enum
+            gamingPlan: plan,
           },
         });
 
         console.log("User after update:", updatedUser);
 
         if (updatedUser.email) {
-          try {
-            const mauticResult = await syncUserToMautic({
-              email: updatedUser.email,
-              name: updatedUser.name,
-              brand_specific_credits: updatedUser.gamingCredits,
-              brand_specific_plan: updatedUser.gamingPlan,
-            },'gaminglogoai');
+          void syncUserToMautic({
+            email: updatedUser.email,
+            name: updatedUser.name,
+            brand_specific_credits: updatedUser.gamingCredits,
+            brand_specific_plan: updatedUser.gamingPlan,
+          }, "gaminglogoai")
+            .then((mauticResult) => {
             console.log("Mautic updated after purchase:", mauticResult);
-          } catch (err) {
-            console.error("Error updating Mautic after purchase:", err);
-          }
+            })
+            .catch((err) => {
+              console.error("Error updating Mautic after purchase:", err);
+            });
         } else {
           console.error("Updated user has no email; cannot update Mautic.");
         }
@@ -131,13 +132,13 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(500).send("Failed to update user credits or plan.");
       }
 
-      break;
+      return res.status(200).json({ received: true });
+    }
 
     default:
       console.log(`Unhandled event type: ${event.type}`);
+      return res.status(200).json({ received: true });
   }
-
-  res.json({ received: true });
 };
 
 export default webhook;

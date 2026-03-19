@@ -53,11 +53,19 @@ export async function updateMauticContact(
     headers['Content-Type'] = 'application/json';
   }
 
-  const response = await fetch(`${mauticBaseUrl}/api/${endpoint}`, {
-    method: method,
-    headers: headers,
-    body: payload ? JSON.stringify(payload) : undefined,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${mauticBaseUrl}/api/${endpoint}`, {
+      method: method,
+      headers: headers,
+      body: payload ? JSON.stringify(payload) : undefined,
+      signal: AbortSignal.timeout(5000),
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown fetch error";
+    console.error(`MAUTIC_API_FETCH_ERROR on ${method} ${endpoint}:`, message);
+    throw error;
+  }
 
   if (!response.ok) {
     let errorData;
@@ -246,10 +254,15 @@ export async function syncUserToMautic(
   }
 }
 
-function makeMauticApiCall(arg0: string, arg1: string): {
-  total?: string | number; contacts?: Record<string, MauticFoundContactDetail>; // Use the more specific type here
-} | PromiseLike<{
-  total?: string | number; contacts?: Record<string, MauticFoundContactDetail>; // Use the more specific type here
+async function makeMauticApiCall(
+  endpoint: string,
+  method: 'GET' | 'POST' | 'PATCH'
+): Promise<{
+  total?: string | number;
+  contacts?: Record<string, MauticFoundContactDetail>;
 }> {
-  throw new Error("Function not implemented.");
+  return await updateMauticContact(endpoint, method) as {
+    total?: string | number;
+    contacts?: Record<string, MauticFoundContactDetail>;
+  };
 }
