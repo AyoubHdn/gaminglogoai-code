@@ -56,7 +56,7 @@ const generateIcon = async (
     path = "black-forest-labs/flux-schnell";
     input = {
       prompt,
-      go_fast: true,
+      go_fast: false,
       megapixels: "1",
       num_outputs: numberOfImages,
       aspect_ratio: aspectRatio,
@@ -68,7 +68,7 @@ const generateIcon = async (
     path = "black-forest-labs/flux-dev";
     input = {
       prompt,
-      go_fast: true,
+      go_fast: false,
       megapixels: "1",
       num_outputs: numberOfImages,
       aspect_ratio: aspectRatio,
