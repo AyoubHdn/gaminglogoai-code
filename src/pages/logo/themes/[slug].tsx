@@ -35,7 +35,7 @@ const ThemeLogoPage: NextPage<ThemeLogoPageServerProps> = ({ theme, images, slug
     ctaText: `Create a ${theme} Logo`,
     handleCtaClick: handleCtaClick,
     showcaseTitle: <>Epic <span className="text-purple-600 dark:text-cyan-400">{theme}</span> Logo Concepts</>,
-    imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${theme} themed gaming logo example` })),
+    imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${theme}-themed gaming logo design example` })),
     relatedItems: relatedItems,
     faqTitle: <>Your <span className="text-purple-600 dark:text-cyan-400">{theme} Logo</span> Questions</>,
     finalCtaTitle: <>Ready to Forge Your <span className="text-purple-600 dark:text-cyan-400">{theme} Logo</span>?</>,

@@ -14,7 +14,7 @@ export function Footer() {
   // Define the primary generator landing pages and tool pages
   const generators = [
     {
-      name: "Text Logo Maker",
+      name: "Gaming Logo Maker",
       landingUrl: "/gaming-logo", // The main "Text Logo" landing page
       toolUrl: "/gaming-logo-maker",   // The actual generator tool
     },
@@ -29,7 +29,7 @@ export function Footer() {
       toolUrl: "/twitch-banner-generator", // The actual Twitch Banner tool
     },
     {
-      name: "Twitch Panel Maker",
+      name: "Twitch Panels Maker",
       landingUrl: "/twitch-panels-maker", // The main "Twitch Panel" landing page
       toolUrl: "/twitch-panels-generator", // The actual Twitch Panel tool
     },
@@ -48,7 +48,7 @@ export function Footer() {
   // Curate a list of your most important/popular niche landing pages to feature
   const popularNiches = [
     { name: "Fortnite PFP", url: "/pfp/games/fortnite-pfp-maker" },
-    { name: "Minecraft Logos", url: "/logo/games/minecraft-logo-maker" },
+    { name: "Minecraft Logo Maker", url: "/logo/games/minecraft-logo-maker" },
     { name: "Call of Duty PFP", url: "/pfp/games/call-of-duty-pfp-maker" },
     { name: "Free Fire Logos", url: "/logo/games/free-fire-logo-maker" },
     { name: "Gears of War PFP", url: "/pfp/games/gears-of-war-pfp-maker" },

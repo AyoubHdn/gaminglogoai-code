@@ -60,8 +60,8 @@ export function Header() {
   /* Navigation data */
   /* ------------------------------------------------------------------ */
   const toolsLinks = [
-    { href: "/gaming-logo", label: "Logo Maker", icon: <FaPaintBrush /> },
-    { href: "/ai-profile-picture-maker", label: "Profile Picture", icon: <CgProfile /> },
+    { href: "/gaming-logo", label: "Gaming Logo Maker", icon: <FaPaintBrush /> },
+    { href: "/ai-profile-picture-maker", label: "AI PFP Maker", icon: <CgProfile /> },
     { href: "/twitch-graphics", label: "Twitch Graphics", icon: <FaTwitch /> },
   ];
 
@@ -70,7 +70,7 @@ export function Header() {
       platform: "Twitch",
       icon: <FaTwitch className="text-purple-600" />,
       items: [
-        { href: "/twitch-banner-maker", label: "Twitch Banner" },
+        { href: "/twitch-banner-maker", label: "Twitch Banner Maker" },
         { href: "/twitch-panels-maker", label: "Twitch Panels" },
         { href: "/twitch-stream-screens-maker", label: "Twitch Stream Screens" },
         { href: "/twitch-emote-maker", label: "Twitch Emotes" },

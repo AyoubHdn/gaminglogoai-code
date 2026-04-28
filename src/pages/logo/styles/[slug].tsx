@@ -35,7 +35,7 @@ const ArtStyleLogoPage: NextPage<ArtStyleLogoPageServerProps> = ({ artStyle, ima
     ctaText: `Design a ${artStyle} Logo Now`,
     handleCtaClick: handleCtaClick,
     showcaseTitle: <>Incredible <span className="text-purple-600 dark:text-cyan-400">{artStyle}</span> Logo Examples</>,
-    imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${artStyle} style gaming logo example` })),
+    imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${artStyle} gaming logo design example` })),
     relatedItems: relatedItems,
     faqTitle: <>Your <span className="text-purple-600 dark:text-cyan-400">{artStyle} Logo</span> Questions</>,
     finalCtaTitle: <>Ready to Design an <span className="text-purple-600 dark:text-cyan-400">{artStyle} Logo</span>?</>,

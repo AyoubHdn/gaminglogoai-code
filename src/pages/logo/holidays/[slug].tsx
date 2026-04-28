@@ -35,7 +35,7 @@ const HolidayLogoPage: NextPage<HolidayLogoPageServerProps> = ({ holiday, images
     ctaText: `Create a ${holiday} Logo`,
     handleCtaClick: handleCtaClick,
     showcaseTitle: <>Festive <span className="text-purple-600 dark:text-cyan-400">{holiday}</span> Logo Ideas</>,
-    imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${holiday} themed gaming logo example` })),
+    imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${holiday} seasonal gaming logo design` })),
     relatedItems: relatedItems,
     faqTitle: <>Your <span className="text-purple-600 dark:text-cyan-400">{holiday} Logo</span> Questions</>,
     finalCtaTitle: <>Design Your <span className="text-purple-600 dark:text-cyan-400">{holiday} Logo</span> Today!</>,

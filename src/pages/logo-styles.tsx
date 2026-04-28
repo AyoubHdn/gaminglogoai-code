@@ -144,7 +144,7 @@ export const getStaticProps: GetStaticProps<{ styleCategories: SerializableStyle
       styleCategories.push({
         ...config,
         subItemsPreview,
-        relevantTools: [{ name: "Open Text Logo Maker", url: "/gaming-logo-maker", iconName: "pen", variant: "primary" }], // Added iconName
+        relevantTools: [{ name: "Open Gaming Logo Maker", url: "/gaming-logo-maker", iconName: "pen", variant: "primary" }], // Added iconName
       });
     }
   }
@@ -167,7 +167,7 @@ export const getStaticProps: GetStaticProps<{ styleCategories: SerializableStyle
       styleCategories.push({
         ...config,
         subItemsPreview,
-        relevantTools: [{ name: "Open PFP Maker", url: "/pfp-maker", iconName: "user", variant: "accent" }], // Added iconName
+        relevantTools: [{ name: "Open AI PFP Maker", url: "/pfp-maker", iconName: "user", variant: "accent" }], // Added iconName
       });
     }
   }

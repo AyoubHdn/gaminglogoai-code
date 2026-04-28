@@ -138,7 +138,7 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {relatedItems.map((item) => (
                 <Link key={item.slug} href={`/${item.tool}/${item.categoryPath}/${item.slug}`} className="block p-4 bg-white dark:bg-slate-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 flex items-center group">
-                  <Image src={item.exampleImage} alt={`${item.name} logo example`} width={64} height={64} className="rounded-lg mr-4 object-cover" unoptimized={true} />
+                  <Image src={item.exampleImage} alt={`${item.name} gaming logo design — AI generated example`} width={64} height={64} className="rounded-lg mr-4 object-cover" unoptimized={true} />
                   <div className="flex-grow">
                     <h3 className="text-lg font-semibold text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-cyan-400">{item.name}</h3>
                     <p className="text-sm text-slate-600 dark:text-slate-400">{item.description}</p>

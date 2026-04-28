@@ -21,6 +21,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
       title: "Gaming Logo Maker",
       desc: "Create a professional Twitch logo or mascot for your channel.",
       href: "/gaming-logo",
+      cta: "Open Gaming Logo Maker",
       icon: <FaPalette className="h-8 w-8" />,
       img: "gaminglogo-ai-banner.webp",
     },
@@ -28,6 +29,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
       title: "AI Profile Picture (PFP)",
       desc: "Turn your photo into a clean avatar for Twitch, Discord, and socials.",
       href: "/ai-profile-picture-maker",
+      cta: "Open AI PFP Maker",
       icon: <FaUserCircle className="h-8 w-8" />,
       img: "face-logo-image.webp",
     },
@@ -35,6 +37,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
       title: "Twitch Banner Maker",
       desc: "Design a professional Twitch banner (1200×480) with your name & style.",
       href: "/twitch-banner-maker",
+      cta: "Open Twitch Banner Maker",
       icon: <FaImages className="h-8 w-8" />,
       img: "/twitch/enhance-after.webp",
     },
@@ -42,6 +45,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
       title: "Twitch Panels Maker",
       desc: "Create About, Donate, Rules, and Specs panels in 320×100 size.",
       href: "/twitch-panels-maker",
+      cta: "Open Twitch Panels Maker",
       icon: <FaLayerGroup className="h-8 w-8" />,
       img: "/twitch/panels/neon_retro_prv.webp",
     },
@@ -49,6 +53,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
       title: "Twitch Stream Screens",
       desc: "Generate Starting Soon, BRB, Offline & Intermission screens (1920×1080).",
       href: "/twitch-stream-screens-maker",
+      cta: "Open Stream Screens Maker",
       icon: <FaPlayCircle className="h-8 w-8" />,
       img: "/twitch/screens/cyberpunk-prv.webp",
     },
@@ -56,6 +61,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
       title: "Twitch Emote Maker",
       desc: "Turn your face into custom Twitch emotes like GG, LOL, HYPE & RIP.",
       href: "/twitch-emote-maker",
+      cta: "Open Twitch Emote Maker",
       icon: <FaSmile className="h-8 w-8" />,
       img: "/twitch/emotes/emotes-boy.png",
     },
@@ -191,7 +197,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
                       className="mt-auto inline-flex items-center justify-center gap-2 px-6 py-3
                                  bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition"
                     >
-                      Open Tool <FaChevronRight />
+                      {tool.cta} <FaChevronRight />
                     </Link>
                   </div>
                 </div>

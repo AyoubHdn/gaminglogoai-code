@@ -157,7 +157,7 @@ const GamingLogoLandingPage: NextPage = () => {
                   <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">{category.description}</p>
                   <div className="flex -space-x-4">
                     {category.examples.map((img, index) => (
-                        <Image key={index} src={img} alt={`Example of ${category.name}`} width={48} height={48} className="h-12 w-12 rounded-full border-2 border-white dark:border-slate-900" />
+                        <Image key={index} src={img} alt={`${category.name} gaming logo design example`} width={48} height={48} className="h-12 w-12 rounded-full border-2 border-white dark:border-slate-900" />
                     ))}
                   </div>
                 </div>
@@ -255,7 +255,7 @@ const GamingLogoLandingPage: NextPage = () => {
                 <Link href="/gaming-logo-maker" legacyBehavior={false} className="px-8 py-3 font-semibold rounded-lg transition-all duration-300 ease-in-out
                                   border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white
                                   dark:border-cyan-500 dark:text-cyan-400 dark:hover:bg-cyan-500 dark:hover:text-slate-900"> {/* Link to your "Browse All Styles" hub page */}
-                        Explore All Styles
+                        Browse Gaming Logo Styles
                 </Link>
             </div>
           </div>

@@ -33,7 +33,7 @@ const CulturalLogoPage: NextPage<CulturalLogoPageServerProps> = ({ culture, imag
     ctaText: `Design a ${culture} Esports Logo`,
     handleCtaClick: handleCtaClick,
     showcaseTitle: <>Powerful <span className="text-purple-600 dark:text-cyan-400">{culture}</span> Logo Designs</>,
-    imageShowcaseGrid: images?.slice(0, 8).map(img => ({ src: img.src, alt: `${culture} inspired esports logo example` })) || [],
+    imageShowcaseGrid: images?.slice(0, 8).map(img => ({ src: img.src, alt: `${culture}-inspired esports team logo design` })) || [],
     relatedItems: relatedItems,
     faqTitle: <>Your <span className="text-purple-600 dark:text-cyan-400">{culture} Logo</span> Questions</>,
     finalCtaTitle: <>Create Your <span className="text-purple-600 dark:text-cyan-400">{culture} Logo</span> Now!</>,

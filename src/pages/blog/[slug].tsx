@@ -48,7 +48,7 @@ const mdxComponents = {
       <span className="block my-8 relative aspect-video shadow-lg rounded-lg overflow-hidden">
         <Image
           src={typeof props.src === "string" ? props.src : ""}
-          alt={props.alt || "Blog content image"}
+          alt={props.alt || "GamingLogoAI blog post illustration"}
           fill
           style={{ objectFit: "contain" }} // Use "contain" for blog images to see whole image
           sizes="(max-width: 768px) 100vw, 700px"

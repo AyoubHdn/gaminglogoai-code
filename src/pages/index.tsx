@@ -64,7 +64,7 @@ const HomePage: NextPage = () => {
         description: "Generate stunning text, icon, or gaming mascot logos for your clan, team, or channel.",
         icon: "/user-game-logo.webp",
         href: "/gaming-logo-maker",
-        cta: "Explore Text Logos",
+        cta: "Open Gaming Logo Maker",
         id: "link-gaming-logo"
       },
       {
@@ -86,7 +86,7 @@ const HomePage: NextPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {logoTypes.map((type) => (
               <div key={type.name} className="flex flex-col items-center bg-slate-50 dark:bg-slate-800 p-6 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-transparent hover:border-purple-300 dark:hover:border-cyan-400">
-                <Image src={type.icon} alt={`${type.name} Icon`} width={100} height={100} className="mb-5 rounded-lg" />
+                <Image src={type.icon} alt={`${type.name} — gaming design tool`} width={100} height={100} className="mb-5 rounded-lg" />
                 <h3 className="text-2xl font-bold mt-2 mb-3 text-slate-800 dark:text-white">{type.name}</h3>
                 <p className="text-slate-600 dark:text-slate-300 text-center mb-6 text-sm grow">{type.description}</p>
                 <Link href={type.href} id={type.id}
@@ -281,7 +281,7 @@ const HomePage: NextPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature) => (
               <div key={feature.title} className="flex flex-col items-center text-center p-6 bg-slate-50 dark:bg-slate-700 rounded-xl shadow-lg hover:shadow-purple-500/20 dark:hover:shadow-cyan-500/20 transition-shadow duration-300">
-                <Image src={feature.icon} alt={`${feature.title} icon`} width={72} height={72} className="mb-4" unoptimized={true}/>
+                <Image src={feature.icon} alt={`${feature.title} — GamingLogoAI feature`} width={72} height={72} className="mb-4" unoptimized={true}/>
                 <h3 className="text-xl font-semibold mb-2 text-slate-800 dark:text-white">{feature.title}</h3>
                 <p className="text-slate-600 dark:text-slate-400 text-sm">{feature.description}</p>
               </div>
@@ -450,7 +450,7 @@ function StyleShowcaseSection() {
       description: "Bring your team to life with a fierce dragon, a stealthy ninja, or any other powerful mascot. Our AI can generate thousands of unique characters to represent your clan.",
       imageUrl: s3Style("/styles/s486e.webp"), // ** REPLACE with a great mascot logo **
       alt: "An AI-generated fierce dragon gaming mascot logo",
-      ctaText: "Design a Mascot Logo",
+      ctaText: "Create Mascot Logo",
       ctaLink: "/gaming-logo-maker", // Example of pre-filtering
     },
     {
@@ -458,7 +458,7 @@ function StyleShowcaseSection() {
       description: "Craft a clean, modern esports PFP perfect for competitive teams. Our AI logo generator creates badge and shield designs that look great on jerseys and banners.",
       imageUrl: "/images/showcase/fortnite-pfp-4.webp", // ** REPLACE with a great emblem logo **
       alt: "A professional esports PFP for a gaming team created by AI",
-      ctaText: "Create a PFP",
+      ctaText: "Open AI PFP Maker",
       ctaLink: "/pfp-maker",
     },
   ];

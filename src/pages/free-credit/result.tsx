@@ -10,12 +10,12 @@ import Link from "next/link";
   const GENERATORS = [
   {
     href: "/gaming-logo-maker",
-    title: "Gaming Logo Generator",
+    title: "Gaming Logo Maker",
     description: "Create a professional gaming logo in seconds",
   },
   {
     href: "/twitch-banner-generator",
-    title: "Twitch Banner Generator",
+    title: "Twitch Banner Maker",
     description: "Design a custom Twitch banner for your channel",
   },
 ];

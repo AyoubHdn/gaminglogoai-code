@@ -40,7 +40,7 @@ const GenreLogoPage: NextPage<GenreLogoPageServerProps> = ({ genre, images, slug
     handleCtaClick: handleCtaClick, // Pass the client-side function
     // JSX is created here
     showcaseTitle: <>Stunning <span className="text-purple-600 dark:text-cyan-400">{genre}</span> Logo Examples</>,
-    imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${genre} gaming logo example` })),
+    imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${genre} game gaming logo design example` })),
     relatedItems: relatedItems,
     // JSX is created here
     faqTitle: <>Your <span className="text-purple-600 dark:text-cyan-400">{genre} Logo</span> Questions</>,

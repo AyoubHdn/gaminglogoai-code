@@ -35,7 +35,7 @@ const ColorLogoPage: NextPage<ColorLogoPageServerProps> = ({ color, images, slug
     ctaText: `Design a ${color} Logo`,
     handleCtaClick: handleCtaClick,
     showcaseTitle: <>Striking <span className="text-purple-600 dark:text-cyan-400">{color}</span> Logo Designs</>,
-    imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${color} colored gaming logo example` })),
+    imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${color} gaming logo design example` })),
     relatedItems: relatedItems,
     faqTitle: <>Your <span className="text-purple-600 dark:text-cyan-400">{color} Logo</span> Questions</>,
     finalCtaTitle: <>Ready to Design a <span className="text-purple-600 dark:text-cyan-400">{color} Logo</span>?</>,
