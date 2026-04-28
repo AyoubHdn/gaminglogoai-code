@@ -41,7 +41,62 @@ const FreeFireLogoLandingPage: NextPage = () => {
         />
         <meta name="keywords" content="free fire logo maker, ff logo, garena free fire logo, gaming logo free fire, free fire clan logo, free fire youtube logo, ff gaming logo, free fire esports logo, custom ff logo" />
         <link rel="canonical" href="https://gaminglogoai.com/free-fire-logos" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/free-fire-logos" />
+        <meta property="og:title" content="Free Fire Logo Maker - AI FF Gaming & Clan Logos | GamingLogoAI" />
+        <meta property="og:description" content="Create a custom Free Fire logo for your guild, YouTube channel, or profile with our AI logo maker. Design unique FF gaming logos, character logos, and 3D styles in seconds. Get 1 free credit to start!" />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Free Fire Logo Maker - AI FF Gaming & Clan Logos | GamingLogoAI" />
+        <meta name="twitter:description" content="Create a custom Free Fire logo for your guild, YouTube channel, or profile with our AI logo maker. Design unique FF gaming logos, character logos, and 3D styles in seconds. Get 1 free credit to start!" />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "How can I get a Free Fire logo for free?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "You're in the right place! Every new user at GamingLogoAI gets 1 free credit upon signing up. You can use this credit to generate and download your first custom Free Fire logo at no cost. It's a great way to try our AI logo maker.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can I use this tool as a Free Fire guild logo maker?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, absolutely! Our tool is perfect for creating a unique logo for your Free Fire guild or squad. Just enter your guild name and choose from our many aggressive, cool, and mascot-style designs to find the perfect emblem for your team.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Is this good for making a Free Fire YouTube channel logo?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Definitely. You can generate logos in different shapes and sizes, making it easy to create a perfect logo for your Free Fire YouTube channel profile picture and channel art. The high-resolution downloads ensure your branding looks sharp.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can I create a 3D Free Fire logo?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, many of our art styles can generate logos with a 3D effect. Look for styles in our library labeled '3D', 'Emblem', or 'Mascot' to create an impactful 3D Free Fire logo that stands out.",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">

@@ -341,14 +341,51 @@ useEffect(() => {
         <title>AI Face Logo Generator - Photo to Gaming Logo | GamingLogoAI</title>
         <meta name="description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
         <meta name="keywords" content="ai face logo, photo to logo, image to image generator, gaming avatar maker, custom streamer avatar, ai portrait logo, flux kontext pro, flux kontext max" />
-        <link rel="canonical" href="https://gaminglogoai.com/face-logo-generator" /> {/* ** REPLACE with actual domain ** */}
+        <link rel="canonical" href="https://gaminglogoai.com/pfp-maker" /> {/* ** REPLACE with actual domain ** */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/pfp-maker" />
+        <meta property="og:title" content="AI Face Logo Generator - Photo to Gaming Logo | GamingLogoAI" />
+        <meta property="og:description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Face Logo Generator - Photo to Gaming Logo | GamingLogoAI" />
+        <meta name="twitter:description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "AI PFP Maker",
+              description: "Turn your photo into an epic AI-generated gaming logo! Upload your face, add text, select an art style, and create a unique avatar or team logo with GamingLogoAI.",
+              url: "https://gaminglogoai.com/pfp-maker",
+              applicationCategory: "DesignApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                description: "Free to start with 1 credit on signup. Credit packs available.",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "GamingLogoAI",
+                url: "https://gaminglogoai.com",
+              },
+            }),
+          }}
+        />
       </Head>
       <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900">
         <header className="text-center mb-10">
           <Image src="/face-logo-image.webp" alt="Gaming Logo AI Banner - Create stunning gaming logos with AI" width={800} height={200} className="mx-auto mb-4 rounded-lg shadow-lg" priority unoptimized={true}/>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-3">
-            AI Face Logo Generator
+            AI PFP Maker
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
             Transform your photo into a unique gaming logo or avatar. Upload your face, add your gamer tag, pick a style, and let our AI create something legendary!

@@ -244,6 +244,43 @@ const enhanceBanner = api.enhancement.enhanceImage.useMutation({
         <title>AI Twitch Banner Generator – Streamer Graphics Maker | GamingLogoAI</title>
         <meta name="description" content="Create a professional Twitch banner instantly. Pick a style, add your channel name, upload a photo and generate a polished banner for your channel." />
         <link rel="canonical" href="https://gaminglogoai.com/twitch-banner-generator" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/twitch-banner-generator" />
+        <meta property="og:title" content="AI Twitch Banner Generator – Streamer Graphics Maker | GamingLogoAI" />
+        <meta property="og:description" content="Create a professional Twitch banner instantly. Pick a style, add your channel name, upload a photo and generate a polished banner for your channel." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Twitch Banner Generator – Streamer Graphics Maker | GamingLogoAI" />
+        <meta name="twitter:description" content="Create a professional Twitch banner instantly. Pick a style, add your channel name, upload a photo and generate a polished banner for your channel." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "AI Twitch Banner Generator",
+              description: "Create a professional Twitch banner instantly. Pick a style, add your channel name, upload a photo and generate a polished banner for your channel.",
+              url: "https://gaminglogoai.com/twitch-banner-generator",
+              applicationCategory: "DesignApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                description: "Free to start with 1 credit on signup. Credit packs available.",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "GamingLogoAI",
+                url: "https://gaminglogoai.com",
+              },
+            }),
+          }}
+        />
       </Head>
 
       <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8">

@@ -49,6 +49,25 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
         <link rel="canonical" href={canonicalUrl} />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.webp" />
+        {faqItems.length > 0 && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: faqItems.map((item) => ({
+                  "@type": "Question",
+                  name: item.q,
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: item.a,
+                  },
+                })),
+              }),
+            }}
+          />
+        )}
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">

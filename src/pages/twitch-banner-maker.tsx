@@ -97,6 +97,43 @@ const TwitchBannerLandingPage: NextPage = () => {
           content="Create custom Twitch banners with your name, tagline, and logo. Fully AI-generated in 1200×480 resolution. Choose from clean, neon, bold, esports, and more styles."
         />
         <link rel="canonical" href="https://gaminglogoai.com/twitch-banner-maker" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/twitch-banner-maker" />
+        <meta property="og:title" content="Twitch Banner Maker â€“ Create Professional Twitch Banners with AI" />
+        <meta property="og:description" content="Create custom Twitch banners with your name, tagline, and logo. Fully AI-generated in 1200Ã—480 resolution. Choose from clean, neon, bold, esports, and more styles." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Twitch Banner Maker â€“ Create Professional Twitch Banners with AI" />
+        <meta name="twitter:description" content="Create custom Twitch banners with your name, tagline, and logo. Fully AI-generated in 1200Ã—480 resolution. Choose from clean, neon, bold, esports, and more styles." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "AI Twitch Banner Maker",
+              description: "Create custom Twitch banners with your name, tagline, and logo. Fully AI-generated in 1200Ã—480 resolution. Choose from clean, neon, bold, esports, and more styles.",
+              url: "https://gaminglogoai.com/twitch-banner-maker",
+              applicationCategory: "DesignApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                description: "Free to start with 1 credit on signup. Credit packs available.",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "GamingLogoAI",
+                url: "https://gaminglogoai.com",
+              },
+            }),
+          }}
+        />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200">

@@ -16,6 +16,43 @@ const TwitchStreamScreensLanding: NextPage = () => {
           rel="canonical"
           href="https://gaminglogoai.com/twitch-stream-screens-maker"
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/twitch-stream-screens-maker" />
+        <meta property="og:title" content="Twitch Stream Screens Maker | Starting Soon, BRB & Offline" />
+        <meta property="og:description" content="Create professional Twitch stream screens in seconds. Generate Starting Soon, BRB, Offline, and Intermission screens with AI. Perfect 1920x1080 resolution." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Twitch Stream Screens Maker | Starting Soon, BRB & Offline" />
+        <meta name="twitter:description" content="Create professional Twitch stream screens in seconds. Generate Starting Soon, BRB, Offline, and Intermission screens with AI. Perfect 1920x1080 resolution." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "AI Twitch Stream Screens Maker",
+              description: "Create professional Twitch stream screens in seconds. Generate Starting Soon, BRB, Offline, and Intermission screens with AI. Perfect 1920x1080 resolution.",
+              url: "https://gaminglogoai.com/twitch-stream-screens-maker",
+              applicationCategory: "DesignApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                description: "Free to start with 1 credit on signup. Credit packs available.",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "GamingLogoAI",
+                url: "https://gaminglogoai.com",
+              },
+            }),
+          }}
+        />
       </Head>
 
       <main className="overflow-x-hidden">

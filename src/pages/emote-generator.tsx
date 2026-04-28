@@ -222,6 +222,45 @@ No transparent or semi-transparent areas inside the face.
     <>
       <Head>
         <title>AI Emote Generator | GamingLogoAI</title>
+        <meta name="description" content="Create custom AI emotes for Twitch and Discord. Turn your face or avatar into GG, LOL, POG, HYPE expressions in seconds." />
+        <link rel="canonical" href="https://gaminglogoai.com/emote-generator" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/emote-generator" />
+        <meta property="og:title" content="AI Emote Generator | GamingLogoAI" />
+        <meta property="og:description" content="Create custom AI emotes for Twitch and Discord. Turn your face or avatar into GG, LOL, POG, HYPE expressions in seconds." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Emote Generator | GamingLogoAI" />
+        <meta name="twitter:description" content="Create custom AI emotes for Twitch and Discord. Turn your face or avatar into GG, LOL, POG, HYPE expressions in seconds." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "AI Emote Generator",
+              description: "Create custom AI emotes for Twitch and Discord. Turn your face or avatar into GG, LOL, POG, HYPE expressions in seconds.",
+              url: "https://gaminglogoai.com/emote-generator",
+              applicationCategory: "DesignApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                description: "Free to start with 1 credit on signup. Credit packs available.",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "GamingLogoAI",
+                url: "https://gaminglogoai.com",
+              },
+            }),
+          }}
+        />
       </Head>
 
       <main className="container mx-auto max-w-4xl px-4 py-12">

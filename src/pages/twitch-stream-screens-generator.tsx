@@ -165,13 +165,50 @@ const TwitchStreamScreensGeneratorPage: NextPage = () => {
           rel="canonical"
           href="https://gaminglogoai.com/twitch-stream-screens-generator"
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/twitch-stream-screens-generator" />
+        <meta property="og:title" content="AI Streaming Screens Generator | GamingLogoAI" />
+        <meta property="og:description" content="Create professional Starting Soon, BRB, Offline, and Ending stream screens in 1920Ã—1080 using AI." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Streaming Screens Generator | GamingLogoAI" />
+        <meta name="twitter:description" content="Create professional Starting Soon, BRB, Offline, and Ending stream screens in 1920Ã—1080 using AI." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "AI Twitch Stream Screens Generator",
+              description: "Create professional Starting Soon, BRB, Offline, and Ending stream screens in 1920Ã—1080 using AI.",
+              url: "https://gaminglogoai.com/twitch-stream-screens-generator",
+              applicationCategory: "DesignApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                description: "Free to start with 1 credit on signup. Credit packs available.",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "GamingLogoAI",
+                url: "https://gaminglogoai.com",
+              },
+            }),
+          }}
+        />
       </Head>
 
       <main className="container mx-auto max-w-screen-xl px-4 py-10">
         {/* HERO */}
         <header className="text-center mb-10">
           <h1 className="text-4xl sm:text-5xl font-extrabold">
-            AI Streaming Screens Generator
+            AI Twitch Stream Screens Generator
           </h1>
           <p className="mt-3 text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
             Design professional <strong>Starting Soon</strong>,{" "}

@@ -127,14 +127,12 @@ Record<string, {name: string; src: string; basePrompt: string }[]>
         { name: "Steampunk Adventurer", src: s3Style("/styles/f23.webp"), basePrompt: "Render user's photo as a Steampunk adventurer avatar. Include the text ''Text'' using an ornate Victorian font." },
         { name: "Space Explorer", src: s3Style("/styles/f24.webp"), basePrompt: "Create a sci-fi space explorer avatar from user's photo (spacesuit helmet). Add the text ''Text'' using a clean, futuristic font." },
         { name: "Cyberpunk Hacker", src: s3Style("/styles/f74.webp"), basePrompt: "Convert user's photo into a cyberpunk hacker avatar. Integrate the text ''Text'' using a glitchy digital font." },
-        { name: "Space Explorer", src: s3Style("/styles/f75.webp"), basePrompt: "Create a sci-fi space explorer avatar from user's photo. Add the text ''Text'' using a clean tech font." },
         { name: "Alien", src: s3Style("/styles/f76.webp"), basePrompt: "Create an avatar blending user's photo features with stylized alien characteristics. Integrate the text ''Text'' using an alien-inspired font." },
         { name: "High-Tech", src: s3Style("/styles/f77.webp"), basePrompt: "Render user's photo portrait with a high-technology theme (circuits, HUD). Integrate the exact text ''Text'' using a crisp digital font." }
       ],
       "Warriors & Heroes": [
         { name: "Knight/Spartan", src: s3Style("/styles/f13.webp"),  basePrompt: "Transform user's photo into an avatar as a Knight/Spartan warrior in a stylized helmet. Integrate ''Text'' using a strong, weathered font." },
         { name: "Rugged Warrior", src: s3Style("/styles/f21.webp"), basePrompt: "Render the user's photo as a rugged fantasy Warrior avatar (armor, face paint). Use ''Text'' using a strong, slightly rough font." },
-        { name: "Knight/Spartan", src: s3Style("/styles/f79.webp"), basePrompt: "Transform user's photo into an avatar as a Knight/Spartan warrior. Integrate ''Text'' using a bold, historic font." },
         { name: "Ninja", src: s3Style("/styles/f80.webp"), basePrompt: "Depict the user from their photo as a stealthy Ninja character. Integrate ''Text'' using a sharp, brush-stroke inspired font." },
         { name: "Superhero", src: s3Style("/styles/f81.webp"), basePrompt: "Turn user's photo into a dynamic superhero avatar. Integrate ''Text'' using a bold, heroic, comic-book font." }
       ],

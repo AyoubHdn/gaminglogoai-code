@@ -37,6 +37,18 @@ const CommunityPage: NextPage = () => {
         />
         <meta name="keywords" content="gaming logo gallery, community logos, ai game art, esports logo ideas, logo inspiration, user generated logos" />
         <link rel="canonical" href="https://gaminglogoai.com/community" /> {/* Replace with actual domain */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/community" />
+        <meta property="og:title" content="Gaming Logo Community Gallery | Inspiration - Gaming Logo AI" />
+        <meta property="og:description" content="Explore a gallery of AI-generated gaming logos created by the Gaming Logo AI community. Get inspired for your next team emblem, streamer avatar, or game icon." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Gaming Logo Community Gallery | Inspiration - Gaming Logo AI" />
+        <meta name="twitter:description" content="Explore a gallery of AI-generated gaming logos created by the Gaming Logo AI community. Get inspired for your next team emblem, streamer avatar, or game icon." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* Dark mode: bg-slate-900, Light mode: bg-gray-100 */}

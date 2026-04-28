@@ -47,6 +47,25 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
         <meta name="keywords" content={keywords} />
         <link rel="canonical" href={canonicalUrl} />
         <link rel="icon" href="/favicon.ico" />
+        {faqItems.length > 0 && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: faqItems.map((item) => ({
+                  "@type": "Question",
+                  name: item.q,
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: item.a,
+                  },
+                })),
+              }),
+            }}
+          />
+        )}
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">

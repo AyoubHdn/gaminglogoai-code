@@ -101,6 +101,43 @@ const TwitchPanelsLandingPage: NextPage = () => {
           rel="canonical"
           href="https://gaminglogoai.com/twitch-panels-maker"
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/twitch-panels-maker" />
+        <meta property="og:title" content="AI Twitch Panels Maker â€“ About, Donate & More" />
+        <meta property="og:description" content="Create clean, neon, dark, and gradient Twitch panels with AI. Text-only panels in perfect 320Ã—100 size." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Twitch Panels Maker â€“ About, Donate & More" />
+        <meta name="twitter:description" content="Create clean, neon, dark, and gradient Twitch panels with AI. Text-only panels in perfect 320Ã—100 size." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "AI Twitch Panels Maker",
+              description: "Create clean, neon, dark, and gradient Twitch panels with AI. Text-only panels in perfect 320Ã—100 size.",
+              url: "https://gaminglogoai.com/twitch-panels-maker",
+              applicationCategory: "DesignApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                description: "Free to start with 1 credit on signup. Credit packs available.",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "GamingLogoAI",
+                url: "https://gaminglogoai.com",
+              },
+            }),
+          }}
+        />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200">

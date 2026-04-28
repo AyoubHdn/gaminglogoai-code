@@ -44,7 +44,62 @@ const FortniteLogoLandingPage: NextPage = () => {
         />
         <meta name="keywords" content="fortnite logo maker, fortnite logos, fortnite clan logo, free fortnite logo, custom fortnite logo, gaming logo fortnite, fortnite youtube logo, esports logo fortnite" />
         <link rel="canonical" href="https://gaminglogoai.com/fortnite-logos" /> {/* ** REPLACE with your actual domain ** */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/fortnite-logos" />
+        <meta property="og:title" content="Fortnite Logo Maker - Free AI Fortnite Clan & YouTube Logos | GamingLogoAI" />
+        <meta property="og:description" content="Create custom Fortnite logos for your clan, YouTube channel, or profile with our free AI Fortnite logo maker. Design unique, cool Fortnite gaming logos in seconds!" />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Fortnite Logo Maker - Free AI Fortnite Clan & YouTube Logos | GamingLogoAI" />
+        <meta name="twitter:description" content="Create custom Fortnite logos for your clan, YouTube channel, or profile with our free AI Fortnite logo maker. Design unique, cool Fortnite gaming logos in seconds!" />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "Is this Fortnite logo maker really free?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, you get 1 free credit when you sign up to create and download your first Fortnite logo. You can explore the tool and generate previews for free. To download more high-resolution logos, you can purchase additional credit packs.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can I use these logos for my YouTube or Twitch channel?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Absolutely. Our AI-generated logos are perfect for your Fortnite YouTube channel, Twitch profile, Discord server, or clan branding. The downloaded PNGs are high-resolution and have a transparent background, making them easy to use anywhere.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "How do I create a logo for my Fortnite clan?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Just enter your clan's name, then choose a visual style like 'cartoon mascot,' 'esports emblem,' or 'dark warrior.' Our AI Fortnite logo generator will instantly give you multiple design concepts tailored to your name and chosen theme.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can I get a Fortnite logo without text?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes! You can create a symbol-only or mascot-style logo. Simply leave the text field blank or use a single character/initial if the tool requires input, then choose a strong visual style. This is great for creating a unique profile picture or icon.",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">

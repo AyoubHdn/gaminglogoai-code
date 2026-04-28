@@ -36,7 +36,62 @@ const MinecraftPfpMakerLandingPage: NextPage = () => {
         />
         <meta name="keywords" content="minecraft pfp maker, minecraft pfp, custom minecraft pfp, minecraft skin pfp maker, mc pfp maker, minecraft pfp generator, minecraft avatar, free minecraft pfp" />
         <link rel="canonical" href="https://gaminglogoai.com/minecraft-pfp-maker" /> {/* ** REPLACE with actual domain ** */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/minecraft-pfp-maker" />
+        <meta property="og:title" content="Minecraft PFP Maker - Free AI Custom Minecraft Avatars | GamingLogoAI" />
+        <meta property="og:description" content="Create a custom Minecraft PFP from your photo with our free AI generator! Turn your face into a unique blocky, pixel art, or skin-style avatar for YouTube, Discord, and more. Try the #1 MC PFP maker!" />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Minecraft PFP Maker - Free AI Custom Minecraft Avatars | GamingLogoAI" />
+        <meta name="twitter:description" content="Create a custom Minecraft PFP from your photo with our free AI generator! Turn your face into a unique blocky, pixel art, or skin-style avatar for YouTube, Discord, and more. Try the #1 MC PFP maker!" />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "How can I make a Minecraft PFP for free?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "You can create and download your first Minecraft PFP for free! New users get 1 free credit to try our AI generator. You can generate unlimited previews to find the perfect blocky look before you decide to download.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Does this work as a Minecraft skin PFP maker?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes! While our AI transforms your actual photo, you can choose styles that mimic the blocky, pixelated aesthetic of a Minecraft skin. It's a great way to create a PFP that looks like a custom skin based on you.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Is this tool a good Minecraft PFP generator for YouTube?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Absolutely. Our generator creates high-resolution, square (1:1) PFPs that are perfect for your Minecraft YouTube channel, Discord server, or any social media profile. The unique AI-generated style will help your channel stand out.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can I create a pixel art PFP?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes! We have specific 'Pixel Art' and '8-bit' styles in our PFP maker. Just upload your photo, select one of these styles, and our AI will generate a cool pixel art PFP based on your face.",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">

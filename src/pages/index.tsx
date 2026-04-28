@@ -526,6 +526,34 @@ function StyleShowcaseSection() {
         <meta name="twitter:image" content="https://gaminglogoai.com/twitter-image-gaminglogoai.png" /> 
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.webp" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "WebSite",
+                  "@id": "https://gaminglogoai.com/#website",
+                  url: "https://gaminglogoai.com/",
+                  name: "GamingLogoAI",
+                  description: "AI gaming logo, PFP, and Twitch graphics generator",
+                  publisher: { "@id": "https://gaminglogoai.com/#organization" },
+                },
+                {
+                  "@type": "Organization",
+                  "@id": "https://gaminglogoai.com/#organization",
+                  name: "GamingLogoAI",
+                  url: "https://gaminglogoai.com/",
+                  logo: {
+                    "@type": "ImageObject",
+                    url: "https://gaminglogoai.com/logo.webp",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
       </Head>
       <main className="container mx-auto overflow-x-hidden">
         <HeroBanner />

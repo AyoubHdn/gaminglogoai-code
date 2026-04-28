@@ -31,7 +31,7 @@ const BlogIndexPage: NextPage<BlogIndexProps> = ({ allPostsData }) => {
       <main className="container mx-auto max-w-3xl px-4 sm:px-6 py-12 sm:py-16 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">
         <header className="mb-12 sm:mb-16 text-center">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white">
-            {siteName}
+            Gaming Logo Tips, Tutorials & Ideas
           </h1>
           <p className="mt-4 text-lg text-slate-600 dark:text-slate-400">
             Tips, tutorials, and inspiration for your ultimate gaming identity.

@@ -38,7 +38,62 @@ const FortnitePfpMakerLandingPage: NextPage = () => {
         />
         <meta name="keywords" content="fortnite pfp maker, custom fortnite pfp, fortnite profile picture, free fortnite pfp, fortnite skin pfp maker, fortnite avatar, cool fortnite pfp, fn pfp maker" />
         <link rel="canonical" href="https://gaminglogoai.com/fortnite-pfp-maker" /> {/* ** REPLACE with actual domain ** */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/fortnite-pfp-maker" />
+        <meta property="og:title" content="Fortnite PFP Maker - Free AI Custom Profile Pictures | GamingLogoAI" />
+        <meta property="og:description" content="Create a custom Fortnite PFP from your photo with our free AI generator! Turn your face into a unique Fortnite-style avatar for Discord, YouTube, or Twitch. Try the #1 Fortnite PFP maker now!" />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Fortnite PFP Maker - Free AI Custom Profile Pictures | GamingLogoAI" />
+        <meta name="twitter:description" content="Create a custom Fortnite PFP from your photo with our free AI generator! Turn your face into a unique Fortnite-style avatar for Discord, YouTube, or Twitch. Try the #1 Fortnite PFP maker now!" />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "Is this a free Fortnite PFP maker?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes, you can get started for free! Every new user gets 1 free credit. Use it to generate and download your first custom Fortnite profile picture. If you want to create more, you can buy additional credit packs.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "How do I make my own Fortnite PFP?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "It's easy! Just upload a photo of yourself, choose an art style inspired by Fortnite (like cartoon, neon, or a specific skin aesthetic), and our AI PFP creator will do the rest. You can add your gamer tag to make it a custom Fortnite profile picture with your name.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can I use these PFPs on Discord and Twitch?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Absolutely. The high-resolution downloads are perfect for a Fortnite Discord PFP, a Twitch profile picture, or for your YouTube gaming channel. The 1:1 aspect ratio is ideal for all major platforms.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can the AI make a PFP of a specific Fortnite skin?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Our AI creates a unique avatar inspired by your face in the *style* of Fortnite. While it won't replicate a copyrighted skin like Renegade Raider exactly, you can choose styles (e.g., 'tactical', 'colorful') and use prompts to guide the AI towards a similar aesthetic to create your own unique character.",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">

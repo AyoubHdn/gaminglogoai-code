@@ -77,6 +77,18 @@ const TwitchGraphicsLandingPage: NextPage = () => {
           rel="canonical"
           href="https://gaminglogoai.com/twitch-graphics"
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/twitch-graphics" />
+        <meta property="og:title" content="Twitch Graphics Pack â€“ Logos, Emotes, Banners & Stream Screens" />
+        <meta property="og:description" content="Create professional Twitch graphics with AI. Logos, emotes, banners, panels, PFPs & stream screens â€” everything your Twitch channel needs." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Twitch Graphics Pack â€“ Logos, Emotes, Banners & Stream Screens" />
+        <meta name="twitter:description" content="Create professional Twitch graphics with AI. Logos, emotes, banners, panels, PFPs & stream screens â€” everything your Twitch channel needs." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">

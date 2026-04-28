@@ -173,6 +173,43 @@ const TwitchPanelsGeneratorPage: NextPage = () => {
           content="Create clean, neon, dark, and gradient Twitch panels instantly. Text-only panels, perfect 320×100 size."
         />
         <link rel="canonical" href="https://gaminglogoai.com/twitch-panels-generator" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/twitch-panels-generator" />
+        <meta property="og:title" content="AI Twitch Panels Generator | GamingLogoAI" />
+        <meta property="og:description" content="Create clean, neon, dark, and gradient Twitch panels instantly. Text-only panels, perfect 320Ã—100 size." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="AI Twitch Panels Generator | GamingLogoAI" />
+        <meta name="twitter:description" content="Create clean, neon, dark, and gradient Twitch panels instantly. Text-only panels, perfect 320Ã—100 size." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "AI Twitch Panels Generator",
+              description: "Create clean, neon, dark, and gradient Twitch panels instantly. Text-only panels, perfect 320Ã—100 size.",
+              url: "https://gaminglogoai.com/twitch-panels-generator",
+              applicationCategory: "DesignApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                description: "Free to start with 1 credit on signup. Credit packs available.",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "GamingLogoAI",
+                url: "https://gaminglogoai.com",
+              },
+            }),
+          }}
+        />
       </Head>
 
       <main className="container mx-auto max-w-screen-lg px-4 sm:px-8 py-10">

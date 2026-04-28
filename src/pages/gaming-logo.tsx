@@ -61,8 +61,37 @@ const GamingLogoLandingPage: NextPage = () => {
         />
         <meta name="keywords" content="custom gaming logo, text logo generator, gaming mascot logo, clan logo maker, esports emblem creator, fortnite style logo, minecraft logo design, gaming logo styles" /> 
         <link rel="canonical" href="https://gaminglogoai.com/gaming-logo" /> 
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/gaming-logo" />
+        <meta property="og:title" content="Custom Gaming Logo Generator - AI Text & Mascot Logos" />
+        <meta property="og:description" content="Create custom gaming logos, mascots & esports emblems with our AI generator. Get 1 free credit to design a unique logo for your clan or stream in seconds!" />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Custom Gaming Logo Generator - AI Text & Mascot Logos" />
+        <meta name="twitter:description" content="Create custom gaming logos, mascots & esports emblems with our AI generator. Get 1 free credit to design a unique logo for your clan or stream in seconds!" />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.webp" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faqItems.map((item) => ({
+                "@type": "Question",
+                name: item.q,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: item.a,
+                },
+              })),
+            }),
+          }}
+        />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">

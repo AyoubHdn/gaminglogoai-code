@@ -85,6 +85,18 @@ const BuyCreditsPage: React.FC = () => {
           content="Buy credits and design your Twitch logo, banner, profile picture, panels, stream screens, and emotes. One simple credit system. No subscriptions."
         />
         <link rel="canonical" href="https://gaminglogoai.com/buy-credits" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/buy-credits" />
+        <meta property="og:title" content="Buy Credits & Build Your Stream Branding" />
+        <meta property="og:description" content="Buy credits and design your Twitch logo, banner, profile picture, panels, stream screens, and emotes. One simple credit system. No subscriptions." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Buy Credits & Build Your Stream Branding" />
+        <meta name="twitter:description" content="Buy credits and design your Twitch logo, banner, profile picture, panels, stream screens, and emotes. One simple credit system. No subscriptions." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
       </Head>
 
       <main className="min-h-screen bg-gray-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 px-4 py-16">

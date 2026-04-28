@@ -41,7 +41,62 @@ const MinecraftLogoLandingPage: NextPage = () => {
         />
         <meta name="keywords" content="minecraft logo maker, logo for minecraft, minecraft server logo, minecraft logo generator, ai minecraft logo, creeper logo, minecraft youtube logo, custom minecraft logo" />
         <link rel="canonical" href="https://gaminglogoai.com/minecraft-logos" /> {/* ** REPLACE with actual domain ** */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/minecraft-logos" />
+        <meta property="og:title" content="Minecraft Logo Maker - AI Generator for Servers & YouTube | GamingLogoAI" />
+        <meta property="og:description" content="Create custom logos for your Minecraft server, YouTube channel, or profile with our AI Minecraft logo generator. Design unique blocky, pixel art, and creeper-style logos in seconds!" />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Minecraft Logo Maker - AI Generator for Servers & YouTube | GamingLogoAI" />
+        <meta name="twitter:description" content="Create custom logos for your Minecraft server, YouTube channel, or profile with our AI Minecraft logo generator. Design unique blocky, pixel art, and creeper-style logos in seconds!" />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "How can I make a logo for my Minecraft server?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Our AI Minecraft logo generator makes it easy! Simply enter your server name, choose a style like 'Pixel Badge' or 'Creeper Mascot,' and our tool will instantly generate professional-looking options for you. It's perfect for creating a unique Minecraft server logo.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Is this a free Minecraft logo maker?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "You get 1 free credit when you sign up, which lets you create and download your first logo concept for free! You can generate as many previews as you like to find the perfect design. To create more variations and download high-resolution files, you can purchase additional credit packs.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can I create a Minecraft logo for my YouTube channel?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Yes! This is the perfect tool for making a Minecraft logo for YouTube. You can choose different aspect ratios for your channel art and profile picture. The AI can create cool designs based on Creepers, Endermen, or your own Minecraft skin concept.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "What types of Minecraft logos can I create?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "You can create a wide variety of logos, from a classic Minecraft block logo to a modern esports-style emblem. Our styles include Pickaxe Emblems, Sword Emblems, Animal Mascots, and even designs inspired by the original Minecraft logo or Mojang's style.",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">

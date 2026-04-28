@@ -49,6 +49,18 @@ const LogoStylesHubPage: NextPage<{ styleCategories: SerializableStyleCategory[]
         <meta name="description" content="Explore a vast collection of AI gaming logo styles and PFP categories on GamingLogoAI. Find inspiration by game title, art style, theme, and more to create your perfect design." />
         <meta name="keywords" content="gaming logo styles, pfp styles, esports logo themes, game logo ideas, browse ai logos, text logo styles, photo avatar styles" />
         <link rel="canonical" href="https://gaminglogoai.com/logo-styles" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://gaminglogoai.com/logo-styles" />
+        <meta property="og:title" content="Browse All Gaming Logo & PFP Styles | GamingLogoAI" />
+        <meta property="og:description" content="Explore a vast collection of AI gaming logo styles and PFP categories on GamingLogoAI. Find inspiration by game title, art style, theme, and more to create your perfect design." />
+        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:site_name" content="GamingLogoAI" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Browse All Gaming Logo & PFP Styles | GamingLogoAI" />
+        <meta name="twitter:description" content="Explore a vast collection of AI gaming logo styles and PFP categories on GamingLogoAI. Find inspiration by game title, art style, theme, and more to create your perfect design." />
+        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -56,7 +68,7 @@ const LogoStylesHubPage: NextPage<{ styleCategories: SerializableStyleCategory[]
         <section className="py-12 md:py-16 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
           <div className="container mx-auto px-4 sm:px-6 text-center">
             <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4">
-              Discover Your Perfect Style
+              Browse Gaming Logo & PFP Styles
             </h1>
             <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               Dive into our diverse categories to find inspiration for your unique AI-generated gaming logo or PFP avatar.
