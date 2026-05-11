@@ -114,7 +114,7 @@ const HomePage: NextPage = () => {
             {/* Image Preview */}
             <div className="relative rounded-xl overflow-hidden shadow-2xl group aspect-video">
               <Image
-                src="/twitch/banner/blue_tech_glitch_prv.png" // << replace with your S3 preview later
+                src="/twitch/banner/fortnite-prv.webp" // << replace with your S3 preview later
                 alt="AI Twitch Banner Example"
                 fill
                 style={{ objectFit: "cover" }}
@@ -138,7 +138,7 @@ const HomePage: NextPage = () => {
                 <li>🎨 <strong>Wide style library</strong>: neon, cyberpunk, cute, minimal, esports, and more</li>
                 <li>⚡ <strong>Instant high-quality render</strong> powered by advanced AI</li>
                 <li>🖼️ Perfect Twitch dimensions (user doesn’t need to crop)</li>
-                <li>🎁 Includes <strong>1 free banner credit on signup</strong></li>
+                <li>🎁 Includes <strong>1 free credit on signup</strong></li>
               </ul>
 
               <Link
@@ -195,7 +195,7 @@ const HomePage: NextPage = () => {
             {/* Image Preview */}
             <div className="relative rounded-xl overflow-hidden shadow-2xl aspect-[16/5]">
               <Image
-                src="/twitch/panels/blue_tech_glitch_prv.webp" 
+                src="/twitch/panels/valorant_strike_prv.webp" 
                 alt="AI Twitch Panels Examples"
                 fill
                 style={{ objectFit: "cover" }}
@@ -254,6 +254,56 @@ const HomePage: NextPage = () => {
                 id="cta-home-twitch-emotes"
               >
                 Create Twitch Emotes →
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  function YouTubeThumbnailSection() {
+    return (
+      <section className="py-16 md:py-20 px-4 sm:px-8 bg-white dark:bg-slate-900">
+        <div className="container mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
+            Create Click-Worthy <span className="text-red-500">YouTube Thumbnails</span> with AI
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto items-center">
+            <div className="relative rounded-xl overflow-hidden shadow-2xl aspect-video">
+              <Image
+                src="/youtube/thumbnail/minecraft-prv.webp"
+                alt="AI gaming thumbnail example for YouTube"
+                fill
+                style={{ objectFit: "cover" }}
+                unoptimized
+              />
+            </div>
+
+            <div>
+              <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                Platform, Template, Personalize, Result
+              </h3>
+
+              <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
+                Build gaming thumbnails with the new guided flow. Choose YouTube, pick a template,
+                add your title and image, and generate a 1280 x 720 thumbnail designed for clicks.
+              </p>
+
+              <ul className="space-y-3 text-sm text-slate-700 dark:text-slate-300 mb-8">
+                <li>High-impact YouTube thumbnail workflow</li>
+                <li>Game-based templates for shooter, sandbox, and creator content</li>
+                <li>Built around the standard 1280 x 720 format</li>
+                <li>Generate, refine, and download from one result step</li>
+              </ul>
+
+              <Link
+                href="/youtube-thumbnail-maker"
+                className="inline-block px-8 py-3 bg-red-500 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg"
+                id="cta-home-youtube-thumbnail"
+              >
+                Create YouTube Thumbnails →
               </Link>
             </div>
           </div>
@@ -561,6 +611,7 @@ function StyleShowcaseSection() {
         <TwitchBannerSection />
         <TwitchPanelsSection />
         <TwitchEmotesSection />
+        <YouTubeThumbnailSection />
         <WhoIsThisForSection />
         <StyleShowcaseSection />
         <KeyFeaturesSection />

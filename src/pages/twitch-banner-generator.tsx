@@ -1,594 +1,156 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-// src/pages/twitch-banner-generator.tsx
+import clsx from "clsx";
 import { type NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
-import React, { useState, useRef, useEffect } from "react";
-import { Button } from "~/component/Button";
-import { FormGroup } from "~/component/FormGroup";
-import { Input } from "~/component/Input";
-import { api } from "~/utils/api";
-import { useSession, signIn } from "next-auth/react";
-import { TWITCH_BANNER_STYLES } from "~/data/twitchBannerStyles";
-import { FiUploadCloud } from "react-icons/fi";
-import clsx from "clsx";
-import { SharePopup } from "~/component/SharePopup";
-import Link from "next/link";
-import { useRouter } from "next/router";
 
-const TwitchBannerGeneratorPage: NextPage = () => {
-  const { data: session } = useSession();
-  const isLoggedIn = !!session;
-  const router = useRouter();
+import { FunnelProvider, useFunnel } from "~/component/bannerFunnel/FunnelContext";
+import { Step0PlatformSelector } from "~/component/bannerFunnel/Step0PlatformSelector";
+import { Step1TemplateBrowser } from "~/component/bannerFunnel/Step1TemplateBrowser";
+import { Step2Personalize } from "~/component/bannerFunnel/Step2Personalize";
+import { Step3Result } from "~/component/bannerFunnel/Step3Result";
 
-  // Form state
-  const [selectedStyleId, setSelectedStyleId] = useState<string>(TWITCH_BANNER_STYLES[0]?.id ?? "");
-  const [channelName, setChannelName] = useState<string>("");
-  const [tagline, setTagline] = useState<string>("");
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+const PAGE_TITLE = "Banner Maker - Choose Your Platform | GamingLogoAI";
+const PAGE_DESCRIPTION =
+  "Create AI-generated banners for Twitch, YouTube, Kick and more. Pick a platform, choose a template, generate.";
+const PAGE_URL = "https://gaminglogoai.com/twitch-banner-generator";
 
-  // UI state
-  const [error, setError] = useState<string>("");
-  const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  const [generatedBannerUrl, setGeneratedBannerUrl] = useState<string | null>(null);
-  const [showSharePopupFor, setShowSharePopupFor] = useState<string | null>(null);
-  const [isDownloading, setIsDownloading] = useState<string | null>(null);
-  const [supportsPhoto, setSupportsPhoto] = useState<boolean>(true);
+function BannerMakerContent() {
+  const { currentStep, hasHydrated } = useFunnel();
 
-  const [enhancedBannerUrl, setEnhancedBannerUrl] = useState<string | null>(null);
-  const [selectedAiStyleId, setSelectedAiStyleId] = useState<string | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const [selectedCategory, setSelectedCategory] = useState("With Logo");
-
-  const filteredStyles = TWITCH_BANNER_STYLES.filter(style =>
-    selectedCategory === "With Logo"
-      ? style.supportsPhoto === true
-      : style.supportsPhoto === false
-  );
-
-  const selectedStyle = TWITCH_BANNER_STYLES.find(s => s.id === selectedStyleId);
-  const aiEnhancements = selectedStyle?.aiEnhancements ?? [];
-
-  const channelLimit = selectedStyle?.maxChannelChars ?? 20;
-  const taglineLimit = selectedStyle?.maxTaglineChars ?? 35;
-
-  const handleChannelChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const value = e.target.value;
-  if (value.length <= channelLimit) {
-    setChannelName(value);
-  }
-};
-
-const handleTaglineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const value = e.target.value;
-  if (value.length <= taglineLimit) {
-    setTagline(value);
-  }
-};
-
-const enhanceBanner = api.enhancement.enhanceImage.useMutation({
-  onSuccess(data) {
-    setEnhancedBannerUrl(data?.[0]?.imageUrl ?? null);
-  },
-  onError(err) {
-    setError(err.message ?? "Enhancement failed.");
-  },
-});
-
-  // TRPC mutations
-  const createPresignedUrl = api.s3.createUploadUrl.useMutation();
-  const generateBanner = api.twitchBanner.generate.useMutation({
-    onSuccess(data) {
-      setGeneratedBannerUrl(data?.[0]?.imageUrl ?? null);
-      setIsGenerating(false);
-      setError("");
-      // scroll to result
-      setTimeout(() => document.getElementById("result-section")?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+  const stepOrder = ["step0", "step1", "step2", "step3"] as const;
+  const currentStepIndex = stepOrder.indexOf(currentStep);
+  const steps = [
+    {
+      step: 1,
+      key: "step0",
+      title: "Platform",
+      description: "Choose your destination",
     },
-    onError(err) {
-      setError(err?.message ?? "Failed to generate banner.");
-      setIsGenerating(false);
-    }
-  });
+    {
+      step: 2,
+      key: "step1",
+      title: "Template",
+      description: "Browse and filter presets",
+    },
+    {
+      step: 3,
+      key: "step2",
+      title: "Personalize",
+      description: "Add your logo and text",
+    },
+    {
+      step: 4,
+      key: "step3",
+      title: "Result",
+      description: "Generate, refine, and download",
+    },
+  ] as const;
 
-  useEffect(() => {
-    if (generatedBannerUrl && aiEnhancements.length > 0 && !selectedAiStyleId) {
-      const firstEnhancement = aiEnhancements[0];
-      if (firstEnhancement) {
-        setSelectedAiStyleId(firstEnhancement.id);
-      }
-    }
-  }, [generatedBannerUrl, aiEnhancements, selectedAiStyleId]);
+  return (
+    <main className="container mx-auto max-w-screen-xl px-4 py-8 sm:px-8">
+      <header className="mb-8 text-center">
+        <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white sm:text-5xl">
+          Banner Maker
+        </h1>
+        <p className="mx-auto mt-3 max-w-3xl text-lg text-slate-600 dark:text-slate-400">
+          Pick a platform, choose a style, personalize the details, and generate a
+          platform-ready banner in one guided flow.
+        </p>
+      </header>
 
+      <section className="mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:grid-cols-4">
+        {steps.map((item, index) => {
+          const isCurrent = currentStep === item.key;
+          const isComplete = currentStepIndex > index;
 
-  useEffect(() => {
-    if (uploadedFile) {
-      const url = URL.createObjectURL(uploadedFile);
-      setPreviewUrl(url);
-      return () => { URL.revokeObjectURL(url); };
-    } else {
-      setPreviewUrl(null);
-    }
-  }, [uploadedFile]);
+          return (
+            <div
+              key={item.step}
+              className={clsx(
+                "rounded-2xl border p-4 transition-colors",
+                isCurrent
+                  ? "border-purple-500 bg-purple-50/70 dark:border-cyan-400 dark:bg-cyan-500/10"
+                  : isComplete
+                    ? "border-slate-300 bg-slate-50 dark:border-slate-700 dark:bg-slate-950"
+                    : "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900"
+              )}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={clsx(
+                    "flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold",
+                    isCurrent || isComplete
+                      ? "bg-purple-600 text-white dark:bg-cyan-400 dark:text-slate-950"
+                      : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                  )}
+                >
+                  {item.step}
+                </div>
+                <div>
+                  <p className="font-semibold text-slate-900 dark:text-white">
+                    {item.title}
+                  </p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </section>
 
-  useEffect(() => {
-    // When switching category, auto-select the first style of that category
-    const first = filteredStyles[0];
-    if (first) {
-      setSelectedStyleId(first.id);
+      {!hasHydrated ? (
+        <section className="rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-slate-300 border-t-purple-600 dark:border-slate-700 dark:border-t-cyan-400" />
+          <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
+            Restoring your banner funnel session...
+          </p>
+        </section>
+      ) : currentStep === "step0" ? (
+        <Step0PlatformSelector />
+      ) : currentStep === "step1" ? (
+        <Step1TemplateBrowser />
+      ) : currentStep === "step2" ? (
+        <Step2Personalize />
+      ) : (
+        <Step3Result />
+      )}
+    </main>
+  );
+}
 
-      // Clear uploaded photo if new category does not support photos
-      if (!first.supportsPhoto) {
-        setUploadedFile(null);
-        setPreviewUrl(null);
-        if (fileInputRef.current) fileInputRef.current.value = "";
-      }
-    }
-  }, [selectedCategory]);
-
-  useEffect(() => {
-    const style = TWITCH_BANNER_STYLES.find(s => s.id === selectedStyleId);
-    const canUpload = style?.supportsPhoto === true;
-    setSupportsPhoto(canUpload);
-
-    // If the new style does NOT support photo → clear previous upload
-    if (!canUpload) {
-      setUploadedFile(null);
-      setPreviewUrl(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
-  }, [selectedStyleId]);
-
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0] ?? null;
-    if (!f) { setUploadedFile(null); return; }
-    if (!["image/jpeg","image/png","image/webp"].includes(f.type)) {
-      setError("Invalid file type. Use PNG, JPG or WebP.");
-      setUploadedFile(null);
-      return;
-    }
-    setUploadedFile(f);
-    setError("");
-  };
-
-  const handleGenerate = async () => {
-    setError("");
-    if (!isLoggedIn) {
-      void signIn(undefined, {
-        callbackUrl: router.asPath,
-      });
-      return;
-    }
-    if (!channelName.trim()) { setError("Channel name is required."); return; }
-    if (!selectedStyle) { setError("Please select a style."); return; }
-
-    setIsGenerating(true);
-    setGeneratedBannerUrl(null);
-
-    let uploadedImagePublicUrl = "";
-
-    if (uploadedFile) {
-      try {
-        const presigned = await createPresignedUrl.mutateAsync({ filename: uploadedFile.name, filetype: uploadedFile.type });
-        const formData = new FormData();
-        Object.entries(presigned.fields).forEach(([k, v]) => formData.append(k, v));
-        formData.append("file", uploadedFile);
-        const uploadRes = await fetch(presigned.url, { method: "POST", body: formData });
-        if (!uploadRes.ok) throw new Error("Upload failed.");
-        uploadedImagePublicUrl = presigned.publicUrl;
-      } catch (e) {
-        console.error("Upload error:", e);
-        setError("Failed to upload image. Try again.");
-        setIsGenerating(false);
-        return;
-      }
-    }
-
-    if (channelName.length > channelLimit) {
-      setError(`Channel name must be under ${channelLimit} characters.`);
-      return;
-    }
-
-    if (tagline.length > taglineLimit) {
-      setError(`Tagline must be under ${taglineLimit} characters.`);
-      return;
-    }
-
-    // Call backend generation
-    generateBanner.mutate({
-      styleId: selectedStyleId,
-      channelName: channelName.trim(),
-      tagline: tagline.trim(),
-      logoUrl: uploadedImagePublicUrl || "",
-    });
-  };
-
-  const handleDownload = async (url: string) => {
-    setIsDownloading(url);
-    try {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Failed to fetch image");
-      const blob = await res.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = blobUrl;
-      const safeName = (channelName.trim() || "twitch_banner").replace(/[^a-z0-9_\-]/gi, "_");
-      a.download = `${safeName}.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(blobUrl);
-    } catch (e) {
-      console.error("Download error:", e);
-      setError("Could not download image.");
-    } finally {
-      setIsDownloading(null);
-    }
-  };
-
-  const openShare = (url?: string) => {
-    if (!url && generatedBannerUrl) setShowSharePopupFor(generatedBannerUrl);
-    else if (url) setShowSharePopupFor(url);
-  };
-
+const BannerMakerPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>AI Twitch Banner Generator – Streamer Graphics Maker | GamingLogoAI</title>
-        <meta name="description" content="Create a professional Twitch banner instantly. Pick a style, add your channel name, upload a photo and generate a polished banner for your channel." />
-        <link rel="canonical" href="https://gaminglogoai.com/twitch-banner-generator" />
+        <title>{PAGE_TITLE}</title>
+        <meta name="description" content={PAGE_DESCRIPTION} />
+        <link rel="canonical" href={PAGE_URL} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://gaminglogoai.com/twitch-banner-generator" />
-        <meta property="og:title" content="AI Twitch Banner Generator – Streamer Graphics Maker | GamingLogoAI" />
-        <meta property="og:description" content="Create a professional Twitch banner instantly. Pick a style, add your channel name, upload a photo and generate a polished banner for your channel." />
-        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta property="og:url" content={PAGE_URL} />
+        <meta property="og:title" content={PAGE_TITLE} />
+        <meta property="og:description" content={PAGE_DESCRIPTION} />
+        <meta
+          property="og:image"
+          content="https://gaminglogoai.com/og-image-gaminglogoai.png"
+        />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Twitch Banner Generator – Streamer Graphics Maker | GamingLogoAI" />
-        <meta name="twitter:description" content="Create a professional Twitch banner instantly. Pick a style, add your channel name, upload a photo and generate a polished banner for your channel." />
-        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              name: "AI Twitch Banner Generator",
-              description: "Create a professional Twitch banner instantly. Pick a style, add your channel name, upload a photo and generate a polished banner for your channel.",
-              url: "https://gaminglogoai.com/twitch-banner-generator",
-              applicationCategory: "DesignApplication",
-              operatingSystem: "Web",
-              offers: {
-                "@type": "Offer",
-                price: "0",
-                priceCurrency: "USD",
-                description: "Free to start with 1 credit on signup. Credit packs available.",
-              },
-              publisher: {
-                "@type": "Organization",
-                name: "GamingLogoAI",
-                url: "https://gaminglogoai.com",
-              },
-            }),
-          }}
+        <meta name="twitter:title" content={PAGE_TITLE} />
+        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
+        <meta
+          name="twitter:image"
+          content="https://gaminglogoai.com/og-image-gaminglogoai.png"
         />
       </Head>
 
-      <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8">
-        {/* HERO */}
-        <header className="text-center mb-8">
-          <Image src="/twitch/twitch-banner-bg.webp" alt="Twitch Banner Generator Hero" width={1000} height={220} className="mx-auto rounded-lg shadow-lg" unoptimized />
-          <h1 className="text-4xl sm:text-5xl font-extrabold mt-6">AI Twitch Banner Generator</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mt-2 max-w-3xl mx-auto">
-            Create a stunning Twitch channel banner in seconds. Choose a style, type your channel name, optionally upload a photo, and generate your banner.
-          </p>
-        </header>
-
-        {/* Quick steps */}
-        <div className="mb-8 p-6 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-purple-500/10 shadow-sm">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-            <div><strong className="text-purple-700 dark:text-cyan-300">1.</strong> Select a banner template</div>
-            <div><strong className="text-purple-700 dark:text-cyan-300">2.</strong> Add channel name & optional photo</div>
-            <div><strong className="text-purple-700 dark:text-cyan-300">3.</strong> Generate & download</div>
-          </div>
-        </div>
-
-        <form className="flex flex-col gap-8" onSubmit={(e) => { e.preventDefault(); void handleGenerate(); }}>
-
-          {/* TEMPLATE SELECTOR */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Choose a Template</h2>
-
-            {/* CATEGORY BUTTONS */}
-            <div className="flex gap-3 mb-6">
-              {["With Logo", "Without Logo"].map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat)}
-                  className={clsx(
-                    "px-4 py-2 rounded-lg border text-sm font-medium transition",
-                    selectedCategory === cat
-                      ? "bg-purple-600 border-purple-600 text-white"
-                      : "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
-                  )}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            {/* TEMPLATE GRID — filteredStyles decides what to show */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {filteredStyles.length === 0 && (
-                <div className="text-slate-500 col-span-full">
-                  No templates available in this category.
-                </div>
-              )}
-
-              {filteredStyles.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedStyleId(s.id);
-
-                    if (!s.supportsPhoto) {
-                      setUploadedFile(null);
-                      setPreviewUrl(null);
-                      if (fileInputRef.current) fileInputRef.current.value = "";
-                    }
-                  }}
-
-                  className={clsx(
-                    "flex flex-col rounded-lg overflow-hidden border-2 transition-transform hover:scale-105 focus:outline-none",
-                    selectedStyleId === s.id
-                      ? "border-purple-500 shadow-xl"
-                      : "border-transparent"
-                  )}
-                >
-                  <div className="relative w-full aspect-[5/2] bg-gray-100">
-                    <Image
-                      src={s.previewSrc}
-                      alt={s.name}
-                      fill
-                      style={{ objectFit: "cover" }}
-                      className="block"
-                      unoptimized
-                    />
-                  </div>
-                  <div className="p-2 text-center bg-white dark:bg-slate-800">
-                    <div className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">
-                      {s.name}
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {/* inputs */}
-          <section>
-            <h2 className="text-2xl font-semibold mb-4">Customize</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <FormGroup>
-                  <label className="block mb-2 font-medium">Channel Name *</label>
-                  <Input value={channelName} onChange={handleChannelChange} placeholder="e.g., ProGamer" required />
-                  <div className="text-xs text-gray-400">
-                    {channelName.length}/{channelLimit} characters
-                  </div>
-                </FormGroup>
-
-                <FormGroup className="mt-4">
-                  <label className="block mb-2 font-medium">Tagline (optional)</label>
-                  <Input value={tagline} onChange={handleTaglineChange} placeholder="e.g., Live every night 9PM UTC" />
-                  <div className="text-xs text-gray-400">
-                    {tagline.length}/{taglineLimit} characters
-                  </div>
-                </FormGroup>
-              </div>
-
-              <div>
-                {supportsPhoto && (
-                <FormGroup>
-                  <label className="block mb-2 font-medium">Upload Photo (optional)</label>
-
-                  <label className="mt-1 flex flex-col justify-center items-center h-44 px-4 py-6
-                    border-2 border-dashed rounded-lg cursor-pointer text-center
-                    hover:bg-slate-50 dark:hover:bg-slate-800/60"
-                  >
-                    <div className="text-center">
-                      <FiUploadCloud className="mx-auto h-10 w-10 text-gray-400" />
-                      <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                        {uploadedFile ? "Change photo" : "Upload a photo (PNG, JPG, WEBP)"}
-                      </div>
-
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/png,image/jpeg,image/webp"
-                        className="sr-only"
-                        onChange={handleFileChange}
-                      />
-                      {selectedStyle?.supportsPhoto && (
-                        <p className="text-sm text-yellow-400 bg-yellow-900/20 border border-yellow-600 rounded-md px-3 py-2 mt-2">
-                          💡 <strong>Tip:</strong> For the best result, upload a <strong>1:1 square image</strong> (e.g., 800×800).
-                        </p>
-                      )}
-
-                      <div className="text-xs text-gray-400 mt-1">Max 10MB</div>
-                    </div>
-                  </label>
-
-                  {previewUrl && (
-                    <div className="mt-3 flex items-center gap-3">
-                      <Image src={previewUrl} alt="Twitch banner preview generated by AI" width={120} height={120}
-                        className="rounded-md object-cover border" unoptimized />
-                      <div>
-                        <div className="text-sm">{uploadedFile?.name}</div>
-                        <button
-                          type="button"
-                          className="text-xs mt-2 underline text-slate-600"
-                          onClick={() => {
-                            setUploadedFile(null);
-                            if (fileInputRef.current) fileInputRef.current.value = "";
-                          }}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </FormGroup>
-              )}
-              </div>
-            </div>
-          </section>
-
-          {error && (
-            <div className="p-4 rounded-md bg-red-50 border border-red-200 text-red-700">
-              <div className="flex items-start gap-3">
-                <div className="flex-1">{error}</div>
-                {error === "You do not have enough credits" && (
-                  <Link href="/buy-credits" className="underline font-semibold">Buy Credits</Link>
-                )}
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-3 items-center">
-            <Button isLoading={isGenerating} className="px-6 py-3" onClick={() => void handleGenerate()}>
-              {isGenerating ? "Generating banner..." : `Generate Banner (${selectedStyle?.creditCost ?? 1} Credit)`}
-            </Button>
-            <div className="text-sm text-gray-500">Tip: try different templates to find the best layout for your name.</div>
-          </div>
-        </form>
-
-        {/* Result */}
-        {(generatedBannerUrl || enhancedBannerUrl) && (
-          <section id="result-section" className="mt-10">
-            <h2 className="text-2xl font-semibold mb-4">
-              {enhancedBannerUrl ? "Your Enhanced Banner" : "Your Banner"}
-            </h2>
-
-            <div className="rounded-lg border overflow-hidden shadow-lg">
-              <Image
-                src={enhancedBannerUrl || generatedBannerUrl || ""}
-                alt="Generated Twitch banner"
-                width={1200}
-                height={480}
-                className="w-full h-auto"
-                unoptimized
-              />
-
-              <div className="p-4 flex gap-3 items-center">
-                <Button
-                  onClick={() => void handleDownload(enhancedBannerUrl || generatedBannerUrl || "")}
-                  className="px-4 py-2"
-                  disabled={!!isDownloading}
-                >
-                  {isDownloading ? "Downloading..." : "Download PNG"}
-                </Button>
-
-                <Button onClick={() => openShare((enhancedBannerUrl || generatedBannerUrl) ?? undefined)} className="px-4 py-2">
-                  Share
-                </Button>
-
-                <a
-                  href={enhancedBannerUrl || generatedBannerUrl || ""}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ml-auto text-sm text-slate-600 underline"
-                >
-                  Open in new tab
-                </a>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {generatedBannerUrl && aiEnhancements?.length > 0 && (
-          <section className="mt-8 p-6 rounded-xl bg-slate-50 dark:bg-slate-800/60">
-            <h3 className="text-xl font-semibold mb-2">Enhance with AI</h3>
-            <p className="text-sm text-gray-500 mb-4">
-              Apply a professional AI enhancement to your banner.
-            </p>
-
-            <div className="mb-4">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full
-                text-xs font-semibold
-                bg-purple-100 text-purple-700
-                dark:bg-cyan-900/40 dark:text-cyan-300">
-                ✨ AI Enhancement · <strong>3 Credits</strong>
-              </span>
-            </div>
-
-            <div className="flex gap-4 overflow-x-auto">
-              {aiEnhancements.map((ai) => (
-                <button
-                  key={ai.id}
-                  onClick={() => setSelectedAiStyleId(ai.id)}
-                  className={clsx(
-                    "px-4 py-2 rounded-lg border",
-                    selectedAiStyleId === ai.id
-                      ? "bg-purple-600 text-white"
-                      : "bg-white dark:bg-slate-700"
-                  )}
-                >
-                  {ai.name}
-                </button>
-              ))}
-            </div>
-
-            <Button
-              className="mt-4"
-              isLoading={enhanceBanner.isPending}
-              disabled={enhanceBanner.isPending}
-              onClick={() => {
-                const ai = aiEnhancements.find(
-                  (a) => a.id === selectedAiStyleId
-                );
-                if (!ai) return;
-
-                enhanceBanner.mutate({
-                  prompt: ai.prompt,
-                  model: "nano-banana-pro",
-                  referenceImageUrl: generatedBannerUrl,
-                });
-              }}
-            >
-              {enhanceBanner.isPending ? "Enhancing..." : "Apply AI Enhancement"}
-            </Button>
-
-          </section>
-        )}
-
-
-        {/* Share popup */}
-        {showSharePopupFor && router.isReady && (
-          <SharePopup
-            imageUrl={showSharePopupFor}
-            imageAlt={`Twitch banner for ${channelName || "your channel"}`}
-            defaultText={`Check out this banner I made for ${channelName || "my channel"} with GamingLogoAI!`}
-            siteUrl="https://gaminglogoai.com"
-            generatorUrl="/twitch-banner-generator"
-            onClose={() => setShowSharePopupFor(null)}
-          />
-        )}
-      </main>
+      <FunnelProvider>
+        <BannerMakerContent />
+      </FunnelProvider>
     </>
   );
 };
 
-export default TwitchBannerGeneratorPage;
+export default BannerMakerPage;

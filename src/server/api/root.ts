@@ -8,10 +8,14 @@ import { faceLogoRouter } from "~/server/api/routers/faceLogo";
 import { nanoFaceRouter } from "~/server/api/routers/nanoFace";
 import { s3Router } from "./routers/s3";
 import { twitchBannerRouter } from "./routers/twitchBanner";
+import { bannerFunnelRouter } from "./routers/bannerFunnel";
 import { enhancementRouter } from "./routers/enhancement";
 import { twitchPanelRouter } from "./routers/twitchPanel";
 import { twitchStreamScreenRouter } from "./routers/twitchStreamScreen";
 import { emoteRouter } from "./routers/emoteGenerator";
+import { thumbnailFunnelRouter } from "./routers/thumbnailFunnel";
+import { panelFunnelRouter } from "./routers/panelFunnel";
+import { streamScreenFunnelRouter } from "./routers/streamScreenFunnel";
 /**
  * This is the primary router for your server.
  *
@@ -27,10 +31,14 @@ export const appRouter = createTRPCRouter({
   nanoFace: nanoFaceRouter,
   s3: s3Router,
   twitchBanner: twitchBannerRouter,
+  bannerFunnel: bannerFunnelRouter,
   enhancement: enhancementRouter,
   twitchPanel: twitchPanelRouter,
+  panelFunnel: panelFunnelRouter,
   twitchStreamScreen: twitchStreamScreenRouter,
+  streamScreenFunnel: streamScreenFunnelRouter,
   emoteBase: emoteRouter,
+  thumbnailFunnel: thumbnailFunnelRouter,
 });
 
 // export type definition of API

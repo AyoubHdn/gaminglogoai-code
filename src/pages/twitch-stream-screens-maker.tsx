@@ -1,33 +1,161 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/router";
+import {
+  FaBolt,
+  FaChevronRight,
+  FaClock,
+  FaImages,
+  FaPaintBrush,
+  FaQuestionCircle,
+  FaTv,
+} from "react-icons/fa";
 
-const TwitchStreamScreensLanding: NextPage = () => {
+const TwitchStreamScreensLandingPage: NextPage = () => {
+  const router = useRouter();
+
+  const handleStart = () => {
+    void router.push("/twitch-stream-screens-generator");
+  };
+
+  const features = [
+    {
+      title: "Guided 4-Step Flow",
+      description:
+        "Choose a platform, pick a template, personalize the whole set, and generate your stream screens together.",
+      icon: <FaTv className="h-10 w-10" />,
+    },
+    {
+      title: "Expanded Screen Types",
+      description:
+        "Create Starting Soon, BRB, Offline, Ending, Intermission, Countdown, Chatting, AFK, Schedule, Raid, and custom Other screens.",
+      icon: <FaImages className="h-10 w-10" />,
+    },
+    {
+      title: "Add More Than Four Screens",
+      description:
+        "Build a full screen pack with extra scenes, duplicate scene types, and custom additions inside one batch.",
+      icon: <FaClock className="h-10 w-10" />,
+    },
+    {
+      title: "Game-Based Templates",
+      description:
+        "Start from neon, cyberpunk, pastel, retro, and other presets shaped around the game and stream vibe you choose.",
+      icon: <FaPaintBrush className="h-10 w-10" />,
+    },
+    {
+      title: "Adaptive AI Prompting",
+      description:
+        "Each selected screen type gets its own prompt behavior so the AI treats Starting Soon, Schedule, Raid, and custom scenes differently.",
+      icon: <FaBolt className="h-10 w-10" />,
+    },
+    {
+      title: "Result Step Actions",
+      description:
+        "Generate the set, preview it, share it, regenerate variations, and download the final PNG screens.",
+      icon: <FaChevronRight className="h-10 w-10" />,
+    },
+  ];
+
+  const workflowSteps = [
+    {
+      step: "1. Platform",
+      detail: "Start with Twitch so the builder uses stream-screen-friendly defaults and sizing.",
+    },
+    {
+      step: "2. Template",
+      detail: "Choose a visual direction based on the game or style you want your stream scenes to follow.",
+    },
+    {
+      step: "3. Personalize",
+      detail: "Edit titles, subtitles, and screen types, then add extra scenes like Schedule, Raid, or Other.",
+    },
+    {
+      step: "4. Result",
+      detail: "Generate the full set together, then regenerate, share, refine, or download the final screens.",
+    },
+  ];
+
+  const exampleScreens = [
+    { src: "/twitch/screens/starting-soon-prv.webp", caption: "Starting Soon" },
+    { src: "/twitch/screens/brb-prv.webp", caption: "BRB" },
+    { src: "/twitch/screens/offline-prv.webp", caption: "Offline" },
+    { src: "/twitch/screens/ending-prv.webp", caption: "Ending" },
+  ];
+
+  const faq = [
+    {
+      q: "What are Twitch stream screens?",
+      a: "They are full-screen graphics shown while you are getting ready, stepping away, wrapping up, or temporarily offline during a livestream.",
+    },
+    {
+      q: "Does the new builder only support four screen types?",
+      a: "No. The updated flow supports the standard core screens plus Intermission, Countdown, Chatting, AFK, Schedule, Raid, and a custom Other scene.",
+    },
+    {
+      q: "Do these work in OBS and Twitch?",
+      a: "Yes. The generator is built around a 1920x1080 stream-screen canvas, which fits common OBS scene setups and fullscreen use.",
+    },
+    {
+      q: "Can I change the screen text?",
+      a: "Yes. You can start with presets like Starting Soon or BRB, then edit the title and subtitle before generating the full set.",
+    },
+    {
+      q: "Can I add extra or custom screens?",
+      a: "Yes. The personalize step supports adding more screens, including custom Other scenes, so you are not limited to the original starter set.",
+    },
+    {
+      q: "Can I regenerate if I want another version?",
+      a: "Yes. Once you reach the result step, you can regenerate the same screen setup to get a fresh variation.",
+    },
+  ];
+
   return (
     <>
       <Head>
-        <title>Twitch Stream Screens Maker | Starting Soon, BRB & Offline</title>
+        <title>AI Twitch Stream Screens Maker - Starting Soon, BRB & More</title>
         <meta
           name="description"
-          content="Create professional Twitch stream screens in seconds. Generate Starting Soon, BRB, Offline, and Intermission screens with AI. Perfect 1920x1080 resolution."
+          content="Create branded Twitch stream screens with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 with guided presets and polished styles."
         />
         <link
           rel="canonical"
           href="https://gaminglogoai.com/twitch-stream-screens-maker"
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://gaminglogoai.com/twitch-stream-screens-maker" />
-        <meta property="og:title" content="Twitch Stream Screens Maker | Starting Soon, BRB & Offline" />
-        <meta property="og:description" content="Create professional Twitch stream screens in seconds. Generate Starting Soon, BRB, Offline, and Intermission screens with AI. Perfect 1920x1080 resolution." />
-        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta
+          property="og:url"
+          content="https://gaminglogoai.com/twitch-stream-screens-maker"
+        />
+        <meta
+          property="og:title"
+          content="AI Twitch Stream Screens Maker - Starting Soon, BRB & More"
+        />
+        <meta
+          property="og:description"
+          content="Create branded Twitch stream screens with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 with guided presets and polished styles."
+        />
+        <meta
+          property="og:image"
+          content="https://gaminglogoai.com/og-image-gaminglogoai.png"
+        />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Twitch Stream Screens Maker | Starting Soon, BRB & Offline" />
-        <meta name="twitter:description" content="Create professional Twitch stream screens in seconds. Generate Starting Soon, BRB, Offline, and Intermission screens with AI. Perfect 1920x1080 resolution." />
-        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta
+          name="twitter:title"
+          content="AI Twitch Stream Screens Maker - Starting Soon, BRB & More"
+        />
+        <meta
+          name="twitter:description"
+          content="Create branded Twitch stream screens with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 with guided presets and polished styles."
+        />
+        <meta
+          name="twitter:image"
+          content="https://gaminglogoai.com/og-image-gaminglogoai.png"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -35,7 +163,8 @@ const TwitchStreamScreensLanding: NextPage = () => {
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
               name: "AI Twitch Stream Screens Maker",
-              description: "Create professional Twitch stream screens in seconds. Generate Starting Soon, BRB, Offline, and Intermission screens with AI. Perfect 1920x1080 resolution.",
+              description:
+                "Create branded Twitch stream screens with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 with guided presets and polished styles.",
               url: "https://gaminglogoai.com/twitch-stream-screens-maker",
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -43,7 +172,8 @@ const TwitchStreamScreensLanding: NextPage = () => {
                 "@type": "Offer",
                 price: "0",
                 priceCurrency: "USD",
-                description: "Free to start with 1 credit on signup. Credit packs available.",
+                description:
+                  "Free to start with 1 credit on signup. Credit packs available.",
               },
               publisher: {
                 "@type": "Organization",
@@ -55,196 +185,148 @@ const TwitchStreamScreensLanding: NextPage = () => {
         />
       </Head>
 
-      <main className="overflow-x-hidden">
+      <main className="bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-200">
+        <section className="relative overflow-hidden py-20 text-center text-white md:py-28">
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-indigo-950 to-purple-900/90" />
 
-        {/* -------------------------------------------------- */}
-        {/* HERO */}
-        {/* -------------------------------------------------- */}
-        <section className="relative py-20 md:py-28 text-center text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-950 to-indigo-950" />
-          <div className="container mx-auto px-4 relative z-10">
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6">
-              AI Twitch Stream Screens Maker
+          <div className="relative z-20 mx-auto max-w-3xl px-4">
+            <h1 className="mb-6 text-4xl font-extrabold md:text-6xl">
+              AI <span className="text-cyan-300">Twitch Stream Screens Maker</span>
             </h1>
-
-            <p className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10">
-              Instantly create <strong>Starting Soon</strong>, <strong>BRB</strong>,
-              <strong> Offline</strong> and <strong>Intermission</strong> screens for your Twitch stream.
-              Designed in perfect <strong>1920×1080</strong> resolution.
+            <p className="mb-10 text-lg text-slate-200 md:text-xl">
+              Create full Twitch scene packs with a guided flow: choose a platform,
+              pick a template, personalize every screen, then generate
+              <strong> Starting Soon</strong>, <strong>BRB</strong>, <strong>Schedule</strong>,
+              <strong> Raid</strong>, custom scenes, and more.
             </p>
 
-            <Link
-              href="/twitch-stream-screens-generator"
-              className="inline-block px-8 py-4 bg-purple-600 hover:bg-purple-700 rounded-lg text-white font-semibold text-lg shadow-xl transition"
-              id="cta-hero-stream-screens"
+            <button
+              onClick={handleStart}
+              className="rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 px-8 py-4 text-lg font-bold text-slate-950 shadow-lg transition-all hover:scale-105"
             >
-              Create Stream Screens →
-            </Link>
-
-            <p className="mt-4 text-xs text-slate-400">
-              Free credit on signup • No design skills needed
-            </p>
+              Start Creating Screens <FaChevronRight className="ml-2 inline" />
+            </button>
           </div>
         </section>
 
-        {/* -------------------------------------------------- */}
-        {/* WHAT ARE STREAM SCREENS */}
-        {/* -------------------------------------------------- */}
-        <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
-          <div className="container mx-auto px-4 max-w-5xl text-center">
-
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-              What Are Twitch Stream Screens?
-            </h2>
-
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-              Stream screens are full-screen visuals shown during different moments of your live stream.
-              They keep your channel professional and engaging when you are not actively on camera.
-            </p>
-          </div>
-        </section>
-
-        {/* -------------------------------------------------- */}
-        {/* PREVIEW GALLERY */}
-        {/* -------------------------------------------------- */}
-        <section className="py-16 bg-slate-50 dark:bg-slate-950">
+        <section className="bg-white py-16 dark:bg-slate-900">
           <div className="container mx-auto px-4">
-
-            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
-              Preview Stream Screens
+            <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
+              Why Streamers Use Our{" "}
+              <span className="text-cyan-500">Stream Screens Generator</span>
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-
-              {[
-                { title: "Starting Soon", img: "/twitch/starting-soon-preview.webp" },
-                { title: "Be Right Back", img: "/twitch/brb-preview.webp" },
-                { title: "Stream Offline", img: "/twitch/offline-preview.webp" },
-              ].map((item) => (
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {features.map((feature) => (
                 <div
-                  key={item.title}
-                  className="rounded-xl overflow-hidden shadow-lg bg-white dark:bg-slate-800"
+                  key={feature.title}
+                  className="flex rounded-xl border border-slate-200 bg-slate-50 p-6 shadow-lg dark:border-slate-700/50 dark:bg-slate-800/60"
                 >
-                  <div className="relative aspect-video">
-                    <Image
-                      src={item.img}
-                      alt={`${item.title} Twitch screen`}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <div className="p-4 text-center font-semibold">
-                    {item.title}
+                  <div className="mr-5 text-cyan-500">{feature.icon}</div>
+                  <div>
+                    <p className="mb-1 text-lg font-semibold">{feature.title}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">
+                      {feature.description}
+                    </p>
                   </div>
                 </div>
               ))}
-
             </div>
           </div>
         </section>
 
-        {/* -------------------------------------------------- */}
-        {/* BENEFITS */}
-        {/* -------------------------------------------------- */}
-        <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
+        <section className="bg-slate-50 py-20 dark:bg-slate-950">
           <div className="container mx-auto px-4">
-
-            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
-              Why Use Our Stream Screens Generator?
+            <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
+              How The New Stream Screens Flow Works
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-
-              {[
-                {
-                  title: "Perfect Resolution",
-                  desc: "All screens are generated in full HD 1920×1080 — no cropping needed.",
-                },
-                {
-                  title: "Instant AI Design",
-                  desc: "Generate professional screens in seconds without Photoshop or templates.",
-                },
-                {
-                  title: "Streamer Branding",
-                  desc: "Designed specifically for Twitch streamers and gaming creators.",
-                },
-              ].map((f) => (
+            <div className="mx-auto grid max-w-5xl gap-4 md:grid-cols-4">
+              {workflowSteps.map((item) => (
                 <div
-                  key={f.title}
-                  className="p-6 rounded-xl bg-slate-50 dark:bg-slate-800 shadow"
+                  key={item.step}
+                  className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/60"
                 >
-                  <h3 className="text-xl font-semibold mb-3">{f.title}</h3>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">
-                    {f.desc}
+                  <p className="mb-2 text-lg font-semibold text-cyan-500">
+                    {item.step}
+                  </p>
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    {item.detail}
                   </p>
                 </div>
               ))}
-
             </div>
           </div>
         </section>
 
-        {/* -------------------------------------------------- */}
-        {/* HOW IT WORKS */}
-        {/* -------------------------------------------------- */}
-        <section className="py-16 bg-slate-100 dark:bg-slate-950">
+        <section className="bg-white py-20 dark:bg-slate-900">
           <div className="container mx-auto px-4">
-
-            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12">
-              How It Works
+            <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
+              Twitch Stream Screen Style Examples
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-              {[
-                { step: "1", title: "Choose Style", desc: "Pick a visual style that matches your stream branding." },
-                { step: "2", title: "Enter Text", desc: "Use presets like Starting Soon or write your own message." },
-                { step: "3", title: "Generate & Download", desc: "Download your screen instantly and use it in OBS." },
-              ].map((s) => (
-                <div key={s.step} className="relative p-6 bg-white dark:bg-slate-800 rounded-xl shadow">
-                  <div className="absolute -top-5 left-5 w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold">
-                    {s.step}
-                  </div>
-                  <h3 className="mt-6 text-xl font-semibold mb-2">{s.title}</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    {s.desc}
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {exampleScreens.map((example) => (
+                <div
+                  key={example.caption}
+                  className="rounded-lg bg-white p-2 shadow-lg dark:bg-slate-800"
+                >
+                  <Image
+                    src={example.src}
+                    alt={example.caption}
+                    width={640}
+                    height={360}
+                    className="rounded"
+                    unoptimized
+                  />
+                  <p className="mt-2 text-center text-sm font-medium">
+                    {example.caption}
                   </p>
                 </div>
               ))}
-
             </div>
           </div>
         </section>
 
-        {/* -------------------------------------------------- */}
-        {/* FINAL CTA */}
-        {/* -------------------------------------------------- */}
-        <section className="py-20 bg-gradient-to-r from-purple-700 via-indigo-800 to-purple-900 text-white text-center">
-          <div className="container mx-auto px-4">
-
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-              Ready to Upgrade Your Twitch Stream?
+        <section className="bg-white py-16 dark:bg-slate-900">
+          <div className="container mx-auto max-w-3xl px-4">
+            <h2 className="mb-8 text-center text-3xl font-bold">
+              <FaQuestionCircle className="mr-2 inline text-cyan-500" />
+              Frequently Asked Questions
             </h2>
 
-            <p className="text-slate-200 max-w-2xl mx-auto mb-10">
-              Create stunning stream screens that keep viewers engaged even when you’re off camera.
-            </p>
-
-            <Link
-              href="/twitch-stream-screens-generator"
-              className="inline-block px-10 py-4 bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-semibold rounded-lg shadow-lg transition"
-            >
-              Create Stream Screens Now
-            </Link>
-
+            <div className="space-y-4">
+              {faq.map((item, index) => (
+                <details
+                  key={item.q}
+                  className="cursor-pointer rounded-lg border bg-slate-50 p-4 dark:bg-slate-800"
+                  open={index === 0}
+                >
+                  <summary className="text-lg font-semibold">{item.q}</summary>
+                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+                    {item.a}
+                  </p>
+                </details>
+              ))}
+            </div>
           </div>
         </section>
 
+        <section className="bg-gradient-to-tr from-slate-950 via-indigo-950 to-cyan-950 py-20 text-center text-white">
+          <h2 className="mb-6 text-3xl font-bold md:text-4xl">
+            Ready to Upgrade Your{" "}
+            <span className="text-cyan-300">Twitch Stream Scenes?</span>
+          </h2>
+          <button
+            onClick={handleStart}
+            className="rounded-lg bg-gradient-to-r from-cyan-400 to-blue-500 px-10 py-4 text-xl font-bold text-slate-950 shadow-xl transition-all hover:scale-105"
+          >
+            Create Stream Screens Now
+          </button>
+        </section>
       </main>
     </>
   );
 };
 
-export default TwitchStreamScreensLanding;
+export default TwitchStreamScreensLandingPage;

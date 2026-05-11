@@ -4,13 +4,13 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
-  FaMagic,
-  FaSmile,
   FaBolt,
-  FaUserCircle,
-  FaImages,
   FaChevronRight,
+  FaImages,
+  FaMagic,
   FaQuestionCircle,
+  FaSmile,
+  FaUserCircle,
 } from "react-icons/fa";
 
 const TwitchEmoteMakerPage: NextPage = () => {
@@ -22,40 +22,59 @@ const TwitchEmoteMakerPage: NextPage = () => {
 
   const features = [
     {
-      title: "Turn Your Face Into Twitch Emotes",
+      title: "Face-To-Emote Workflow",
       description:
-        "Upload a real photo and instantly transform it into a Twitch-ready emote character.",
+        "Upload a real photo, choose an art style, and turn yourself into a Twitch-ready emote base character.",
       icon: <FaUserCircle className="h-10 w-10" />,
     },
     {
-      title: "Generate Multiple Emote Expressions",
+      title: "Base Plus Full Emote Set",
       description:
-        "Create GG, LOL, HYPE, RIP, WOW, and more emotes from the same base character.",
+        "Generate one clean base emote first, then build GG, LOL, HYPE, RIP, WOW, RAID, and more from the same character.",
       icon: <FaSmile className="h-10 w-10" />,
     },
     {
-      title: "Perfect Twitch Emote Sizes",
+      title: "Twitch-Ready Output",
       description:
-        "Optimized for Twitch emote resolutions (28px, 56px, 112px).",
+        "The results are optimized for Twitch-style usage and small-size readability in chat.",
       icon: <FaImages className="h-10 w-10" />,
     },
     {
-      title: "Anime & Cartoon Styles",
+      title: "Style Browser Included",
       description:
-        "Clean outlines, expressive faces, and high-contrast styles made for chat.",
+        "Pick from anime, cartoon, mascot, and other expressive emote-friendly art styles before generation.",
       icon: <FaMagic className="h-10 w-10" />,
     },
     {
-      title: "Transparent Background",
+      title: "Text or No-Text Variations",
       description:
-        "Every emote is generated with a transparent background, ready to upload.",
+        "Choose whether your emotes should include expression text or stay cleaner with no text overlays.",
       icon: <FaBolt className="h-10 w-10" />,
     },
     {
-      title: "Instant Download",
+      title: "Download The Whole Pack",
       description:
-        "Preview, download, and use your emotes on Twitch in seconds.",
+        "Download the base emote and each generated expression individually once the set is ready.",
       icon: <FaChevronRight className="h-10 w-10" />,
+    },
+  ];
+
+  const workflowSteps = [
+    {
+      step: "1. Upload",
+      detail: "Start with a face photo that the AI can transform into a base emote character.",
+    },
+    {
+      step: "2. Style",
+      detail: "Choose the art direction that will shape the base emote and the whole expression pack.",
+    },
+    {
+      step: "3. Base Emote",
+      detail: "Generate the clean neutral emote base that all later expressions will build from.",
+    },
+    {
+      step: "4. Emote Set",
+      detail: "Select the expressions you want, choose text or no-text output, and download each final emote.",
     },
   ];
 
@@ -69,12 +88,20 @@ const TwitchEmoteMakerPage: NextPage = () => {
       a: "Yes. Upload a real photo and the AI converts it into a stylized emote character.",
     },
     {
+      q: "How does the updated emote workflow work?",
+      a: "You first create a base emote character from your photo, then generate a full set of expressions from that same base so the pack stays visually consistent.",
+    },
+    {
       q: "Are the emotes ready for Twitch?",
       a: "Yes. All emotes are optimized for Twitch sizes and transparent backgrounds.",
     },
     {
+      q: "Can I choose text or no-text emotes?",
+      a: "Yes. The generator supports expression text variants as well as cleaner no-text versions depending on the look you want.",
+    },
+    {
       q: "Do I need design skills?",
-      a: "No. The AI handles everything — just upload a photo and choose expressions.",
+      a: "No. The AI handles everything - just upload a photo, choose a style, and pick the expressions you want.",
     },
     {
       q: "Is there a free version?",
@@ -85,26 +112,23 @@ const TwitchEmoteMakerPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Twitch Emote Maker – Create Custom Twitch Emotes from Your Face</title>
+        <title>Twitch Emote Maker - Create Custom Twitch Emotes from Your Face</title>
         <meta
           name="description"
-          content="Create custom Twitch emotes from your real face using AI. Turn your photo into GG, LOL, HYPE, RIP emotes with transparent background."
+          content="Create custom Twitch emotes from your real face using AI. Build a base emote, generate a full expression set, and download Twitch-ready results."
         />
-        <link
-          rel="canonical"
-          href="https://gaminglogoai.com/twitch-emote-maker"
-        />
+        <link rel="canonical" href="https://gaminglogoai.com/twitch-emote-maker" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/twitch-emote-maker" />
-        <meta property="og:title" content="Twitch Emote Maker â€“ Create Custom Twitch Emotes from Your Face" />
-        <meta property="og:description" content="Create custom Twitch emotes from your real face using AI. Turn your photo into GG, LOL, HYPE, RIP emotes with transparent background." />
+        <meta property="og:title" content="Twitch Emote Maker - Create Custom Twitch Emotes from Your Face" />
+        <meta property="og:description" content="Create custom Twitch emotes from your real face using AI. Build a base emote, generate a full expression set, and download Twitch-ready results." />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Twitch Emote Maker â€“ Create Custom Twitch Emotes from Your Face" />
-        <meta name="twitter:description" content="Create custom Twitch emotes from your real face using AI. Turn your photo into GG, LOL, HYPE, RIP emotes with transparent background." />
+        <meta name="twitter:title" content="Twitch Emote Maker - Create Custom Twitch Emotes from Your Face" />
+        <meta name="twitter:description" content="Create custom Twitch emotes from your real face using AI. Build a base emote, generate a full expression set, and download Twitch-ready results." />
         <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <script
           type="application/ld+json"
@@ -113,7 +137,8 @@ const TwitchEmoteMakerPage: NextPage = () => {
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
               name: "AI Twitch Emote Maker",
-              description: "Create custom Twitch emotes from your real face using AI. Turn your photo into GG, LOL, HYPE, RIP emotes with transparent background.",
+              description:
+                "Create custom Twitch emotes from your real face using AI. Build a base emote, generate a full expression set, and download Twitch-ready results.",
               url: "https://gaminglogoai.com/twitch-emote-maker",
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -133,46 +158,45 @@ const TwitchEmoteMakerPage: NextPage = () => {
         />
       </Head>
 
-      <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200">
-        {/* HERO */}
-        <section className="relative py-24 text-center text-white overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/80 via-indigo-950/90 to-slate-900"></div>
+      <main className="bg-white text-slate-800 dark:bg-slate-950 dark:text-slate-200">
+        <section className="relative overflow-hidden py-24 text-center text-white">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/80 via-indigo-950/90 to-slate-900" />
 
-          <div className="relative z-20 px-4 max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
+          <div className="relative z-20 mx-auto max-w-4xl px-4">
+            <h1 className="mb-6 text-4xl font-extrabold md:text-6xl">
               AI <span className="text-purple-400">Twitch Emote Maker</span>
             </h1>
 
-            <p className="text-lg md:text-xl text-slate-200 mb-10">
+            <p className="mb-10 text-lg text-slate-200 md:text-xl">
               Turn your real photo into custom Twitch emotes like{" "}
               <strong>GG</strong>, <strong>LOL</strong>, <strong>HYPE</strong>,{" "}
-              <strong>RIP</strong>, and more — instantly with AI.
+              <strong>RIP</strong>, and more with a base-character workflow built
+              for full emote packs.
             </p>
 
             <button
               onClick={handleStart}
-              className="px-10 py-4 bg-gradient-to-r from-purple-500 to-purple-700 text-white font-bold rounded-lg text-lg hover:scale-105 transition-all shadow-xl"
+              className="rounded-lg bg-gradient-to-r from-purple-500 to-purple-700 px-10 py-4 text-lg font-bold text-white shadow-xl transition-all hover:scale-105"
             >
-              Create Twitch Emotes <FaChevronRight className="inline ml-2" />
+              Create Twitch Emotes <FaChevronRight className="ml-2 inline" />
             </button>
           </div>
         </section>
 
-        {/* HOW IT WORKS */}
-        <section className="py-20 bg-white dark:bg-slate-900">
-          <div className="container mx-auto px-4 max-w-6xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-14">
+        <section className="bg-white py-20 dark:bg-slate-900">
+          <div className="container mx-auto max-w-6xl px-4">
+            <h2 className="mb-14 text-center text-3xl font-bold md:text-4xl">
               From Photo to Twitch Emotes
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
+            <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-3">
               <div className="text-center">
                 <Image
                   src="/twitch/emotes/front-view-beautiful-model.jpg"
                   alt="Upload your photo"
                   width={300}
                   height={400}
-                  className="rounded-xl mx-auto shadow-lg"
+                  className="mx-auto rounded-xl shadow-lg"
                   unoptimized
                 />
                 <p className="mt-4 font-semibold">1. Upload Your Photo</p>
@@ -184,7 +208,7 @@ const TwitchEmoteMakerPage: NextPage = () => {
                   alt="AI emote base"
                   width={260}
                   height={260}
-                  className="rounded-xl mx-auto shadow-lg"
+                  className="mx-auto rounded-xl shadow-lg"
                   unoptimized
                 />
                 <p className="mt-4 font-semibold">2. AI Creates Base Emote</p>
@@ -196,7 +220,7 @@ const TwitchEmoteMakerPage: NextPage = () => {
                   alt="Twitch emote set"
                   width={320}
                   height={320}
-                  className="rounded-xl mx-auto shadow-lg"
+                  className="mx-auto rounded-xl shadow-lg"
                   unoptimized
                 />
                 <p className="mt-4 font-semibold">3. Generate Emote Set</p>
@@ -205,25 +229,47 @@ const TwitchEmoteMakerPage: NextPage = () => {
           </div>
         </section>
 
-        {/* FEATURES */}
-        <section className="py-20 bg-slate-50 dark:bg-slate-950">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              Why Streamers Use Our{" "}
-              <span className="text-purple-600">Twitch Emote Maker</span>
+        <section className="bg-slate-50 py-20 dark:bg-slate-950">
+          <div className="container mx-auto max-w-5xl px-4">
+            <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
+              How The Emote Builder Works
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {features.map((f) => (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+              {workflowSteps.map((item) => (
                 <div
-                  key={f.title}
-                  className="p-6 bg-white dark:bg-slate-800/60 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700/50 flex"
+                  key={item.step}
+                  className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/60"
                 >
-                  <div className="text-purple-600 mr-5">{f.icon}</div>
+                  <p className="mb-2 text-lg font-semibold text-purple-600">
+                    {item.step}
+                  </p>
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    {item.detail}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white py-20 dark:bg-slate-900">
+          <div className="container mx-auto px-4">
+            <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
+              Why Streamers Use Our <span className="text-purple-600">Twitch Emote Maker</span>
+            </h2>
+
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {features.map((feature) => (
+                <div
+                  key={feature.title}
+                  className="flex rounded-xl border border-slate-200 bg-slate-50 p-6 shadow-lg dark:border-slate-700/50 dark:bg-slate-800/60"
+                >
+                  <div className="mr-5 text-purple-600">{feature.icon}</div>
                   <div>
-                    <p className="font-semibold text-lg mb-1">{f.title}</p>
+                    <p className="mb-1 text-lg font-semibold">{feature.title}</p>
                     <p className="text-sm text-slate-600 dark:text-slate-300">
-                      {f.description}
+                      {feature.description}
                     </p>
                   </div>
                 </div>
@@ -232,14 +278,13 @@ const TwitchEmoteMakerPage: NextPage = () => {
           </div>
         </section>
 
-        {/* SHOWCASE */}
-        <section className="py-20 bg-white dark:bg-slate-900">
+        <section className="bg-slate-50 py-20 dark:bg-slate-950">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
               Real Examples Generated with AI
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-10 md:grid-cols-2">
               <Image
                 src="/twitch/emotes/emotes-girl.png"
                 alt="Female Twitch emotes example"
@@ -260,24 +305,21 @@ const TwitchEmoteMakerPage: NextPage = () => {
           </div>
         </section>
 
-        {/* FAQ */}
-        <section className="py-16 bg-slate-50 dark:bg-slate-950">
-          <div className="container mx-auto px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-8">
-              <FaQuestionCircle className="inline mr-2 text-purple-600" />
+        <section className="bg-white py-16 dark:bg-slate-900">
+          <div className="container mx-auto max-w-3xl px-4">
+            <h2 className="mb-8 text-center text-3xl font-bold">
+              <FaQuestionCircle className="mr-2 inline text-purple-600" />
               Frequently Asked Questions
             </h2>
 
             <div className="space-y-4">
               {faq.map((item, idx) => (
                 <details
-                  key={idx}
-                  className="p-4 bg-white dark:bg-slate-800 rounded-lg border cursor-pointer"
+                  key={item.q}
+                  className="cursor-pointer rounded-lg border bg-slate-50 p-4 dark:bg-slate-800"
                   open={idx === 0}
                 >
-                  <summary className="font-semibold text-lg">
-                    {item.q}
-                  </summary>
+                  <summary className="text-lg font-semibold">{item.q}</summary>
                   <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
                     {item.a}
                   </p>
@@ -287,16 +329,14 @@ const TwitchEmoteMakerPage: NextPage = () => {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-20 text-center bg-gradient-to-tr from-indigo-900 via-purple-950 to-slate-900 text-white">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready to Create Your{" "}
-            <span className="text-purple-400">Twitch Emotes?</span>
+        <section className="bg-gradient-to-tr from-indigo-900 via-purple-950 to-slate-900 py-20 text-center text-white">
+          <h2 className="mb-6 text-3xl font-bold md:text-4xl">
+            Ready to Create Your <span className="text-purple-400">Twitch Emotes?</span>
           </h2>
 
           <button
             onClick={handleStart}
-            className="px-10 py-4 bg-gradient-to-r from-purple-500 to-purple-700 text-white font-bold rounded-lg text-xl hover:scale-105 transition-all shadow-xl"
+            className="rounded-lg bg-gradient-to-r from-purple-500 to-purple-700 px-10 py-4 text-xl font-bold text-white shadow-xl transition-all hover:scale-105"
           >
             Start Emote Generator
           </button>

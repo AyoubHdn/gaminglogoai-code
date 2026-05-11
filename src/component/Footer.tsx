@@ -43,6 +43,11 @@ export function Footer() {
       landingUrl: "/twitch-emote-maker", // The main "Twitch Emote" landing page
       toolUrl: "/emote-generator", // The actual Twitch Emote tool
     },
+    {
+      name: "YouTube Thumbnail Maker",
+      landingUrl: "/youtube-thumbnail-maker",
+      toolUrl: "/thumbnail-maker",
+    },
   ];
 
   // Curate a list of your most important/popular niche landing pages to feature

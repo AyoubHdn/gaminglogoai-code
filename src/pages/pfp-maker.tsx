@@ -34,6 +34,41 @@ type FaceAIModel = "flux-kontext-pro" | "flux-kontext-max";
 type FaceAspectRatio = "1:1"; // Fixed for face logos
 
 const typedFaceStylesData: FaceStyleCategory = faceStylesData as FaceStyleCategory;
+const TEXT_PLACEHOLDER_PATTERN =
+  /(''Text''|'Text'|"Text"|`Text`|\[Text\]|\[USER TEXT\])/gi;
+const TEXT_DIRECTIVE_PATTERN =
+  /\b(text|name|wordmark|lettering|typography|font|title|caption)\b/i;
+
+function buildFaceLogoPrompt(basePrompt: string, inputText: string, model: FaceAIModel): string {
+  const trimmedText = inputText.trim();
+
+  if (trimmedText) {
+    const promptWithText = basePrompt.replace(TEXT_PLACEHOLDER_PATTERN, trimmedText);
+    return model === "flux-kontext-max"
+      ? `${promptWithText}, ultra detailed face, cinematic lighting, sharp focus on face, masterpiece`
+      : `${promptWithText}, detailed face, good lighting, professional logo`;
+  }
+
+  const sanitizedSegments = basePrompt
+    .replace(TEXT_PLACEHOLDER_PATTERN, "")
+    .split(/,|â€”|â€“|\./)
+    .map((segment) => segment.trim().replace(/\s+/g, " "))
+    .filter(Boolean)
+    .filter((segment) => !TEXT_DIRECTIVE_PATTERN.test(segment));
+
+  const sanitizedPrompt = sanitizedSegments
+    .join(", ")
+    .replace(/\s+,/g, ",")
+    .replace(/,\s*,+/g, ", ")
+    .trim()
+    .replace(/[,-]\s*$/, "");
+
+  const promptBase = sanitizedPrompt || "stylized gaming avatar portrait";
+
+  return model === "flux-kontext-max"
+    ? `${promptBase}, no text, no letters, no wordmark, no typography, ultra detailed face, cinematic lighting, sharp focus on face, masterpiece`
+    : `${promptBase}, no text, no letters, no wordmark, no typography, detailed face, good lighting, professional logo`;
+}
 
 const FaceLogoGeneratorPage: NextPage = () => {
   const { data: session } = useSession();
@@ -152,6 +187,47 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
     setError("");
   }, []);
 
+  const handleStyleCategoryChange = useCallback((categoryKey: string) => {
+    const subcategories = typedFaceStylesData[categoryKey];
+    if (!subcategories) {
+      setActiveStyleTab(categoryKey);
+      setActiveStyleSubTab("");
+      setSelectedStyleBasePrompt("");
+      setSelectedStyleImagePreview(null);
+      return;
+    }
+
+    const firstSubCategory = Object.keys(subcategories)[0];
+    const firstStyle = firstSubCategory ? subcategories[firstSubCategory]?.[0] : undefined;
+
+    setActiveStyleTab(categoryKey);
+
+    if (firstSubCategory) {
+      setActiveStyleSubTab(firstSubCategory);
+    }
+
+    if (firstStyle) {
+      handleFaceStyleSelect(firstStyle.basePrompt, firstStyle.src);
+    } else {
+      setSelectedStyleBasePrompt("");
+      setSelectedStyleImagePreview(null);
+    }
+  }, [handleFaceStyleSelect]);
+
+  const handleStyleSubCategoryChange = useCallback((subCategoryKey: string) => {
+    const styles = typedFaceStylesData[activeStyleTab]?.[subCategoryKey];
+    const firstStyle = styles?.[0];
+
+    setActiveStyleSubTab(subCategoryKey);
+
+    if (firstStyle) {
+      handleFaceStyleSelect(firstStyle.basePrompt, firstStyle.src);
+    } else {
+      setSelectedStyleBasePrompt("");
+      setSelectedStyleImagePreview(null);
+    }
+  }, [activeStyleTab, handleFaceStyleSelect]);
+
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -202,16 +278,31 @@ const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) =>
     }
 }, [router.isReady, handleFaceStyleSelect]); // Added handleFaceStyleSelect to dependency array
 
-// KEEP THIS SECOND useEffect EXACTLY AS IT IS.
-// It handles the default selection when a user clicks a tab manually.
 useEffect(() => {
     if (!activeStyleTab || !activeStyleSubTab) return;
 
-    const styles = typedFaceStylesData[activeStyleTab]?.[activeStyleSubTab];
-    // This logic now only runs for manual clicks or the initial default load,
-    // because the jump-link logic above has already selected the correct style.
-    // To prevent it from overriding our jump-link selection, we check if a style is already selected.
-    if (styles && styles.length > 0 && styles[0] && !selectedStyleImagePreview) {
+    const subcategories = typedFaceStylesData[activeStyleTab];
+    if (!subcategories) return;
+
+    const styles = subcategories[activeStyleSubTab];
+    if (!styles || styles.length === 0) {
+      const firstSubCategory = Object.keys(subcategories)[0];
+      if (!firstSubCategory) return;
+
+      const firstStyle = subcategories[firstSubCategory]?.[0];
+      setActiveStyleSubTab(firstSubCategory);
+
+      if (firstStyle) {
+        handleFaceStyleSelect(firstStyle.basePrompt, firstStyle.src);
+      } else {
+        setSelectedStyleBasePrompt("");
+        setSelectedStyleImagePreview(null);
+      }
+      return;
+    }
+
+    const hasSelectedStyleInCurrentGroup = styles.some((style) => style.src === selectedStyleImagePreview);
+    if (!hasSelectedStyleInCurrentGroup && styles[0]) {
       handleFaceStyleSelect(styles[0].basePrompt, styles[0].src);
     }
 }, [activeStyleTab, activeStyleSubTab, handleFaceStyleSelect, selectedStyleImagePreview]);
@@ -268,12 +359,6 @@ useEffect(() => {
     e.preventDefault(); setError(""); setTextError(null); setImagesUrl([]);
     console.log("CLIENT: handleFormSubmit initiated."); // LOG 1
     if (!isLoggedIn) { void signIn("google"); return; }
-    if (!inputText.trim()) {
-        setTextError("Please enter the text you want in your logo.");
-        // Scroll to the input field to show the error
-        document.getElementById("logo-text-input")?.focus(); 
-        return; // Stop the submission
-    }
     if (!uploadedImageFile) { setError("Please upload a photo of your face."); return; }
     if (!selectedStyleBasePrompt) { setError("Please select an artistic style for your face logo."); return;}
     
@@ -285,9 +370,7 @@ useEffect(() => {
     reader.onloadend = () => { // This callback executes when readAsDataURL is complete
       console.log("CLIENT: FileReader onloadend."); // LOG 3
       const base64Image = reader.result as string;
-      let finalPrompt = selectedStyleBasePrompt.replace(/('Text'|"Text"|`Text`|\[Text\])/gi, inputText.trim() || " ");
-      if(selectedModel === "flux-kontext-max") finalPrompt += `, ultra detailed face, cinematic lighting, sharp focus on face, masterpiece`;
-      else finalPrompt += `, detailed face, good lighting, professional logo`;
+      const finalPrompt = buildFaceLogoPrompt(selectedStyleBasePrompt, inputText, selectedModel);
 
       if (typeof window !== "undefined" && window.dataLayer) {
         window.dataLayer.push({ /* ... */ });
@@ -339,20 +422,20 @@ useEffect(() => {
     <>
       <Head>
         <title>AI Face Logo Generator - Photo to Gaming Logo | GamingLogoAI</title>
-        <meta name="description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
+        <meta name="description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, optionally add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
         <meta name="keywords" content="ai face logo, photo to logo, image to image generator, gaming avatar maker, custom streamer avatar, ai portrait logo, flux kontext pro, flux kontext max" />
         <link rel="canonical" href="https://gaminglogoai.com/pfp-maker" /> {/* ** REPLACE with actual domain ** */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/pfp-maker" />
         <meta property="og:title" content="AI Face Logo Generator - Photo to Gaming Logo | GamingLogoAI" />
-        <meta property="og:description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
+        <meta property="og:description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, optionally add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="AI Face Logo Generator - Photo to Gaming Logo | GamingLogoAI" />
-        <meta name="twitter:description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
+        <meta name="twitter:description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, optionally add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
         <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
         <script
@@ -362,7 +445,7 @@ useEffect(() => {
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
               name: "AI PFP Maker",
-              description: "Turn your photo into an epic AI-generated gaming logo! Upload your face, add text, select an art style, and create a unique avatar or team logo with GamingLogoAI.",
+              description: "Turn your photo into an epic AI-generated gaming logo! Upload your face, optionally add text, select an art style, and create a unique avatar or team logo with GamingLogoAI.",
               url: "https://gaminglogoai.com/pfp-maker",
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -383,12 +466,11 @@ useEffect(() => {
       </Head>
       <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900">
         <header className="text-center mb-10">
-          <Image src="/face-logo-image.webp" alt="Gaming Logo AI Banner - Create stunning gaming logos with AI" width={800} height={200} className="mx-auto mb-4 rounded-lg shadow-lg" priority unoptimized={true}/>
           <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-3">
             AI PFP Maker
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-            Transform your photo into a unique gaming logo or avatar. Upload your face, add your gamer tag, pick a style, and let our AI create something legendary!
+            Transform your photo into a unique gaming logo or avatar. Upload your face, optionally add your gamer tag, pick a style, and let our AI create something legendary!
           </p>
         </header>
 
@@ -396,7 +478,7 @@ useEffect(() => {
           <h2 className="text-2xl font-semibold mb-3 text-purple-700 dark:text-cyan-400">Get Started:</h2>
           <ol className="list-decimal list-inside space-y-2 text-slate-700 dark:text-slate-300">
             <li><strong className="text-slate-800 dark:text-slate-100">Upload Your Best Face Photo:</strong> Clear, well-lit, front-facing photos yield the best results.</li>
-            <li><strong className="text-slate-800 dark:text-slate-100">Add Your Gamer Tag:</strong> This text will be artfully integrated.</li>
+            <li><strong className="text-slate-800 dark:text-slate-100">Add Your Gamer Tag:</strong> Optional. Leave it blank if you want a text-free PFP.</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Pick an Art Style:</strong> Choose a theme to transform your photo (e.g., Cartoon, Anime, Vector).</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Select Quality Engine:</strong> &quot;Pro&quot; for great quality, &quot;Max&quot; for ultimate detail.</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Generate!</strong> Watch your face become a unique gaming logo.</li>
@@ -441,14 +523,14 @@ useEffect(() => {
           <section>
             <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white flex items-center">
               <span className="bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">2</span>
-              Add Text to Your Logo
+              Add Text to Your Logo (Optional)
             </h2>
             <FormGroup className="mb-0">
               <Input id="logo-text-input" value={inputText} onChange={(e) => {
                   setInputText(e.target.value);
                   if (textError) setTextError(null); // Clear error on change
                 }}
-                placeholder="e.g., Your Gamer Tag (Required)"
+                placeholder="e.g., Your Gamer Tag, or leave blank for a text-free PFP"
                 className={clsx(
                   "w-full p-3 text-base border-2 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:border-transparent shadow-sm",
                   // --- CONDITIONAL STYLING ---
@@ -456,8 +538,10 @@ useEffect(() => {
                     ? "border-red-500 dark:border-red-500 focus:ring-red-500" 
                     : "border-slate-300 dark:border-slate-700 focus:ring-purple-500 dark:focus:ring-cyan-500"
                 )}
-                aria-label="Text to include in the logo"
-                aria-required="true" />
+                aria-label="Text to include in the logo" />
+              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                Leave this empty if you want the AI to generate a face logo with no text or lettering.
+              </p>
               {textError && <p className="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">{textError}</p>}
             </FormGroup>
           </section>
@@ -471,7 +555,7 @@ useEffect(() => {
             <div className="relative mb-4 flex items-center">
               {showLeftStyleCategoryArrow && ( <button type="button" onClick={() => scrollStyleCategories("left")} className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 shadow-md border border-slate-300 dark:border-slate-600" aria-label="Scroll Style Categories Left"><AiOutlineLeft size={18} /></button> )}
               <div ref={styleCategoryScrollRef} onScroll={() => handleScroll(styleCategoryScrollRef, setShowLeftStyleCategoryArrow, setShowRightStyleCategoryArrow)} className="flex overflow-x-auto whitespace-nowrap no-scrollbar space-x-2 sm:space-x-3 py-2 flex-1 mx-3">
-                {Object.keys(typedFaceStylesData).map((catKey) => ( <button key={catKey} type="button" onClick={() => setActiveStyleTab(catKey)} className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm shadow-sm hover:shadow-md ${activeStyleTab === catKey ? "bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"}`}>{catKey}</button>))}
+                {Object.keys(typedFaceStylesData).map((catKey) => ( <button key={catKey} type="button" onClick={() => handleStyleCategoryChange(catKey)} className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm shadow-sm hover:shadow-md ${activeStyleTab === catKey ? "bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"}`}>{catKey}</button>))}
               </div>
               {showRightStyleCategoryArrow && ( <button type="button" onClick={() => scrollStyleCategories("right")} className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 shadow-md border border-slate-300 dark:border-slate-600" aria-label="Scroll Style Categories Right"><AiOutlineRight size={18} /></button> )}
             </div>
@@ -479,7 +563,7 @@ useEffect(() => {
                 <div className="relative mb-6 flex items-center">
                 {showLeftStyleSubCategoryArrow && ( <button type="button" onClick={() => scrollStyleSubCategories("left")} className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-300 dark:border-slate-600" aria-label="Scroll Style Subcategories Left"><AiOutlineLeft size={16} /></button> )}
                 <div ref={styleSubCategoryScrollRef} onScroll={() => handleScroll(styleSubCategoryScrollRef, setShowLeftStyleSubCategoryArrow, setShowRightStyleSubCategoryArrow)} className="flex overflow-x-auto whitespace-nowrap no-scrollbar space-x-2 sm:space-x-3 py-2 flex-1 mx-3">
-                    {Object.keys(typedFaceStylesData[activeStyleTab]!).map((subKey) => ( <button key={subKey} type="button" onClick={() => setActiveStyleSubTab(subKey)} className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 shadow-sm hover:shadow ${activeStyleSubTab === subKey ? "bg-purple-500 dark:bg-cyan-400 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-500"}`}>{subKey}</button>))}
+                    {Object.keys(typedFaceStylesData[activeStyleTab]!).map((subKey) => ( <button key={subKey} type="button" onClick={() => handleStyleSubCategoryChange(subKey)} className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 shadow-sm hover:shadow ${activeStyleSubTab === subKey ? "bg-purple-500 dark:bg-cyan-400 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-500"}`}>{subKey}</button>))}
                 </div>
                 {showRightStyleSubCategoryArrow && ( <button type="button" onClick={() => scrollStyleSubCategories("right")} className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-300 dark:border-slate-600" aria-label="Scroll Style Subcategories Right"><AiOutlineRight size={16} /></button> )}
                 </div>
@@ -564,7 +648,7 @@ useEffect(() => {
 
           {/* Submit Button */}
           <div className="mt-6">
-            <Button type="submit" isLoading={isGenerating} disabled={isGenerating || !uploadedImageFile || !selectedStyleBasePrompt || !inputText.trim()}
+            <Button type="submit" isLoading={isGenerating} disabled={isGenerating || !uploadedImageFile || !selectedStyleBasePrompt}
               className={`w-full text-lg font-semibold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoggedIn ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white dark:from-cyan-500 dark:to-blue-500 dark:hover:from-cyan-600 dark:hover:to-blue-600 dark:text-slate-900 focus:ring-purple-500 dark:focus:ring-cyan-400' : 'bg-slate-500 text-slate-100 cursor-not-allowed' } disabled:opacity-70 disabled:cursor-not-allowed`}>
               {isLoggedIn ? (isGenerating ? "Transforming Your Face..." : "Generate My Face Logo!") : "Sign In to Generate"}
             </Button>

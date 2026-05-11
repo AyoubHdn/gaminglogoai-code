@@ -17,7 +17,7 @@ import {
   AiOutlineLogout,
   AiOutlineDown,
 } from "react-icons/ai";
-import { FaPaintBrush, FaTwitch } from "react-icons/fa";
+import { FaImages, FaPaintBrush, FaTwitch, FaYoutube } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 
 /* ------------------------------------------------------------------ */
@@ -62,6 +62,7 @@ export function Header() {
   const toolsLinks = [
     { href: "/gaming-logo", label: "Gaming Logo Maker", icon: <FaPaintBrush /> },
     { href: "/ai-profile-picture-maker", label: "AI PFP Maker", icon: <CgProfile /> },
+    { href: "/youtube-thumbnail-maker", label: "YouTube Thumbnail Maker", icon: <FaImages /> },
     { href: "/twitch-graphics", label: "Twitch Graphics", icon: <FaTwitch /> },
   ];
 
@@ -74,6 +75,13 @@ export function Header() {
         { href: "/twitch-panels-maker", label: "Twitch Panels" },
         { href: "/twitch-stream-screens-maker", label: "Twitch Stream Screens" },
         { href: "/twitch-emote-maker", label: "Twitch Emotes" },
+      ],
+    },
+    {
+      platform: "YouTube",
+      icon: <FaYoutube className="text-red-500" />,
+      items: [
+        { href: "/youtube-thumbnail-maker", label: "YouTube Thumbnail Maker" },
       ],
     },
   ];

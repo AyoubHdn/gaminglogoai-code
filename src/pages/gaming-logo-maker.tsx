@@ -35,6 +35,36 @@ interface GamerStyleCategory {
   [categoryName: string]: GamerStyleSubCategory;
 }
 
+const TEXT_PLACEHOLDER_PATTERN =
+  /(''Text''|'Text'|"Text"|`Text`|\[Text\]|\[USER TEXT\])/gi;
+const TEXT_DIRECTIVE_PATTERN =
+  /\b(text|name|wordmark|lettering|typography|font)\b/i;
+
+function buildGamingLogoPrompt(basePrompt: string, name: string): string {
+  const trimmedName = name.trim();
+
+  if (trimmedName) {
+    return `${basePrompt.replace(TEXT_PLACEHOLDER_PATTERN, trimmedName)}, gaming logo, esports emblem, vector, vibrant, dynamic, clean background, official game art`;
+  }
+
+  const sanitizedSegments = basePrompt
+    .replace(TEXT_PLACEHOLDER_PATTERN, "")
+    .split(/,|—|–|\./)
+    .map((segment) => segment.trim().replace(/\s+/g, " "))
+    .filter(Boolean)
+    .filter((segment) => !TEXT_DIRECTIVE_PATTERN.test(segment));
+
+  const sanitizedPrompt = sanitizedSegments
+    .join(", ")
+    .replace(/\s+,/g, ",")
+    .replace(/,\s*,+/g, ", ")
+    .trim()
+    .replace(/[,-]\s*$/, "");
+
+  const promptBase = sanitizedPrompt || "premium gaming mascot emblem";
+
+  return `${promptBase}, symbol-only gaming logo, no text, no letters, no wordmark, no typography, esports emblem, vector, vibrant, dynamic, clean background, official game art`;
+}
 
 const GameLogoPage: NextPage = () => {
   const router = useRouter();
@@ -81,6 +111,47 @@ const GameLogoPage: NextPage = () => {
   setError("");
 }, []); // Dependencies: only if setSelectedStyleImageSrc or setForm setters change, which they don't
 
+  const handleCategoryChange = useCallback((categoryKey: string) => {
+    const subcategories = typedGamerStylesData[categoryKey];
+    if (!subcategories) {
+      setActiveTab(categoryKey);
+      setActiveSubTab("");
+      setSelectedStyleImageSrc(null);
+      setForm((prev) => ({ ...prev, basePrompt: "" }));
+      return;
+    }
+
+    const firstSubCategory = Object.keys(subcategories)[0];
+    const firstStyle = firstSubCategory ? subcategories[firstSubCategory]?.[0] : undefined;
+
+    setActiveTab(categoryKey);
+
+    if (firstSubCategory) {
+      setActiveSubTab(firstSubCategory);
+    }
+
+    if (firstStyle) {
+      handleStyleSelect(firstStyle.basePrompt, firstStyle.src);
+    } else {
+      setSelectedStyleImageSrc(null);
+      setForm((prev) => ({ ...prev, basePrompt: "" }));
+    }
+  }, [handleStyleSelect, typedGamerStylesData]);
+
+  const handleSubCategoryChange = useCallback((subCategoryKey: string) => {
+    const styles = typedGamerStylesData[activeTab]?.[subCategoryKey];
+    const firstStyle = styles?.[0];
+
+    setActiveSubTab(subCategoryKey);
+
+    if (firstStyle) {
+      handleStyleSelect(firstStyle.basePrompt, firstStyle.src);
+    } else {
+      setSelectedStyleImageSrc(null);
+      setForm((prev) => ({ ...prev, basePrompt: "" }));
+    }
+  }, [activeTab, handleStyleSelect, typedGamerStylesData]);
+
 useEffect(() => {
     if (!router.isReady) return; 
 
@@ -119,11 +190,31 @@ useEffect(() => {
 
   useEffect(() => {
     if (!activeTab || !activeSubTab) return;
-    const styles = typedGamerStylesData[activeTab]?.[activeSubTab];
-    if (styles && styles.length > 0 && styles[0]) {
+    const subcategories = typedGamerStylesData[activeTab];
+    if (!subcategories) return;
+
+    const styles = subcategories[activeSubTab];
+    if (!styles || styles.length === 0) {
+      const firstSubCategory = Object.keys(subcategories)[0];
+      if (!firstSubCategory) return;
+
+      const firstStyle = subcategories[firstSubCategory]?.[0];
+      setActiveSubTab(firstSubCategory);
+
+      if (firstStyle) {
+        handleStyleSelect(firstStyle.basePrompt, firstStyle.src);
+      } else {
+        setSelectedStyleImageSrc(null);
+        setForm((prev) => ({ ...prev, basePrompt: "" }));
+      }
+      return;
+    }
+
+    const hasSelectedStyleInCurrentGroup = styles.some((style) => style.src === selectedStyleImageSrc);
+    if (!hasSelectedStyleInCurrentGroup && styles[0]) {
       handleStyleSelect(styles[0].basePrompt, styles[0].src);
     }
-  }, [activeTab, activeSubTab, handleStyleSelect]);
+  }, [activeTab, activeSubTab, handleStyleSelect, selectedStyleImageSrc, typedGamerStylesData]);
 
   // Scroll handling effects
   useLayoutEffect(() => {
@@ -157,15 +248,13 @@ useEffect(() => {
 
     if (typeof window !== "undefined" && window.dataLayer) {
       window.dataLayer.push({
-        event: "generate_gaming_logo", gaming_logo_name: form.name, gaming_logo_category: activeTab,
+        event: "generate_gaming_logo", gaming_logo_name: form.name.trim(), gaming_logo_category: activeTab,
         gaming_logo_subcategory: activeSubTab, gaming_logo_style_image: selectedStyleImageSrc || "none",
         gaming_logo_aspect_ratio: selectedAspectRatio, gaming_logo_model: selectedModel,
         gaming_logo_num_images: parseInt(form.numberofImages, 10),
       });
     }
-    let finalPrompt = form.basePrompt;
-    finalPrompt = finalPrompt.replace(/('Text'|"Text"|`Text`|\[Text\])/gi, form.name.trim());
-    finalPrompt += ", gaming logo, esports emblem, vector, vibrant, dynamic, clean background, official game art"; // Added more keywords
+    const finalPrompt = `${form.basePrompt.replace(/(''Text''|'Text'|"Text"|`Text`|\[Text\]|\[USER TEXT\])/gi, form.name.trim())}, gaming logo, esports emblem, vector, vibrant, dynamic, clean background, official game art`;
     triggerGenerateIcon({
       prompt: finalPrompt, numberOfImages: parseInt(form.numberofImages, 10),
       aspectRatio: selectedAspectRatio, model: selectedModel,
@@ -250,7 +339,6 @@ useEffect(() => {
       </Head>
       <main className="container mx-auto max-w-screen-lg mb-24 flex flex-col px-4 sm:px-8 py-8 text-slate-800 dark:text-slate-200 bg-white dark:bg-slate-900">
         <header className="text-center mb-10">
-            <Image src="/gaminglogo-ai-banner.webp" alt="Gaming Logo AI Banner - Create stunning gaming logos with AI" width={800} height={200} className="mx-auto mb-4 rounded-lg shadow-lg" priority unoptimized={true}/>
             <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-3">
                 AI Gaming Logo Maker
             </h1>
@@ -262,7 +350,7 @@ useEffect(() => {
         <div className="mb-12 p-6 border border-purple-500/30 dark:border-cyan-500/30 rounded-xl bg-slate-50 dark:bg-slate-800/70 text-sm leading-relaxed shadow-lg backdrop-blur-sm">
           <h2 className="text-2xl font-semibold mb-3 text-purple-700 dark:text-cyan-400">How to Forge Your Logo:</h2>
           <ol className="list-decimal list-inside space-y-2 text-slate-700 dark:text-slate-300">
-            <li><strong className="text-slate-800 dark:text-slate-100">Enter Your Gamer Tag/Team Name:</strong> This text will be featured in your logo.</li>
+            <li><strong className="text-slate-800 dark:text-slate-100">Enter Your Gamer Tag/Team Name:</strong> This helps the AI incorporate your identity into the logo design.</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Pick Your Signature Style:</strong> Browse categories like <em className="text-purple-600 dark:text-cyan-300">Mascots, Abstract, Minimalist, Retro</em>, etc.</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Choose AI Engine Power:</strong> Standard for speed, Balanced for quality, Max Detail for top-tier results.</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Select Aspect Ratio:</strong> Square (1:1) for profiles, Landscape (16:9) for banners, etc.</li>
@@ -280,10 +368,11 @@ useEffect(() => {
               Your Gamer Tag / Team Name
             </h2>
             <FormGroup className="mb-0">
-              <Input required value={form.name} onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-                placeholder="e.g., ShadowBlade, Pixel Prowlers, YourStreamName"
+              <Input value={form.name} onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+                placeholder="e.g., ShadowBlade, Pixel Prowlers"
                 className="w-full p-3 text-base border-2 border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:ring-purple-500 dark:focus:ring-cyan-500 focus:border-transparent shadow-sm"
                 aria-label="Gamer Tag or Team Name"
+                required
               />
             </FormGroup>
           </section>
@@ -297,7 +386,7 @@ useEffect(() => {
             <div className="relative mb-4 flex items-center">
               {showLeftCategoryArrow && ( <button type="button" onClick={() => scrollCategories("left")} className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 shadow-md border border-slate-300 dark:border-slate-600" aria-label="Scroll Categories Left"><AiOutlineLeft size={18} /></button> )}
               <div ref={categoryScrollRef} onScroll={handleCategoryScroll} className="flex overflow-x-auto whitespace-nowrap no-scrollbar space-x-2 sm:space-x-3 py-2 flex-1 mx-3">
-                {Object.keys(typedGamerStylesData).map((catKey) => ( <button key={catKey} type="button" onClick={() => setActiveTab(catKey)} className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm shadow-sm hover:shadow-md ${activeTab === catKey ? "bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"}`}>{catKey}</button>))}
+                {Object.keys(typedGamerStylesData).map((catKey) => ( <button key={catKey} type="button" onClick={() => handleCategoryChange(catKey)} className={`px-4 py-2 rounded-lg font-semibold transition-all duration-200 text-sm shadow-sm hover:shadow-md ${activeTab === catKey ? "bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600"}`}>{catKey}</button>))}
               </div>
               {showRightCategoryArrow && ( <button type="button" onClick={() => scrollCategories("right")} className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 shadow-md border border-slate-300 dark:border-slate-600" aria-label="Scroll Categories Right"><AiOutlineRight size={18} /></button> )}
             </div>
@@ -306,7 +395,7 @@ useEffect(() => {
                 <div className="relative mb-6 flex items-center">
                 {showLeftSubCategoryArrow && ( <button type="button" onClick={() => scrollSubCategories("left")} className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-300 dark:border-slate-600" aria-label="Scroll Subcategories Left"><AiOutlineLeft size={16} /></button> )}
                 <div ref={subcategoryScrollRef} onScroll={handleSubCategoryScroll} className="flex overflow-x-auto whitespace-nowrap no-scrollbar space-x-2 sm:space-x-3 py-2 flex-1 mx-3">
-                    {Object.keys(typedGamerStylesData[activeTab]!).map((subKey) => ( <button key={subKey} type="button" id={subKey} onClick={() => setActiveSubTab(subKey)} className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 shadow-sm hover:shadow ${activeSubTab === subKey ? "bg-purple-500 dark:bg-cyan-400 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-500"}`}>{subKey}</button>))}
+                    {Object.keys(typedGamerStylesData[activeTab]!).map((subKey) => ( <button key={subKey} type="button" id={subKey} onClick={() => handleSubCategoryChange(subKey)} className={`px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 shadow-sm hover:shadow ${activeSubTab === subKey ? "bg-purple-500 dark:bg-cyan-400 text-white dark:text-slate-900 scale-105" : "bg-white dark:bg-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-500"}`}>{subKey}</button>))}
                 </div>
                 {showRightSubCategoryArrow && ( <button type="button" onClick={() => scrollSubCategories("right")} className="absolute -right-3 sm:-right-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 shadow-sm border border-slate-300 dark:border-slate-600" aria-label="Scroll Subcategories Right"><AiOutlineRight size={16} /></button> )}
                 </div>
@@ -486,7 +575,7 @@ useEffect(() => {
 
           {/* Submit Button */}
           <div className="mt-6">
-            <Button type="submit" isLoading={isGenerating} disabled={isGenerating || !form.basePrompt.trim() || !form.name.trim()}
+            <Button type="submit" isLoading={isGenerating} disabled={isGenerating || !form.name.trim() || !form.basePrompt.trim()}
               className={`w-full text-lg font-semibold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoggedIn ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white dark:from-cyan-500 dark:to-blue-500 dark:hover:from-cyan-600 dark:hover:to-blue-600 dark:text-slate-900 focus:ring-purple-500 dark:focus:ring-cyan-400' : 'bg-slate-500 text-slate-100 cursor-not-allowed' } disabled:opacity-70 disabled:cursor-not-allowed`}
             >
               {isLoggedIn ? (isGenerating ? "Generating Your Logos..." : "Forge My Logos!") : "Sign In to Generate"}
@@ -502,7 +591,7 @@ useEffect(() => {
             <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {imagesUrl.map(({ imageUrl }, index) => (
                 <div key={index} className="relative group rounded-xl shadow-lg hover:shadow-2xl dark:bg-slate-800/70 transition-all duration-300 aspect-square overflow-hidden border-2 border-transparent hover:border-purple-500 dark:hover:border-cyan-500">
-                  <Image src={imageUrl} alt={`Generated gaming logo ${index + 1} for ${form.name}`} fill style={{ objectFit: "cover" }} className="transition-transform duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" priority={index < 4} />
+                  <Image src={imageUrl} alt={`Generated gaming logo ${index + 1}${form.name.trim() ? ` for ${form.name.trim()}` : ""}`} fill style={{ objectFit: "cover" }} className="transition-transform duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" priority={index < 4} />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-end p-3 space-y-2">
                     <div className="flex gap-2">
                         <button type="button" onClick={() => openPopup(imageUrl)} className="p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors" title="View Fullscreen" aria-label="View Fullscreen">
