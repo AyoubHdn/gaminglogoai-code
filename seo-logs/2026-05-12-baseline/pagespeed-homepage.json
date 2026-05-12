@@ -1,0 +1,2090 @@
+{
+  "url": "https://gaminglogoai.com",
+  "psi": {
+    "mobile": {
+      "url": "https://gaminglogoai.com",
+      "strategy": "mobile",
+      "lighthouse_scores": {
+        "performance": 98,
+        "accessibility": 89,
+        "best-practices": 96,
+        "seo": 100
+      },
+      "lab_metrics": {
+        "first-contentful-paint": {
+          "value": 913.2414928727057,
+          "display": "0.9\u00a0s",
+          "score": 1
+        },
+        "largest-contentful-paint": {
+          "value": 1893.6037321817644,
+          "display": "1.9\u00a0s",
+          "score": 0.98
+        },
+        "total-blocking-time": {
+          "value": 154.90944017273478,
+          "display": "150\u00a0ms",
+          "score": 0.94
+        },
+        "cumulative-layout-shift": {
+          "value": 0,
+          "display": "0",
+          "score": 1
+        },
+        "speed-index": {
+          "value": 1776.8430551467022,
+          "display": "1.8\u00a0s",
+          "score": 1
+        },
+        "interactive": {
+          "value": 5517.153347991756,
+          "display": "5.5\u00a0s",
+          "score": 0.7
+        }
+      },
+      "field_metrics": {},
+      "opportunities": [
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "savings_ms": 150,
+          "description": "Reduce unused rules from stylesheets and defer CSS not used for above-the-fold content to decrease bytes consumed by network activity. [Learn how to reduce unused CSS](https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules/)."
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "savings_ms": 150,
+          "description": "Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity. [Learn how to reduce unused JavaScript](https://developer.chrome.com/docs/lighthouse/performance/unused-javascript/)."
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "total-byte-weight",
+          "title": "Avoids enormous network payloads",
+          "display": "Total size was 2,060\u00a0KiB",
+          "score": 1,
+          "description": "Large network payloads cost users real money and are highly correlated with long load times. [Learn how to reduce payload sizes](https://developer.chrome.com/docs/lighthouse/performance/total-byte-weight/)."
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "display": "1.0\u00a0s",
+          "score": 1,
+          "description": "Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to minimize main-thread work](https://developer.chrome.com/docs/lighthouse/performance/mainthread-work-breakdown/)"
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "display": "0.7\u00a0s",
+          "score": 1,
+          "description": "Consider reducing the time spent parsing, compiling, and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to reduce Javascript execution time](https://developer.chrome.com/docs/lighthouse/performance/bootup-time/)."
+        },
+        {
+          "id": "layout-shifts",
+          "title": "Avoid large layout shifts",
+          "display": "",
+          "score": null,
+          "description": "These are the largest layout shifts observed on the page. Each table item represents a single layout shift, and shows the element that shifted the most. Below each item are possible root causes that led to the layout shift. Some of these layout shifts may not be included in the CLS metric value due to [windowing](https://web.dev/articles/cls#what_is_cls). [Learn how to improve CLS](https://web.dev/articles/optimize-cls)"
+        },
+        {
+          "id": "long-tasks",
+          "title": "Avoid long main-thread tasks",
+          "display": "5 long tasks found",
+          "score": 1,
+          "description": "Lists the longest tasks on the main thread, useful for identifying worst contributors to input delay. [Learn how to avoid long main-thread tasks](https://web.dev/articles/optimize-long-tasks)"
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 187\u00a0KiB",
+          "score": 0,
+          "description": "Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity. [Learn how to reduce unused JavaScript](https://developer.chrome.com/docs/lighthouse/performance/unused-javascript/)."
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "display": "Est savings of 12\u00a0KiB",
+          "score": 0,
+          "description": "Reduce unused rules from stylesheets and defer CSS not used for above-the-fold content to decrease bytes consumed by network activity. [Learn how to reduce unused CSS](https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules/)."
+        }
+      ],
+      "failed_audits": [
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "score": 0,
+          "display": "Est savings of 1,486\u00a0KiB",
+          "description": "Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)"
+        },
+        {
+          "id": "legacy-javascript-insight",
+          "title": "Legacy JavaScript",
+          "score": 0,
+          "display": "Est savings of 13\u00a0KiB",
+          "description": "Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+        },
+        {
+          "id": "color-contrast",
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "score": 0,
+          "display": "",
+          "description": "Low-contrast text is difficult or impossible for many users to read. [Learn how to provide sufficient color contrast](https://dequeuniversity.com/rules/axe/4.11/color-contrast)."
+        },
+        {
+          "id": "button-name",
+          "title": "Buttons do not have an accessible name",
+          "score": 0,
+          "display": "",
+          "description": "When a button doesn't have an accessible name, screen readers announce it as \"button\", making it unusable for users who rely on screen readers. [Learn how to make buttons more accessible](https://dequeuniversity.com/rules/axe/4.11/button-name)."
+        },
+        {
+          "id": "heading-order",
+          "title": "Heading elements are not in a sequentially-descending order",
+          "score": 0,
+          "display": "",
+          "description": "Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies. [Learn more about heading order](https://dequeuniversity.com/rules/axe/4.11/heading-order)."
+        },
+        {
+          "id": "errors-in-console",
+          "title": "Browser errors were logged to the console",
+          "score": 0,
+          "display": "",
+          "description": "Errors logged to the console indicate unresolved problems. They can come from network request failures and other browser concerns. [Learn more about this errors in console diagnostic audit](https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console/)"
+        },
+        {
+          "id": "max-potential-fid",
+          "title": "Max Potential First Input Delay",
+          "score": 0.52,
+          "display": "240\u00a0ms",
+          "description": "The maximum potential First Input Delay that your users could experience is the duration of the longest task. [Learn more about the Maximum Potential First Input Delay metric](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/)."
+        },
+        {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.7,
+          "display": "5.5\u00a0s",
+          "description": "Time to Interactive is the amount of time it takes for the page to become fully interactive. [Learn more about the Time to Interactive metric](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
+        }
+      ],
+      "passed_audits_count": 85,
+      "seo_audits": [
+        {
+          "id": "is-crawlable",
+          "title": "Page isn\u2019t blocked from indexing",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "document-title",
+          "title": "Document has a `<title>` element",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "meta-description",
+          "title": "Document has a meta description",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "http-status-code",
+          "title": "Page has successful HTTP status code",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "link-text",
+          "title": "Links have descriptive text",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "crawlable-anchors",
+          "title": "Links are crawlable",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "robots-txt",
+          "title": "robots.txt is valid",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "image-alt",
+          "title": "Image elements have `[alt]` attributes",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "hreflang",
+          "title": "Document has a valid `hreflang`",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "canonical",
+          "title": "Document has a valid `rel=canonical`",
+          "score": 1,
+          "pass": true
+        }
+      ],
+      "accessibility_audits": [
+        {
+          "id": "button-name",
+          "title": "Buttons do not have an accessible name",
+          "score": 0,
+          "display": ""
+        },
+        {
+          "id": "color-contrast",
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "score": 0,
+          "display": ""
+        },
+        {
+          "id": "heading-order",
+          "title": "Heading elements are not in a sequentially-descending order",
+          "score": 0,
+          "display": ""
+        }
+      ],
+      "audit_details": {
+        "image-delivery-insight": {
+          "title": "Improve image delivery",
+          "headings": [
+            "node",
+            "url",
+            "totalBytes",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "node": "{'boundingRect': {'top': 3518, 'left': 16, 'bottom': 3731, 'height': 214, 'right': 396, 'width': 380}, 'selector': 'div.container > div.grid > div.relative > img.rounded-xl', 'nodeLabel': 'Custom Twit",
+              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.png",
+              "totalBytes": 1291097,
+              "wastedBytes": 1249638
+            },
+            {
+              "node": "{'boundingRect': {'top': 1791, 'left': 16, 'bottom': 2005, 'height': 214, 'right': 396, 'width': 380}, 'selector': 'div.container > div.grid > div.relative > img.transition-transform', 'nodeLabel': 'A",
+              "url": "https://gaminglogoai.com/twitch/banner/fortnite-prv.webp",
+              "totalBytes": 218778,
+              "wastedBytes": 184171
+            },
+            {
+              "node": "{'boundingRect': {'left': 16, 'bottom': 50, 'height': 36, 'top': 14, 'right': 52, 'width': 36}, 'selector': 'header.sticky > div.container > a.flex > img', 'nodeLabel': 'GamingLogoAI', 'path': '1,HTML",
+              "url": "https://gaminglogoai.com/logo.webp",
+              "totalBytes": 32856,
+              "wastedBytes": 32556
+            },
+            {
+              "node": "{'boundingRect': {'width': 380, 'right': 396, 'left': 16, 'bottom': 3270, 'height': 119, 'top': 3151}, 'selector': 'div.container > div.grid > div.relative > img', 'snippet': '<img alt=\"AI Twitch Pane",
+              "url": "https://gaminglogoai.com/twitch/panels/valorant_strike_prv.webp",
+              "totalBytes": 31222,
+              "wastedBytes": 28123
+            },
+            {
+              "node": "{'selector': 'main.flex-grow > main.container > section.relative > img.z-0', 'boundingRect': {'right': 412, 'width': 412, 'top': 64, 'bottom': 675, 'height': 611, 'left': 0}, 'nodeLabel': 'Abstract ga",
+              "url": "https://gaminglogoai.com/_next/image?url=%2Fimages%2Fhome-hero-bg.webp&w=750&q=80",
+              "totalBytes": 44970,
+              "wastedBytes": 27538
+            }
+          ],
+          "total_items": 5
+        },
+        "unused-css-rules": {
+          "title": "Reduce unused CSS",
+          "headings": [
+            "url",
+            "totalBytes",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "url": "https://gaminglogoai.com/_next/static/css/8b4e33a44e7fc7b2.css",
+              "totalBytes": 13970,
+              "wastedBytes": 12074
+            }
+          ],
+          "total_items": 1
+        },
+        "image-redundant-alt": {
+          "title": "Image elements do not have `[alt]` attributes that are redundant text.",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'nodeLabel': 'GamingLogoAI', 'snippet': '<img alt=\"GamingLogoAI\" loading=\"lazy\" width=\"36\" height=\"36\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" src=\"/logo.webp\">', 'path': '1,HTML,1,B"
+            }
+          ],
+          "total_items": 1
+        },
+        "bootup-time": {
+          "title": "JavaScript execution time",
+          "headings": [
+            "url",
+            "total",
+            "scripting",
+            "scriptParseCompile"
+          ],
+          "items": [
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=G-ELQBY5DTEP&cx=c&gtm=4e6581",
+              "total": 245.75279999999924,
+              "scripting": 163.7543999999992,
+              "scriptParseCompile": 80.12760000000002
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/framework-76e24f4ca1ef99f8.js",
+              "total": 197.63879999999955,
+              "scripting": 169.06799999999956,
+              "scriptParseCompile": 24.879599999999996
+            },
+            {
+              "url": "https://gaminglogoai.com/",
+              "total": 182.0196,
+              "scripting": 7.6932,
+              "scriptParseCompile": 0.2328
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtm.js?id=GTM-WW8GRHH5",
+              "total": 129.91440000000006,
+              "scripting": 69.53400000000005,
+              "scriptParseCompile": 58.9608
+            },
+            {
+              "url": "Unattributable",
+              "total": 114.12840000000008,
+              "scripting": 15.658799999999996,
+              "scriptParseCompile": 0
+            }
+          ],
+          "total_items": 6
+        },
+        "server-response-time": {
+          "title": "Initial server response time was short",
+          "headings": [
+            "url",
+            "responseTime"
+          ],
+          "items": [
+            {
+              "url": "https://gaminglogoai.com/",
+              "responseTime": 1
+            }
+          ],
+          "total_items": 1
+        },
+        "network-requests": {
+          "title": "Network Requests",
+          "headings": [
+            "url",
+            "protocol",
+            "networkRequestTime",
+            "networkEndTime",
+            "transferSize",
+            "resourceSize",
+            "statusCode",
+            "mimeType",
+            "resourceType"
+          ],
+          "items": [
+            {
+              "url": "https://gaminglogoai.com/",
+              "protocol": "h2",
+              "networkRequestTime": 2.615000009536743,
+              "networkEndTime": 410.79100000858307,
+              "transferSize": 10328,
+              "resourceSize": 52169,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document"
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/image?url=%2Fimages%2Fhome-hero-bg.webp&w=750&q=80",
+              "protocol": "h2",
+              "networkRequestTime": 433.4259999990463,
+              "networkEndTime": 806.6530000269413,
+              "transferSize": 45536,
+              "resourceSize": 44970,
+              "statusCode": 200,
+              "mimeType": "image/webp",
+              "resourceType": "Image"
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/css/8b4e33a44e7fc7b2.css",
+              "protocol": "h2",
+              "networkRequestTime": 433.5629999935627,
+              "networkEndTime": 809.9109999835491,
+              "transferSize": 14591,
+              "resourceSize": 94567,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet"
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/webpack-c13987134a980510.js",
+              "protocol": "h2",
+              "networkRequestTime": 438.97900000214577,
+              "networkEndTime": 761.41400000453,
+              "transferSize": 2523,
+              "resourceSize": 3977,
+              "statusCode": 200,
+              "mimeType": "application/javascript",
+              "resourceType": "Script"
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/framework-76e24f4ca1ef99f8.js",
+              "protocol": "h2",
+              "networkRequestTime": 439.39500001072884,
+              "networkEndTime": 887.9639999866486,
+              "transferSize": 60982,
+              "resourceSize": 209147,
+              "statusCode": 200,
+              "mimeType": "application/javascript",
+              "resourceType": "Script"
+            }
+          ],
+          "total_items": 22
+        },
+        "js-libraries": {
+          "title": "Detected JavaScript libraries",
+          "headings": [
+            "name",
+            "version"
+          ],
+          "items": [
+            {
+              "name": "Next.js",
+              "version": "14.2.15"
+            }
+          ],
+          "total_items": 1
+        },
+        "has-hsts": {
+          "title": "Use a strong HSTS policy",
+          "headings": [
+            "description",
+            "directive",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No `includeSubDomains` directive found",
+              "directive": "includeSubDomains",
+              "severity": "Medium"
+            },
+            {
+              "description": "No `preload` directive found",
+              "directive": "preload",
+              "severity": "Medium"
+            }
+          ],
+          "total_items": 2
+        },
+        "legacy-javascript-insight": {
+          "title": "Legacy JavaScript",
+          "headings": [
+            "url",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/main-f14b6b1c4dfd5a35.js",
+              "wastedBytes": 13359
+            }
+          ],
+          "total_items": 1
+        },
+        "unused-javascript": {
+          "title": "Reduce unused JavaScript",
+          "headings": [
+            "url",
+            "totalBytes",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=G-ELQBY5DTEP&cx=c&gtm=4e6581",
+              "totalBytes": 157604,
+              "wastedBytes": 66988
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtm.js?id=GTM-WW8GRHH5",
+              "totalBytes": 119716,
+              "wastedBytes": 62324
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/framework-76e24f4ca1ef99f8.js",
+              "totalBytes": 60326,
+              "wastedBytes": 32034
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/pages/_app-97c40213158b46b2.js",
+              "totalBytes": 57998,
+              "wastedBytes": 30510
+            }
+          ],
+          "total_items": 4
+        },
+        "clickjacking-mitigation": {
+          "title": "Mitigate clickjacking with XFO or CSP",
+          "headings": [
+            "description",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No frame control policy found",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "color-contrast": {
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'selector': 'div.container > div.grid > div > a#cta-home-youtube-thumbnail', 'boundingRect': {'right': 315, 'width': 299, 'top': 5079, 'bottom': 5127, 'height': 48, 'left': 16}, 'explanation': 'Fix a"
+            }
+          ],
+          "total_items": 1
+        },
+        "trusted-types-xss": {
+          "title": "Mitigate DOM-based XSS with Trusted Types",
+          "headings": [
+            "description",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No `Content-Security-Policy` header with Trusted Types directive found",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "csp-xss": {
+          "title": "Ensure CSP is effective against XSS attacks",
+          "headings": [
+            "description",
+            "directive",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No CSP found in enforcement mode",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "long-tasks": {
+          "title": "Avoid long main-thread tasks",
+          "headings": [
+            "url",
+            "startTime",
+            "duration"
+          ],
+          "items": [
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=G-ELQBY5DTEP&cx=c&gtm=4e6581",
+              "startTime": 6157.784851836295,
+              "duration": 241
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtm.js?id=GTM-WW8GRHH5",
+              "startTime": 4380.784851836294,
+              "duration": 98
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/framework-76e24f4ca1ef99f8.js",
+              "startTime": 2323.784851836294,
+              "duration": 69
+            },
+            {
+              "url": "https://gaminglogoai.com/",
+              "startTime": 793.1811196545293,
+              "duration": 66
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/main-f14b6b1c4dfd5a35.js",
+              "startTime": 1984.6641053999408,
+              "duration": 62
+            }
+          ],
+          "total_items": 5
+        },
+        "dom-size-insight": {
+          "title": "Optimize DOM size",
+          "headings": [
+            "statistic",
+            "node",
+            "value"
+          ],
+          "items": [
+            {
+              "statistic": "Total elements",
+              "value": "{'value': 339, 'granularity': 1, 'type': 'numeric'}"
+            },
+            {
+              "statistic": "DOM depth",
+              "value": "{'value': 12, 'granularity': 1, 'type': 'numeric'}"
+            },
+            {
+              "statistic": "Most children",
+              "node": "{'selector': 'div#__next > div.flex > main.flex-grow > main.container', 'boundingRect': {'right': 412, 'width': 412, 'left': 0, 'bottom': 11842, 'height': 11778, 'top': 64}, 'path': '1,HTML,1,BODY,0,D",
+              "value": "{'value': 12, 'granularity': 1, 'type': 'numeric'}"
+            }
+          ],
+          "total_items": 3
+        },
+        "button-name": {
+          "title": "Buttons do not have an accessible name",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'path': '1,HTML,1,BODY,0,DIV,1,DIV,0,HEADER,0,DIV,3,BUTTON', 'lhId': '1-0-BUTTON', 'type': 'node', 'snippet': '<button class=\"md:hidden\">', 'nodeLabel': 'div.flex > header.sticky > div.container > bu"
+            }
+          ],
+          "total_items": 1
+        },
+        "origin-isolation": {
+          "title": "Ensure proper origin isolation with COOP",
+          "headings": [
+            "description",
+            "directive",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No COOP header found",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "network-rtt": {
+          "title": "Network Round Trip Times",
+          "headings": [
+            "origin",
+            "rtt"
+          ],
+          "items": [
+            {
+              "origin": "https://gaminglogoai.com",
+              "rtt": 3.0612524999999975
+            },
+            {
+              "origin": "https://www.google-analytics.com",
+              "rtt": 0.8999999999999999
+            },
+            {
+              "origin": "https://www.googletagmanager.com",
+              "rtt": 0.0008792818235201434
+            }
+          ],
+          "total_items": 3
+        },
+        "user-timings": {
+          "title": "User Timing marks and measures",
+          "headings": [
+            "name",
+            "timingType",
+            "startTime",
+            "duration"
+          ],
+          "items": [
+            {
+              "name": "Next.js-before-hydration",
+              "timingType": "Measure",
+              "startTime": 0,
+              "duration": 1043.724
+            },
+            {
+              "name": "Next.js-hydration",
+              "timingType": "Measure",
+              "startTime": 1043.724,
+              "duration": 67.594
+            },
+            {
+              "name": "beforeRender",
+              "timingType": "Mark",
+              "startTime": 1043.724
+            },
+            {
+              "name": "afterHydrate",
+              "timingType": "Mark",
+              "startTime": 1111.318
+            }
+          ],
+          "total_items": 4
+        },
+        "heading-order": {
+          "title": "Heading elements are not in a sequentially-descending order",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'explanation': 'Fix any of the following:\\n  Heading order invalid', 'boundingRect': {'height': 20, 'left': 16, 'bottom': 12045, 'top': 12025, 'right': 190, 'width': 174}, 'selector': 'div.container "
+            }
+          ],
+          "total_items": 1
+        },
+        "main-thread-tasks": {
+          "title": "Tasks",
+          "headings": [
+            "startTime",
+            "duration"
+          ],
+          "items": [
+            {
+              "startTime": 415.11,
+              "duration": 20.069
+            },
+            {
+              "startTime": 435.895,
+              "duration": 7.145
+            },
+            {
+              "startTime": 816.218,
+              "duration": 109.512
+            },
+            {
+              "startTime": 933.446,
+              "duration": 20.913
+            },
+            {
+              "startTime": 954.368,
+              "duration": 51.787
+            }
+          ],
+          "total_items": 17
+        },
+        "mainthread-work-breakdown": {
+          "title": "Minimizes main-thread work",
+          "headings": [
+            "groupLabel",
+            "duration"
+          ],
+          "items": [
+            {
+              "groupLabel": "Script Evaluation",
+              "duration": 508.07279999999776
+            },
+            {
+              "groupLabel": "Script Parsing & Compilation",
+              "duration": 203.26799999999997
+            },
+            {
+              "groupLabel": "Style & Layout",
+              "duration": 131.37239999999997
+            },
+            {
+              "groupLabel": "Other",
+              "duration": 102.72840000000029
+            },
+            {
+              "groupLabel": "Rendering",
+              "duration": 22.692000000000004
+            }
+          ],
+          "total_items": 7
+        },
+        "third-parties-insight": {
+          "title": "3rd parties",
+          "headings": [
+            "entity",
+            "transferSize",
+            "mainThreadTime"
+          ],
+          "items": [
+            {
+              "entity": "Google Tag Manager",
+              "transferSize": 278738,
+              "mainThreadTime": 309.02000001072884
+            },
+            {
+              "entity": "Google Analytics",
+              "transferSize": 800,
+              "mainThreadTime": 0
+            }
+          ],
+          "total_items": 2
+        },
+        "errors-in-console": {
+          "title": "Browser errors were logged to the console",
+          "headings": [
+            "sourceLocation",
+            "description"
+          ],
+          "items": [
+            {
+              "sourceLocation": "https://gaminglogoai.com/_next/static/chunks/pages/_app-97c40213158b46b2.js",
+              "description": "%c << query #1 %cuser.getCredits%c %O \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n  ; font-weight: normal; [object Object]"
+            },
+            {
+              "sourceLocation": "https://gaminglogoai.com/_next/static/chunks/pages/_app-97c40213158b46b2.js",
+              "description": "%c << query #2 %cuser.getCredits%c %O \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n  ; font-weight: normal; [object Object]"
+            },
+            {
+              "sourceLocation": "https://gaminglogoai.com/api/trpc/user.getCredits?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%7D",
+              "description": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+            },
+            {
+              "sourceLocation": "https://gaminglogoai.com/api/trpc/user.getCredits?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%7D",
+              "description": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+            }
+          ],
+          "total_items": 4
+        },
+        "viewport-insight": {
+          "title": "Optimize viewport for mobile",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'nodeLabel': 'head > meta', 'snippet': '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">', 'path': '1,HTML,0,HEAD,1,META', 'lhId': 'page-5-META', 'type': 'node', 'boundingRect':"
+            }
+          ],
+          "total_items": 1
+        },
+        "network-server-latency": {
+          "title": "Server Backend Latencies",
+          "headings": [
+            "origin",
+            "serverResponseTime"
+          ],
+          "items": [
+            {
+              "origin": "https://www.googletagmanager.com",
+              "serverResponseTime": 7
+            },
+            {
+              "origin": "https://gaminglogoai.com",
+              "serverResponseTime": 1
+            },
+            {
+              "origin": "https://www.google-analytics.com",
+              "serverResponseTime": 1
+            }
+          ],
+          "total_items": 3
+        },
+        "resource-summary": {
+          "title": "Resources Summary",
+          "headings": [
+            "label",
+            "requestCount",
+            "transferSize"
+          ],
+          "items": [
+            {
+              "label": "Total",
+              "requestCount": 22,
+              "transferSize": 2109465
+            },
+            {
+              "label": "Image",
+              "requestCount": 7,
+              "transferSize": 1635457
+            },
+            {
+              "label": "Script",
+              "requestCount": 9,
+              "transferSize": 446280
+            },
+            {
+              "label": "Stylesheet",
+              "requestCount": 1,
+              "transferSize": 14591
+            },
+            {
+              "label": "Document",
+              "requestCount": 1,
+              "transferSize": 10328
+            }
+          ],
+          "total_items": 9
+        },
+        "total-byte-weight": {
+          "title": "Avoids enormous network payloads",
+          "headings": [
+            "url",
+            "totalBytes"
+          ],
+          "items": [
+            {
+              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.png",
+              "totalBytes": 1291637
+            },
+            {
+              "url": "https://gaminglogoai.com/twitch/banner/fortnite-prv.webp",
+              "totalBytes": 219324
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=G-ELQBY5DTEP&cx=c&gtm=4e6581",
+              "totalBytes": 158291
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtm.js?id=GTM-WW8GRHH5",
+              "totalBytes": 120447
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/framework-76e24f4ca1ef99f8.js",
+              "totalBytes": 60982
+            }
+          ],
+          "total_items": 10
+        }
+      },
+      "analysis_timestamp": "2026-05-12T17:24:50.733Z",
+      "error": null
+    },
+    "desktop": {
+      "url": "https://gaminglogoai.com",
+      "strategy": "desktop",
+      "lighthouse_scores": {
+        "performance": 80,
+        "accessibility": 94,
+        "best-practices": 96,
+        "seo": 100
+      },
+      "lab_metrics": {
+        "first-contentful-paint": {
+          "value": 318.4004686509325,
+          "display": "0.3\u00a0s",
+          "score": 1
+        },
+        "largest-contentful-paint": {
+          "value": 502.73458306915336,
+          "display": "0.5\u00a0s",
+          "score": 1
+        },
+        "total-blocking-time": {
+          "value": 454.5,
+          "display": "450\u00a0ms",
+          "score": 0.34
+        },
+        "cumulative-layout-shift": {
+          "value": 0,
+          "display": "0",
+          "score": 1
+        },
+        "speed-index": {
+          "value": 851.2876175936049,
+          "display": "0.9\u00a0s",
+          "score": 0.99
+        },
+        "interactive": {
+          "value": 3203.8823460995536,
+          "display": "3.2\u00a0s",
+          "score": 0.76
+        }
+      },
+      "field_metrics": {},
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "savings_ms": 80,
+          "description": "Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity. [Learn how to reduce unused JavaScript](https://developer.chrome.com/docs/lighthouse/performance/unused-javascript/)."
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "savings_ms": 40,
+          "description": "Reduce unused rules from stylesheets and defer CSS not used for above-the-fold content to decrease bytes consumed by network activity. [Learn how to reduce unused CSS](https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules/)."
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "total-byte-weight",
+          "title": "Avoid enormous network payloads",
+          "display": "Total size was 3,166\u00a0KiB",
+          "score": 0.5,
+          "description": "Large network payloads cost users real money and are highly correlated with long load times. [Learn how to reduce payload sizes](https://developer.chrome.com/docs/lighthouse/performance/total-byte-weight/)."
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "display": "2.0\u00a0s",
+          "score": 1,
+          "description": "Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to minimize main-thread work](https://developer.chrome.com/docs/lighthouse/performance/mainthread-work-breakdown/)"
+        },
+        {
+          "id": "bootup-time",
+          "title": "Reduce JavaScript execution time",
+          "display": "1.4\u00a0s",
+          "score": 0,
+          "description": "Consider reducing the time spent parsing, compiling, and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to reduce Javascript execution time](https://developer.chrome.com/docs/lighthouse/performance/bootup-time/)."
+        },
+        {
+          "id": "layout-shifts",
+          "title": "Avoid large layout shifts",
+          "display": "",
+          "score": null,
+          "description": "These are the largest layout shifts observed on the page. Each table item represents a single layout shift, and shows the element that shifted the most. Below each item are possible root causes that led to the layout shift. Some of these layout shifts may not be included in the CLS metric value due to [windowing](https://web.dev/articles/cls#what_is_cls). [Learn how to improve CLS](https://web.dev/articles/optimize-cls)"
+        },
+        {
+          "id": "long-tasks",
+          "title": "Avoid long main-thread tasks",
+          "display": "10 long tasks found",
+          "score": 1,
+          "description": "Lists the longest tasks on the main thread, useful for identifying worst contributors to input delay. [Learn how to avoid long main-thread tasks](https://web.dev/articles/optimize-long-tasks)"
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 416\u00a0KiB",
+          "score": 0,
+          "description": "Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity. [Learn how to reduce unused JavaScript](https://developer.chrome.com/docs/lighthouse/performance/unused-javascript/)."
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "display": "Est savings of 11\u00a0KiB",
+          "score": 0,
+          "description": "Reduce unused rules from stylesheets and defer CSS not used for above-the-fold content to decrease bytes consumed by network activity. [Learn how to reduce unused CSS](https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules/)."
+        }
+      ],
+      "failed_audits": [
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree",
+          "score": 0,
+          "display": "",
+          "description": "[Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load."
+        },
+        {
+          "id": "errors-in-console",
+          "title": "Browser errors were logged to the console",
+          "score": 0,
+          "display": "",
+          "description": "Errors logged to the console indicate unresolved problems. They can come from network request failures and other browser concerns. [Learn more about this errors in console diagnostic audit](https://developer.chrome.com/docs/lighthouse/best-practices/errors-in-console/)"
+        },
+        {
+          "id": "color-contrast",
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "score": 0,
+          "display": "",
+          "description": "Low-contrast text is difficult or impossible for many users to read. [Learn how to provide sufficient color contrast](https://dequeuniversity.com/rules/axe/4.11/color-contrast)."
+        },
+        {
+          "id": "bootup-time",
+          "title": "Reduce JavaScript execution time",
+          "score": 0,
+          "display": "1.4\u00a0s",
+          "description": "Consider reducing the time spent parsing, compiling, and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to reduce Javascript execution time](https://developer.chrome.com/docs/lighthouse/performance/bootup-time/)."
+        },
+        {
+          "id": "heading-order",
+          "title": "Heading elements are not in a sequentially-descending order",
+          "score": 0,
+          "display": "",
+          "description": "Properly ordered headings that do not skip levels convey the semantic structure of the page, making it easier to navigate and understand when using assistive technologies. [Learn more about heading order](https://dequeuniversity.com/rules/axe/4.11/heading-order)."
+        },
+        {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.34,
+          "display": "450\u00a0ms",
+          "description": "Sum of all time periods between FCP and Time to Interactive, when task length exceeded 50ms, expressed in milliseconds. [Learn more about the Total Blocking Time metric](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-total-blocking-time/)."
+        },
+        {
+          "id": "max-potential-fid",
+          "title": "Max Potential First Input Delay",
+          "score": 0.44,
+          "display": "270\u00a0ms",
+          "description": "The maximum potential First Input Delay that your users could experience is the duration of the longest task. [Learn more about the Maximum Potential First Input Delay metric](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-max-potential-fid/)."
+        },
+        {
+          "id": "legacy-javascript-insight",
+          "title": "Legacy JavaScript",
+          "score": 0.5,
+          "display": "Est savings of 13\u00a0KiB",
+          "description": "Polyfills and transforms enable older browsers to use new JavaScript features. However, many aren't necessary for modern browsers. Consider modifying your JavaScript build process to not transpile [Baseline](https://web.dev/articles/baseline-and-polyfills) features, unless you know you must support older browsers. [Learn why most sites can deploy ES6+ code without transpiling](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "score": 0.5,
+          "display": "Est savings of 1,603\u00a0KiB",
+          "description": "Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)"
+        },
+        {
+          "id": "cache-insight",
+          "title": "Use efficient cache lifetimes",
+          "score": 0.5,
+          "display": "Est savings of 244\u00a0KiB",
+          "description": "A long cache lifetime can speed up repeat visits to your page. [Learn more about caching](https://developer.chrome.com/docs/performance/insights/cache)."
+        },
+        {
+          "id": "total-byte-weight",
+          "title": "Avoid enormous network payloads",
+          "score": 0.5,
+          "display": "Total size was 3,166\u00a0KiB",
+          "description": "Large network payloads cost users real money and are highly correlated with long load times. [Learn how to reduce payload sizes](https://developer.chrome.com/docs/lighthouse/performance/total-byte-weight/)."
+        },
+        {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.76,
+          "display": "3.2\u00a0s",
+          "description": "Time to Interactive is the amount of time it takes for the page to become fully interactive. [Learn more about the Time to Interactive metric](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
+        }
+      ],
+      "passed_audits_count": 81,
+      "seo_audits": [
+        {
+          "id": "is-crawlable",
+          "title": "Page isn\u2019t blocked from indexing",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "document-title",
+          "title": "Document has a `<title>` element",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "meta-description",
+          "title": "Document has a meta description",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "http-status-code",
+          "title": "Page has successful HTTP status code",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "link-text",
+          "title": "Links have descriptive text",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "crawlable-anchors",
+          "title": "Links are crawlable",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "robots-txt",
+          "title": "robots.txt is valid",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "image-alt",
+          "title": "Image elements have `[alt]` attributes",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "hreflang",
+          "title": "Document has a valid `hreflang`",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "canonical",
+          "title": "Document has a valid `rel=canonical`",
+          "score": 1,
+          "pass": true
+        }
+      ],
+      "accessibility_audits": [
+        {
+          "id": "color-contrast",
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "score": 0,
+          "display": ""
+        },
+        {
+          "id": "heading-order",
+          "title": "Heading elements are not in a sequentially-descending order",
+          "score": 0,
+          "display": ""
+        }
+      ],
+      "audit_details": {
+        "main-thread-tasks": {
+          "title": "Tasks",
+          "headings": [
+            "startTime",
+            "duration"
+          ],
+          "items": [
+            {
+              "startTime": 470.147,
+              "duration": 19.265
+            },
+            {
+              "startTime": 490.111,
+              "duration": 7.81
+            },
+            {
+              "startTime": 888.816,
+              "duration": 198.512
+            },
+            {
+              "startTime": 1087.912,
+              "duration": 10.631
+            },
+            {
+              "startTime": 1102.818,
+              "duration": 33.812
+            }
+          ],
+          "total_items": 35
+        },
+        "dom-size-insight": {
+          "title": "Optimize DOM size",
+          "headings": [
+            "statistic",
+            "node",
+            "value"
+          ],
+          "items": [
+            {
+              "statistic": "Total elements",
+              "value": "{'granularity': 1, 'type': 'numeric', 'value': 347}"
+            },
+            {
+              "statistic": "DOM depth",
+              "node": "{'lhId': 'page-7-STRONG', 'nodeLabel': 'Wide style library', 'snippet': '<strong>', 'path': '1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,MAIN,2,SECTION,0,DIV,1,DIV,1,DIV,2,UL,0,LI,1,STRONG', 'selector': 'div >",
+              "value": "{'type': 'numeric', 'value': 12, 'granularity': 1}"
+            },
+            {
+              "statistic": "Most children",
+              "node": "{'lhId': 'page-6-MAIN', 'nodeLabel': 'The Ultimate AI Gaming Logo Generator\\n\\nInstantly create professional gaming log\u2026', 'snippet': '<main class=\"container mx-auto overflow-x-hidden\">', 'path': '1,H",
+              "value": "{'value': 12, 'type': 'numeric', 'granularity': 1}"
+            }
+          ],
+          "total_items": 3
+        },
+        "network-rtt": {
+          "title": "Network Round Trip Times",
+          "headings": [
+            "origin",
+            "rtt"
+          ],
+          "items": [
+            {
+              "origin": "https://m.stripe.com",
+              "rtt": 3.5783549999999975
+            },
+            {
+              "origin": "https://gaminglogoai.com",
+              "rtt": 3.4674900000000006
+            },
+            {
+              "origin": "https://r.stripe.com",
+              "rtt": 1.209599999999999
+            },
+            {
+              "origin": "https://www.google-analytics.com",
+              "rtt": 0.8999999999999999
+            },
+            {
+              "origin": "https://m.stripe.network",
+              "rtt": 0.8999999999999999
+            }
+          ],
+          "total_items": 7
+        },
+        "unused-css-rules": {
+          "title": "Reduce unused CSS",
+          "headings": [
+            "url",
+            "totalBytes",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "url": "https://gaminglogoai.com/_next/static/css/8b4e33a44e7fc7b2.css",
+              "totalBytes": 13959,
+              "wastedBytes": 11733
+            }
+          ],
+          "total_items": 1
+        },
+        "network-requests": {
+          "title": "Network Requests",
+          "headings": [
+            "url",
+            "protocol",
+            "networkRequestTime",
+            "networkEndTime",
+            "transferSize",
+            "resourceSize",
+            "statusCode",
+            "mimeType",
+            "resourceType"
+          ],
+          "items": [
+            {
+              "url": "https://gaminglogoai.com/",
+              "protocol": "h2",
+              "networkRequestTime": 2.3800000000046566,
+              "networkEndTime": 464.7239999999292,
+              "transferSize": 10328,
+              "resourceSize": 52169,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document"
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/image?url=%2Fimages%2Fhome-hero-bg.webp&w=1920&q=80",
+              "protocol": "h2",
+              "networkRequestTime": 479.48199999995995,
+              "networkEndTime": 880.8699999999953,
+              "transferSize": 70466,
+              "resourceSize": 69900,
+              "statusCode": 200,
+              "mimeType": "image/webp",
+              "resourceType": "Image"
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/css/8b4e33a44e7fc7b2.css",
+              "protocol": "h2",
+              "networkRequestTime": 480.24199999996927,
+              "networkEndTime": 882.1570000000065,
+              "transferSize": 14591,
+              "resourceSize": 94567,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet"
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/webpack-c13987134a980510.js",
+              "protocol": "h2",
+              "networkRequestTime": 492.4309999999823,
+              "networkEndTime": 844.4009999999544,
+              "transferSize": 2523,
+              "resourceSize": 3977,
+              "statusCode": 200,
+              "mimeType": "application/javascript",
+              "resourceType": "Script"
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/framework-76e24f4ca1ef99f8.js",
+              "protocol": "h2",
+              "networkRequestTime": 492.8159999999916,
+              "networkEndTime": 892.497999999905,
+              "transferSize": 60982,
+              "resourceSize": 209147,
+              "statusCode": 200,
+              "mimeType": "application/javascript",
+              "resourceType": "Script"
+            }
+          ],
+          "total_items": 56
+        },
+        "mainthread-work-breakdown": {
+          "title": "Minimizes main-thread work",
+          "headings": [
+            "groupLabel",
+            "duration"
+          ],
+          "items": [
+            {
+              "groupLabel": "Script Evaluation",
+              "duration": 1155.3739999999955
+            },
+            {
+              "groupLabel": "Script Parsing & Compilation",
+              "duration": 360.2569999999999
+            },
+            {
+              "groupLabel": "Style & Layout",
+              "duration": 206.00799999999995
+            },
+            {
+              "groupLabel": "Other",
+              "duration": 182.69599999999974
+            },
+            {
+              "groupLabel": "Garbage Collection",
+              "duration": 29.806000000000004
+            }
+          ],
+          "total_items": 7
+        },
+        "has-hsts": {
+          "title": "Use a strong HSTS policy",
+          "headings": [
+            "description",
+            "directive",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No `includeSubDomains` directive found",
+              "directive": "includeSubDomains",
+              "severity": "Medium"
+            },
+            {
+              "description": "No `preload` directive found",
+              "directive": "preload",
+              "severity": "Medium"
+            }
+          ],
+          "total_items": 2
+        },
+        "legacy-javascript-insight": {
+          "title": "Legacy JavaScript",
+          "headings": [
+            "url",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/main-f14b6b1c4dfd5a35.js",
+              "wastedBytes": 13359
+            }
+          ],
+          "total_items": 1
+        },
+        "user-timings": {
+          "title": "User Timing marks and measures",
+          "headings": [
+            "name",
+            "timingType",
+            "startTime",
+            "duration"
+          ],
+          "items": [
+            {
+              "name": "Next.js-before-hydration",
+              "timingType": "Measure",
+              "startTime": 0,
+              "duration": 1243.202
+            },
+            {
+              "name": "Next.js-hydration",
+              "timingType": "Measure",
+              "startTime": 1243.202,
+              "duration": 93.617
+            },
+            {
+              "name": "beforeRender",
+              "timingType": "Mark",
+              "startTime": 1243.202
+            },
+            {
+              "name": "afterHydrate",
+              "timingType": "Mark",
+              "startTime": 1336.819
+            },
+            {
+              "name": "stripe.js:init",
+              "timingType": "Mark",
+              "startTime": 2436.399
+            }
+          ],
+          "total_items": 5
+        },
+        "csp-xss": {
+          "title": "Ensure CSP is effective against XSS attacks",
+          "headings": [
+            "description",
+            "directive",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No CSP found in enforcement mode",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "errors-in-console": {
+          "title": "Browser errors were logged to the console",
+          "headings": [
+            "sourceLocation",
+            "description"
+          ],
+          "items": [
+            {
+              "sourceLocation": "https://gaminglogoai.com/_next/static/chunks/pages/_app-97c40213158b46b2.js",
+              "description": "%c << query #1 %cuser.getCredits%c %O \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n  ; font-weight: normal; [object Object]"
+            },
+            {
+              "sourceLocation": "https://gaminglogoai.com/_next/static/chunks/pages/_app-97c40213158b46b2.js",
+              "description": "%c << query #2 %cuser.getCredits%c %O \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n  ; font-weight: normal; [object Object]"
+            },
+            {
+              "sourceLocation": "https://gaminglogoai.com/_next/static/chunks/pages/_app-97c40213158b46b2.js",
+              "description": "%c << query #3 %cuser.getCredits%c %O \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8; \n    color: white;\n    padding: 2px;\n  ; font-weight: normal; [object Object]"
+            },
+            {
+              "sourceLocation": "https://gaminglogoai.com/api/trpc/user.getCredits?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%7D",
+              "description": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+            },
+            {
+              "sourceLocation": "https://gaminglogoai.com/api/trpc/user.getCredits?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%7D",
+              "description": "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+            }
+          ],
+          "total_items": 6
+        },
+        "trusted-types-xss": {
+          "title": "Mitigate DOM-based XSS with Trusted Types",
+          "headings": [
+            "description",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No `Content-Security-Policy` header with Trusted Types directive found",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "image-delivery-insight": {
+          "title": "Improve image delivery",
+          "headings": [
+            "node",
+            "url",
+            "totalBytes",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "node": "{'snippet': '<img alt=\"Custom Twitch emotes generated from a real face using AI\" loading=\"lazy\" width=\"600\" height=\"400\" decoding=\"async\" data-nimg=\"1\" class=\"rounded-xl\" src=\"/twitch/emotes/emotes-bo",
+              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.png",
+              "totalBytes": 1291097,
+              "wastedBytes": 1262531
+            },
+            {
+              "node": "{'type': 'node', 'boundingRect': {'width': 552, 'bottom': 1702, 'left': 92, 'height': 311, 'top': 1392, 'right': 644}, 'selector': 'div.container > div.grid > div.relative > img.transition-transform',",
+              "url": "https://gaminglogoai.com/twitch/banner/fortnite-prv.webp",
+              "totalBytes": 218778,
+              "wastedBytes": 194933
+            },
+            {
+              "node": "{'path': '1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,MAIN,5,SECTION,0,DIV,1,DIV,0,DIV,0,IMG', 'lhId': 'page-2-IMG', 'nodeLabel': 'AI gaming thumbnail example for YouTube', 'snippet': '<img alt=\"AI gaming thum",
+              "url": "https://gaminglogoai.com/youtube/thumbnail/minecraft-prv.webp",
+              "totalBytes": 150246,
+              "wastedBytes": 122304
+            },
+            {
+              "node": "{'nodeLabel': 'GamingLogoAI', 'snippet': '<img alt=\"GamingLogoAI\" loading=\"lazy\" width=\"36\" height=\"36\" decoding=\"async\" data-nimg=\"1\" style=\"color:transparent\" src=\"/logo.webp\">', 'lhId': 'page-3-IMG",
+              "url": "https://gaminglogoai.com/logo.webp",
+              "totalBytes": 32856,
+              "wastedBytes": 32758
+            },
+            {
+              "node": "{'boundingRect': {'width': 552, 'bottom': 2254, 'left': 692, 'height': 173, 'right': 1244, 'top': 2082}, 'selector': 'div.container > div.grid > div.relative > img', 'type': 'node', 'lhId': 'page-4-IM",
+              "url": "https://gaminglogoai.com/twitch/panels/valorant_strike_prv.webp",
+              "totalBytes": 31222,
+              "wastedBytes": 29065
+            }
+          ],
+          "total_items": 5
+        },
+        "long-tasks": {
+          "title": "Avoid long main-thread tasks",
+          "headings": [
+            "url",
+            "startTime",
+            "duration"
+          ],
+          "items": [
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=G-ELQBY5DTEP&cx=c&gtm=4e6581",
+              "startTime": 1473.2416567213604,
+              "duration": 268
+            },
+            {
+              "url": "https://js.stripe.com/v3",
+              "startTime": 2698.8079670658517,
+              "duration": 253
+            },
+            {
+              "url": "https://m.stripe.network/out-4.5.45.js",
+              "startTime": 3583.405298600428,
+              "duration": 144
+            },
+            {
+              "url": "https://gaminglogoai.com/",
+              "startTime": 238.4004686509325,
+              "duration": 99
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtm.js?id=GTM-WW8GRHH5",
+              "startTime": 1102.2386251561288,
+              "duration": 95
+            }
+          ],
+          "total_items": 10
+        },
+        "color-contrast": {
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'boundingRect': {'height': 48, 'top': 3506, 'right': 990, 'width': 299, 'left': 692, 'bottom': 3554}, 'selector': 'div.container > div.grid > div > a#cta-home-youtube-thumbnail', 'type': 'node', 'lhI"
+            }
+          ],
+          "total_items": 1
+        },
+        "clickjacking-mitigation": {
+          "title": "Mitigate clickjacking with XFO or CSP",
+          "headings": [
+            "description",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No frame control policy found",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "network-server-latency": {
+          "title": "Server Backend Latencies",
+          "headings": [
+            "origin",
+            "serverResponseTime"
+          ],
+          "items": [
+            {
+              "origin": "https://www.googletagmanager.com",
+              "serverResponseTime": 6.5
+            },
+            {
+              "origin": "https://gaminglogoai.com",
+              "serverResponseTime": 1
+            },
+            {
+              "origin": "https://www.google-analytics.com",
+              "serverResponseTime": 1
+            },
+            {
+              "origin": "https://js.stripe.com",
+              "serverResponseTime": 1
+            },
+            {
+              "origin": "https://m.stripe.network",
+              "serverResponseTime": 1
+            }
+          ],
+          "total_items": 7
+        },
+        "bootup-time": {
+          "title": "Reduce JavaScript execution time",
+          "headings": [
+            "url",
+            "total",
+            "scripting",
+            "scriptParseCompile"
+          ],
+          "items": [
+            {
+              "url": "https://js.stripe.com/v3",
+              "total": 282.626,
+              "scripting": 158.85599999999997,
+              "scriptParseCompile": 120.273
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=G-ELQBY5DTEP&cx=c&gtm=4e6581",
+              "total": 275.67299999999904,
+              "scripting": 203.06299999999902,
+              "scriptParseCompile": 70.985
+            },
+            {
+              "url": "https://gaminglogoai.com/",
+              "total": 268.0839999999999,
+              "scripting": 11.672999999999993,
+              "scriptParseCompile": 0.537
+            },
+            {
+              "url": "https://m.stripe.network/out-4.5.45.js",
+              "total": 264.7479999999999,
+              "scripting": 252.3969999999999,
+              "scriptParseCompile": 9.159
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/framework-76e24f4ca1ef99f8.js",
+              "total": 229.95999999999955,
+              "scripting": 191.51699999999954,
+              "scriptParseCompile": 33.117000000000004
+            }
+          ],
+          "total_items": 9
+        },
+        "heading-order": {
+          "title": "Heading elements are not in a sequentially-descending order",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'explanation': 'Fix any of the following:\\n  Heading order invalid', 'path': '1,HTML,1,BODY,0,DIV,1,DIV,2,FOOTER,0,DIV,0,DIV,1,DIV,0,H5', 'nodeLabel': 'GENERATORS', 'snippet': '<h5 class=\"font-semibo"
+            }
+          ],
+          "total_items": 1
+        },
+        "origin-isolation": {
+          "title": "Ensure proper origin isolation with COOP",
+          "headings": [
+            "description",
+            "directive",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No COOP header found",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "server-response-time": {
+          "title": "Initial server response time was short",
+          "headings": [
+            "url",
+            "responseTime"
+          ],
+          "items": [
+            {
+              "url": "https://gaminglogoai.com/",
+              "responseTime": 2
+            }
+          ],
+          "total_items": 1
+        },
+        "viewport-insight": {
+          "title": "Optimize viewport for mobile",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'boundingRect': {'height': 0, 'right': 0, 'top': 0, 'width': 0, 'left': 0, 'bottom': 0}, 'selector': 'head > meta', 'type': 'node', 'nodeLabel': 'head > meta', 'snippet': '<meta name=\"viewport\" conte"
+            }
+          ],
+          "total_items": 1
+        },
+        "cache-insight": {
+          "title": "Use efficient cache lifetimes",
+          "headings": [
+            "url",
+            "cacheLifetimeMs",
+            "totalBytes"
+          ],
+          "items": [
+            {
+              "url": "https://js.stripe.com/v3",
+              "cacheLifetimeMs": 120000,
+              "totalBytes": 237016
+            },
+            {
+              "url": "https://m.stripe.network/out-4.5.45.js",
+              "cacheLifetimeMs": 300000,
+              "totalBytes": 17406
+            }
+          ],
+          "total_items": 2
+        },
+        "image-redundant-alt": {
+          "title": "Image elements do not have `[alt]` attributes that are redundant text.",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'explanation': 'Fix all of the following:\\n  Element contains <img> element with alt text that duplicates existing text', 'path': '1,HTML,1,BODY,0,DIV,1,DIV,0,HEADER,0,DIV,0,A,0,IMG', 'lhId': '1-2-IM"
+            }
+          ],
+          "total_items": 1
+        },
+        "total-byte-weight": {
+          "title": "Avoid enormous network payloads",
+          "headings": [
+            "url",
+            "totalBytes"
+          ],
+          "items": [
+            {
+              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.png",
+              "totalBytes": 1291637
+            },
+            {
+              "url": "https://js.stripe.com/v3/fingerprinted/js/controller-with-preconnect-9b8411a0934043a874e1c166752b48e6.js",
+              "totalBytes": 333612
+            },
+            {
+              "url": "https://js.stripe.com/v3",
+              "totalBytes": 237016
+            },
+            {
+              "url": "https://gaminglogoai.com/twitch/banner/fortnite-prv.webp",
+              "totalBytes": 219324
+            },
+            {
+              "url": "https://js.stripe.com/v3/fingerprinted/js/shared-b3a6bfd3c44c331311cb01138fd1d8b0.js",
+              "totalBytes": 213979
+            }
+          ],
+          "total_items": 10
+        },
+        "js-libraries": {
+          "title": "Detected JavaScript libraries",
+          "headings": [
+            "name",
+            "version"
+          ],
+          "items": [
+            {
+              "name": "Next.js",
+              "version": "14.2.15"
+            }
+          ],
+          "total_items": 1
+        },
+        "resource-summary": {
+          "title": "Resources Summary",
+          "headings": [
+            "label",
+            "requestCount",
+            "transferSize"
+          ],
+          "items": [
+            {
+              "label": "Total",
+              "requestCount": 56,
+              "transferSize": 3241753
+            },
+            {
+              "label": "Image",
+              "requestCount": 11,
+              "transferSize": 1807281
+            },
+            {
+              "label": "Script",
+              "requestCount": 22,
+              "transferSize": 1332701
+            },
+            {
+              "label": "Other",
+              "requestCount": 18,
+              "transferSize": 71020
+            },
+            {
+              "label": "Document",
+              "requestCount": 4,
+              "transferSize": 16160
+            }
+          ],
+          "total_items": 9
+        },
+        "unused-javascript": {
+          "title": "Reduce unused JavaScript",
+          "headings": [
+            "url",
+            "totalBytes",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "url": "https://js.stripe.com/v3",
+              "totalBytes": 236260,
+              "wastedBytes": 159030
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=G-ELQBY5DTEP&cx=c&gtm=4e6581",
+              "totalBytes": 157604,
+              "wastedBytes": 66857
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtm.js?id=GTM-WW8GRHH5",
+              "totalBytes": 119716,
+              "wastedBytes": 62324
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/3448-2708a3c819214a26.js",
+              "totalBytes": 56633,
+              "wastedBytes": 40682
+            },
+            {
+              "url": "https://gaminglogoai.com/_next/static/chunks/pages/gaming-logo-maker-dfc4d47e8dab770c.js",
+              "totalBytes": 35212,
+              "wastedBytes": 34429
+            }
+          ],
+          "total_items": 7
+        },
+        "third-parties-insight": {
+          "title": "3rd parties",
+          "headings": [
+            "entity",
+            "transferSize",
+            "mainThreadTime"
+          ],
+          "items": [
+            {
+              "entity": "Stripe",
+              "transferSize": 257360,
+              "mainThreadTime": 601.844000000623
+            },
+            {
+              "entity": "Google Tag Manager",
+              "transferSize": 278738,
+              "mainThreadTime": 407.52499999967404
+            },
+            {
+              "entity": "Google Analytics",
+              "transferSize": 1600,
+              "mainThreadTime": 0
+            }
+          ],
+          "total_items": 3
+        }
+      },
+      "analysis_timestamp": "2026-05-12T17:25:13.551Z",
+      "error": null
+    }
+  },
+  "crux": {
+    "target": "https://gaminglogoai.com",
+    "metrics": {
+      "cumulative_layout_shift": {
+        "p75": 0.0,
+        "rating": "good",
+        "label": "CLS",
+        "unit": "",
+        "good_threshold": 0.1,
+        "poor_threshold": 0.25,
+        "distribution": {
+          "good": 95.5,
+          "needs_improvement": 3.5,
+          "poor": 1.0
+        }
+      },
+      "largest_contentful_paint_image_element_render_delay": {
+        "p75": 358,
+        "rating": "unknown",
+        "label": "largest_contentful_paint_image_element_render_delay",
+        "unit": "",
+        "good_threshold": null,
+        "poor_threshold": null
+      },
+      "largest_contentful_paint_image_resource_load_delay": {
+        "p75": 369,
+        "rating": "unknown",
+        "label": "largest_contentful_paint_image_resource_load_delay",
+        "unit": "",
+        "good_threshold": null,
+        "poor_threshold": null
+      },
+      "largest_contentful_paint_image_resource_load_duration": {
+        "p75": 413,
+        "rating": "unknown",
+        "label": "largest_contentful_paint_image_resource_load_duration",
+        "unit": "",
+        "good_threshold": null,
+        "poor_threshold": null
+      },
+      "round_trip_time": {
+        "p75": 168,
+        "rating": "unknown",
+        "label": "round_trip_time",
+        "unit": "",
+        "good_threshold": null,
+        "poor_threshold": null,
+        "distribution": {
+          "good": 32.6,
+          "needs_improvement": 59.7,
+          "poor": 7.6
+        }
+      },
+      "experimental_time_to_first_byte": {
+        "p75": 1002,
+        "rating": "needs-improvement",
+        "label": "TTFB",
+        "unit": "ms",
+        "good_threshold": 800,
+        "poor_threshold": 1800,
+        "distribution": {
+          "good": 73.1,
+          "needs_improvement": 6.4,
+          "poor": 20.5
+        }
+      },
+      "first_contentful_paint": {
+        "p75": 1699,
+        "rating": "good",
+        "label": "FCP",
+        "unit": "ms",
+        "good_threshold": 1800,
+        "poor_threshold": 3000,
+        "distribution": {
+          "good": 76.2,
+          "needs_improvement": 8.0,
+          "poor": 15.8
+        }
+      },
+      "interaction_to_next_paint": {
+        "p75": 146,
+        "rating": "good",
+        "label": "INP",
+        "unit": "ms",
+        "good_threshold": 200,
+        "poor_threshold": 500,
+        "distribution": {
+          "good": 85.3,
+          "needs_improvement": 10.5,
+          "poor": 4.2
+        }
+      },
+      "largest_contentful_paint": {
+        "p75": 1858,
+        "rating": "good",
+        "label": "LCP",
+        "unit": "ms",
+        "good_threshold": 2500,
+        "poor_threshold": 4000,
+        "distribution": {
+          "good": 81.2,
+          "needs_improvement": 11.7,
+          "poor": 7.1
+        }
+      },
+      "largest_contentful_paint_image_time_to_first_byte": {
+        "p75": 532,
+        "rating": "unknown",
+        "label": "largest_contentful_paint_image_time_to_first_byte",
+        "unit": "",
+        "good_threshold": null,
+        "poor_threshold": null
+      }
+    },
+    "collection_period": {
+      "first": "2026-04-13",
+      "last": "2026-05-10"
+    },
+    "form_factor": "ALL",
+    "error": null
+  },
+  "error": null
+}

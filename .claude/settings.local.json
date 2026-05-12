@@ -4,7 +4,15 @@
       "Bash(npm run *)",
       "Bash(python *)",
       "Bash(pip install *)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(echo \"GSC done: $?\")",
+      "Bash(echo \"GA4 traffic done: $?\")",
+      "Bash(echo \"GA4 pages done: $?\")",
+      "Bash(echo \"PSI homepage done: $?\")",
+      "Bash(echo \"CrUX history done: $?\")",
+      "Bash(echo \"PSI minecraft done: $?\")"
     ]
   }
 }
