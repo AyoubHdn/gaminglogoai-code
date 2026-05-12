@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { FaChevronRight, FaCamera, FaPalette, FaMagic } from "react-icons/fa";
-import { RelatedItem } from '~/lib/pSEO'; // We'll reuse the RelatedItem type
+import { GameCrossPromoLink, RelatedItem } from '~/lib/pSEO'; // We'll reuse the RelatedItem type
 
 // Define the props our new template will accept
 export interface PseoPfpPageTemplateProps {
@@ -23,6 +23,7 @@ export interface PseoPfpPageTemplateProps {
   imageShowcaseGrid: { src: string; alt: string }[];
   
   howItWorksTitle: React.ReactNode;
+  crossPromoLinks?: GameCrossPromoLink[];
   
   faqTitle: React.ReactNode;
   faqItems: { q: string; a: string }[];
@@ -36,7 +37,7 @@ export interface PseoPfpPageTemplateProps {
 const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
   pageTitle, metaDescription, keywords, canonicalUrl, h1,
   heroBeforeImageSrc, heroAfterImageSrc, introParagraph, ctaText, handleCtaClick,
-  showcaseTitle, imageShowcaseGrid, howItWorksTitle,
+  showcaseTitle, imageShowcaseGrid, howItWorksTitle, crossPromoLinks = [],
   faqTitle, faqItems, finalCtaTitle, finalCtaParagraph, relatedItems
 }) => {
   return (
@@ -140,6 +141,42 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
                 </div>
             </div>
         </section>
+
+        {crossPromoLinks.length > 0 && (
+          <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white">
+                  Use Across All Your <span className="text-purple-600 dark:text-cyan-400">Gaming Content</span>
+                </h2>
+                <p className="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                  Build matching channel graphics around your new profile picture with game-specific templates.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {crossPromoLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="group rounded-xl border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800 p-6 shadow-lg hover:shadow-2xl transition-all duration-300"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-cyan-400">
+                          {link.anchorText}
+                        </h3>
+                        <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                          {link.description}
+                        </p>
+                      </div>
+                      <FaChevronRight className="mt-1 flex-shrink-0 text-slate-400 group-hover:text-purple-600 dark:group-hover:text-cyan-400" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Related Items Section (Placeholder for now) */}
         {relatedItems.length > 0 && (

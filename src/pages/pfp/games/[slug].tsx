@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import PseoPfpPageTemplate, { PseoPfpPageTemplateProps } from "~/component/pSEO/PseoPfpPageTemplate";
 import { faceStylesData } from "~/data/faceStylesData";
 import { createSlug } from "~/lib/utils";
-import { getStaticRelatedItems, RelatedItem, getShowcaseItems } from "~/lib/pSEO";
+import { getGameCrossPromoLinks, getStaticRelatedItems, RelatedItem, getShowcaseItems } from "~/lib/pSEO";
 
 // Define the shape of our style items, which now must include a name
 interface PfpStyleItem {
@@ -25,6 +25,7 @@ interface PfpGamePageServerProps {
 
 const PfpGamePage: NextPage<PfpGamePageServerProps> = ({ gameTitle, styleItem, slug, relatedItems, otherShowcaseItems }) => {
   const router = useRouter();
+  const crossPromoLinks = getGameCrossPromoLinks(gameTitle);
   const handleCtaClick = () => { void router.push(`/pfp-maker#${encodeURIComponent(gameTitle)}`); };
 
   const templateProps: PseoPfpPageTemplateProps = {
@@ -47,6 +48,7 @@ const PfpGamePage: NextPage<PfpGamePageServerProps> = ({ gameTitle, styleItem, s
       }))
     ],
     howItWorksTitle: <>Create Your <span className="text-purple-600 dark:text-cyan-400">Custom {gameTitle} PFP</span></>,
+    crossPromoLinks,
     faqTitle: <>Your <span className="text-purple-600 dark:text-cyan-400">{gameTitle} PFP</span> Questions</>,
     faqItems: [
         { q: `Is this a free ${gameTitle} PFP maker?`, a: "Yes, you can get started for free! Every new user gets 1 free credit to generate and download their first custom profile picture." },

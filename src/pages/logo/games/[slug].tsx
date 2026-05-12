@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import PseoLogoPageTemplate, { PseoLogoPageTemplateProps } from "src/component/pSEO/PseoLogoPageTemplate";
 import { gamerStylesData } from "src/data/gamerStylesData";
 import { createSlug } from "src/lib/utils";
-import { getStaticRelatedItems, RelatedItem } from "src/lib/pSEO";
+import { getGameCrossPromoLinks, getStaticRelatedItems, RelatedItem } from "src/lib/pSEO";
 
 // Simple, serializable props from the server
 interface GameTitleLogoPageServerProps {
@@ -18,6 +18,7 @@ interface GameTitleLogoPageServerProps {
 
 const GameTitleLogoPage: NextPage<GameTitleLogoPageServerProps> = ({ gameTitle, images, slug, relatedItems }) => {
   const router = useRouter();
+  const crossPromoLinks = getGameCrossPromoLinks(gameTitle);
 
   const handleCtaClick = () => {
     // Note: The query param is '?game='
@@ -37,6 +38,7 @@ const GameTitleLogoPage: NextPage<GameTitleLogoPageServerProps> = ({ gameTitle, 
     handleCtaClick: handleCtaClick,
     showcaseTitle: <>Inspiring <span className="text-purple-600 dark:text-cyan-400">{gameTitle}</span> Logo Ideas</>,
     imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${gameTitle} gaming logo design — clan and esports logo example` })),
+    crossPromoLinks,
     relatedItems: relatedItems,
     faqTitle: <>Your <span className="text-purple-600 dark:text-cyan-400">{gameTitle} Logo</span> Questions</>,
     finalCtaTitle: <>Ready to Create Your Custom <span className="text-purple-600 dark:text-cyan-400">{gameTitle} Logo</span>?</>,

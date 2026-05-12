@@ -1,6 +1,10 @@
 // src/lib/pSEO.ts
 import { gamerStylesData } from "src/data/gamerStylesData";
 import { faceStylesData } from 'src/data/faceStylesData';
+import { BANNER_TEMPLATES } from "src/data/bannerTemplates";
+import { PANEL_TEMPLATES } from "src/data/panelTemplates";
+import { STREAM_SCREEN_TEMPLATES } from "src/data/streamScreenTemplates";
+import { THUMBNAIL_TEMPLATES } from "src/data/thumbnailTemplates";
 import { createSlug } from "src/lib/utils";
 
 // Define a common, strict type for all our style items
@@ -19,6 +23,63 @@ export interface RelatedItem {
   categoryPath: string;
   description: string;
 }
+
+export interface GameCrossPromoLink {
+  href: string;
+  anchorText: string;
+  description: string;
+}
+
+interface GameTaggedTemplate {
+  categories: {
+    games: string[];
+  };
+}
+
+const GAME_SLUG_ALIASES: Record<string, string[]> = {
+  cod: ["call-of-duty"],
+  "call-of-duty": ["cod"],
+  gta: ["grand-theft-auto"],
+  "grand-theft-auto": ["gta"],
+};
+
+const GAME_CONTENT_TOOL_CONFIG: ReadonlyArray<{
+  href: string;
+  label: string;
+  description: string;
+  templates: readonly GameTaggedTemplate[];
+}> = [
+  {
+    href: "/twitch-banner-generator",
+    label: "Twitch banner maker",
+    description: "Create matching channel art for your Twitch profile and stream branding.",
+    templates: BANNER_TEMPLATES,
+  },
+  {
+    href: "/twitch-panels-generator",
+    label: "Twitch panels maker",
+    description: "Build branded Twitch panels for about, rules, donate, and social sections.",
+    templates: PANEL_TEMPLATES,
+  },
+  {
+    href: "/twitch-stream-screens-generator",
+    label: "Twitch stream screens maker",
+    description: "Generate coordinated Starting Soon, BRB, Offline, and Ending screens.",
+    templates: STREAM_SCREEN_TEMPLATES,
+  },
+  {
+    href: "/emote-generator",
+    label: "Twitch emote maker",
+    description: "Turn your style into expressive emotes for chat reactions and subscriber perks.",
+    templates: [],
+  },
+  {
+    href: "/thumbnail-maker",
+    label: "YouTube thumbnail maker",
+    description: "Design click-worthy video thumbnails that match the same game style.",
+    templates: THUMBNAIL_TEMPLATES,
+  },
+] as const;
 
 // Configuration for all our pSEO categories
 const categories = [
@@ -192,4 +253,23 @@ export function getShowcaseItems(
   }
 
   return showcaseItems.slice(0, count);
+}
+
+function getGameMatchSlugs(gameTitle: string): string[] {
+  const baseSlug = createSlug(gameTitle, "");
+  return [baseSlug, ...(GAME_SLUG_ALIASES[baseSlug] ?? [])];
+}
+
+export function getGameCrossPromoLinks(gameTitle: string): GameCrossPromoLink[] {
+  const matchSlugs = new Set(getGameMatchSlugs(gameTitle));
+
+  return GAME_CONTENT_TOOL_CONFIG.filter(({ templates }) =>
+    templates.some((template) =>
+      template.categories.games.some((gameSlug) => matchSlugs.has(gameSlug))
+    )
+  ).map(({ href, label, description }) => ({
+    href,
+    anchorText: `${gameTitle} ${label}`,
+    description,
+  }));
 }
