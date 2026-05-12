@@ -558,20 +558,20 @@ function StyleShowcaseSection() {
   return (
     <>
       <Head>
-        <title>AI Gaming Logo Generator & Mascot Maker | GamingLogoAI</title>
+        <title>Free AI Gaming Logo Maker — Logos, PFPs & Twitch Graphics</title>
         <meta
           name="description"
           content="Create a stunning AI gaming logo or mascot with GamingLogoAI! Our generator is perfect for esports teams, streamers, and clans. Sign up to get 1 free credit to start designing now!"
         />
         <meta name="keywords" content="ai gaming logo generator, gaming logo maker ai, ai gaming logo, gaming mascot, gaming logo ai free, esports logo, custom gaming logo" />
         <link rel="canonical" href="https://gaminglogoai.com/" />
-        <meta property="og:title" content="AI Gaming Logo Generator & Mascot Maker | GamingLogoAI" />
+        <meta property="og:title" content="Free AI Gaming Logo Maker — Logos, PFPs & Twitch Graphics" />
         <meta property="og:description" content="Create a stunning AI gaming logo or mascot with GamingLogoAI! Our generator is perfect for esports teams, streamers, and clans. Sign up to get 1 free credit to start designing now!" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/" />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Gaming Logo Generator & Mascot Maker | GamingLogoAI" />
+        <meta name="twitter:title" content="Free AI Gaming Logo Maker — Logos, PFPs & Twitch Graphics" />
         <meta name="twitter:description" content="Create stunning AI-powered logos and mascots for your gaming brand. Fast, easy, and free to try." />
         <meta name="twitter:image" content="https://gaminglogoai.com/twitter-image-gaminglogoai.png" /> 
         <link rel="icon" href="/favicon.ico" />
