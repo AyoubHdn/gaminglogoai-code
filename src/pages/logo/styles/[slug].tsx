@@ -25,6 +25,7 @@ const ArtStyleLogoPage: NextPage<ArtStyleLogoPageServerProps> = ({ artStyle, ima
 
   // Construct the full props for the template here (client-side)
   const templateProps: PseoLogoPageTemplateProps = {
+    gameTitle: artStyle,
     pageTitle: `${artStyle} Gaming Logo Design - Create ${artStyle}-Style Logos with AI`,
     metaDescription: `Design stunning ${artStyle} gaming logos with our AI generator. Create unique cartoonish, 8-bit, emblem, or kawaii logos for your brand in seconds.`,
     keywords: `${artStyle} logo design, ${artStyle} gaming logo, custom ${artStyle} logo, ai logo maker`,

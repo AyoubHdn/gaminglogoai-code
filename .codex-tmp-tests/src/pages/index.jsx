@@ -169,7 +169,7 @@ const HomePage = () => {
             
             {/* Image Preview */}
             <div className="relative rounded-xl overflow-hidden shadow-2xl">
-              <Image src="/twitch/emotes/emotes-boy.png" alt="Custom Twitch emotes generated from a real face using AI" width={600} height={400} className="rounded-xl" unoptimized/>
+              <Image src="/twitch/emotes/emotes-boy.webp" alt="Custom Twitch emotes generated from a real face using AI" width={600} height={400} className="rounded-xl" unoptimized/>
             </div>
 
             {/* Text */}

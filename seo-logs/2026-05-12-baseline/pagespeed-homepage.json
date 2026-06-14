@@ -261,7 +261,7 @@
           "items": [
             {
               "node": "{'boundingRect': {'top': 3518, 'left': 16, 'bottom': 3731, 'height': 214, 'right': 396, 'width': 380}, 'selector': 'div.container > div.grid > div.relative > img.rounded-xl', 'nodeLabel': 'Custom Twit",
-              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.png",
+              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.webp",
               "totalBytes": 1291097,
               "wastedBytes": 1249638
             },
@@ -923,7 +923,7 @@
           ],
           "items": [
             {
-              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.png",
+              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.webp",
               "totalBytes": 1291637
             },
             {
@@ -1567,7 +1567,7 @@
           "items": [
             {
               "node": "{'snippet': '<img alt=\"Custom Twitch emotes generated from a real face using AI\" loading=\"lazy\" width=\"600\" height=\"400\" decoding=\"async\" data-nimg=\"1\" class=\"rounded-xl\" src=\"/twitch/emotes/emotes-bo",
-              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.png",
+              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.webp",
               "totalBytes": 1291097,
               "wastedBytes": 1262531
             },
@@ -1826,7 +1826,7 @@
           ],
           "items": [
             {
-              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.png",
+              "url": "https://gaminglogoai.com/twitch/emotes/emotes-boy.webp",
               "totalBytes": 1291637
             },
             {

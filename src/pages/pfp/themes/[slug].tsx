@@ -21,6 +21,7 @@ const PfpThemePage: NextPage<PfpThemePageServerProps> = ({ themeName, styleItem,
   const handleCtaClick = () => { void router.push(`/pfp-maker#${encodeURIComponent(themeName)}`); };
 
   const templateProps: PseoPfpPageTemplateProps = {
+    gameTitle: themeName,
     pageTitle: `${themeName} Avatar Maker - AI Themed Custom Profile Pictures`,
     metaDescription: `Generate a custom Avatar with a ${themeName} theme using our avatar maker. Turn your photo into a unique profile picture for fantasy, sci-fi, horror, and more.`,
     keywords: `${themeName} avatar maker, custom ${themeName} avatar, ${themeName} profile picture, fantasy avatar`,

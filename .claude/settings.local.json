@@ -12,7 +12,9 @@
       "Bash(echo \"GA4 pages done: $?\")",
       "Bash(echo \"PSI homepage done: $?\")",
       "Bash(echo \"CrUX history done: $?\")",
-      "Bash(echo \"PSI minecraft done: $?\")"
+      "Bash(echo \"PSI minecraft done: $?\")",
+      "Bash(curl -s -L \"https://gaminglogoai.com/logo/games/minecraft-logo-maker\" -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/125.0.0.0 Safari/537.36\")",
+      "Bash(xargs grep -l \"minecraft-logo-maker\\\\|gameTitle.*Minecraft\\\\|minecraft.*logo\")"
     ]
   }
 }

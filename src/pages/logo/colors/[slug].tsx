@@ -25,6 +25,7 @@ const ColorLogoPage: NextPage<ColorLogoPageServerProps> = ({ color, images, slug
 
   // Construct the full props for the template here (client-side)
   const templateProps: PseoLogoPageTemplateProps = {
+    gameTitle: color,
     pageTitle: `${color} Gaming Logos - Design ${color}-Colored Logos with AI`,
     metaDescription: `Create powerful ${color} gaming logos with our AI generator. Design logos featuring your favorite colors to build a strong brand identity for your team or stream.`,
     keywords: `${color} gaming logo, ${color} logo design, ${color} esports logo, colored logo maker`,

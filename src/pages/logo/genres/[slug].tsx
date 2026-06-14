@@ -27,6 +27,7 @@ const GenreLogoPage: NextPage<GenreLogoPageServerProps> = ({ genre, images, slug
   // STEP 3: CONSTRUCT the complex props (with JSX) inside the component
   // This happens on the client-side, so JSX is allowed here.
   const templateProps: PseoLogoPageTemplateProps = {
+    gameTitle: genre,
     pageTitle: `${genre} Gaming Logo Design - AI-Powered Ideas`,
     metaDescription: `Generate unique ${genre} gaming logos for your team. Create stunning logos for MOBA, FPS, RPG, and other game genres instantly with AI.`,
     keywords: `${genre} gaming logo, ${genre} logo design, esports logo`,

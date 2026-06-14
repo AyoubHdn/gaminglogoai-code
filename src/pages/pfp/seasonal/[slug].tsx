@@ -21,6 +21,7 @@ const PfpSeasonalPage: NextPage<PfpSeasonalPageServerProps> = ({ seasonalName, s
   const handleCtaClick = () => { void router.push(`/pfp-maker#${encodeURIComponent(seasonalName)}`); };
 
   const templateProps: PseoPfpPageTemplateProps = {
+    gameTitle: seasonalName,
     pageTitle: `${seasonalName} PFP Maker - AI Custom Avatars for Events`,
     metaDescription: `Get festive with a custom ${seasonalName} PFP! Use our AI avatar generator to create unique profile pictures for holidays and cultural events.`,
     keywords: `${seasonalName} pfp maker, custom ${seasonalName} pfp, holiday avatar maker`,

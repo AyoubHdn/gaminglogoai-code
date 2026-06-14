@@ -29,8 +29,9 @@ const PfpGamePage: NextPage<PfpGamePageServerProps> = ({ gameTitle, styleItem, s
   const handleCtaClick = () => { void router.push(`/pfp-maker#${encodeURIComponent(gameTitle)}`); };
 
   const templateProps: PseoPfpPageTemplateProps = {
-    pageTitle: `${gameTitle} PFP Maker - Free AI Custom Profile Pictures | GamingLogoAI`,
-    metaDescription: `Create a custom ${gameTitle} PFP from your photo with our free AI generator! Turn your face into a unique ${gameTitle}-style avatar for Discord, YouTube, or Twitch.`,
+    gameTitle: gameTitle,
+    pageTitle: `Free ${gameTitle} PFP Maker — AI Avatar Generator | GamingLogoAI`,
+    metaDescription: `Create a custom ${gameTitle} PFP free with AI. Turn your photo or a style into a unique gaming avatar in seconds. Download and use anywhere.`,
     keywords: `${gameTitle} pfp maker, custom ${gameTitle} pfp, ${gameTitle} profile picture, free ${gameTitle} pfp, ${gameTitle} avatar`,
     canonicalUrl: `https://gaminglogoai.com/pfp/games/${slug}`,
     h1: <>AI <span className="text-cyan-400">{gameTitle} PFP</span> Maker</>,

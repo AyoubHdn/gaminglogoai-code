@@ -63,7 +63,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
       href: "/twitch-emote-maker",
       cta: "Open Twitch Emote Maker",
       icon: <FaSmile className="h-8 w-8" />,
-      img: "/twitch/emotes/emotes-boy.png",
+      img: "/twitch/emotes/emotes-boy.webp",
     },
   ];
 

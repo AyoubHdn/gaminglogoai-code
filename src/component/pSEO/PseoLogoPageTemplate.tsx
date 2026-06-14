@@ -4,9 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaChevronRight, FaMagic, FaPaintBrush, FaBolt, FaUsers, FaShieldAlt, FaCogs, FaQuestionCircle } from "react-icons/fa";
 import { GameCrossPromoLink, RelatedItem } from '~/lib/pSEO';
+import { getPseoContent } from "~/data/pseoContent";
 
 // Define the "contract" for what every pSEO page needs to provide
 export interface PseoLogoPageTemplateProps {
+  gameTitle: string;
   pageTitle: string;
   metaDescription: string;
   keywords: string;
@@ -27,11 +29,21 @@ export interface PseoLogoPageTemplateProps {
 }
 
 const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
-  pageTitle, metaDescription, keywords, canonicalUrl, h1, heroImageSrc,
+  gameTitle, pageTitle, metaDescription, keywords, canonicalUrl, h1, heroImageSrc,
   introParagraph, ctaText, handleCtaClick, showcaseTitle, imageShowcaseGrid,
   crossPromoLinks = [], relatedItems, faqItems, faqTitle, finalCtaTitle
 }) => {
-  
+
+  const slug = canonicalUrl.split('/').pop() ?? '';
+  const seo = getPseoContent(slug);
+  const title = seo?.metaTitle ?? pageTitle;
+  const description = seo?.metaDescription ?? metaDescription;
+  const effectiveIntroParagraph = seo?.heroIntro ?? introParagraph;
+  const effectiveCtaText = seo?.ctaText ?? ctaText;
+  const effectiveFaqItems = seo?.faqs?.length
+    ? seo.faqs.map((f) => ({ q: f.question, a: f.answer }))
+    : faqItems;
+
   const commonFeatures = [
     { title: "AI-Powered Engine", description: "Harness advanced AI to generate countless unique logo concepts in seconds.", icon: <FaMagic className="h-10 w-10" /> },
     { title: "Vast Style Library", description: "Explore styles from top games, art genres, themes, mascots, and more.", icon: <FaPaintBrush className="h-10 w-10" /> },
@@ -44,12 +56,52 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
   return (
     <>
       <Head>
-        <title>{pageTitle}</title>
-        <meta name="description" content={metaDescription} />
+        <title>{title}</title>
+        <meta name="description" content={description} />
         <meta name="keywords" content={keywords} />
         <link rel="canonical" href={canonicalUrl} />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.webp" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: `${gameTitle} Logo Maker`,
+              url: canonicalUrl,
+              description: description,
+              applicationCategory: "DesignApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                availability: "https://schema.org/InStock",
+              },
+              provider: {
+                "@type": "Organization",
+                name: "GamingLogoAI",
+                url: "https://gaminglogoai.com",
+              },
+              isAccessibleForFree: true,
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Home", item: "https://gaminglogoai.com" },
+                { "@type": "ListItem", position: 2, name: "Gaming Logo Maker", item: "https://gaminglogoai.com/gaming-logo" },
+                { "@type": "ListItem", position: 3, name: `${gameTitle} Logo Maker`, item: canonicalUrl },
+              ],
+            }),
+          }}
+        />
         {faqItems.length > 0 && (
           <script
             type="application/ld+json"
@@ -57,7 +109,7 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
               __html: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
-                mainEntity: faqItems.map((item) => ({
+                mainEntity: effectiveFaqItems.map((item) => ({
                   "@type": "Question",
                   name: item.q,
                   acceptedAnswer: {
@@ -78,11 +130,11 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/70 via-indigo-950/80 to-slate-900/90 z-10"></div>
           <div className="container mx-auto px-4 sm:px-6 relative z-20">
             {/* FIXED: The 'alt' for an image should be a string, not ReactNode. Let's make a string version of the h1 */}
-            <Image src={heroImageSrc} alt={pageTitle} width={140} height={140} className="mx-auto mb-6 transform transition-transform duration-500 hover:scale-110 rounded-full object-cover" priority unoptimized={true} />
+            <Image src={heroImageSrc} alt={`${gameTitle} logo maker — AI-generated example`} width={140} height={140} className="mx-auto mb-6 transform transition-transform duration-500 hover:scale-110 rounded-full object-cover" priority unoptimized={true} />
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg">{h1}</h1>
-            <div className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">{introParagraph}</div>
+            <div className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">{effectiveIntroParagraph}</div>
             <button onClick={handleCtaClick} className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-900 font-bold rounded-lg text-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-xl hover:shadow-cyan-500/50">
-              {ctaText} <FaChevronRight className="inline ml-2 -mr-1" />
+              {effectiveCtaText} <FaChevronRight className="inline ml-2 -mr-1" />
             </button>
           </div>
         </section>
@@ -129,6 +181,21 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
             </div>
           </div>
         </section>
+
+        {seo?.articleSections?.length ? (
+          <section className="py-16 md:py-20 bg-slate-50 dark:bg-slate-950">
+            <div className="container mx-auto max-w-3xl px-4 sm:px-6 space-y-12">
+              {seo.articleSections.map((section, i) => (
+                <div key={i}>
+                  <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-slate-900 dark:text-white">{section.heading}</h2>
+                  {section.body.split('\n\n').map((para, j) => (
+                    <p key={j} className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">{para}</p>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {crossPromoLinks.length > 0 && (
           <section className="py-16 md:py-20 bg-slate-50 dark:bg-slate-950">
@@ -187,6 +254,23 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
           </div>
         </section>
         
+        {seo?.relatedLinks?.length ? (
+          <section className="py-12 md:py-16 bg-slate-50 dark:bg-slate-950">
+            <div className="container mx-auto max-w-3xl px-4 sm:px-6">
+              <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">Related</h2>
+              <ul className="space-y-3">
+                {seo.relatedLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="text-purple-600 dark:text-cyan-400 hover:underline font-medium">
+                      {link.anchor}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        ) : null}
+
         {/* FAQ Section */}
         <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
           <div className="container mx-auto max-w-3xl px-4 sm:px-6">
@@ -197,7 +281,7 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
             </h2>
             <div className="space-y-6">
               {/* FIXED: Mapping over the correct `faqItems` prop */}
-              {faqItems.map((item, index) => (
+              {effectiveFaqItems.map((item, index) => (
                 <details 
                   key={index} 
                   className="p-4 sm:p-5 bg-slate-50 dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 group cursor-pointer"
@@ -232,7 +316,7 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
               className="px-10 py-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-900 font-bold rounded-lg text-xl hover:from-cyan-500 hover:to-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-xl hover:shadow-cyan-400/60"
               id="cta-final-to-generator-tool-bottom"
             >
-              {ctaText}
+              {effectiveCtaText}
             </button>
           </div>
         </section>

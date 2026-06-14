@@ -4,9 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaChevronRight, FaCamera, FaPalette, FaMagic } from "react-icons/fa";
 import { GameCrossPromoLink, RelatedItem } from '~/lib/pSEO'; // We'll reuse the RelatedItem type
+import { getPseoContent } from "~/data/pseoContent";
 
 // Define the props our new template will accept
 export interface PseoPfpPageTemplateProps {
+  gameTitle: string;
   pageTitle: string;
   metaDescription: string;
   keywords: string;
@@ -35,27 +37,77 @@ export interface PseoPfpPageTemplateProps {
 }
 
 const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
-  pageTitle, metaDescription, keywords, canonicalUrl, h1,
+  gameTitle, pageTitle, metaDescription, keywords, canonicalUrl, h1,
   heroBeforeImageSrc, heroAfterImageSrc, introParagraph, ctaText, handleCtaClick,
   showcaseTitle, imageShowcaseGrid, howItWorksTitle, crossPromoLinks = [],
   faqTitle, faqItems, finalCtaTitle, finalCtaParagraph, relatedItems
 }) => {
+  const slug = canonicalUrl.split('/').pop() ?? '';
+  const seo = getPseoContent(slug);
+  const title = seo?.metaTitle ?? pageTitle;
+  const description = seo?.metaDescription ?? metaDescription;
+  const effectiveIntroParagraph = seo?.heroIntro ?? introParagraph;
+  const effectiveCtaText = seo?.ctaText ?? ctaText;
+  const effectiveFaqItems = seo?.faqs?.length
+    ? seo.faqs.map((f) => ({ q: f.question, a: f.answer }))
+    : faqItems;
+
   return (
     <>
       <Head>
-        <title>{pageTitle}</title>
-        <meta name="description" content={metaDescription} />
+        <title>{title}</title>
+        <meta name="description" content={description} />
         <meta name="keywords" content={keywords} />
         <link rel="canonical" href={canonicalUrl} />
         <link rel="icon" href="/favicon.ico" />
-        {faqItems.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: `${gameTitle} PFP Maker`,
+              url: canonicalUrl,
+              description: description,
+              applicationCategory: "DesignApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+                availability: "https://schema.org/InStock",
+              },
+              provider: {
+                "@type": "Organization",
+                name: "GamingLogoAI",
+                url: "https://gaminglogoai.com",
+              },
+              isAccessibleForFree: true,
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Home", item: "https://gaminglogoai.com" },
+                { "@type": "ListItem", position: 2, name: "AI PFP Maker", item: "https://gaminglogoai.com/ai-profile-picture-maker" },
+                { "@type": "ListItem", position: 3, name: `${gameTitle} PFP Maker`, item: canonicalUrl },
+              ],
+            }),
+          }}
+        />
+        {effectiveFaqItems.length > 0 && (
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
               __html: JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
-                mainEntity: faqItems.map((item) => ({
+                mainEntity: effectiveFaqItems.map((item) => ({
                   "@type": "Question",
                   name: item.q,
                   acceptedAnswer: {
@@ -79,21 +131,21 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
             <div className="mb-8 inline-block relative w-40 h-40 sm:w-48 sm:h-48">
                 {/* DYNAMIC: Using props for before/after images */}
                 <Image src={heroBeforeImageSrc} alt="A real person's photo before transformation" width={100} height={100} className="rounded-full absolute top-0 left-0 w-1/2 h-1/2 border-2 border-white shadow-lg" />
-                <Image src={heroAfterImageSrc} alt="The same photo transformed into a cool PFP" width={200} height={200} className="rounded-full absolute bottom-0 right-0 w-3/4 h-3/4 border-4 border-cyan-400 shadow-xl" />
+                <Image src={heroAfterImageSrc} alt={`${gameTitle} PFP maker — AI-generated example`} width={200} height={200} className="rounded-full absolute bottom-0 right-0 w-3/4 h-3/4 border-4 border-cyan-400 shadow-xl" />
             </div>
             {/* DYNAMIC: Using H1 and Intro Paragraph props */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg [text-shadow:_2px_2px_4px_rgb(0_0_0_/_50%)]">
               {h1}
             </h1>
             <div className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">
-              {introParagraph}
+              {effectiveIntroParagraph}
             </div>
             {/* DYNAMIC: Using CTA props */}
             <button
               onClick={handleCtaClick}
               className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-900 font-bold rounded-lg text-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-xl hover:shadow-cyan-500/50"
             >
-              {ctaText} <FaChevronRight className="inline ml-2 -mr-1" />
+              {effectiveCtaText} <FaChevronRight className="inline ml-2 -mr-1" />
             </button>
             <p className="mt-4 text-xs text-slate-400">Sign up and use your free credit to download your first PFP!</p>
           </div>
@@ -141,6 +193,21 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
                 </div>
             </div>
         </section>
+
+        {seo?.articleSections?.length ? (
+          <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
+            <div className="container mx-auto max-w-3xl px-4 sm:px-6 space-y-12">
+              {seo.articleSections.map((section, i) => (
+                <div key={i}>
+                  <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-slate-900 dark:text-white">{section.heading}</h2>
+                  {section.body.split('\n\n').map((para, j) => (
+                    <p key={j} className="text-slate-600 dark:text-slate-300 leading-relaxed mb-4">{para}</p>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {crossPromoLinks.length > 0 && (
           <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
@@ -200,6 +267,23 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
           </section>
         )}
 
+        {seo?.relatedLinks?.length ? (
+          <section className="py-12 md:py-16 bg-white dark:bg-slate-900">
+            <div className="container mx-auto max-w-3xl px-4 sm:px-6">
+              <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">Related</h2>
+              <ul className="space-y-3">
+                {seo.relatedLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="text-purple-600 dark:text-cyan-400 hover:underline font-medium">
+                      {link.anchor}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        ) : null}
+
         {/* FAQ Section */}
         <section className="py-16 md:py-20 bg-slate-50 dark:bg-slate-950">
           <div className="container mx-auto max-w-3xl px-4 sm:px-6">
@@ -209,7 +293,7 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
             </h2>
             {/* DYNAMIC: Using FAQ items prop */}
             <div className="space-y-6">
-              {faqItems.map((faq) => (
+              {effectiveFaqItems.map((faq) => (
                 <div key={faq.q} className="p-4 bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">
                   <h3 className="font-semibold text-lg text-slate-800 dark:text-white">{faq.q}</h3>
                   <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{faq.a}</p>
@@ -233,7 +317,7 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
               onClick={handleCtaClick}
               className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-900 font-bold rounded-lg text-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-xl hover:shadow-cyan-500/50"
             >
-              {ctaText}
+              {effectiveCtaText}
             </button>
           </div>
         </section>

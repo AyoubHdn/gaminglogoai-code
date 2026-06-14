@@ -27,8 +27,9 @@ const GameTitleLogoPage: NextPage<GameTitleLogoPageServerProps> = ({ gameTitle, 
 
   // Construct the full props for the template here (client-side)
   const templateProps: PseoLogoPageTemplateProps = {
-    pageTitle: `${gameTitle} Logo Maker - Create Custom Gaming Logos | GamingLogoAI`,
-    metaDescription: `Design unique ${gameTitle} logos for your clan, team, or stream instantly with our AI logo generator. Get inspired by custom ${gameTitle} logo ideas.`,
+    gameTitle: gameTitle,
+    pageTitle: `Free ${gameTitle} Logo Maker — AI Generator | GamingLogoAI`,
+    metaDescription: `Make a ${gameTitle} logo free in seconds with AI. Pick a style, add your name, and download a transparent PNG — no design skills needed. Try it free.`,
     keywords: `${gameTitle} logo maker, gaming logo ${gameTitle}, esports logo ${gameTitle}, custom ${gameTitle} logo`,
     canonicalUrl: `https://gaminglogoai.com/logo/games/${slug}`,
     h1: <><span className="text-cyan-400">{gameTitle}</span> Logo Maker</>,

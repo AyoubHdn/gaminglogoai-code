@@ -25,6 +25,7 @@ const ThemeLogoPage: NextPage<ThemeLogoPageServerProps> = ({ theme, images, slug
 
   // Construct the full props for the template here (client-side)
   const templateProps: PseoLogoPageTemplateProps = {
+    gameTitle: theme,
     pageTitle: `${theme} Gaming Logos - Create ${theme}-Themed Logos with AI`,
     metaDescription: `Generate powerful ${theme}-themed gaming logos. From epic Fantasy dragons to scary Horror mascots, our AI brings your creative vision to life.`,
     keywords: `${theme} gaming logo, ${theme} logo maker, ${theme} themed logo, fantasy logo, horror logo`,

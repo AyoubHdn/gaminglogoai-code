@@ -25,6 +25,7 @@ const HolidayLogoPage: NextPage<HolidayLogoPageServerProps> = ({ holiday, images
 
   // Construct the full props for the template here (client-side)
   const templateProps: PseoLogoPageTemplateProps = {
+    gameTitle: holiday,
     pageTitle: `${holiday} Gaming Logos - Create Seasonal & Holiday Logos`,
     metaDescription: `Celebrate with a custom ${holiday} gaming logo! Perfect for seasonal events, holiday streams, and festive team branding. Create yours instantly with AI.`,
     keywords: `${holiday} gaming logo, ${holiday} logo, seasonal logo maker, halloween logo, christmas logo`,

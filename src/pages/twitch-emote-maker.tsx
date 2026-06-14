@@ -192,7 +192,7 @@ const TwitchEmoteMakerPage: NextPage = () => {
             <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-3">
               <div className="text-center">
                 <Image
-                  src="/twitch/emotes/front-view-beautiful-model.jpg"
+                  src="/twitch/emotes/front-view-beautiful-model.webp"
                   alt="Upload your photo"
                   width={300}
                   height={400}
@@ -204,7 +204,7 @@ const TwitchEmoteMakerPage: NextPage = () => {
 
               <div className="text-center">
                 <Image
-                  src="/twitch/emotes/emote-base(3).png"
+                  src="/twitch/emotes/emote-base.webp"
                   alt="AI emote base"
                   width={260}
                   height={260}
@@ -216,7 +216,7 @@ const TwitchEmoteMakerPage: NextPage = () => {
 
               <div className="text-center">
                 <Image
-                  src="/twitch/emotes/HI.png"
+                  src="/twitch/emotes/HI.webp"
                   alt="Twitch emote set"
                   width={320}
                   height={320}
@@ -286,7 +286,7 @@ const TwitchEmoteMakerPage: NextPage = () => {
 
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-10 md:grid-cols-2">
               <Image
-                src="/twitch/emotes/emotes-girl.png"
+                src="/twitch/emotes/emotes-girl.webp"
                 alt="Female Twitch emotes example"
                 width={600}
                 height={400}
@@ -294,7 +294,7 @@ const TwitchEmoteMakerPage: NextPage = () => {
                 unoptimized
               />
               <Image
-                src="/twitch/emotes/emotes-boy.png"
+                src="/twitch/emotes/emotes-boy.webp"
                 alt="Male Twitch emotes example"
                 width={600}
                 height={400}

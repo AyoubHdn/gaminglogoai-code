@@ -21,6 +21,7 @@ const PfpStylePage: NextPage<PfpStylePageServerProps> = ({ styleName, styleItem,
   const handleCtaClick = () => { void router.push(`/pfp-maker#${encodeURIComponent(styleName)}`); };
 
   const templateProps: PseoPfpPageTemplateProps = {
+    gameTitle: styleName,
     pageTitle: `${styleName} Avatar Maker - AI Avatar & Profile Picture Generator`,
     metaDescription: `Create a custom ${styleName} Avatar from your photo with our AI pfp generator. Transform your face into a unique profile picture for Discord, YouTube, or Twitch.`,
     keywords: `${styleName} avatar maker, custom ${styleName} avatar, ${styleName} profile picture, ai avatar generator`,

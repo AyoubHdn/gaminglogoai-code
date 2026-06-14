@@ -133,17 +133,17 @@ const TwitchEmoteMakerPage = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
               <div className="text-center">
-                <Image src="/twitch/emotes/front-view-beautiful-model.jpg" alt="Upload your photo" width={300} height={400} className="rounded-xl mx-auto shadow-lg" unoptimized/>
+                <Image src="/twitch/emotes/front-view-beautiful-model.webp" alt="Upload your photo" width={300} height={400} className="rounded-xl mx-auto shadow-lg" unoptimized/>
                 <p className="mt-4 font-semibold">1. Upload Your Photo</p>
               </div>
 
               <div className="text-center">
-                <Image src="/twitch/emotes/emote-base(3).png" alt="AI emote base" width={260} height={260} className="rounded-xl mx-auto shadow-lg" unoptimized/>
+                <Image src="/twitch/emotes/emote-base.webp" alt="AI emote base" width={260} height={260} className="rounded-xl mx-auto shadow-lg" unoptimized/>
                 <p className="mt-4 font-semibold">2. AI Creates Base Emote</p>
               </div>
 
               <div className="text-center">
-                <Image src="/twitch/emotes/HI.png" alt="Twitch emote set" width={320} height={320} className="rounded-xl mx-auto shadow-lg" unoptimized/>
+                <Image src="/twitch/emotes/HI.webp" alt="Twitch emote set" width={320} height={320} className="rounded-xl mx-auto shadow-lg" unoptimized/>
                 <p className="mt-4 font-semibold">3. Generate Emote Set</p>
               </div>
             </div>
@@ -180,8 +180,8 @@ const TwitchEmoteMakerPage = () => {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
-              <Image src="/twitch/emotes/emotes-girl.png" alt="Female Twitch emotes example" width={600} height={400} className="rounded-xl shadow-lg" unoptimized/>
-              <Image src="/twitch/emotes/emotes-boy.png" alt="Male Twitch emotes example" width={600} height={400} className="rounded-xl shadow-lg" unoptimized/>
+              <Image src="/twitch/emotes/emotes-girl.webp" alt="Female Twitch emotes example" width={600} height={400} className="rounded-xl shadow-lg" unoptimized/>
+              <Image src="/twitch/emotes/emotes-boy.webp" alt="Male Twitch emotes example" width={600} height={400} className="rounded-xl shadow-lg" unoptimized/>
             </div>
           </div>
         </section>

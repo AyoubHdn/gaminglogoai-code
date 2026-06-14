@@ -23,6 +23,7 @@ const CulturalLogoPage: NextPage<CulturalLogoPageServerProps> = ({ culture, imag
   };
 
   const templateProps: PseoLogoPageTemplateProps = {
+    gameTitle: culture,
     pageTitle: `${culture} Esports Logos - AI-Generated Team & Clan Logos`,
     metaDescription: `Design a professional ${culture}-inspired esports logo with our AI generator. Perfect for national teams, cultural clans, and patriotic gamers.`,
     keywords: `${culture} esports logo, ${culture} gaming logo, patriotic logo, national team logo`,

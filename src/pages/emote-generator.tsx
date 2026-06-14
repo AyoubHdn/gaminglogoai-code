@@ -532,7 +532,7 @@ No transparent or semi-transparent areas inside the face.
             className="mt-4"
             onClick={() => {
                 if (!baseImageUrl) return;
-                void downloadImage(baseImageUrl, "emote-base.png");
+                void downloadImage(baseImageUrl, "emote-base.webp");
             }}
             >
             Download Base Image
