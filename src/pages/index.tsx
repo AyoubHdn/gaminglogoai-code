@@ -300,7 +300,7 @@ const HomePage: NextPage = () => {
 
               <Link
                 href="/youtube-thumbnail-maker"
-                className="inline-block px-8 py-3 bg-red-500 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg"
+                className="inline-block px-8 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors shadow-lg"
                 id="cta-home-youtube-thumbnail"
               >
                 Create YouTube Thumbnails →

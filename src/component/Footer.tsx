@@ -121,7 +121,7 @@ export function Footer() {
 
           {/* Generators Column - links to LANDING pages */}
           <div>
-            <h5 className="font-semibold text-sm text-slate-700 dark:text-slate-200 uppercase mb-3">Generators</h5>
+            <h3 className="font-semibold text-sm text-slate-700 dark:text-slate-200 uppercase mb-3">Generators</h3>
             <ul className="space-y-2">
               {generators.map(gen => (
                 <li key={gen.name}>
@@ -135,7 +135,7 @@ export function Footer() {
 
           {/* Popular Styles Column - links to NICHE landing pages */}
           <div>
-            <h5 className="font-semibold text-sm text-slate-700 dark:text-slate-200 uppercase mb-3">Popular Styles</h5>
+            <h3 className="font-semibold text-sm text-slate-700 dark:text-slate-200 uppercase mb-3">Popular Styles</h3>
             <ul className="space-y-2">
               {popularNiches.map(niche => (
                 <li key={niche.name}>
@@ -149,7 +149,7 @@ export function Footer() {
           
           {/* Explore Column */}
           <div>
-            <h5 className="font-semibold text-sm text-slate-700 dark:text-slate-200 uppercase mb-3">Explore</h5>
+            <h3 className="font-semibold text-sm text-slate-700 dark:text-slate-200 uppercase mb-3">Explore</h3>
             <ul className="space-y-2">
               {mainLinks.map(link => (
                 <li key={link.name}><PrimaryLink href={link.url} className="text-xs hover:underline">{link.name}</PrimaryLink></li>
@@ -159,7 +159,7 @@ export function Footer() {
 
           {/* Legal Column */}
           <div>
-            <h5 className="font-semibold text-sm text-slate-700 dark:text-slate-200 uppercase mb-3">Company</h5>
+            <h3 className="font-semibold text-sm text-slate-700 dark:text-slate-200 uppercase mb-3">Company</h3>
             <ul className="space-y-2">
               {companyLinks.map(link => (
                 <li key={link.name}><PrimaryLink href={link.url} className="text-xs hover:underline">{link.name}</PrimaryLink></li>

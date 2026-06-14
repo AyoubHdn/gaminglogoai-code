@@ -24,8 +24,10 @@ import { CgProfile } from "react-icons/cg";
 /* Header */
 /* ------------------------------------------------------------------ */
 export function Header() {
-  const { data: session } = useSession();
-  const credits = api.user.getCredits.useQuery();
+  const { data: session, status } = useSession();
+  const credits = api.user.getCredits.useQuery(undefined, {
+    enabled: status === "authenticated",
+  });
   const isLoggedIn = !!session;
   const router = useRouter();
 
@@ -180,7 +182,12 @@ export function Header() {
         </div>
 
         {/* MOBILE TOGGLE */}
-        <button className="md:hidden" onClick={() => setMobileOpen(v => !v)}>
+        <button
+          className="md:hidden"
+          onClick={() => setMobileOpen(v => !v)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={mobileOpen}
+        >
           {mobileOpen ? <AiOutlineClose size={22} /> : <AiOutlineMenu size={22} />}
         </button>
       </div>
