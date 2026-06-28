@@ -14,7 +14,10 @@
       "Bash(echo \"CrUX history done: $?\")",
       "Bash(echo \"PSI minecraft done: $?\")",
       "Bash(curl -s -L \"https://gaminglogoai.com/logo/games/minecraft-logo-maker\" -H \"User-Agent: Mozilla/5.0 \\(Windows NT 10.0; Win64; x64\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/125.0.0.0 Safari/537.36\")",
-      "Bash(xargs grep -l \"minecraft-logo-maker\\\\|gameTitle.*Minecraft\\\\|minecraft.*logo\")"
+      "Bash(xargs grep -l \"minecraft-logo-maker\\\\|gameTitle.*Minecraft\\\\|minecraft.*logo\")",
+      "Bash(tee \"C:\\\\Users\\\\ULTRAPC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ULTRAPC-Documents-GitHub-SaaS-gaminglogoai-code\\\\8215a299-fccb-457d-99d3-db6aa1df1510\\\\scratchpad\\\\drift_compare.json\")",
+      "Bash(python scripts/gsc_query.py --property sc-domain:gaminglogoai.com --json)",
+      "Bash(echo \"EXIT: $?\")"
     ]
   }
 }
