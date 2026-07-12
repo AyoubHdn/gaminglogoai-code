@@ -118,10 +118,10 @@ const TwitchPanelsLandingPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>AI Twitch Panels Maker - About, Donate & More</title>
+        <title>Twitch Panels Maker — Free AI Panel Generator | GamingLogoAI</title>
         <meta
           name="description"
-          content="Create branded Twitch panels with AI. Choose a template, add logo references, socials, content, and generate polished panel graphics."
+          content="Create branded Twitch panels free with AI. Pick a template, add your logo, socials, and content, then generate a full panel set — no design skills needed."
         />
         <link
           rel="canonical"
@@ -129,15 +129,15 @@ const TwitchPanelsLandingPage: NextPage = () => {
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/twitch-panels-maker" />
-        <meta property="og:title" content="AI Twitch Panels Maker - About, Donate & More" />
-        <meta property="og:description" content="Create branded Twitch panels with AI. Choose a template, add logo references, socials, content, and generate polished panel graphics." />
+        <meta property="og:title" content="Twitch Panels Maker — Free AI Panel Generator | GamingLogoAI" />
+        <meta property="og:description" content="Create branded Twitch panels free with AI. Pick a template, add your logo, socials, and content, then generate a full panel set — no design skills needed." />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Twitch Panels Maker - About, Donate & More" />
-        <meta name="twitter:description" content="Create branded Twitch panels with AI. Choose a template, add logo references, socials, content, and generate polished panel graphics." />
+        <meta name="twitter:title" content="Twitch Panels Maker — Free AI Panel Generator | GamingLogoAI" />
+        <meta name="twitter:description" content="Create branded Twitch panels free with AI. Pick a template, add your logo, socials, and content, then generate a full panel set — no design skills needed." />
         <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <script
           type="application/ld+json"
@@ -147,7 +147,7 @@ const TwitchPanelsLandingPage: NextPage = () => {
               "@type": "SoftwareApplication",
               name: "AI Twitch Panels Maker",
               description:
-                "Create branded Twitch panels with AI. Choose a template, add logo references, socials, content, and generate polished panel graphics.",
+                "Create branded Twitch panels free with AI. Pick a template, add your logo, socials, and content, then generate a full panel set — no design skills needed.",
               url: "https://gaminglogoai.com/twitch-panels-maker",
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -162,6 +162,23 @@ const TwitchPanelsLandingPage: NextPage = () => {
                 name: "GamingLogoAI",
                 url: "https://gaminglogoai.com",
               },
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faq.map((item) => ({
+                "@type": "Question",
+                name: item.q,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: item.a,
+                },
+              })),
             }),
           }}
         />

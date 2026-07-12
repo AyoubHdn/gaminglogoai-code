@@ -166,7 +166,7 @@ const FaceLogoGeneratorPage: NextPage = () => {
 };
 
 const handleOpenSharePopup = (imageUrl: string, promptOrName?: string | null) => {
-  setCurrentPromptForShare(promptOrName || "my awesome gaming logo"); // Set a default if no prompt/name
+  setCurrentPromptForShare(promptOrName || "my awesome gaming PFP"); // Set a default if no prompt/name
   setShowSharePopupFor(imageUrl);
 };
 
@@ -421,21 +421,21 @@ useEffect(() => {
   return (
     <>
       <Head>
-        <title>AI Face Logo Generator - Photo to Gaming Logo | GamingLogoAI</title>
-        <meta name="description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, optionally add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
-        <meta name="keywords" content="ai face logo, photo to logo, image to image generator, gaming avatar maker, custom streamer avatar, ai portrait logo, flux kontext pro, flux kontext max" />
+        <title>AI PFP Maker — Turn Your Photo into a Custom Gaming Avatar | GamingLogoAI</title>
+        <meta name="description" content="Turn your photo into a custom gaming PFP with AI. Upload your face, optionally add your gamer tag, pick an art style, and create a unique avatar for your stream or socials." />
+        <meta name="keywords" content="ai pfp maker, gaming pfp maker, photo to pfp, custom gaming avatar, ai avatar generator, gaming profile picture maker, streamer avatar, discord pfp maker" />
         <link rel="canonical" href="https://gaminglogoai.com/pfp-maker" /> {/* ** REPLACE with actual domain ** */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/pfp-maker" />
-        <meta property="og:title" content="AI Face Logo Generator - Photo to Gaming Logo | GamingLogoAI" />
-        <meta property="og:description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, optionally add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
+        <meta property="og:title" content="AI PFP Maker — Turn Your Photo into a Custom Gaming Avatar | GamingLogoAI" />
+        <meta property="og:description" content="Turn your photo into a custom gaming PFP with AI. Upload your face, optionally add your gamer tag, pick an art style, and create a unique avatar for your stream or socials." />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Face Logo Generator - Photo to Gaming Logo | GamingLogoAI" />
-        <meta name="twitter:description" content="Turn your photo into an epic AI-generated gaming logo! Upload your face, optionally add text, select an art style, and create a unique avatar or team logo with GamingLogoAI." />
+        <meta name="twitter:title" content="AI PFP Maker — Turn Your Photo into a Custom Gaming Avatar | GamingLogoAI" />
+        <meta name="twitter:description" content="Turn your photo into a custom gaming PFP with AI. Upload your face, optionally add your gamer tag, pick an art style, and create a unique avatar for your stream or socials." />
         <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
         <script
@@ -445,7 +445,7 @@ useEffect(() => {
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
               name: "AI PFP Maker",
-              description: "Turn your photo into an epic AI-generated gaming logo! Upload your face, optionally add text, select an art style, and create a unique avatar or team logo with GamingLogoAI.",
+              description: "Turn your photo into a custom gaming PFP with AI. Upload your face, optionally add your gamer tag, pick an art style, and create a unique avatar for your stream or socials.",
               url: "https://gaminglogoai.com/pfp-maker",
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -470,7 +470,7 @@ useEffect(() => {
             AI PFP Maker
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-            Transform your photo into a unique gaming logo or avatar. Upload your face, optionally add your gamer tag, pick a style, and let our AI create something legendary!
+            Transform your photo into a custom gaming avatar. Upload your face, optionally add your gamer tag, pick a style, and let our AI create something legendary!
           </p>
         </header>
 
@@ -481,7 +481,7 @@ useEffect(() => {
             <li><strong className="text-slate-800 dark:text-slate-100">Add Your Gamer Tag:</strong> Optional. Leave it blank if you want a text-free PFP.</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Pick an Art Style:</strong> Choose a theme to transform your photo (e.g., Cartoon, Anime, Vector).</li>
             <li><strong className="text-slate-800 dark:text-slate-100">Select Quality Engine:</strong> &quot;Pro&quot; for great quality, &quot;Max&quot; for ultimate detail.</li>
-            <li><strong className="text-slate-800 dark:text-slate-100">Generate!</strong> Watch your face become a unique gaming logo.</li>
+            <li><strong className="text-slate-800 dark:text-slate-100">Generate!</strong> Watch your face become a custom avatar.</li>
           </ol>
         </div>
 
@@ -523,7 +523,7 @@ useEffect(() => {
           <section>
             <h2 className="text-2xl font-semibold mb-3 text-slate-900 dark:text-white flex items-center">
               <span className="bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 rounded-full h-7 w-7 text-sm flex items-center justify-center mr-3">2</span>
-              Add Text to Your Logo (Optional)
+              Add Text to Your PFP (Optional)
             </h2>
             <FormGroup className="mb-0">
               <Input id="logo-text-input" value={inputText} onChange={(e) => {
@@ -538,9 +538,9 @@ useEffect(() => {
                     ? "border-red-500 dark:border-red-500 focus:ring-red-500" 
                     : "border-slate-300 dark:border-slate-700 focus:ring-purple-500 dark:focus:ring-cyan-500"
                 )}
-                aria-label="Text to include in the logo" />
+                aria-label="Text to include in the PFP" />
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                Leave this empty if you want the AI to generate a face logo with no text or lettering.
+                Leave this empty if you want the AI to generate a PFP with no text or lettering.
               </p>
               {textError && <p className="mt-2 text-sm text-red-600 dark:text-red-400" role="alert">{textError}</p>}
             </FormGroup>
@@ -650,34 +650,34 @@ useEffect(() => {
           <div className="mt-6">
             <Button type="submit" isLoading={isGenerating} disabled={isGenerating || !uploadedImageFile || !selectedStyleBasePrompt}
               className={`w-full text-lg font-semibold py-4 px-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ${isLoggedIn ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white dark:from-cyan-500 dark:to-blue-500 dark:hover:from-cyan-600 dark:hover:to-blue-600 dark:text-slate-900 focus:ring-purple-500 dark:focus:ring-cyan-400' : 'bg-slate-500 text-slate-100 cursor-not-allowed' } disabled:opacity-70 disabled:cursor-not-allowed`}>
-              {isLoggedIn ? (isGenerating ? "Transforming Your Face..." : "Generate My Face Logo!") : "Sign In to Generate"}
+              {isLoggedIn ? (isGenerating ? "Transforming Your Face..." : "Generate My PFP!") : "Sign In to Generate"}
             </Button>
-            {!isLoggedIn && <p className="text-center text-xs mt-2 text-slate-500 dark:text-slate-400">Sign in to create your unique face logo!</p>}
+            {!isLoggedIn && <p className="text-center text-xs mt-2 text-slate-500 dark:text-slate-400">Sign in to create your unique PFP!</p>}
           </div>
         </form>
 
         {/* Generated Images Section */}
         {imagesUrl.length > 0 && (
           <section id="results-section" className="mt-12">
-            <h2 className="text-3xl font-semibold mb-6 text-center text-slate-900 dark:text-white">Your AI Face Logos!</h2>
+            <h2 className="text-3xl font-semibold mb-6 text-center text-slate-900 dark:text-white">Your AI PFPs!</h2>
             <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {imagesUrl.map(({ imageUrl }, index) => (
                 <div key={imageUrl} className="relative group rounded-xl shadow-lg hover:shadow-2xl dark:bg-slate-800/70 transition-all duration-300 aspect-square overflow-hidden border-2 border-transparent hover:border-purple-500 dark:hover:border-cyan-500">
-                  <Image src={imageUrl} alt={`Generated face logo ${index + 1} ${inputText ? 'for ' + inputText : ''}`} fill style={{ objectFit: "cover" }} className="transition-transform duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" priority={index < 2} />
+                  <Image src={imageUrl} alt={`Generated gaming PFP ${index + 1} ${inputText ? 'for ' + inputText : ''}`} fill style={{ objectFit: "cover" }} className="transition-transform duration-300 group-hover:scale-105" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw" priority={index < 2} />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-end p-3 space-y-2">
                     <div className="flex gap-2">
                         <button type="button" onClick={() => openPopup(imageUrl)} className="p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors" title="View Fullscreen" aria-label="View Fullscreen">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 3a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V4a1 1 0 00-1-1H4zm10 0a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V4a1 1 0 00-1-1h-4zM4 11a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1v-4a1 1 0 00-1-1H4zm10 0a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1v-4a1 1 0 00-1-1h-4z" clipRule="evenodd" /></svg>
                         </button>
-                        <button type="button" onClick={() => void handleDownload(imageUrl)} className="p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors" title="Download Logo" aria-label="Download Logo" disabled={isDownloading === imageUrl}>
+                        <button type="button" onClick={() => void handleDownload(imageUrl)} className="p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors" title="Download PFP" aria-label="Download PFP" disabled={isDownloading === imageUrl}>
                           {isDownloading === imageUrl ? <div className="w-5 h-5 border-2 border-t-transparent border-current rounded-full animate-spin"></div> : <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" /></svg>}
                         </button>
                         <button
                         type="button"
-                        onClick={() => handleOpenSharePopup(imageUrl, "this awesome logo")} // Use icon.imageUrl and icon.prompt
+                        onClick={() => handleOpenSharePopup(imageUrl, "this awesome PFP")} // Use icon.imageUrl and icon.prompt
                         className="p-2 sm:p-2.5 rounded-full bg-slate-100/80 dark:bg-slate-700/80 hover:bg-white dark:hover:bg-slate-600 text-slate-700 dark:text-slate-100 shadow-md transition-colors disabled:opacity-50"
-                        title="Share Logo"
-                        aria-label="Share Logo"
+                        title="Share PFP"
+                        aria-label="Share PFP"
                       >
                         <FaShareAlt className="h-4 w-4 sm:h-5 sm:w-5" />
                       </button>
@@ -696,15 +696,15 @@ useEffect(() => {
               <button type="button" onClick={closePopup} className="absolute -top-4 -right-4 z-[110] bg-purple-600 dark:bg-cyan-500 text-white rounded-full p-1.5 hover:opacity-80 focus:outline-none shadow-md" title="Close Fullscreen" aria-label="Close Fullscreen">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
-              <Image src={popupImage} alt="Fullscreen generated gaming face logo" width={1024} height={1024} style={{ objectFit: 'contain', width: 'auto', height: 'auto', maxHeight: '85vh', maxWidth: 'calc(100vw - 4rem)' }} className="rounded-md" unoptimized={true}/>
+              <Image src={popupImage} alt="Fullscreen generated gaming PFP" width={1024} height={1024} style={{ objectFit: 'contain', width: 'auto', height: 'auto', maxHeight: '85vh', maxWidth: 'calc(100vw - 4rem)' }} className="rounded-md" unoptimized={true}/>
             </div>
           </div>
         )}
         {showSharePopupFor && router.isReady && ( // Add router.isReady if generatorUrl depends on it
         <SharePopup
                 imageUrl={showSharePopupFor}
-                imageAlt={`Shareable gaming logo ${currentPromptForShare ? 'for ' + currentPromptForShare : ''}`}
-                defaultText={`Check out this logo I made ${currentPromptForShare ? `for "${currentPromptForShare.substring(0,50)}..."` : ''} with GamingLogoAI!`}
+                imageAlt={`Shareable gaming PFP ${currentPromptForShare ? 'for ' + currentPromptForShare : ''}`}
+                defaultText={`Check out this PFP I made ${currentPromptForShare ? `for "${currentPromptForShare.substring(0,50)}..."` : ''} with GamingLogoAI!`}
                 siteUrl="https://gaminglogoai.com" // ** REPLACE **
                 // For collection, the original generator might not be easily known,
                 // so link to the main gaming logo maker or homepage.

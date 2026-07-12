@@ -1,0 +1,669 @@
+{
+  "property": "490347534",
+  "report": "organic_traffic",
+  "date_range": {
+    "start": "2026-06-14",
+    "end": "2026-07-11"
+  },
+  "totals": {
+    "sessions": 730,
+    "users": 707,
+    "pageviews": 1877,
+    "avg_daily_sessions": 26.1
+  },
+  "daily_data": [
+    {
+      "date": "20260614",
+      "sessions": 22,
+      "users": 22,
+      "pageviews": 54,
+      "bounce_rate": 22.7,
+      "avg_session_duration": 91.4,
+      "engagement_rate": 77.3
+    },
+    {
+      "date": "20260615",
+      "sessions": 16,
+      "users": 16,
+      "pageviews": 39,
+      "bounce_rate": 31.2,
+      "avg_session_duration": 80.3,
+      "engagement_rate": 68.8
+    },
+    {
+      "date": "20260616",
+      "sessions": 26,
+      "users": 25,
+      "pageviews": 59,
+      "bounce_rate": 38.5,
+      "avg_session_duration": 66.1,
+      "engagement_rate": 61.5
+    },
+    {
+      "date": "20260617",
+      "sessions": 15,
+      "users": 15,
+      "pageviews": 43,
+      "bounce_rate": 26.7,
+      "avg_session_duration": 98.2,
+      "engagement_rate": 73.3
+    },
+    {
+      "date": "20260618",
+      "sessions": 24,
+      "users": 24,
+      "pageviews": 75,
+      "bounce_rate": 16.7,
+      "avg_session_duration": 163.7,
+      "engagement_rate": 83.3
+    },
+    {
+      "date": "20260619",
+      "sessions": 20,
+      "users": 20,
+      "pageviews": 52,
+      "bounce_rate": 15.0,
+      "avg_session_duration": 167.1,
+      "engagement_rate": 85.0
+    },
+    {
+      "date": "20260620",
+      "sessions": 18,
+      "users": 18,
+      "pageviews": 53,
+      "bounce_rate": 27.8,
+      "avg_session_duration": 264.6,
+      "engagement_rate": 72.2
+    },
+    {
+      "date": "20260621",
+      "sessions": 16,
+      "users": 16,
+      "pageviews": 34,
+      "bounce_rate": 37.5,
+      "avg_session_duration": 47.9,
+      "engagement_rate": 62.5
+    },
+    {
+      "date": "20260622",
+      "sessions": 23,
+      "users": 23,
+      "pageviews": 51,
+      "bounce_rate": 47.8,
+      "avg_session_duration": 117.2,
+      "engagement_rate": 52.2
+    },
+    {
+      "date": "20260623",
+      "sessions": 25,
+      "users": 25,
+      "pageviews": 70,
+      "bounce_rate": 28.0,
+      "avg_session_duration": 98.1,
+      "engagement_rate": 72.0
+    },
+    {
+      "date": "20260624",
+      "sessions": 21,
+      "users": 20,
+      "pageviews": 40,
+      "bounce_rate": 28.6,
+      "avg_session_duration": 64.0,
+      "engagement_rate": 71.4
+    },
+    {
+      "date": "20260625",
+      "sessions": 28,
+      "users": 27,
+      "pageviews": 82,
+      "bounce_rate": 17.9,
+      "avg_session_duration": 227.1,
+      "engagement_rate": 82.1
+    },
+    {
+      "date": "20260626",
+      "sessions": 34,
+      "users": 34,
+      "pageviews": 82,
+      "bounce_rate": 11.8,
+      "avg_session_duration": 116.7,
+      "engagement_rate": 88.2
+    },
+    {
+      "date": "20260627",
+      "sessions": 26,
+      "users": 24,
+      "pageviews": 83,
+      "bounce_rate": 26.9,
+      "avg_session_duration": 136.9,
+      "engagement_rate": 73.1
+    },
+    {
+      "date": "20260628",
+      "sessions": 28,
+      "users": 23,
+      "pageviews": 64,
+      "bounce_rate": 42.9,
+      "avg_session_duration": 120.3,
+      "engagement_rate": 57.1
+    },
+    {
+      "date": "20260629",
+      "sessions": 21,
+      "users": 21,
+      "pageviews": 48,
+      "bounce_rate": 23.8,
+      "avg_session_duration": 73.8,
+      "engagement_rate": 76.2
+    },
+    {
+      "date": "20260630",
+      "sessions": 30,
+      "users": 30,
+      "pageviews": 93,
+      "bounce_rate": 23.3,
+      "avg_session_duration": 130.7,
+      "engagement_rate": 76.7
+    },
+    {
+      "date": "20260701",
+      "sessions": 35,
+      "users": 33,
+      "pageviews": 82,
+      "bounce_rate": 31.4,
+      "avg_session_duration": 172.3,
+      "engagement_rate": 68.6
+    },
+    {
+      "date": "20260702",
+      "sessions": 38,
+      "users": 38,
+      "pageviews": 102,
+      "bounce_rate": 34.2,
+      "avg_session_duration": 69.1,
+      "engagement_rate": 65.8
+    },
+    {
+      "date": "20260703",
+      "sessions": 26,
+      "users": 25,
+      "pageviews": 85,
+      "bounce_rate": 26.9,
+      "avg_session_duration": 113.9,
+      "engagement_rate": 73.1
+    },
+    {
+      "date": "20260704",
+      "sessions": 23,
+      "users": 21,
+      "pageviews": 48,
+      "bounce_rate": 21.7,
+      "avg_session_duration": 133.0,
+      "engagement_rate": 78.3
+    },
+    {
+      "date": "20260705",
+      "sessions": 23,
+      "users": 23,
+      "pageviews": 49,
+      "bounce_rate": 34.8,
+      "avg_session_duration": 50.8,
+      "engagement_rate": 65.2
+    },
+    {
+      "date": "20260706",
+      "sessions": 26,
+      "users": 26,
+      "pageviews": 74,
+      "bounce_rate": 15.4,
+      "avg_session_duration": 141.2,
+      "engagement_rate": 84.6
+    },
+    {
+      "date": "20260707",
+      "sessions": 28,
+      "users": 28,
+      "pageviews": 65,
+      "bounce_rate": 21.4,
+      "avg_session_duration": 104.9,
+      "engagement_rate": 78.6
+    },
+    {
+      "date": "20260708",
+      "sessions": 31,
+      "users": 25,
+      "pageviews": 91,
+      "bounce_rate": 35.5,
+      "avg_session_duration": 189.5,
+      "engagement_rate": 64.5
+    },
+    {
+      "date": "20260709",
+      "sessions": 31,
+      "users": 30,
+      "pageviews": 58,
+      "bounce_rate": 41.9,
+      "avg_session_duration": 114.6,
+      "engagement_rate": 58.1
+    },
+    {
+      "date": "20260710",
+      "sessions": 36,
+      "users": 36,
+      "pageviews": 101,
+      "bounce_rate": 25.0,
+      "avg_session_duration": 105.9,
+      "engagement_rate": 75.0
+    },
+    {
+      "date": "20260711",
+      "sessions": 40,
+      "users": 39,
+      "pageviews": 100,
+      "bounce_rate": 22.5,
+      "avg_session_duration": 265.8,
+      "engagement_rate": 77.5
+    }
+  ],
+  "top_pages": [
+    {
+      "landing_page": "/",
+      "sessions": 255,
+      "users": 248,
+      "pageviews": 754,
+      "bounce_rate": 22.4,
+      "engagement_rate": 77.6
+    },
+    {
+      "landing_page": "/logo/games/minecraft-logo-maker",
+      "sessions": 95,
+      "users": 94,
+      "pageviews": 256,
+      "bounce_rate": 15.8,
+      "engagement_rate": 84.2
+    },
+    {
+      "landing_page": "/gaming-logo-maker",
+      "sessions": 57,
+      "users": 56,
+      "pageviews": 112,
+      "bounce_rate": 28.1,
+      "engagement_rate": 71.9
+    },
+    {
+      "landing_page": "/free-fire-logos",
+      "sessions": 44,
+      "users": 42,
+      "pageviews": 115,
+      "bounce_rate": 29.5,
+      "engagement_rate": 70.5
+    },
+    {
+      "landing_page": "/pfp/games/fortnite-pfp-maker",
+      "sessions": 44,
+      "users": 42,
+      "pageviews": 80,
+      "bounce_rate": 40.9,
+      "engagement_rate": 59.1
+    },
+    {
+      "landing_page": "/pfp/games/call-of-duty-pfp-maker",
+      "sessions": 35,
+      "users": 35,
+      "pageviews": 108,
+      "bounce_rate": 20.0,
+      "engagement_rate": 80.0
+    },
+    {
+      "landing_page": "/ai-profile-picture-maker",
+      "sessions": 32,
+      "users": 31,
+      "pageviews": 97,
+      "bounce_rate": 12.5,
+      "engagement_rate": 87.5
+    },
+    {
+      "landing_page": "/logo/games/call-of-duty-logo-maker",
+      "sessions": 32,
+      "users": 32,
+      "pageviews": 71,
+      "bounce_rate": 28.1,
+      "engagement_rate": 71.9
+    },
+    {
+      "landing_page": "/pfp-maker",
+      "sessions": 22,
+      "users": 17,
+      "pageviews": 48,
+      "bounce_rate": 31.8,
+      "engagement_rate": 68.2
+    },
+    {
+      "landing_page": "/pfp/games/gears-of-war-pfp-maker",
+      "sessions": 17,
+      "users": 17,
+      "pageviews": 68,
+      "bounce_rate": 17.6,
+      "engagement_rate": 82.4
+    },
+    {
+      "landing_page": "/pfp/games/rainbow-six-siege-pfp-maker",
+      "sessions": 12,
+      "users": 12,
+      "pageviews": 16,
+      "bounce_rate": 66.7,
+      "engagement_rate": 33.3
+    },
+    {
+      "landing_page": "/logo/games/fortnite-logo-maker",
+      "sessions": 8,
+      "users": 8,
+      "pageviews": 28,
+      "bounce_rate": 25.0,
+      "engagement_rate": 75.0
+    },
+    {
+      "landing_page": "/logo/games/free-fire-logo-maker",
+      "sessions": 7,
+      "users": 5,
+      "pageviews": 11,
+      "bounce_rate": 42.9,
+      "engagement_rate": 57.1
+    },
+    {
+      "landing_page": "/pfp/games/free-fire-pfp-maker",
+      "sessions": 7,
+      "users": 7,
+      "pageviews": 13,
+      "bounce_rate": 42.9,
+      "engagement_rate": 57.1
+    },
+    {
+      "landing_page": "(not set)",
+      "sessions": 6,
+      "users": 6,
+      "pageviews": 0,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/emote-generator",
+      "sessions": 6,
+      "users": 5,
+      "pageviews": 10,
+      "bounce_rate": 50.0,
+      "engagement_rate": 50.0
+    },
+    {
+      "landing_page": "/pfp/games/gta-pfp-maker",
+      "sessions": 5,
+      "users": 5,
+      "pageviews": 7,
+      "bounce_rate": 40.0,
+      "engagement_rate": 60.0
+    },
+    {
+      "landing_page": "/pfp/games/resident-evil-pfp-maker",
+      "sessions": 5,
+      "users": 5,
+      "pageviews": 6,
+      "bounce_rate": 80.0,
+      "engagement_rate": 20.0
+    },
+    {
+      "landing_page": "/twitch-emote-maker",
+      "sessions": 5,
+      "users": 5,
+      "pageviews": 20,
+      "bounce_rate": 20.0,
+      "engagement_rate": 80.0
+    },
+    {
+      "landing_page": "/blog",
+      "sessions": 2,
+      "users": 2,
+      "pageviews": 2,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/logo/games/cyberpunk-2077-logo-maker",
+      "sessions": 2,
+      "users": 2,
+      "pageviews": 5,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/8-bit-avatar-maker",
+      "sessions": 2,
+      "users": 2,
+      "pageviews": 7,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/dragon-avatar-maker",
+      "sessions": 2,
+      "users": 2,
+      "pageviews": 2,
+      "bounce_rate": 50.0,
+      "engagement_rate": 50.0
+    },
+    {
+      "landing_page": "/pfp/styles/glitch-avatar-maker",
+      "sessions": 2,
+      "users": 2,
+      "pageviews": 4,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/pixel-art-avatar-maker",
+      "sessions": 2,
+      "users": 2,
+      "pageviews": 2,
+      "bounce_rate": 50.0,
+      "engagement_rate": 50.0
+    },
+    {
+      "landing_page": "/blog/how-to-create-a-clan-logo",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/buy-credits",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/logo-styles",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/logo/games/counter-strike-logo-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/logo/games/dota-logo-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 2,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/games/dota-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 2,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/games/fifa-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/games/minecraft-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/games/starcraft-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/games/valorant-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/styles/graffiti-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/kawaii-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/styles/monochrome-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 2,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/neon-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/styles/wolf-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/themes/cyberpunk-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/privacy-policy",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/refund-policy",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/terms-of-service",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/thumbnail-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/twitch-banner-generator",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/twitch-banner-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/twitch-panels-generator",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/youtube-thumbnail-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    }
+  ],
+  "quota_tokens_used": {
+    "daily_consumed": 1,
+    "daily_remaining": 199999,
+    "hourly_consumed": 1,
+    "hourly_remaining": 39999
+  },
+  "error": null
+}

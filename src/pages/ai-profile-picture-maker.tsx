@@ -227,7 +227,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
               The Ultimate <span className="text-cyan-400">AI Profile Picture Maker</span>
             </h1>
             <p className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">
-              Transform your photo into a legendary avatar with our **gaming PFP maker**. Choose an art style, upload your pic, and let our AI create a unique look for your stream or social profiles.            
+              Transform your photo into a legendary avatar with our <strong>gaming PFP maker</strong>. Choose an art style, upload your pic, and let our AI create a unique look for your stream or social profiles.
             </p>
             <button
               onClick={handleStartCreating}

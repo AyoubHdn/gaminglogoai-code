@@ -9,8 +9,6 @@ const staticPages = [
   "/youtube-thumbnail-maker",
   "/thumbnail-maker",
   "/twitch-banner-maker",
-  "/twitch-banner-generator",
-  "/twitch-banner-funnel",
   "/twitch-panels-maker",
   "/twitch-stream-screens-maker",
   "/twitch-emote-maker",

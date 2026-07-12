@@ -116,23 +116,23 @@ const TwitchBannerLandingPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Twitch Banner Maker - Create Professional Twitch Banners with AI</title>
+        <title>Twitch Banner Maker — Free AI Banner Generator | GamingLogoAI</title>
         <meta
           name="description"
-          content="Create custom Twitch banners with a guided AI flow. Choose a template, personalize your branding, generate the banner, and refine the result."
+          content="Create a professional Twitch banner free with AI. Pick a template, add your channel name, and download in the perfect size. No design skills needed."
         />
         <link rel="canonical" href="https://gaminglogoai.com/twitch-banner-maker" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/twitch-banner-maker" />
-        <meta property="og:title" content="Twitch Banner Maker - Create Professional Twitch Banners with AI" />
-        <meta property="og:description" content="Create custom Twitch banners with a guided AI flow. Choose a template, personalize your branding, generate the banner, and refine the result." />
+        <meta property="og:title" content="Twitch Banner Maker — Free AI Banner Generator | GamingLogoAI" />
+        <meta property="og:description" content="Create a professional Twitch banner free with AI. Pick a template, add your channel name, and download in the perfect size. No design skills needed." />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Twitch Banner Maker - Create Professional Twitch Banners with AI" />
-        <meta name="twitter:description" content="Create custom Twitch banners with a guided AI flow. Choose a template, personalize your branding, generate the banner, and refine the result." />
+        <meta name="twitter:title" content="Twitch Banner Maker — Free AI Banner Generator | GamingLogoAI" />
+        <meta name="twitter:description" content="Create a professional Twitch banner free with AI. Pick a template, add your channel name, and download in the perfect size. No design skills needed." />
         <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <script
           type="application/ld+json"
@@ -142,7 +142,7 @@ const TwitchBannerLandingPage: NextPage = () => {
               "@type": "SoftwareApplication",
               name: "AI Twitch Banner Maker",
               description:
-                "Create custom Twitch banners with a guided AI flow. Choose a template, personalize your branding, generate the banner, and refine the result.",
+                "Create a professional Twitch banner free with AI. Pick a template, add your channel name, and download in the perfect size. No design skills needed.",
               url: "https://gaminglogoai.com/twitch-banner-maker",
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -157,6 +157,23 @@ const TwitchBannerLandingPage: NextPage = () => {
                 name: "GamingLogoAI",
                 url: "https://gaminglogoai.com",
               },
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faq.map((item) => ({
+                "@type": "Question",
+                name: item.q,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: item.a,
+                },
+              })),
             }),
           }}
         />

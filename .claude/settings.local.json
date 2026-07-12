@@ -17,7 +17,12 @@
       "Bash(xargs grep -l \"minecraft-logo-maker\\\\|gameTitle.*Minecraft\\\\|minecraft.*logo\")",
       "Bash(tee \"C:\\\\Users\\\\ULTRAPC\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-ULTRAPC-Documents-GitHub-SaaS-gaminglogoai-code\\\\8215a299-fccb-457d-99d3-db6aa1df1510\\\\scratchpad\\\\drift_compare.json\")",
       "Bash(python scripts/gsc_query.py --property sc-domain:gaminglogoai.com --json)",
-      "Bash(echo \"EXIT: $?\")"
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(wc -c)",
+      "Bash(echo 'copied raw \\(__CMDSUB_OUTPUT__ bytes\\)')",
+      "Bash(echo \"raw copied\")",
+      "Bash(git diff *)",
+      "Bash(PYTHONIOENCODING=utf-8 python *)"
     ]
   }
 }

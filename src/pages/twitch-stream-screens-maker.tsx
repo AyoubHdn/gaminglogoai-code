@@ -114,10 +114,10 @@ const TwitchStreamScreensLandingPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>AI Twitch Stream Screens Maker - Starting Soon, BRB & More</title>
+        <title>Twitch Stream Screens Maker — Free AI Screens | GamingLogoAI</title>
         <meta
           name="description"
-          content="Create branded Twitch stream screens with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 with guided presets and polished styles."
+          content="Create Twitch stream screens free with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 — guided presets, no design skills needed."
         />
         <link
           rel="canonical"
@@ -130,11 +130,11 @@ const TwitchStreamScreensLandingPage: NextPage = () => {
         />
         <meta
           property="og:title"
-          content="AI Twitch Stream Screens Maker - Starting Soon, BRB & More"
+          content="Twitch Stream Screens Maker — Free AI Screens | GamingLogoAI"
         />
         <meta
           property="og:description"
-          content="Create branded Twitch stream screens with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 with guided presets and polished styles."
+          content="Create Twitch stream screens free with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 — guided presets, no design skills needed."
         />
         <meta
           property="og:image"
@@ -146,11 +146,11 @@ const TwitchStreamScreensLandingPage: NextPage = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content="AI Twitch Stream Screens Maker - Starting Soon, BRB & More"
+          content="Twitch Stream Screens Maker — Free AI Screens | GamingLogoAI"
         />
         <meta
           name="twitter:description"
-          content="Create branded Twitch stream screens with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 with guided presets and polished styles."
+          content="Create Twitch stream screens free with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 — guided presets, no design skills needed."
         />
         <meta
           name="twitter:image"
@@ -164,7 +164,7 @@ const TwitchStreamScreensLandingPage: NextPage = () => {
               "@type": "SoftwareApplication",
               name: "AI Twitch Stream Screens Maker",
               description:
-                "Create branded Twitch stream screens with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 with guided presets and polished styles.",
+                "Create Twitch stream screens free with AI. Make Starting Soon, BRB, Offline, and Ending screens in 1920x1080 — guided presets, no design skills needed.",
               url: "https://gaminglogoai.com/twitch-stream-screens-maker",
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -180,6 +180,23 @@ const TwitchStreamScreensLandingPage: NextPage = () => {
                 name: "GamingLogoAI",
                 url: "https://gaminglogoai.com",
               },
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faq.map((item) => ({
+                "@type": "Question",
+                name: item.q,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: item.a,
+                },
+              })),
             }),
           }}
         />

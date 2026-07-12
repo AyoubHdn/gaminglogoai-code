@@ -131,7 +131,7 @@ const HomePage: NextPage = () => {
               <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
                 Elevate your Twitch stream with eye-catching AI-generated banner art.
                 Customize colors, styles, characters, and layouts — perfect for streamers
-                who want a professional look **without hiring a designer**.
+                who want a professional look <strong>without hiring a designer</strong>.
               </p>
 
               <ul className="space-y-3 text-sm text-slate-700 dark:text-slate-300 mb-8">

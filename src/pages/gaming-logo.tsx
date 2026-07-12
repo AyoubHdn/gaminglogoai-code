@@ -54,7 +54,7 @@ const GamingLogoLandingPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Custom Gaming Logo Generator - AI Text & Mascot Logos</title>
+        <title>Gaming Logo Maker — Custom AI Esports & Clan Logos | GamingLogoAI</title>
         <meta
           name="description"
           content="Create custom gaming logos, mascots & esports emblems with our AI generator. Get 1 free credit to design a unique logo for your clan or stream in seconds!"
@@ -63,14 +63,14 @@ const GamingLogoLandingPage: NextPage = () => {
         <link rel="canonical" href="https://gaminglogoai.com/gaming-logo" /> 
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/gaming-logo" />
-        <meta property="og:title" content="Custom Gaming Logo Generator - AI Text & Mascot Logos" />
+        <meta property="og:title" content="Gaming Logo Maker — Custom AI Esports & Clan Logos | GamingLogoAI" />
         <meta property="og:description" content="Create custom gaming logos, mascots & esports emblems with our AI generator. Get 1 free credit to design a unique logo for your clan or stream in seconds!" />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Custom Gaming Logo Generator - AI Text & Mascot Logos" />
+        <meta name="twitter:title" content="Gaming Logo Maker — Custom AI Esports & Clan Logos | GamingLogoAI" />
         <meta name="twitter:description" content="Create custom gaming logos, mascots & esports emblems with our AI generator. Get 1 free credit to design a unique logo for your clan or stream in seconds!" />
         <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
@@ -89,6 +89,29 @@ const GamingLogoLandingPage: NextPage = () => {
                   text: item.a,
                 },
               })),
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                {
+                  "@type": "ListItem",
+                  position: 1,
+                  name: "Home",
+                  item: "https://gaminglogoai.com/",
+                },
+                {
+                  "@type": "ListItem",
+                  position: 2,
+                  name: "Gaming Logo Maker",
+                  item: "https://gaminglogoai.com/gaming-logo",
+                },
+              ],
             }),
           }}
         />
@@ -121,10 +144,10 @@ const GamingLogoLandingPage: NextPage = () => {
               unoptimized={true}
             />
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg">
-              Custom <span className="text-cyan-400">Gaming Logo</span> Generator
+              <span className="text-cyan-400">Gaming Logo</span> Maker
             </h1>
             <p className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">
-              Forge a unique identity with our AI-powered text and **gaming mascot** logo creator. Perfect for crafting a memorable **clan logo** or a professional **esports emblem**.  
+              Forge a unique identity with our AI-powered text and <strong>gaming mascot</strong> logo creator. Perfect for crafting a memorable <strong>clan logo</strong> or a professional <strong>esports emblem</strong>.
             </p>
             <button
               onClick={handleStartDesigning}
@@ -144,7 +167,7 @@ const GamingLogoLandingPage: NextPage = () => {
                     Endless <span className="text-purple-600 dark:text-cyan-400">Gaming Logo Styles</span> at Your Fingertips
                 </h2>
                 <p className="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                    Our AI is trained on a huge variety of gaming aesthetics. Just pick a theme, enter your name, and see the magic. Below are just a few of the categories you can explore in our **text logo generator**.
+                    Our AI is trained on a huge variety of gaming aesthetics. Just pick a theme, enter your name, and see the magic. Below are just a few of the categories you can explore in our <strong>text logo generator</strong>.
                 </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -252,9 +275,9 @@ const GamingLogoLandingPage: NextPage = () => {
               ))}
             </div>
             <div className="text-center mt-12">
-                <Link href="/gaming-logo-maker" legacyBehavior={false} className="px-8 py-3 font-semibold rounded-lg transition-all duration-300 ease-in-out
+                <Link href="/logo-styles" legacyBehavior={false} className="px-8 py-3 font-semibold rounded-lg transition-all duration-300 ease-in-out
                                   border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white
-                                  dark:border-cyan-500 dark:text-cyan-400 dark:hover:bg-cyan-500 dark:hover:text-slate-900"> {/* Link to your "Browse All Styles" hub page */}
+                                  dark:border-cyan-500 dark:text-cyan-400 dark:hover:bg-cyan-500 dark:hover:text-slate-900"> {/* Link to the "Browse All Styles" hub page */}
                         Browse Gaming Logo Styles
                 </Link>
             </div>

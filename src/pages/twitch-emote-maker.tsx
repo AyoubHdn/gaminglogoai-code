@@ -112,23 +112,23 @@ const TwitchEmoteMakerPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Twitch Emote Maker - Create Custom Twitch Emotes from Your Face</title>
+        <title>Twitch Emote Maker — Free Custom AI Emotes | GamingLogoAI</title>
         <meta
           name="description"
-          content="Create custom Twitch emotes from your real face using AI. Build a base emote, generate a full expression set, and download Twitch-ready results."
+          content="Create custom Twitch emotes free with AI. Turn your face into a base emote, generate a full expression set (GG, LOL, HYPE), and download Twitch-ready."
         />
         <link rel="canonical" href="https://gaminglogoai.com/twitch-emote-maker" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/twitch-emote-maker" />
-        <meta property="og:title" content="Twitch Emote Maker - Create Custom Twitch Emotes from Your Face" />
-        <meta property="og:description" content="Create custom Twitch emotes from your real face using AI. Build a base emote, generate a full expression set, and download Twitch-ready results." />
+        <meta property="og:title" content="Twitch Emote Maker — Free Custom AI Emotes | GamingLogoAI" />
+        <meta property="og:description" content="Create custom Twitch emotes free with AI. Turn your face into a base emote, generate a full expression set (GG, LOL, HYPE), and download Twitch-ready." />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Twitch Emote Maker - Create Custom Twitch Emotes from Your Face" />
-        <meta name="twitter:description" content="Create custom Twitch emotes from your real face using AI. Build a base emote, generate a full expression set, and download Twitch-ready results." />
+        <meta name="twitter:title" content="Twitch Emote Maker — Free Custom AI Emotes | GamingLogoAI" />
+        <meta name="twitter:description" content="Create custom Twitch emotes free with AI. Turn your face into a base emote, generate a full expression set (GG, LOL, HYPE), and download Twitch-ready." />
         <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <script
           type="application/ld+json"
@@ -138,7 +138,7 @@ const TwitchEmoteMakerPage: NextPage = () => {
               "@type": "SoftwareApplication",
               name: "AI Twitch Emote Maker",
               description:
-                "Create custom Twitch emotes from your real face using AI. Build a base emote, generate a full expression set, and download Twitch-ready results.",
+                "Create custom Twitch emotes free with AI. Turn your face into a base emote, generate a full expression set (GG, LOL, HYPE), and download Twitch-ready.",
               url: "https://gaminglogoai.com/twitch-emote-maker",
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -153,6 +153,23 @@ const TwitchEmoteMakerPage: NextPage = () => {
                 name: "GamingLogoAI",
                 url: "https://gaminglogoai.com",
               },
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faq.map((item) => ({
+                "@type": "Question",
+                name: item.q,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: item.a,
+                },
+              })),
             }),
           }}
         />
