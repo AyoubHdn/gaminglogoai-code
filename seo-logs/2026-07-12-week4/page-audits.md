@@ -101,3 +101,39 @@ Read-only analysis (GSC last-28-days + source of truth). Companion to `gsc-repor
 - **PFP:** keep `/ai-profile-picture-maker` as winner; fix `/pfp-maker` identity so it stops shadowing; push landing p13→page 1.
 - **Twitch banner:** promote `/twitch-banner-maker` landing; repoint funnel redirect + sitemap + footer to it; noindex/canonical the SPA tool.
 - **Game pages:** consolidate hand-built `/fortnite-logos` etc. into the programmatic equivalents (301 or canonical). (Signal step.)
+
+---
+
+## Part 5 — Programmatic-page deep-dives (added 2026-07-12)
+
+### `/pfp/games/gears-of-war-pfp-maker` — score ~81 (highest analyzed)
+GSC: **2 clicks, 296 impr, CTR 0.68%, avg pos 6.9** — ranks page 1 but ~zero clicks.
+
+| Query | Impr | Pos | Clicks |
+|---|---|---|---|
+| gears of war pfp | 218 | 6.9 | 0 |
+| gears of war profile picture | 43 | 6.6 | 2 |
+| gears pfp | 15 | 5.2 | 0 |
+
+- **Diagnosis: search-intent mismatch (SXO), not a ranking or on-page problem.** "gears of war pfp" is a *browse/download-an-image* query; the page offers a *photo→avatar maker*. The only converting query ("…profile picture", 2 clicks) is the create-intent one.
+- **On-page = gold standard:** `WebApplication` + `BreadcrumbList` + `FAQPage` schema, proper H1→H2→H3, rich internal linking (cross-promo + related items). This template is the blueprint for fixing the hand-built tool/landing pages.
+- **Weakness:** no enriched `pseoContent` entry → template fallback (2 generic FAQ, no `articleSections`). Programmatic-thin for a 296-impr page.
+- **Actions:** treat as SXO (add a ready-made example gallery to serve browse intent, or focus create-intent variants); enrich high-impression slugs with article content; **do NOT retitle** (0-click is intent, not title). *(Left untouched this session, deliberately.)*
+
+### `/pfp/styles/kawaii-avatar-maker` — score ~71
+GSC: **0 clicks, 158 impr, CTR 0.00%, avg pos 9.3**.
+
+| Query | Impr | Pos |
+|---|---|---|
+| kawaii pfp maker | 69 | 5.3 |
+| kawaii avatar maker | 54 | 14.0 |
+| avatar maker - kawaii karakter | 28 | 8.6 |
+
+- **Root cause: keyword-variant mismatch (template-wide).** Page ranks **p5.3 for "kawaii pfp maker"** but only **p14 for "kawaii avatar maker"** — yet title/H1/keywords/slug all said "**Avatar** Maker." Snippet didn't match the higher-demand "pfp maker" query → 0 clicks at position 5.
+- Same class as `/gaming-logo`'s "generator" vs "maker."
+- Also: template fallback (1 FAQ only); possible deeper intent gap ("kawaii pfp maker" may expect a Picrew-style character creator); CSS typo `dark-text-cyan-400`.
+
+**Fix applied 2026-07-12 (on-page, template-level):** `pfp/styles/[slug].tsx`, `pfp/seasonal/[slug].tsx`, `pfp/themes/[slug].tsx` — title/H1/keywords now **lead with "PFP Maker"** (kept avatar/profile-picture terms; meta contains both PFP + avatar); fixed `dark-text-cyan-400` → `dark:text-cyan-400` (3× per file). No slug/canonical/URL/sitemap/redirect changes; `pseoContent` overrides still win. Build clean.
+
+### Cross-page pattern (updated)
+Programmatic pages rank **fine** (p5–9, page 1). Their losses are **(a) title/keyword-variant mismatches** (fixed for `/pfp/styles|seasonal|themes` this session) and **(b) browse-vs-create intent** (`/pfp/games/*` — SXO, not a title fix). Neither is a technical-SEO defect.
