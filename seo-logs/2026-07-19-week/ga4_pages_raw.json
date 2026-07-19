@@ -1,0 +1,418 @@
+{
+  "property": "490347534",
+  "report": "top_organic_pages",
+  "date_range": {
+    "start": "2026-06-21",
+    "end": "2026-07-18"
+  },
+  "pages": [
+    {
+      "landing_page": "/",
+      "sessions": 226,
+      "users": 218,
+      "pageviews": 676,
+      "bounce_rate": 22.6,
+      "engagement_rate": 77.4
+    },
+    {
+      "landing_page": "/logo/games/minecraft-logo-maker",
+      "sessions": 131,
+      "users": 130,
+      "pageviews": 350,
+      "bounce_rate": 18.3,
+      "engagement_rate": 81.7
+    },
+    {
+      "landing_page": "/gaming-logo-maker",
+      "sessions": 67,
+      "users": 65,
+      "pageviews": 137,
+      "bounce_rate": 23.9,
+      "engagement_rate": 76.1
+    },
+    {
+      "landing_page": "/logo/games/call-of-duty-logo-maker",
+      "sessions": 57,
+      "users": 57,
+      "pageviews": 133,
+      "bounce_rate": 26.3,
+      "engagement_rate": 73.7
+    },
+    {
+      "landing_page": "/pfp/games/fortnite-pfp-maker",
+      "sessions": 52,
+      "users": 50,
+      "pageviews": 101,
+      "bounce_rate": 40.4,
+      "engagement_rate": 59.6
+    },
+    {
+      "landing_page": "/pfp/games/call-of-duty-pfp-maker",
+      "sessions": 41,
+      "users": 41,
+      "pageviews": 133,
+      "bounce_rate": 12.2,
+      "engagement_rate": 87.8
+    },
+    {
+      "landing_page": "/free-fire-logos",
+      "sessions": 40,
+      "users": 38,
+      "pageviews": 95,
+      "bounce_rate": 35.0,
+      "engagement_rate": 65.0
+    },
+    {
+      "landing_page": "/ai-profile-picture-maker",
+      "sessions": 38,
+      "users": 37,
+      "pageviews": 114,
+      "bounce_rate": 10.5,
+      "engagement_rate": 89.5
+    },
+    {
+      "landing_page": "/pfp-maker",
+      "sessions": 31,
+      "users": 26,
+      "pageviews": 55,
+      "bounce_rate": 38.7,
+      "engagement_rate": 61.3
+    },
+    {
+      "landing_page": "/pfp/games/rainbow-six-siege-pfp-maker",
+      "sessions": 19,
+      "users": 19,
+      "pageviews": 29,
+      "bounce_rate": 57.9,
+      "engagement_rate": 42.1
+    },
+    {
+      "landing_page": "/pfp/games/gears-of-war-pfp-maker",
+      "sessions": 18,
+      "users": 18,
+      "pageviews": 73,
+      "bounce_rate": 16.7,
+      "engagement_rate": 83.3
+    },
+    {
+      "landing_page": "/logo/games/fortnite-logo-maker",
+      "sessions": 11,
+      "users": 10,
+      "pageviews": 54,
+      "bounce_rate": 18.2,
+      "engagement_rate": 81.8
+    },
+    {
+      "landing_page": "/logo/games/free-fire-logo-maker",
+      "sessions": 8,
+      "users": 5,
+      "pageviews": 12,
+      "bounce_rate": 50.0,
+      "engagement_rate": 50.0
+    },
+    {
+      "landing_page": "/twitch-emote-maker",
+      "sessions": 8,
+      "users": 8,
+      "pageviews": 34,
+      "bounce_rate": 25.0,
+      "engagement_rate": 75.0
+    },
+    {
+      "landing_page": "/pfp/games/free-fire-pfp-maker",
+      "sessions": 7,
+      "users": 7,
+      "pageviews": 13,
+      "bounce_rate": 42.9,
+      "engagement_rate": 57.1
+    },
+    {
+      "landing_page": "(not set)",
+      "sessions": 5,
+      "users": 5,
+      "pageviews": 0,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/games/gta-pfp-maker",
+      "sessions": 5,
+      "users": 5,
+      "pageviews": 7,
+      "bounce_rate": 40.0,
+      "engagement_rate": 60.0
+    },
+    {
+      "landing_page": "/pfp/games/resident-evil-pfp-maker",
+      "sessions": 5,
+      "users": 5,
+      "pageviews": 6,
+      "bounce_rate": 80.0,
+      "engagement_rate": 20.0
+    },
+    {
+      "landing_page": "/emote-generator",
+      "sessions": 4,
+      "users": 3,
+      "pageviews": 6,
+      "bounce_rate": 75.0,
+      "engagement_rate": 25.0
+    },
+    {
+      "landing_page": "/pfp/styles/kawaii-avatar-maker",
+      "sessions": 4,
+      "users": 4,
+      "pageviews": 6,
+      "bounce_rate": 75.0,
+      "engagement_rate": 25.0
+    },
+    {
+      "landing_page": "/twitch-panels-generator",
+      "sessions": 3,
+      "users": 3,
+      "pageviews": 3,
+      "bounce_rate": 33.3,
+      "engagement_rate": 66.7
+    },
+    {
+      "landing_page": "/twitch-stream-screens-generator",
+      "sessions": 3,
+      "users": 3,
+      "pageviews": 3,
+      "bounce_rate": 33.3,
+      "engagement_rate": 66.7
+    },
+    {
+      "landing_page": "/blog",
+      "sessions": 2,
+      "users": 2,
+      "pageviews": 2,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/logo/games/counter-strike-logo-maker",
+      "sessions": 2,
+      "users": 2,
+      "pageviews": 5,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/glitch-avatar-maker",
+      "sessions": 2,
+      "users": 2,
+      "pageviews": 4,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/twitch-banner-generator",
+      "sessions": 2,
+      "users": 2,
+      "pageviews": 2,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/blog/how-to-create-a-clan-logo",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/buy-credits",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/gaming-logo",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/logo-styles",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/logo/games/cyberpunk-2077-logo-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/logo/games/dota-logo-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 2,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/games/cod-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 2,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/games/dota-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 2,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/games/minecraft-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/games/mobile-legends-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/games/rocket-league-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 6,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/games/starcraft-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/games/valorant-pfp-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/styles/8-bit-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/dragon-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/styles/graffiti-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/minimalist-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/monochrome-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 2,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/pixel-art-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/styles/retro-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/styles/wolf-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    },
+    {
+      "landing_page": "/pfp/themes/cyberpunk-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/pfp/themes/ghost-avatar-maker",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 3,
+      "bounce_rate": 0.0,
+      "engagement_rate": 100.0
+    },
+    {
+      "landing_page": "/privacy-policy",
+      "sessions": 1,
+      "users": 1,
+      "pageviews": 1,
+      "bounce_rate": 100.0,
+      "engagement_rate": 0.0
+    }
+  ],
+  "total_organic_sessions": 821,
+  "quota_tokens_used": {
+    "daily_consumed": 1,
+    "daily_remaining": 199997,
+    "hourly_consumed": 1,
+    "hourly_remaining": 39997
+  },
+  "error": null
+}

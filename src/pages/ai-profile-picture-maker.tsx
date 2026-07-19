@@ -42,8 +42,8 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
       a: "You can start for free with GamingLogoAI! Every new user gets 1 free credit. This credit is enough to generate and download your first high-resolution custom PFP without a watermark. If you want more designs, you can purchase additional credit packs."
     },
     {
-      q: "Can I turn my photo into a logo?",
-      a: "Yes! Our tool is both an avatar creator and a photo to logo converter. By selecting more abstract or emblem-based styles, the AI can transform your face into a unique, stylized logo that you can use for your personal brand or team."
+      q: "Will my PFP be the right size for Discord, Twitch, and YouTube?",
+      a: "Yes. Every PFP is generated in a high-resolution square format that's ready to use as a profile picture on Discord, Twitch, YouTube, Instagram, and Steam. Just download and upload — no cropping or resizing needed."
     },
     {
       q: "What styles are available?",
@@ -148,24 +148,24 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>AI Profile Picture Maker - Custom Gaming PFP Generator</title>
+        <title>AI PFP Maker — Free Gaming Profile Picture Generator | GamingLogoAI</title>
         <meta
           name="description"
-          content="Create a custom gaming PFP from your photo with GamingLogoAI. Transform your image into unique cartoon, anime, or esports styles. Get 1 free credit today!"
+          content="Free AI PFP maker for gamers. Turn your photo into a custom gaming profile picture — cartoon, anime, cyberpunk & more. 1 free credit, no design skills needed."
         />
         <meta name="keywords" content="ai profile picture maker, gaming profile picture maker, gaming pfp maker, custom pfp, photo to avatar, ai avatar generator, image to pfp, streamer avatar" />  
         <link rel="canonical" href="https://gaminglogoai.com/ai-profile-picture-maker" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/ai-profile-picture-maker" />
-        <meta property="og:title" content="AI Profile Picture Maker - Custom Gaming PFP Generator" />
-        <meta property="og:description" content="Create a custom gaming PFP from your photo with GamingLogoAI. Transform your image into unique cartoon, anime, or esports styles. Get 1 free credit today!" />
+        <meta property="og:title" content="AI PFP Maker — Free Gaming Profile Picture Generator | GamingLogoAI" />
+        <meta property="og:description" content="Free AI PFP maker for gamers. Turn your photo into a custom gaming profile picture — cartoon, anime, cyberpunk & more. 1 free credit, no design skills needed." />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="AI Profile Picture Maker - Custom Gaming PFP Generator" />
-        <meta name="twitter:description" content="Create a custom gaming PFP from your photo with GamingLogoAI. Transform your image into unique cartoon, anime, or esports styles. Get 1 free credit today!" />
+        <meta name="twitter:title" content="AI PFP Maker — Free Gaming Profile Picture Generator | GamingLogoAI" />
+        <meta name="twitter:description" content="Free AI PFP maker for gamers. Turn your photo into a custom gaming profile picture — cartoon, anime, cyberpunk & more. 1 free credit, no design skills needed." />
         <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
         <link rel="icon" href="/favicon.ico" />
         <script
@@ -174,8 +174,8 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
-              name: "AI Profile Picture Maker",
-              description: "Create a custom gaming PFP from your photo with GamingLogoAI. Transform your image into unique cartoon, anime, or esports styles. Get 1 free credit today!",
+              name: "AI PFP Maker",
+              description: "Free AI PFP maker for gamers. Turn your photo into a custom gaming profile picture — cartoon, anime, cyberpunk & more. 1 free credit, no design skills needed.",
               url: "https://gaminglogoai.com/ai-profile-picture-maker",
               applicationCategory: "DesignApplication",
               operatingSystem: "Web",
@@ -210,6 +210,19 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
             }),
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Home", item: "https://gaminglogoai.com" },
+                { "@type": "ListItem", position: 2, name: "AI PFP Maker", item: "https://gaminglogoai.com/ai-profile-picture-maker" },
+              ],
+            }),
+          }}
+        />
       </Head>
 
       <main className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 overflow-x-hidden">
@@ -224,7 +237,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
                 <FaCameraRetro className="h-16 w-16 sm:h-20 sm:w-20 text-cyan-400" />
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight drop-shadow-lg">
-              The Ultimate <span className="text-cyan-400">AI Profile Picture Maker</span>
+              The Ultimate <span className="text-cyan-400">AI PFP Maker</span>
             </h1>
             <p className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">
               Transform your photo into a legendary avatar with our <strong>gaming PFP maker</strong>. Choose an art style, upload your pic, and let our AI create a unique look for your stream or social profiles.

@@ -22,7 +22,13 @@
       "Bash(echo 'copied raw \\(__CMDSUB_OUTPUT__ bytes\\)')",
       "Bash(echo \"raw copied\")",
       "Bash(git diff *)",
-      "Bash(PYTHONIOENCODING=utf-8 python *)"
+      "Bash(PYTHONIOENCODING=utf-8 python *)",
+      "Read(//c/Users/ULTRAPC/.claude/plugins/cache/agricidaniel-seo/claude-seo/1.9.9/scripts/**)",
+      "Bash(PYTHONIOENCODING=utf-8 python gsc_query.py query --property sc-domain:gaminglogoai.com --days 28 --dimensions query,page --limit 1000 --json)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(PYTHONIOENCODING=utf-8 grep -rn -B1 -A1 \"ai-profile-picture-maker\" src/component/Header.tsx src/component/Footer.tsx src/component/pSEO/PseoPfpPageTemplate.tsx)",
+      "Bash(git --no-pager diff --stat)",
+      "Bash(git --no-pager diff src/pages/ai-profile-picture-maker.tsx)"
     ]
   }
 }
