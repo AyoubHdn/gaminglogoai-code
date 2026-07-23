@@ -28,7 +28,13 @@
       "Bash(echo \"EXIT=$?\")",
       "Bash(PYTHONIOENCODING=utf-8 grep -rn -B1 -A1 \"ai-profile-picture-maker\" src/component/Header.tsx src/component/Footer.tsx src/component/pSEO/PseoPfpPageTemplate.tsx)",
       "Bash(git --no-pager diff --stat)",
-      "Bash(git --no-pager diff src/pages/ai-profile-picture-maker.tsx)"
+      "Bash(git --no-pager diff src/pages/ai-profile-picture-maker.tsx)",
+      "Bash(mkdir -p seo-logs/2026-07-23-week)",
+      "Bash(PYTHONIOENCODING=utf-8 python \"C:/Users/ULTRAPC/.claude/plugins/cache/agricidaniel-seo/claude-seo/1.9.9/scripts/gsc_query.py\" query --property sc-domain:gaminglogoai.com --days 28 --dimensions query,page --limit 1000 --json)",
+      "Bash(git checkout *)",
+      "Bash(node -e ' *)",
+      "Bash(git --no-pager diff -- src/)",
+      "Bash(git branch *)"
     ]
   }
 }

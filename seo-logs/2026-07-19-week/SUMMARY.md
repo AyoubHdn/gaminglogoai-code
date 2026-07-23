@@ -54,7 +54,7 @@ Data cycle for the week. Companion files in this folder: `gsc-report.md`, `ga4-r
 | # | Move | Why | Effort |
 |---|---|---|---|
 | **1** ✅ | **Push `/ai-profile-picture-maker`** — CTR-focused on-page rewrite | Highest ROI: climbing + best engagement + 255 idle page-1 impressions | Low |
-| **2** | **Gaming-logo signal step** — consolidate home/`/gaming-logo`/`/gaming-logo-maker` (sitemap/footer/redirect/canonical) | Unlock 601-impr head term stuck at p29 | Medium |
+| **2** ⛔ | ~~**Gaming-logo signal step**~~ — **DEFERRED 2026-07-23**, see below | Premise invalidated by per-page GSC data | — |
 | 3 (backlog) | **SXO example-gallery** for browse-intent `/pfp/games/*` (rainbow-six, resident-evil, gears) | Serve "show me a PFP" intent; behavior-data-confirmed | Medium |
 | 4 (watch) | kawaii intent gap; homepage impression dip | Insufficient signal to act | — |
 
@@ -70,6 +70,19 @@ Deep-dive: `page-audits.md`. Diagnosis was **CTR, not ranking** (page 1 p8–11 
 Rationale: the whole site already links to this page as **"AI PFP Maker"** (Header/Footer/breadcrumb anchors) while the page titled itself "Profile Picture Maker" — title now matches both the top query *and* the inbound anchor text, plus a "Free" CTR hook.
 **Target:** CTR 1.7% → ~4–5% on ~827 page-1 impressions (≈33–41 clicks vs 14) with no ranking change required.
 **Next check:** re-pull GSC in 1–2 weeks (after deploy) and compare CTR for this page's query cluster.
+
+### Priority #2 — DEFERRED (2026-07-23, not shipped)
+Full write-up: `../2026-07-23-week/gaming-logo-consolidation-DEFERRED.md`. Built on branch `seo/gaming-logo-consolidation`, then **abandoned and the branch deleted** — nothing merged.
+
+The 2026-07-23 GSC pull split the head term **per page** for the first time and invalidated the premise. This summary's "601 impr at p29" was an aggregate that hid the real structure:
+
+| Page | Impr | Position |
+|---|---|---|
+| `/` (home) | 451 | **21.5** |
+| `/gaming-logo-maker` (tool) | 202 | 38.3 → **+13.9 in 4 days, untouched** |
+| `/gaming-logo` (landing) | **1** | 76 |
+
+`/gaming-logo` is **not** the cannibalization party — it holds 1 impression. The split is **home vs. tool**, and the tool is climbing hard on its own. Canonicalising a rising page to a dormant one would have destroyed momentum for nothing. **Cluster left alone this cycle.** Revisit only if the tool stalls (trigger conditions in the deferred doc).
 
 ---
 
