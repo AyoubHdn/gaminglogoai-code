@@ -94,7 +94,7 @@ const TOOL_GROUPS: StudioToolGroup[] = [
         label: "YouTube Thumbnail Maker",
         shortLabel: "YT",
         icon: <FaYoutube aria-hidden="true" />,
-        enabled: false,
+        enabled: true,
       },
     ],
   },
@@ -321,11 +321,14 @@ export function StudioShell({ children }: { children: ReactNode }) {
   const requestedTool =
     typeof router.query.tool === "string" ? router.query.tool : "logo";
   const selectedTool =
-    requestedTool === "pfp" || requestedTool === "banner"
+    requestedTool === "pfp" ||
+    requestedTool === "banner" ||
+    requestedTool === "thumbnail"
       ? requestedTool
       : "logo";
   const isPfpTool = selectedTool === "pfp";
   const isBannerTool = selectedTool === "banner";
+  const isThumbnailTool = selectedTool === "thumbnail";
 
   const currentGame = useMemo(() => {
     if (typeof router.query.game !== "string") {
@@ -383,13 +386,19 @@ export function StudioShell({ children }: { children: ReactNode }) {
                 <FaUserCircle aria-hidden="true" />
               ) : isBannerTool ? (
                 <FaImage aria-hidden="true" />
+              ) : isThumbnailTool ? (
+                <FaYoutube aria-hidden="true" />
               ) : (
                 <FaGamepad aria-hidden="true" />
               )}
             </button>
             <div className="min-w-0">
               <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500">
-                {isBannerTool ? "Streaming" : "Logos"}
+                {isBannerTool
+                  ? "Streaming"
+                  : isThumbnailTool
+                    ? "Content"
+                    : "Logos"}
               </p>
               <div className="flex min-w-0 items-center gap-2">
                 <h1 className="truncate text-base font-bold text-slate-50 sm:text-lg">
@@ -397,7 +406,9 @@ export function StudioShell({ children }: { children: ReactNode }) {
                     ? "PFP / Avatar Maker"
                     : isBannerTool
                       ? "Twitch Banner Maker"
-                      : "Gaming Logo Maker"}
+                      : isThumbnailTool
+                        ? "YouTube Thumbnail Maker"
+                        : "Gaming Logo Maker"}
                 </h1>
                 {currentGame && (
                   <span className="hidden rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-1 text-[10px] font-semibold text-cyan-400 sm:inline-flex">

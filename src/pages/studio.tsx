@@ -7,13 +7,16 @@ import { StudioBannerWorkspace } from "~/component/studio/StudioBannerWorkspace"
 import { StudioLogoWorkspace } from "~/component/studio/StudioLogoWorkspace";
 import { StudioPfpWorkspace } from "~/component/studio/StudioPfpWorkspace";
 import { StudioShell } from "~/component/studio/StudioShell";
+import { StudioThumbnailWorkspace } from "~/component/studio/StudioThumbnailWorkspace";
 
 const StudioPage: NextPage = () => {
   const router = useRouter();
   const requestedTool =
     typeof router.query.tool === "string" ? router.query.tool : "logo";
   const selectedTool =
-    requestedTool === "pfp" || requestedTool === "banner"
+    requestedTool === "pfp" ||
+    requestedTool === "banner" ||
+    requestedTool === "thumbnail"
       ? requestedTool
       : "logo";
 
@@ -25,7 +28,12 @@ const StudioPage: NextPage = () => {
     const tool =
       typeof router.query.tool === "string" ? router.query.tool : "logo";
 
-    if (tool !== "logo" && tool !== "pfp" && tool !== "banner") {
+    if (
+      tool !== "logo" &&
+      tool !== "pfp" &&
+      tool !== "banner" &&
+      tool !== "thumbnail"
+    ) {
       void router.replace(
         {
           pathname: "/studio",
@@ -45,7 +53,9 @@ const StudioPage: NextPage = () => {
   return (
     <>
       <StudioShell>
-        {selectedTool === "banner" ? (
+        {selectedTool === "thumbnail" ? (
+          <StudioThumbnailWorkspace />
+        ) : selectedTool === "banner" ? (
           <StudioBannerWorkspace />
         ) : selectedTool === "pfp" ? (
           <StudioPfpWorkspace />
@@ -58,7 +68,7 @@ const StudioPage: NextPage = () => {
         <title>GamingLogoAI Studio</title>
         <meta
           name="description"
-          content="Create gaming logos, PFPs, and Twitch banners in the unified GamingLogoAI Studio."
+          content="Create gaming logos, PFPs, Twitch banners, and YouTube thumbnails in the unified GamingLogoAI Studio."
         />
         <meta name="robots" content="noindex,follow" />
         <meta name="googlebot" content="noindex,follow" />
