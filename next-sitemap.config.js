@@ -1,9 +1,10 @@
 // next-sitemap.config.js
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://gaminglogoai.com',
-  generateRobotsTxt: true, 
+  siteUrl: "https://gaminglogoai.com",
+  generateRobotsTxt: true,
   sitemapSize: 5000,
+  exclude: ["/studio"],
 
   additionalSitemaps: [
     "https://gaminglogoai.com/sitemap-static.xml",

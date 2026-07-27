@@ -2,6 +2,7 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import { useRouter } from "next/router";
 import Script from "next/script";
 import Head from "next/head"; // Import Head for default viewport and other site-wide tags
 
@@ -18,6 +19,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
+  const router = useRouter();
+  const isStudioRoute = router.pathname === "/studio";
+
   return (
     <SessionProvider session={session}>
       <Head>
@@ -40,7 +44,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           `,
         }}
       />
-      
+
       {/* Google Tag Manager NoScript Fallback for GamingLogoAI */}
       <noscript>
         <iframe
@@ -52,14 +56,18 @@ const MyApp: AppType<{ session: Session | null }> = ({
         ></iframe>
       </noscript>
 
-      {/* Main App Structure */}
-      <div className="flex flex-col min-h-screen"> {/* Optional: Ensures footer stays at bottom */}
-        <Header /> {/* Your themed GamingLogoAI Header */}
-        <main className="flex-grow"> {/* Optional: Allows main content to take available space */}
-          <Component {...pageProps} />
-        </main>
-        <Footer /> {/* Your themed GamingLogoAI Footer */}
-      </div>
+      {isStudioRoute ? (
+        <Component {...pageProps} />
+      ) : (
+        /* Main App Structure */
+        <div className="flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-grow">
+            <Component {...pageProps} />
+          </main>
+          <Footer />
+        </div>
+      )}
     </SessionProvider>
   );
 };
