@@ -1,8 +1,10 @@
-import { signIn, useSession } from "next-auth/react";
+import Image from "next/image";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
+  FaChevronDown,
   FaChevronLeft,
   FaChevronRight,
   FaCoins,
@@ -12,6 +14,7 @@ import {
   FaGamepad,
   FaImage,
   FaPlus,
+  FaSignOutAlt,
   FaSmile,
   FaTimes,
   FaUserCircle,
@@ -38,13 +41,13 @@ const TOOL_GROUPS: StudioToolGroup[] = [
     tools: [
       {
         id: "logo",
-        label: "Gaming Logo Maker",
+        label: "Logo Maker",
         shortLabel: "GL",
         icon: <FaGamepad aria-hidden="true" />,
       },
       {
         id: "pfp",
-        label: "PFP / Avatar Maker",
+        label: "PFP Maker",
         shortLabel: "PF",
         icon: <FaUserCircle aria-hidden="true" />,
       },
@@ -55,13 +58,13 @@ const TOOL_GROUPS: StudioToolGroup[] = [
     tools: [
       {
         id: "banner",
-        label: "Twitch Banner Maker",
+        label: "Banner Maker",
         shortLabel: "TB",
         icon: <FaImage aria-hidden="true" />,
       },
       {
         id: "panels",
-        label: "Twitch Panels Maker",
+        label: "Panels Maker",
         shortLabel: "TP",
         icon: <FaColumns aria-hidden="true" />,
       },
@@ -84,7 +87,7 @@ const TOOL_GROUPS: StudioToolGroup[] = [
     tools: [
       {
         id: "thumbnail",
-        label: "YouTube Thumbnail Maker",
+        label: "Thumbnail Maker",
         shortLabel: "YT",
         icon: <FaYoutube aria-hidden="true" />,
       },
@@ -104,8 +107,43 @@ function SidebarContent({
   onClose?: () => void;
 }) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
   const selectedTool =
     typeof router.query.tool === "string" ? router.query.tool : "logo";
+  const userName =
+    session?.user?.name?.trim() ||
+    session?.user?.email?.trim() ||
+    "GamingLogoAI user";
+
+  useEffect(() => {
+    if (!profileOpen) {
+      return;
+    }
+
+    const closeProfileMenu = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setProfileOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeProfileMenu);
+    document.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", closeProfileMenu);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [profileOpen]);
 
   const openTool = (toolId: string) => {
     const game =
@@ -126,7 +164,7 @@ function SidebarContent({
   };
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="relative flex h-full flex-col">
       <div
         className={`flex h-[68px] items-center px-4 ${
           collapsed ? "justify-center" : "justify-between"
@@ -137,9 +175,14 @@ function SidebarContent({
           className="flex min-w-0 items-center gap-3"
           aria-label="GamingLogoAI home"
         >
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 text-sm font-extrabold text-white shadow-md">
-            G
-          </span>
+          <Image
+            src="/logo.webp"
+            alt=""
+            width={36}
+            height={36}
+            unoptimized
+            className="h-9 w-9 shrink-0 rounded-lg object-contain shadow-md"
+          />
           {!collapsed && (
             <span className="truncate text-sm font-bold text-slate-50">
               GamingLogoAI
@@ -212,10 +255,159 @@ function SidebarContent({
       </nav>
 
       <div className="border-t border-slate-800 p-2">
+        <Link
+          href="/collection"
+          onClick={onNavigate}
+          aria-label="My Designs"
+          title={collapsed ? "My Designs" : undefined}
+          className={`flex w-full items-center rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-white ${
+            collapsed ? "justify-center" : "gap-3"
+          }`}
+        >
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-slate-800 text-sm">
+            <FaFolderOpen aria-hidden="true" />
+          </span>
+          {!collapsed && <span>My Designs</span>}
+        </Link>
+
+        <div ref={profileRef} className="relative mt-1">
+          {profileOpen && (
+            <div
+              className={`absolute z-[70] overflow-hidden rounded-xl border border-slate-700 bg-slate-900 p-2 shadow-2xl ${
+                collapsed
+                  ? "bottom-0 left-[62px] w-56"
+                  : "bottom-[calc(100%+8px)] left-0 right-0"
+              }`}
+              role="menu"
+              aria-label="Studio profile menu"
+            >
+              {status === "authenticated" ? (
+                <>
+                  <div className="border-b border-slate-800 px-3 pb-2 pt-1">
+                    <p className="truncate text-sm font-semibold text-white">
+                      {userName}
+                    </p>
+                    {session.user.email && session.user.name && (
+                      <p className="mt-0.5 truncate text-[11px] text-slate-500">
+                        {session.user.email}
+                      </p>
+                    )}
+                  </div>
+                  <Link
+                    href="/collection"
+                    onClick={() => {
+                      setProfileOpen(false);
+                      onNavigate();
+                    }}
+                    className="mt-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800 hover:text-white"
+                    role="menuitem"
+                  >
+                    <FaFolderOpen aria-hidden="true" />
+                    My Designs
+                  </Link>
+                  <Link
+                    href="/buy-credits"
+                    onClick={() => {
+                      setProfileOpen(false);
+                      onNavigate();
+                    }}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-300 transition hover:bg-slate-800 hover:text-white"
+                    role="menuitem"
+                  >
+                    <FaCoins aria-hidden="true" />
+                    Buy Credits
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProfileOpen(false);
+                      void signOut({ callbackUrl: "/" });
+                    }}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm text-red-300 transition hover:bg-red-500/10 hover:text-red-200"
+                    role="menuitem"
+                  >
+                    <FaSignOutAlt aria-hidden="true" />
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setProfileOpen(false);
+                    void signIn("google", {
+                      callbackUrl:
+                        typeof window !== "undefined"
+                          ? window.location.href
+                          : "/studio",
+                    });
+                  }}
+                  className="w-full rounded-lg px-3 py-2 text-left text-sm font-semibold text-cyan-300 transition hover:bg-slate-800"
+                  role="menuitem"
+                >
+                  Sign in to your account
+                </button>
+              )}
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setProfileOpen((value) => !value)}
+            aria-label={
+              status === "authenticated"
+                ? `Open profile menu for ${userName}`
+                : "Open sign in menu"
+            }
+            title={collapsed ? userName : undefined}
+            className={`flex w-full items-center rounded-lg px-2.5 py-2 text-left transition hover:bg-slate-800 ${
+              collapsed ? "justify-center" : "gap-3"
+            }`}
+            aria-expanded={profileOpen}
+            aria-haspopup="menu"
+          >
+            {session?.user?.image ? (
+              <img
+                src={session.user.image}
+                alt=""
+                className="h-8 w-8 shrink-0 rounded-full border border-slate-700 object-cover"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-700 bg-slate-800 text-slate-300">
+                <FaUserCircle aria-hidden="true" />
+              </span>
+            )}
+            {!collapsed && (
+              <>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[13px] font-semibold text-slate-200">
+                    {status === "authenticated" ? userName : "Sign in"}
+                  </span>
+                  <span className="block truncate text-[10px] text-slate-500">
+                    {status === "authenticated"
+                      ? "Account menu"
+                      : "Sync your designs"}
+                  </span>
+                </span>
+                <FaChevronDown
+                  className={`shrink-0 text-xs text-slate-500 transition ${
+                    profileOpen ? "rotate-180" : ""
+                  }`}
+                  aria-hidden="true"
+                />
+              </>
+            )}
+          </button>
+        </div>
+
         <button
           type="button"
-          onClick={onCollapseToggle}
-          className={`hidden w-full items-center rounded-lg px-3 py-2 text-sm text-slate-400 transition hover:bg-slate-800 hover:text-white lg:flex ${
+          onClick={() => {
+            setProfileOpen(false);
+            onCollapseToggle();
+          }}
+          className={`mt-1 hidden w-full items-center rounded-lg px-3 py-2 text-sm text-slate-400 transition hover:bg-slate-800 hover:text-white lg:flex ${
             collapsed ? "justify-center" : "gap-3"
           }`}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -309,6 +501,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
   const isEmoteTool = selectedTool === "emote";
   const isPanelsTool = selectedTool === "panels";
   const isScreensTool = selectedTool === "screens";
+  const sidebarCollapsed = collapsed && !mobileOpen;
 
   const currentGame = useMemo(() => {
     if (typeof router.query.game !== "string") {
@@ -333,8 +526,8 @@ export function StudioShell({ children }: { children: ReactNode }) {
       )}
 
       <aside
-        className={`fixed inset-y-2 left-2 z-50 overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-lg transition-all duration-200 ${
-          collapsed ? "w-[72px]" : "w-[252px]"
+        className={`fixed inset-y-2 left-2 z-50 overflow-visible rounded-xl border border-slate-800 bg-slate-900 shadow-lg transition-all duration-200 ${
+          sidebarCollapsed ? "w-[72px]" : "w-[252px]"
         } ${
           mobileOpen
             ? "translate-x-0"
@@ -342,7 +535,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
         }`}
       >
         <SidebarContent
-          collapsed={collapsed}
+          collapsed={sidebarCollapsed}
           onCollapseToggle={() => setCollapsed((value) => !value)}
           onNavigate={() => setMobileOpen(false)}
           onClose={() => setMobileOpen(false)}
