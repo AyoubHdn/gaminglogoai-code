@@ -82,7 +82,7 @@ const TOOL_GROUPS: StudioToolGroup[] = [
         label: "Emote Maker",
         shortLabel: "EM",
         icon: <FaSmile aria-hidden="true" />,
-        enabled: false,
+        enabled: true,
       },
     ],
   },
@@ -323,12 +323,14 @@ export function StudioShell({ children }: { children: ReactNode }) {
   const selectedTool =
     requestedTool === "pfp" ||
     requestedTool === "banner" ||
-    requestedTool === "thumbnail"
+    requestedTool === "thumbnail" ||
+    requestedTool === "emote"
       ? requestedTool
       : "logo";
   const isPfpTool = selectedTool === "pfp";
   const isBannerTool = selectedTool === "banner";
   const isThumbnailTool = selectedTool === "thumbnail";
+  const isEmoteTool = selectedTool === "emote";
 
   const currentGame = useMemo(() => {
     if (typeof router.query.game !== "string") {
@@ -388,13 +390,15 @@ export function StudioShell({ children }: { children: ReactNode }) {
                 <FaImage aria-hidden="true" />
               ) : isThumbnailTool ? (
                 <FaYoutube aria-hidden="true" />
+              ) : isEmoteTool ? (
+                <FaSmile aria-hidden="true" />
               ) : (
                 <FaGamepad aria-hidden="true" />
               )}
             </button>
             <div className="min-w-0">
               <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500">
-                {isBannerTool
+                {isBannerTool || isEmoteTool
                   ? "Streaming"
                   : isThumbnailTool
                     ? "Content"
@@ -408,7 +412,9 @@ export function StudioShell({ children }: { children: ReactNode }) {
                       ? "Twitch Banner Maker"
                       : isThumbnailTool
                         ? "YouTube Thumbnail Maker"
-                        : "Gaming Logo Maker"}
+                        : isEmoteTool
+                          ? "Emote Maker"
+                          : "Gaming Logo Maker"}
                 </h1>
                 {currentGame && (
                   <span className="hidden rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-1 text-[10px] font-semibold text-cyan-400 sm:inline-flex">

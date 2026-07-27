@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 import { StudioBannerWorkspace } from "~/component/studio/StudioBannerWorkspace";
+import { StudioEmoteWorkspace } from "~/component/studio/StudioEmoteWorkspace";
 import { StudioLogoWorkspace } from "~/component/studio/StudioLogoWorkspace";
 import { StudioPfpWorkspace } from "~/component/studio/StudioPfpWorkspace";
 import { StudioShell } from "~/component/studio/StudioShell";
@@ -16,7 +17,8 @@ const StudioPage: NextPage = () => {
   const selectedTool =
     requestedTool === "pfp" ||
     requestedTool === "banner" ||
-    requestedTool === "thumbnail"
+    requestedTool === "thumbnail" ||
+    requestedTool === "emote"
       ? requestedTool
       : "logo";
 
@@ -32,7 +34,8 @@ const StudioPage: NextPage = () => {
       tool !== "logo" &&
       tool !== "pfp" &&
       tool !== "banner" &&
-      tool !== "thumbnail"
+      tool !== "thumbnail" &&
+      tool !== "emote"
     ) {
       void router.replace(
         {
@@ -53,7 +56,9 @@ const StudioPage: NextPage = () => {
   return (
     <>
       <StudioShell>
-        {selectedTool === "thumbnail" ? (
+        {selectedTool === "emote" ? (
+          <StudioEmoteWorkspace />
+        ) : selectedTool === "thumbnail" ? (
           <StudioThumbnailWorkspace />
         ) : selectedTool === "banner" ? (
           <StudioBannerWorkspace />
@@ -68,7 +73,7 @@ const StudioPage: NextPage = () => {
         <title>GamingLogoAI Studio</title>
         <meta
           name="description"
-          content="Create gaming logos, PFPs, Twitch banners, and YouTube thumbnails in the unified GamingLogoAI Studio."
+          content="Create gaming logos, PFPs, Twitch banners, YouTube thumbnails, and emotes in the unified GamingLogoAI Studio."
         />
         <meta name="robots" content="noindex,follow" />
         <meta name="googlebot" content="noindex,follow" />
