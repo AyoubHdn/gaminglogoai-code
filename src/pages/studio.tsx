@@ -8,6 +8,7 @@ import { StudioEmoteWorkspace } from "~/component/studio/StudioEmoteWorkspace";
 import { StudioLogoWorkspace } from "~/component/studio/StudioLogoWorkspace";
 import { StudioPanelsWorkspace } from "~/component/studio/StudioPanelsWorkspace";
 import { StudioPfpWorkspace } from "~/component/studio/StudioPfpWorkspace";
+import { StudioScreensWorkspace } from "~/component/studio/StudioScreensWorkspace";
 import { StudioShell } from "~/component/studio/StudioShell";
 import { StudioThumbnailWorkspace } from "~/component/studio/StudioThumbnailWorkspace";
 
@@ -20,7 +21,8 @@ const StudioPage: NextPage = () => {
     requestedTool === "banner" ||
     requestedTool === "thumbnail" ||
     requestedTool === "emote" ||
-    requestedTool === "panels"
+    requestedTool === "panels" ||
+    requestedTool === "screens"
       ? requestedTool
       : "logo";
 
@@ -38,7 +40,8 @@ const StudioPage: NextPage = () => {
       tool !== "banner" &&
       tool !== "thumbnail" &&
       tool !== "emote" &&
-      tool !== "panels"
+      tool !== "panels" &&
+      tool !== "screens"
     ) {
       void router.replace(
         {
@@ -59,7 +62,9 @@ const StudioPage: NextPage = () => {
   return (
     <>
       <StudioShell>
-        {selectedTool === "panels" ? (
+        {selectedTool === "screens" ? (
+          <StudioScreensWorkspace />
+        ) : selectedTool === "panels" ? (
           <StudioPanelsWorkspace />
         ) : selectedTool === "emote" ? (
           <StudioEmoteWorkspace />
@@ -78,7 +83,7 @@ const StudioPage: NextPage = () => {
         <title>GamingLogoAI Studio</title>
         <meta
           name="description"
-          content="Create gaming logos, PFPs, Twitch banners, Twitch panels, YouTube thumbnails, and emotes in the unified GamingLogoAI Studio."
+          content="Create gaming logos, PFPs, Twitch banners, Twitch panels, stream screens, YouTube thumbnails, and emotes in the unified GamingLogoAI Studio."
         />
         <meta name="robots" content="noindex,follow" />
         <meta name="googlebot" content="noindex,follow" />

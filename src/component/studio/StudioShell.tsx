@@ -25,7 +25,6 @@ type StudioTool = {
   label: string;
   shortLabel: string;
   icon: ReactNode;
-  enabled: boolean;
 };
 
 type StudioToolGroup = {
@@ -42,14 +41,12 @@ const TOOL_GROUPS: StudioToolGroup[] = [
         label: "Gaming Logo Maker",
         shortLabel: "GL",
         icon: <FaGamepad aria-hidden="true" />,
-        enabled: true,
       },
       {
         id: "pfp",
         label: "PFP / Avatar Maker",
         shortLabel: "PF",
         icon: <FaUserCircle aria-hidden="true" />,
-        enabled: true,
       },
     ],
   },
@@ -61,28 +58,24 @@ const TOOL_GROUPS: StudioToolGroup[] = [
         label: "Twitch Banner Maker",
         shortLabel: "TB",
         icon: <FaImage aria-hidden="true" />,
-        enabled: true,
       },
       {
         id: "panels",
         label: "Twitch Panels Maker",
         shortLabel: "TP",
         icon: <FaColumns aria-hidden="true" />,
-        enabled: true,
       },
       {
         id: "screens",
         label: "Stream Screens",
         shortLabel: "SS",
         icon: <FaDesktop aria-hidden="true" />,
-        enabled: false,
       },
       {
         id: "emote",
         label: "Emote Maker",
         shortLabel: "EM",
         icon: <FaSmile aria-hidden="true" />,
-        enabled: true,
       },
     ],
   },
@@ -94,7 +87,6 @@ const TOOL_GROUPS: StudioToolGroup[] = [
         label: "YouTube Thumbnail Maker",
         shortLabel: "YT",
         icon: <FaYoutube aria-hidden="true" />,
-        enabled: true,
       },
     ],
   },
@@ -179,39 +171,26 @@ function SidebarContent({
             )}
             <div className="space-y-1">
               {group.tools.map((tool) => {
-                const isActive = tool.enabled && tool.id === selectedTool;
+                const isActive = tool.id === selectedTool;
 
                 return (
                   <button
                     key={tool.id}
                     type="button"
-                    onClick={tool.enabled ? () => openTool(tool.id) : undefined}
-                    disabled={!tool.enabled}
-                    title={
-                      collapsed
-                        ? tool.enabled
-                          ? tool.label
-                          : `${tool.label} — coming to Studio`
-                        : undefined
-                    }
+                    onClick={() => openTool(tool.id)}
+                    title={collapsed ? tool.label : undefined}
                     className={`group flex w-full items-center rounded-lg px-2.5 py-2 text-left transition ${
                       collapsed ? "justify-center" : "gap-3"
                     } ${
                       isActive
                         ? "bg-cyan-500 text-slate-900 shadow-md"
-                        : tool.enabled
-                          ? "text-slate-300 hover:bg-slate-800 hover:text-white"
-                          : "cursor-not-allowed text-slate-600"
+                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
                     }`}
                     aria-current={isActive ? "page" : undefined}
                   >
                     <span
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] text-xs ${
-                        isActive
-                          ? "bg-slate-900/15"
-                          : tool.enabled
-                            ? "bg-slate-800"
-                            : "bg-slate-800/40"
+                        isActive ? "bg-slate-900/15" : "bg-slate-800"
                       }`}
                     >
                       <span className="text-sm">{tool.icon}</span>
@@ -222,11 +201,6 @@ function SidebarContent({
                         <span className="block truncate text-[13px] font-semibold">
                           {tool.label}
                         </span>
-                        {!tool.enabled && (
-                          <span className="mt-0.5 block text-[10px] font-medium uppercase tracking-[0.08em] text-slate-600">
-                            Coming to Studio
-                          </span>
-                        )}
                       </span>
                     )}
                   </button>
@@ -325,7 +299,8 @@ export function StudioShell({ children }: { children: ReactNode }) {
     requestedTool === "banner" ||
     requestedTool === "thumbnail" ||
     requestedTool === "emote" ||
-    requestedTool === "panels"
+    requestedTool === "panels" ||
+    requestedTool === "screens"
       ? requestedTool
       : "logo";
   const isPfpTool = selectedTool === "pfp";
@@ -333,6 +308,7 @@ export function StudioShell({ children }: { children: ReactNode }) {
   const isThumbnailTool = selectedTool === "thumbnail";
   const isEmoteTool = selectedTool === "emote";
   const isPanelsTool = selectedTool === "panels";
+  const isScreensTool = selectedTool === "screens";
 
   const currentGame = useMemo(() => {
     if (typeof router.query.game !== "string") {
@@ -396,13 +372,15 @@ export function StudioShell({ children }: { children: ReactNode }) {
                 <FaSmile aria-hidden="true" />
               ) : isPanelsTool ? (
                 <FaColumns aria-hidden="true" />
+              ) : isScreensTool ? (
+                <FaDesktop aria-hidden="true" />
               ) : (
                 <FaGamepad aria-hidden="true" />
               )}
             </button>
             <div className="min-w-0">
               <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500">
-                {isBannerTool || isEmoteTool || isPanelsTool
+                {isBannerTool || isEmoteTool || isPanelsTool || isScreensTool
                   ? "Streaming"
                   : isThumbnailTool
                     ? "Content"
@@ -420,7 +398,9 @@ export function StudioShell({ children }: { children: ReactNode }) {
                           ? "Emote Maker"
                           : isPanelsTool
                             ? "Twitch Panels Maker"
-                            : "Gaming Logo Maker"}
+                            : isScreensTool
+                              ? "Stream Screens"
+                              : "Gaming Logo Maker"}
                 </h1>
                 {currentGame && (
                   <span className="hidden rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-1 text-[10px] font-semibold text-cyan-400 sm:inline-flex">
