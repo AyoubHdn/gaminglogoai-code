@@ -61,7 +61,7 @@ const TOOL_GROUPS: StudioToolGroup[] = [
         label: "Twitch Banner Maker",
         shortLabel: "TB",
         icon: <FaImage aria-hidden="true" />,
-        enabled: false,
+        enabled: true,
       },
       {
         id: "panels",
@@ -318,11 +318,14 @@ export function StudioShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
+  const requestedTool =
+    typeof router.query.tool === "string" ? router.query.tool : "logo";
   const selectedTool =
-    typeof router.query.tool === "string" && router.query.tool === "pfp"
-      ? "pfp"
+    requestedTool === "pfp" || requestedTool === "banner"
+      ? requestedTool
       : "logo";
   const isPfpTool = selectedTool === "pfp";
+  const isBannerTool = selectedTool === "banner";
 
   const currentGame = useMemo(() => {
     if (typeof router.query.game !== "string") {
@@ -378,17 +381,23 @@ export function StudioShell({ children }: { children: ReactNode }) {
             >
               {isPfpTool ? (
                 <FaUserCircle aria-hidden="true" />
+              ) : isBannerTool ? (
+                <FaImage aria-hidden="true" />
               ) : (
                 <FaGamepad aria-hidden="true" />
               )}
             </button>
             <div className="min-w-0">
               <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500">
-                Logos
+                {isBannerTool ? "Streaming" : "Logos"}
               </p>
               <div className="flex min-w-0 items-center gap-2">
                 <h1 className="truncate text-base font-bold text-slate-50 sm:text-lg">
-                  {isPfpTool ? "PFP / Avatar Maker" : "Gaming Logo Maker"}
+                  {isPfpTool
+                    ? "PFP / Avatar Maker"
+                    : isBannerTool
+                      ? "Twitch Banner Maker"
+                      : "Gaming Logo Maker"}
                 </h1>
                 {currentGame && (
                   <span className="hidden rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-1 text-[10px] font-semibold text-cyan-400 sm:inline-flex">
