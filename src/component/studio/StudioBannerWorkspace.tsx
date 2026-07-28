@@ -2,7 +2,11 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 
 import { FunnelProvider } from "~/component/bannerFunnel/FunnelContext";
-import { BANNER_TEMPLATES, type BannerTemplate } from "~/data/bannerTemplates";
+import {
+  BANNER_GENERATION_CREDITS,
+  BANNER_TEMPLATES,
+  type BannerTemplate,
+} from "~/data/bannerTemplates";
 import { StudioBannerFunnel } from "./StudioBannerFunnel";
 
 export interface BannerDeepLinkContext {
@@ -81,7 +85,7 @@ export function StudioBannerWorkspace() {
           </p>
         </div>
         <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-400">
-          10 credits per banner
+          From {BANNER_GENERATION_CREDITS} credits per banner
         </div>
       </div>
 

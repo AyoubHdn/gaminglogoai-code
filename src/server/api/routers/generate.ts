@@ -7,6 +7,7 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import Replicate from "replicate";
 import { env } from "~/env.mjs";
 import { b64Image } from "~/data/b64Image";
+import { LOGO_MODEL_CREDITS } from "~/lib/generationPricing";
 import AWS from "aws-sdk";
 import { syncUserToMautic } from "~/server/api/routers/mautic-utils";
 import { buffer as readStreamIntoBuffer } from "stream/consumers";
@@ -119,9 +120,8 @@ export const generateRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // Define credit costs
       const modelConfig = {
-        "flux-schnell": { credits: 1 },
-        "flux-dev": { credits: 2 },
-      }[input.model];
+        credits: LOGO_MODEL_CREDITS[input.model],
+      };
 
       if (!modelConfig) {
         throw new TRPCError({

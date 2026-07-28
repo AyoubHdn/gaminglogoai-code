@@ -3,6 +3,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 
 import { FunnelProvider, useFunnel } from "~/component/thumbnailFunnel/FunnelContext";
+import { StudioPromo } from "~/component/StudioPromo";
 import { Step0PlatformSelector } from "~/component/thumbnailFunnel/Step0PlatformSelector";
 import { Step1TemplateBrowser } from "~/component/thumbnailFunnel/Step1TemplateBrowser";
 import { Step2Personalize } from "~/component/thumbnailFunnel/Step2Personalize";
@@ -56,6 +57,12 @@ function ThumbnailMakerContent() {
           image, and generate a platform-ready thumbnail in one guided flow.
         </p>
       </header>
+
+      <StudioPromo
+        toolName="Thumbnail Maker"
+        href="/studio?tool=thumbnail"
+        className="mb-8"
+      />
 
       <section className="mb-8 grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 md:grid-cols-4">
         {steps.map((item, index) => {

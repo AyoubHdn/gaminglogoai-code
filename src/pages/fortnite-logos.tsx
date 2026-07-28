@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "~/component/Button"; // Your themed Button component
+import { StudioPromo } from "~/component/StudioPromo";
 import { FaChevronRight, FaMagic, FaDownload, FaPaintBrush } from "react-icons/fa";
 import { s3Style } from "~/utils/s3Paths";
 
@@ -31,7 +32,7 @@ const FortniteLogoLandingPage: NextPage = () => {
     // This will navigate to your actual tool page.
     // Ideally, with parameters to pre-select the Fortnite style category.
     // Example: /gaming-logo-tool?category=By+Game+Title&subcategory=Fortnite
-    void router.push("/gaming-logo-maker"); // Update if your tool can be pre-filtered
+    void router.push("/studio?tool=logo&game=fortnite"); // Update if your tool can be pre-filtered
   };
 
   return (
@@ -133,6 +134,11 @@ const FortniteLogoLandingPage: NextPage = () => {
             <p className="mt-4 text-xs text-slate-400">Start with 1 Free Credit.</p>
           </div>
         </section>
+
+        <StudioPromo
+          toolName="Fortnite Logo Maker"
+          href="/studio?tool=logo&game=fortnite"
+        />
 
         {/* Example Gallery Section */}
         <section className="py-16 md:py-20 bg-white dark:bg-slate-900">

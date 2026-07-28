@@ -30,6 +30,7 @@ import {
 import { Button } from "~/component/Button";
 import { SharePopup } from "~/component/SharePopup";
 import { faceStylesData } from "~/data/faceStylesData";
+import { PFP_MODEL_CREDITS } from "~/lib/generationPricing";
 import { api } from "~/utils/api";
 
 type FunnelStep = 1 | 2 | 3 | 4;
@@ -75,7 +76,7 @@ const ENGINE_OPTIONS: Array<{
   {
     name: "Pro Face Engine",
     value: "flux-kontext-pro",
-    cost: 4,
+    cost: PFP_MODEL_CREDITS["flux-kontext-pro"],
     description:
       "High-quality face stylization with strong likeness and clean detail.",
     recommended: true,
@@ -83,7 +84,7 @@ const ENGINE_OPTIONS: Array<{
   {
     name: "Max Face Engine",
     value: "flux-kontext-max",
-    cost: 6,
+    cost: PFP_MODEL_CREDITS["flux-kontext-max"],
     description:
       "Maximum face detail and realism for complex, cinematic styles.",
   },

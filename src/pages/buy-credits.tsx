@@ -11,7 +11,30 @@ import {
   FaSmile,
   FaUserCircle,
 } from "react-icons/fa";
+import { BANNER_GENERATION_CREDITS } from "~/data/bannerTemplates";
+import { STREAM_SCREEN_GENERATION_CREDITS } from "~/data/streamScreenTemplates";
+import { THUMBNAIL_GENERATION_CREDITS } from "~/data/thumbnailTemplates";
 import { useBuyCredits } from "~/hook/useBuyCredits";
+import {
+  BANNER_THUMBNAIL_REFINEMENT_CREDITS,
+  EMOTE_BASE_CREDITS,
+  EMOTE_EXPRESSION_CREDITS,
+  LOGO_MODEL_CREDITS,
+  PFP_MODEL_CREDITS,
+  getReferenceAwareGenerationCredits,
+} from "~/lib/generationPricing";
+import { getPanelBatchCredits } from "~/lib/panelPricing";
+
+const BANNER_WITH_IMAGE_CREDITS = getReferenceAwareGenerationCredits(
+  BANNER_GENERATION_CREDITS,
+  true,
+);
+const THUMBNAIL_WITH_IMAGE_CREDITS = getReferenceAwareGenerationCredits(
+  THUMBNAIL_GENERATION_CREDITS,
+  true,
+);
+const FIRST_PANEL_CREDITS = getPanelBatchCredits(1);
+const ADDITIONAL_PANEL_CREDITS = getPanelBatchCredits(2) - FIRST_PANEL_CREDITS;
 
 const BuyCreditsPage: React.FC = () => {
   const { data: session, status: sessionStatus } = useSession();
@@ -158,51 +181,71 @@ const BuyCreditsPage: React.FC = () => {
                 <ul className="space-y-4">
                   <li className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-2">
-                      <FaPaintBrush /> Gaming Logo Maker
+                      <FaPaintBrush /> Gaming Logos
                     </span>
-                    <span className="text-slate-500">1-2 credits</span>
+                    <span className="text-right text-slate-500">
+                      Speedy {LOGO_MODEL_CREDITS["flux-schnell"]} / Context Pro{" "}
+                      {LOGO_MODEL_CREDITS["flux-dev"]} credits per variation
+                    </span>
                   </li>
 
                   <li className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-2">
-                      <FaUserCircle /> AI PFP Maker
+                      <FaUserCircle /> Gaming PFPs / Avatars
                     </span>
-                    <span className="text-slate-500">4-6 credits</span>
+                    <span className="text-right text-slate-500">
+                      Pro {PFP_MODEL_CREDITS["flux-kontext-pro"]} / Max{" "}
+                      {PFP_MODEL_CREDITS["flux-kontext-max"]} credits
+                    </span>
                   </li>
 
                   <li className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-2">
-                      <FaImages /> Twitch Banner Generator
+                      <FaImages /> Twitch &amp; YouTube Banners
                     </span>
-                    <span className="text-slate-500">10 credits</span>
+                    <span className="text-right text-slate-500">
+                      {BANNER_GENERATION_CREDITS} text /{" "}
+                      {BANNER_WITH_IMAGE_CREDITS} with image
+                    </span>
                   </li>
 
                   <li className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-2">
-                      <FaImages /> YouTube Thumbnail Maker
+                      <FaImages /> Stream Panels
                     </span>
-                    <span className="text-slate-500">10 credits</span>
+                    <span className="text-right text-slate-500">
+                      {FIRST_PANEL_CREDITS} first / +{ADDITIONAL_PANEL_CREDITS}{" "}
+                      each additional
+                    </span>
                   </li>
 
                   <li className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-2">
-                      <FaImages /> Twitch Panels
+                      <FaImages /> Stream Screens (Starting Soon, BRB, Offline)
                     </span>
-                    <span className="text-slate-500">2-8+ credits per set</span>
+                    <span className="text-right text-slate-500">
+                      {STREAM_SCREEN_GENERATION_CREDITS} credits per screen
+                    </span>
                   </li>
 
                   <li className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-2">
-                      <FaImages /> Twitch Stream Screens
+                      <FaSmile /> Twitch Emotes
                     </span>
-                    <span className="text-slate-500">4 credits per screen</span>
+                    <span className="text-right text-slate-500">
+                      {EMOTE_BASE_CREDITS} base / +{EMOTE_EXPRESSION_CREDITS}{" "}
+                      per expression
+                    </span>
                   </li>
 
                   <li className="flex items-center justify-between gap-4">
                     <span className="flex items-center gap-2">
-                      <FaSmile /> Emote Generator
+                      <FaImages /> YouTube Thumbnails
                     </span>
-                    <span className="text-slate-500">3 base + 3 per emote</span>
+                    <span className="text-right text-slate-500">
+                      {THUMBNAIL_GENERATION_CREDITS} text /{" "}
+                      {THUMBNAIL_WITH_IMAGE_CREDITS} with image
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -216,7 +259,7 @@ const BuyCreditsPage: React.FC = () => {
               </p>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
                 Refining a generated banner or thumbnail currently costs{" "}
-                <strong>6 credits</strong>.
+                <strong>{BANNER_THUMBNAIL_REFINEMENT_CREDITS} credits</strong>.
               </p>
             </div>
 
@@ -225,9 +268,13 @@ const BuyCreditsPage: React.FC = () => {
                 Stream screen pricing
               </p>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-                Stream screens are priced at <strong>4 credits per screen</strong>,
-                so a 4-screen Twitch set costs <strong>16 credits</strong> total and
-                extra scenes scale with the number of screens you add.
+                Stream screens are priced at{" "}
+                <strong>
+                  {STREAM_SCREEN_GENERATION_CREDITS} credits per screen
+                </strong>
+                , so a 4-screen Twitch set costs{" "}
+                <strong>{4 * STREAM_SCREEN_GENERATION_CREDITS} credits</strong>{" "}
+                total and extra scenes scale with the number of screens you add.
               </p>
             </div>
 
@@ -236,8 +283,10 @@ const BuyCreditsPage: React.FC = () => {
                 Small Twitch panel batch
               </p>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-                Panel pricing is batch-based: <strong>2 credits</strong> for 1 panel,{" "}
-                <strong>5 credits</strong> for 2, and <strong>8 credits</strong> for 3.
+                Panel pricing is batch-based:{" "}
+                <strong>{getPanelBatchCredits(1)} credits</strong> for 1 panel,{" "}
+                <strong>{getPanelBatchCredits(2)} credits</strong> for 2, and{" "}
+                <strong>{getPanelBatchCredits(3)} credits</strong> for 3.
               </p>
             </div>
           </div>
@@ -289,7 +338,7 @@ const BuyCreditsPage: React.FC = () => {
 
                   {offer.plan === "starter" && (
                     <ul className="list-inside list-disc">
-                      <li>2 banners or 2 thumbnails</li>
+                      <li>2 text-only banners or 2 text-only thumbnails</li>
                       <li>1 PFP plus several logos</li>
                       <li>A small panel or screen bundle</li>
                     </ul>

@@ -18,6 +18,7 @@ import {
 import { Button } from "~/component/Button";
 import { SharePopup } from "~/component/SharePopup";
 import { gamerStylesData } from "~/data/gamerStylesData";
+import { LOGO_MODEL_CREDITS } from "~/lib/generationPricing";
 import { api } from "~/utils/api";
 
 type FunnelStep = 1 | 2 | 3 | 4 | 5;
@@ -59,14 +60,14 @@ const ENGINE_OPTIONS: Array<{
   {
     name: "Speedy Engine",
     value: "flux-schnell",
-    cost: 1,
+    cost: LOGO_MODEL_CREDITS["flux-schnell"],
     description:
       "Fast concepts with crisp shapes and strong gaming-logo typography.",
   },
   {
     name: "Context Pro Engine",
     value: "flux-dev",
-    cost: 2,
+    cost: LOGO_MODEL_CREDITS["flux-dev"],
     description:
       "More detail and stronger visual fidelity to your selected style.",
     recommended: true,

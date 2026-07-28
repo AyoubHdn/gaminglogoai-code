@@ -11,12 +11,13 @@ import {
   FaQuestionCircle,
   FaChevronRight,
 } from "react-icons/fa";
+import { StudioPromo } from "~/component/StudioPromo";
 
 const TwitchPanelsLandingPage: NextPage = () => {
   const router = useRouter();
 
   const handleStart = () => {
-    void router.push("/twitch-panels-generator");
+    void router.push("/studio?tool=panels");
   };
 
   const features = [
@@ -207,6 +208,11 @@ const TwitchPanelsLandingPage: NextPage = () => {
             </button>
           </div>
         </section>
+
+        <StudioPromo
+          toolName="Twitch Panels Maker"
+          href="/studio?tool=panels"
+        />
 
         <section className="bg-white py-16 dark:bg-slate-900">
           <div className="container mx-auto px-4">

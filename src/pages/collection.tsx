@@ -186,7 +186,7 @@ const CollectionPage: NextPage = () => {
               Time to design some epic gaming logos.
             </p>
             <Link
-              href="/gaming-logo-maker"
+              href="/studio?tool=logo"
               className="rounded-lg bg-purple-600 px-6 py-3 font-semibold text-white transition-all
                             duration-300 ease-in-out hover:bg-purple-700
                             dark:bg-cyan-500 dark:text-slate-900 dark:hover:bg-cyan-600"

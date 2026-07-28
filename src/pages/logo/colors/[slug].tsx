@@ -20,7 +20,7 @@ const ColorLogoPage: NextPage<ColorLogoPageServerProps> = ({ color, images, slug
 
   const handleCtaClick = () => {
     // Note: The query param is '?color='
-    void router.push(`/gaming-logo-maker#${encodeURIComponent(color)}`);
+    void router.push("/studio?tool=logo");
   };
 
   // Construct the full props for the template here (client-side)

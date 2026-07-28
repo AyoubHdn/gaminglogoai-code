@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 
 import { faceStylesData } from "~/data/faceStylesData";
+import { PFP_MODEL_CREDITS } from "~/lib/generationPricing";
 import { StudioPfpFunnel, type PfpStyleContext } from "./StudioPfpFunnel";
 
 function normalizeStyleLookup(value: string): string {
@@ -72,7 +73,8 @@ export function StudioPfpWorkspace() {
           </p>
         </div>
         <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-400">
-          4–6 credits per PFP
+          {PFP_MODEL_CREDITS["flux-kontext-pro"]}–
+          {PFP_MODEL_CREDITS["flux-kontext-max"]} credits per PFP
         </div>
       </div>
 

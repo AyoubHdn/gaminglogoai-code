@@ -4,6 +4,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { FaChevronRight, FaUserAstronaut, FaCameraRetro, FaMagic, FaPalette, FaQuestionCircle, FaUserCheck, FaShieldVirus, FaBolt, FaGamepad } from "react-icons/fa"; // Example Icons, added FaCameraRetro
+import { StudioPromo } from "~/component/StudioPromo";
 import { s3Style } from "~/utils/s3Paths";
 
 const AIPFPGeneratorLandingPage: NextPage = () => {
@@ -11,7 +12,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
 
   const handleStartCreating = () => {
     // Navigate to your actual PFP maker tool page
-    void router.push("/pfp-maker"); 
+    void router.push("/studio?tool=pfp");
   };
 
   const features = [
@@ -252,6 +253,11 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
             <p className="mt-4 text-xs text-slate-400">Free previews. Credits for high-res downloads.</p>
           </div>
         </section>
+
+        <StudioPromo
+          toolName="PFP Maker"
+          href="/studio?tool=pfp"
+        />
 
         
 

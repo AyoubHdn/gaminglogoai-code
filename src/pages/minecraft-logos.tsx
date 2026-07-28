@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "~/component/Button";
+import { StudioPromo } from "~/component/StudioPromo";
 import { FaChevronRight, FaCubes, FaPaintBrush, FaDownload } from "react-icons/fa"; // Example Icons
 import { s3Style } from "~/utils/s3Paths";
 
@@ -28,7 +29,7 @@ const MinecraftLogoLandingPage: NextPage = () => {
   const handleStartDesigning = () => {
     // Navigate to the tool, ideally pre-filtered for Minecraft styles
     // Example: /gaming-logo-tool?category=By+Game+Title&subcategory=Minecraft
-    void router.push("/gaming-logo-maker");
+    void router.push("/studio?tool=logo&game=minecraft");
   };
 
   return (
@@ -130,6 +131,11 @@ const MinecraftLogoLandingPage: NextPage = () => {
             <p className="mt-4 text-xs text-slate-400">Get 1 free credit on signup to create your first logo.</p>
           </div>
         </section>
+
+        <StudioPromo
+          toolName="Minecraft Logo Maker"
+          href="/studio?tool=logo&game=minecraft"
+        />
 
         {/* Example Gallery Section */}
         <section className="py-16 md:py-20 bg-white dark:bg-slate-900">

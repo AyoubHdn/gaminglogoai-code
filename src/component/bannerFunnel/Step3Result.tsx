@@ -8,6 +8,7 @@ import {
   getBannerSocialPlatformLabel,
   getFilledBannerSocialHandles,
 } from "~/lib/bannerSocials";
+import { getReferenceAwareGenerationCredits } from "~/lib/generationPricing";
 import { getTemplateById } from "~/lib/templateBrowser";
 import { api } from "~/utils/api";
 
@@ -60,6 +61,12 @@ export function Step3Result() {
     () => getTemplateById(BANNER_TEMPLATES, selectedTemplateId ?? ""),
     [selectedTemplateId]
   );
+  const generationCredits = selectedTemplate
+    ? getReferenceAwareGenerationCredits(
+        selectedTemplate.credits,
+        logoSource !== "none" && Boolean(logoUrl)
+      )
+    : 0;
   const filledSocialHandles = useMemo(
     () => getFilledBannerSocialHandles(socialHandles),
     [socialHandles]
@@ -586,8 +593,8 @@ export function Step3Result() {
               Regenerate this banner?
             </h3>
             <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-              Regenerating will cost another 10 credits and create a fresh banner
-              output.
+              Regenerating will cost another {generationCredits} credits and
+              create a fresh banner output.
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <Button

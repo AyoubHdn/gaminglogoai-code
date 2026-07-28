@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>GamingLogoAI Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;background:#0D0F14;}
+    @keyframes shimmer{0%{background-position:-400px 0;}100%{background-position:400px 0;}}
+    @keyframes fillbar{0%{width:0%;}100%{width:92%;}}
+    @keyframes toastIn{from{opacity:0;transform:translate(-50%,10px);}to{opacity:1;transform:translate(-50%,0);}}
+    a{color:#C9A6FA;} a:hover{color:#E9D8FD;}
+  </style>
+</helmet>
+<div style="height:100vh;width:100%;display:flex;background:#0D0F14;overflow:hidden;position:relative;font-family:'Montserrat',sans-serif;">
+
+  <div style="width:{{ sidebarWidth }}px;transition:width .2s ease;background:#161A22;border-radius:18px;margin:12px;display:flex;flex-direction:column;flex-shrink:0;">
+    <div style="display:flex;align-items:center;justify-content:{{ sidebarJustify }};padding:18px 18px 16px 18px;">
+      <div style="width:32px;height:32px;border-radius:10px;background:#7C3AED;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:13px;font-weight:800;color:#fff;">G</span></div>
+      <span style="{{ sidebarLabelStyle }};font-weight:700;font-size:14px;color:#F5F7FA;">GamingLogoAI</span>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:0 10px;display:flex;flex-direction:column;gap:20px;">
+      <sc-for list="{{ sidebarGroups }}" as="grp" hint-placeholder-count="4">
+        <div>
+          <div style="{{ sidebarLabelStyle }};padding-left:10px;color:#6E7686;font-size:12px;font-weight:600;margin-bottom:8px;">{{ grp.label }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <sc-for list="{{ grp.items }}" as="item" hint-placeholder-count="2">
+              <div onclick="{{ item.onClick }}" style="cursor:pointer;display:flex;align-items:center;justify-content:{{ sidebarJustify }};padding:10px 12px;border-radius:12px;{{ item.rowStyle }}">
+                <div style="width:28px;height:28px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;{{ item.iconStyle }}"><span style="font-size:10px;font-weight:800;">{{ item.short }}</span></div>
+                <span style="{{ sidebarLabelStyle }};font-size:14px;font-weight:600;{{ item.textStyle }}">{{ item.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="padding:10px;">
+      <button type="button" onclick="{{ toggleSidebar }}" style="width:100%;display:flex;align-items:center;justify-content:{{ sidebarJustify }};padding:10px 12px;border-radius:12px;background:transparent;border:none;cursor:pointer;">
+        <span style="font-size:15px;color:#9AA1B2;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">{{ sidebarArrow }}</span>
+        <span style="{{ sidebarLabelStyle }};font-size:13px;color:#9AA1B2;">{{ sidebarToggleLabel }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0;">
+    <div style="height:68px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 30px;">
+      <div>
+        <div style="font-size:11px;color:#8992A3;margin-bottom:2px;">{{ currentToolGroup }}</div>
+        <div style="font-size:18px;font-weight:700;color:#F5F7FA;">{{ currentToolLabel }}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;{{ creditBadgeStyle }}">
+          <div style="width:8px;height:8px;border-radius:999px;{{ creditDotStyle }}"></div>
+          <span style="font-size:13px;font-weight:600;">{{ credits }} credits</span>
+        </div>
+        <button type="button" onclick="{{ goToCredits }}" title="Buy credits" style="width:34px;height:34px;flex-shrink:0;border-radius:999px;background:#7C3AED;border:none;color:#fff;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">+</button>
+        <button type="button" onclick="{{ goToMyDesigns }}" style="padding:9px 16px;border-radius:999px;background:transparent;border:1px solid #232733;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">My Designs</button>
+        <div style="width:36px;height:36px;border-radius:999px;background:#232838;flex-shrink:0;"></div>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:8px 32px 40px 32px;" data-screen-label="{{ currentScreenLabel }}">
+
+      <sc-if value="{{ isLogo }}" hint-placeholder-val="{{ true }}">
+        <div style="max-width:1300px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;">
+            <div>
+              <sc-if value="{{ logoShowStepCounter }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#A78BFA;font-weight:700;margin-bottom:4px;">STEP {{ logoStepNum }} OF {{ logoStepCount }}</div></sc-if>
+              <div style="font-size:22px;font-weight:700;color:#F5F7FA;">{{ logoStepTitle }}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <sc-if value="{{ logoLowCredit }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#FCD34D;">Running low on credits</span></sc-if>
+              <div style="padding:8px 16px;border-radius:999px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#E9D8FD;font-size:13px;font-weight:600;">Est. cost: {{ logoCost }} credits</div>
+            </div>
+          </div>
+
+          <sc-if value="{{ logoOnTemplates }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:8px;margin-bottom:16px;">
+              <sc-for list="{{ logoModeTabs }}" as="tab" hint-placeholder-count="2"><button type="button" onclick="{{ tab.onClick }}" style="padding:9px 18px;border-radius:999px;border:none;font-size:13px;font-weight:700;cursor:pointer;{{ tab.style }}">{{ tab.label }}</button></sc-for>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+              <sc-for list="{{ logoGameFilters }}" as="f" hint-placeholder-count="7"><button type="button" onclick="{{ f.onClick }}" style="padding:7px 14px;border-radius:999px;border:1px solid;font-size:12px;font-weight:600;cursor:pointer;{{ f.style }}">{{ f.label }}</button></sc-for>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-bottom:26px;">
+              <sc-for list="{{ logoTemplates }}" as="t" hint-placeholder-count="8">
+                <div onclick="{{ t.onClick }}" style="cursor:pointer;position:relative;border-radius:16px;overflow:hidden;aspect-ratio:1/1;{{ t.cardStyle }}background:{{ t.g }};">
+                  <span style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,.45);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;">{{ t.tag }}</span>
+                  <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px;background:linear-gradient(0deg,rgba(0,0,0,.6),transparent);"><div style="color:#fff;font-size:15px;font-weight:700;">{{ t.label }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:flex-end;"><button type="button" onclick="{{ logoGoNext }}" disabled="{{ logoNextDisabled }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ logoNextBtnStyle }}">Continue</button></div>
+          </sc-if>
+
+          <sc-if value="{{ logoOnPersonalize }}" hint-placeholder-val="{{ false }}">
+            <div style="max-width:560px;display:flex;flex-direction:column;gap:16px;margin-bottom:26px;">
+              <div><label style="display:block;font-size:13px;font-weight:600;color:#C9CED9;margin-bottom:6px;">Team or gamer name</label><input value="{{ logoName }}" onChange="{{ onLogoName }}" placeholder="e.g. Nightfall Esports" style="width:100%;box-sizing:border-box;padding:13px 16px;border-radius:12px;background:#12151C;border:1px solid #232733;color:#F5F7FA;font-size:14px;"/></div>
+              <div><label style="display:block;font-size:13px;font-weight:600;color:#C9CED9;margin-bottom:6px;">Tagline (optional)</label><input value="{{ logoTagline }}" onChange="{{ onLogoTagline }}" placeholder="e.g. Est. 2024" style="width:100%;box-sizing:border-box;padding:13px 16px;border-radius:12px;background:#12151C;border:1px solid #232733;color:#F5F7FA;font-size:14px;"/></div>
+              <div><label style="display:block;font-size:13px;font-weight:600;color:#C9CED9;margin-bottom:6px;">Style notes (optional)</label><textarea value="{{ logoStyleNote }}" onChange="{{ onLogoStyleNote }}" placeholder="e.g. more aggressive, sharper edges" rows="3" style="width:100%;box-sizing:border-box;padding:13px 16px;border-radius:12px;background:#12151C;border:1px solid #232733;color:#F5F7FA;font-size:14px;font-family:'Montserrat',sans-serif;resize:none;"></textarea></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <button type="button" onclick="{{ logoGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ logoGoNext }}" disabled="{{ logoNextDisabled }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ logoNextBtnStyle }}">Continue</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ logoOnEngine }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:24px;max-width:700px;">
+              <sc-for list="{{ logoEngineOptions }}" as="e" hint-placeholder-count="2">
+                <div onclick="{{ e.onClick }}" style="cursor:pointer;padding:20px;border-radius:16px;border:2px solid;{{ e.cardStyle }}">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><span style="font-size:15px;font-weight:700;color:#F5F7FA;">{{ e.label }}</span><span style="font-size:12px;font-weight:700;color:#C9A6FA;">{{ e.cost }} cr</span></div>
+                  <div style="font-size:13px;color:#8992A3;">{{ e.desc }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-bottom:26px;">
+              <div style="font-size:13px;font-weight:600;color:#C9CED9;margin-bottom:10px;">Variations</div>
+              <div style="display:flex;gap:8px;"><sc-for list="{{ logoVariationOptions }}" as="v" hint-placeholder-count="4"><button type="button" onclick="{{ v.onClick }}" style="width:44px;height:44px;border-radius:12px;border:1px solid;font-size:14px;font-weight:700;cursor:pointer;{{ v.style }}">{{ v.label }}</button></sc-for></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <button type="button" onclick="{{ logoGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ logoGenerate }}" disabled="{{ logoGenerateDisabled }}" style="padding:13px 30px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ logoGenerateBtnStyle }}">Generate — {{ logoCost }} credits</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ logoOnGenerating }}" hint-placeholder-val="{{ false }}">
+            <div style="height:6px;border-radius:999px;background:#1B2030;overflow:hidden;margin-bottom:28px;max-width:600px;"><div style="height:100%;background:#7C3AED;animation:fillbar 1.5s ease forwards;"></div></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;">
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ logoOnResults }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-bottom:24px;">
+              <sc-for list="{{ logoResultsDisplay }}" as="r" hint-placeholder-count="4">
+                <div style="border-radius:16px;overflow:hidden;background:#12151C;border:1px solid #232733;">
+                  <div style="aspect-ratio:1/1;background:{{ r.g }};"></div>
+                  <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <span style="font-size:13px;font-weight:600;color:#F5F7FA;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.label }}</span>
+                    <div style="display:flex;gap:6px;flex-shrink:0;">
+                      <button type="button" onclick="{{ r.onDownload }}" style="padding:7px 12px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#E5E7EB;font-size:12px;font-weight:600;cursor:pointer;">Download</button>
+                      <button type="button" onclick="{{ r.onSave }}" style="padding:7px 12px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;{{ r.saveStyle }}">{{ r.saveLabel }}</button>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" onclick="{{ logoRefine }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">‹ Refine inputs</button>
+              <button type="button" onclick="{{ logoRegenerate }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">↺ Regenerate ({{ logoCost }} cr)</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isPfp }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:1300px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;">
+            <div>
+              <sc-if value="{{ pfpShowStepCounter }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#A78BFA;font-weight:700;margin-bottom:4px;">STEP {{ pfpStepNum }} OF {{ pfpStepCount }}</div></sc-if>
+              <div style="font-size:22px;font-weight:700;color:#F5F7FA;">{{ pfpStepTitle }}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <sc-if value="{{ pfpLowCredit }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#FCD34D;">Running low on credits</span></sc-if>
+              <div style="padding:8px 16px;border-radius:999px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#E9D8FD;font-size:13px;font-weight:600;">Est. cost: {{ pfpCost }} credits</div>
+            </div>
+          </div>
+
+          <sc-if value="{{ pfpOnUpload }}" hint-placeholder-val="{{ true }}">
+            <sc-if value="{{ pfpNotUploaded }}" hint-placeholder-val="{{ true }}">
+              <div onclick="{{ pfpSimUpload }}" style="cursor:pointer;border:2px dashed #2A3040;border-radius:20px;padding:56px 24px;text-align:center;background:#12151C;margin-bottom:26px;max-width:480px;">
+                <div style="font-size:28px;color:#7C3AED;margin-bottom:10px;font-weight:800;">+</div>
+                <div style="font-size:14px;font-weight:600;color:#F5F7FA;margin-bottom:4px;">Click to upload a photo</div>
+                <div style="font-size:12px;color:#6E7686;">JPG or PNG, at least 512×512</div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ pfpUploaded }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:20px;margin-bottom:26px;">
+                <div style="width:140px;height:140px;border-radius:20px;background:linear-gradient(135deg,#7C3AED,#2563EB);flex-shrink:0;"></div>
+                <div><div style="font-size:14px;font-weight:600;color:#F5F7FA;margin-bottom:6px;">Photo uploaded</div><button type="button" onclick="{{ pfpReplaceUpload }}" style="padding:9px 16px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:600;cursor:pointer;">Replace photo</button></div>
+              </div>
+            </sc-if>
+            <div style="display:flex;justify-content:flex-end;"><button type="button" onclick="{{ pfpGoNext }}" disabled="{{ pfpNextDisabled }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ pfpNextBtnStyle }}">Continue</button></div>
+          </sc-if>
+
+          <sc-if value="{{ pfpOnTemplates }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:26px;max-width:900px;">
+              <sc-for list="{{ pfpStyles }}" as="t" hint-placeholder-count="6">
+                <div onclick="{{ t.onClick }}" style="cursor:pointer;position:relative;border-radius:16px;overflow:hidden;aspect-ratio:1/1;{{ t.cardStyle }}background:{{ t.g }};">
+                  <div style="position:absolute;left:0;right:0;bottom:0;padding:12px;background:linear-gradient(0deg,rgba(0,0,0,.6),transparent);"><div style="color:#fff;font-size:14px;font-weight:700;">{{ t.label }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <button type="button" onclick="{{ pfpGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ pfpGoNext }}" disabled="{{ pfpNextDisabled }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ pfpNextBtnStyle }}">Continue</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ pfpOnFinalize }}" hint-placeholder-val="{{ false }}">
+            <div style="max-width:480px;margin-bottom:20px;"><label style="display:block;font-size:13px;font-weight:600;color:#C9CED9;margin-bottom:6px;">Display name (optional)</label><input value="{{ pfpName }}" onChange="{{ onPfpName }}" placeholder="e.g. Nyx" style="width:100%;box-sizing:border-box;padding:13px 16px;border-radius:12px;background:#12151C;border:1px solid #232733;color:#F5F7FA;font-size:14px;"/></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:24px;max-width:700px;">
+              <sc-for list="{{ pfpEngineOptions }}" as="e" hint-placeholder-count="2">
+                <div onclick="{{ e.onClick }}" style="cursor:pointer;padding:20px;border-radius:16px;border:2px solid;{{ e.cardStyle }}">
+                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><span style="font-size:15px;font-weight:700;color:#F5F7FA;">{{ e.label }}</span><span style="font-size:12px;font-weight:700;color:#C9A6FA;">{{ e.cost }} cr</span></div>
+                  <div style="font-size:13px;color:#8992A3;">{{ e.desc }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="margin-bottom:26px;">
+              <div style="font-size:13px;font-weight:600;color:#C9CED9;margin-bottom:10px;">Variations</div>
+              <div style="display:flex;gap:8px;"><sc-for list="{{ pfpVariationOptions }}" as="v" hint-placeholder-count="4"><button type="button" onclick="{{ v.onClick }}" style="width:44px;height:44px;border-radius:12px;border:1px solid;font-size:14px;font-weight:700;cursor:pointer;{{ v.style }}">{{ v.label }}</button></sc-for></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <button type="button" onclick="{{ pfpGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ pfpGenerate }}" disabled="{{ pfpGenerateDisabled }}" style="padding:13px 30px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ pfpGenerateBtnStyle }}">Generate — {{ pfpCost }} credits</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ pfpOnGenerating }}" hint-placeholder-val="{{ false }}">
+            <div style="height:6px;border-radius:999px;background:#1B2030;overflow:hidden;margin-bottom:28px;max-width:600px;"><div style="height:100%;background:#7C3AED;animation:fillbar 1.5s ease forwards;"></div></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;">
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ pfpOnResults }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-bottom:24px;">
+              <sc-for list="{{ pfpResultsDisplay }}" as="r" hint-placeholder-count="4">
+                <div style="border-radius:16px;overflow:hidden;background:#12151C;border:1px solid #232733;">
+                  <div style="aspect-ratio:1/1;background:{{ r.g }};"></div>
+                  <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <span style="font-size:13px;font-weight:600;color:#F5F7FA;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.label }}</span>
+                    <div style="display:flex;gap:6px;flex-shrink:0;">
+                      <button type="button" onclick="{{ r.onDownload }}" style="padding:7px 12px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#E5E7EB;font-size:12px;font-weight:600;cursor:pointer;">Download</button>
+                      <button type="button" onclick="{{ r.onSave }}" style="padding:7px 12px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;{{ r.saveStyle }}">{{ r.saveLabel }}</button>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" onclick="{{ pfpRefine }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">‹ Refine inputs</button>
+              <button type="button" onclick="{{ pfpRegenerate }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">↺ Regenerate ({{ pfpCost }} cr)</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isBanner }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:1300px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;">
+            <div><sc-if value="{{ bannerShowStepCounter }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#A78BFA;font-weight:700;margin-bottom:4px;">STEP {{ bannerStepNum }} OF {{ bannerStepCount }}</div></sc-if><div style="font-size:22px;font-weight:700;color:#F5F7FA;">{{ bannerStepTitle }}</div></div>
+            <div style="display:flex;align-items:center;gap:10px;"><sc-if value="{{ bannerLowCredit }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#FCD34D;">Running low on credits</span></sc-if><div style="padding:8px 16px;border-radius:999px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#E9D8FD;font-size:13px;font-weight:600;">Est. cost: {{ bannerCost }} credits</div></div>
+          </div>
+
+          <sc-if value="{{ bannerOnPlatform }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:26px;max-width:800px;">
+              <sc-for list="{{ bannerPlatforms }}" as="p" hint-placeholder-count="5">
+                <div onclick="{{ p.onClick }}" style="padding:18px;border-radius:14px;border:1px solid;text-align:center;{{ p.style }}">
+                  <div style="font-size:14px;font-weight:700;color:#F5F7FA;margin-bottom:4px;">{{ p.label }}</div>
+                  <sc-if value="{{ p.locked }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px;color:#6E7686;">Coming soon</div></sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:flex-end;"><button type="button" onclick="{{ bannerGoNext }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;background:#7C3AED;color:#fff;cursor:pointer;">Continue</button></div>
+          </sc-if>
+
+          <sc-if value="{{ bannerOnTemplates }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;"><sc-for list="{{ bannerGameFilters }}" as="f" hint-placeholder-count="7"><button type="button" onclick="{{ f.onClick }}" style="padding:7px 14px;border-radius:999px;border:1px solid;font-size:12px;font-weight:600;cursor:pointer;{{ f.style }}">{{ f.label }}</button></sc-for></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-bottom:26px;">
+              <sc-for list="{{ bannerTemplates }}" as="t" hint-placeholder-count="6">
+                <div onclick="{{ t.onClick }}" style="cursor:pointer;position:relative;border-radius:14px;overflow:hidden;aspect-ratio:3/1;{{ t.cardStyle }}background:{{ t.g }};">
+                  <div style="position:absolute;left:0;right:0;bottom:0;padding:10px 14px;background:linear-gradient(0deg,rgba(0,0,0,.6),transparent);"><div style="color:#fff;font-size:14px;font-weight:700;">{{ t.label }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <button type="button" onclick="{{ bannerGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ bannerGoNext }}" disabled="{{ bannerNextDisabled }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ bannerNextBtnStyle }}">Continue</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ bannerOnPersonalize }}" hint-placeholder-val="{{ false }}">
+            <div style="max-width:480px;display:flex;flex-direction:column;gap:16px;margin-bottom:22px;">
+              <div><label style="display:block;font-size:13px;font-weight:600;color:#C9CED9;margin-bottom:6px;">Channel name</label><input value="{{ bannerChannelName }}" onChange="{{ onBannerChannelName }}" placeholder="e.g. NightfallTV" style="width:100%;box-sizing:border-box;padding:13px 16px;border-radius:12px;background:#12151C;border:1px solid #232733;color:#F5F7FA;font-size:14px;"/></div>
+              <div><label style="display:block;font-size:13px;font-weight:600;color:#C9CED9;margin-bottom:6px;">Tagline (optional)</label><input value="{{ bannerTagline }}" onChange="{{ onBannerTagline }}" placeholder="e.g. Live every night at 7pm" style="width:100%;box-sizing:border-box;padding:13px 16px;border-radius:12px;background:#12151C;border:1px solid #232733;color:#F5F7FA;font-size:14px;"/></div>
+            </div>
+            <sc-if value="{{ bannerLogoNotUploaded }}" hint-placeholder-val="{{ true }}"><div onclick="{{ bannerSimLogoUpload }}" style="cursor:pointer;border:2px dashed #2A3040;border-radius:14px;padding:20px;text-align:center;background:#12151C;margin-bottom:26px;max-width:320px;"><div style="font-size:13px;font-weight:600;color:#F5F7FA;">+ Upload your logo (optional)</div></div></sc-if>
+            <sc-if value="{{ bannerLogoUploaded }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:12px;margin-bottom:26px;"><div style="width:48px;height:48px;border-radius:10px;background:#7C3AED;"></div><button type="button" onclick="{{ bannerRemoveLogo }}" style="padding:8px 14px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:12px;font-weight:600;cursor:pointer;">Remove</button></div></sc-if>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <button type="button" onclick="{{ bannerGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ bannerGenerate }}" disabled="{{ bannerGenerateDisabled }}" style="padding:13px 30px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ bannerGenerateBtnStyle }}">Generate — {{ bannerCost }} credits</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ bannerOnGenerating }}" hint-placeholder-val="{{ false }}">
+            <div style="height:6px;border-radius:999px;background:#1B2030;overflow:hidden;margin-bottom:28px;max-width:600px;"><div style="height:100%;background:#7C3AED;animation:fillbar 1.5s ease forwards;"></div></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;">
+              <div style="aspect-ratio:3/1;border-radius:14px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:3/1;border-radius:14px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ bannerOnResults }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-bottom:24px;">
+              <sc-for list="{{ bannerResultsDisplay }}" as="r" hint-placeholder-count="2">
+                <div style="border-radius:14px;overflow:hidden;background:#12151C;border:1px solid #232733;">
+                  <div style="aspect-ratio:3/1;background:{{ r.g }};"></div>
+                  <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <span style="font-size:13px;font-weight:600;color:#F5F7FA;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.label }}</span>
+                    <div style="display:flex;gap:6px;flex-shrink:0;">
+                      <button type="button" onclick="{{ r.onDownload }}" style="padding:7px 12px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#E5E7EB;font-size:12px;font-weight:600;cursor:pointer;">Download</button>
+                      <button type="button" onclick="{{ r.onSave }}" style="padding:7px 12px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;{{ r.saveStyle }}">{{ r.saveLabel }}</button>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" onclick="{{ bannerRefine }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">‹ Refine inputs</button>
+              <button type="button" onclick="{{ bannerRegenerate }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">↺ Regenerate ({{ bannerCost }} cr)</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isPanels }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:1300px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;">
+            <div><sc-if value="{{ panelsShowStepCounter }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#A78BFA;font-weight:700;margin-bottom:4px;">STEP {{ panelsStepNum }} OF {{ panelsStepCount }}</div></sc-if><div style="font-size:22px;font-weight:700;color:#F5F7FA;">{{ panelsStepTitle }}</div></div>
+            <div style="padding:8px 16px;border-radius:999px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#E9D8FD;font-size:13px;font-weight:600;">Est. cost: {{ panelsCost }} credits</div>
+          </div>
+
+          <sc-if value="{{ panelsOnTemplates }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:26px;">
+              <sc-for list="{{ panelsStyles }}" as="t" hint-placeholder-count="6">
+                <div onclick="{{ t.onClick }}" style="cursor:pointer;position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/3;{{ t.cardStyle }}background:{{ t.g }};">
+                  <div style="position:absolute;left:0;right:0;bottom:0;padding:10px 14px;background:linear-gradient(0deg,rgba(0,0,0,.6),transparent);"><div style="color:#fff;font-size:14px;font-weight:700;">{{ t.label }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:flex-end;"><button type="button" onclick="{{ panelsGoNext }}" disabled="{{ panelsNextDisabled }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ panelsNextBtnStyle }}">Continue</button></div>
+          </sc-if>
+
+          <sc-if value="{{ panelsOnChips }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+              <sc-for list="{{ panelsChipOptions }}" as="c" hint-placeholder-count="6"><button type="button" onclick="{{ c.onClick }}" style="padding:9px 16px;border-radius:999px;border:1px solid;font-size:13px;font-weight:600;cursor:pointer;{{ c.style }}">{{ c.label }}</button></sc-for>
+              <sc-for list="{{ panelsCustomChips }}" as="c" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:6px;padding:9px 12px 9px 16px;border-radius:999px;{{ c.style }}"><span style="font-size:13px;font-weight:600;">{{ c.label }}</span><span onclick="{{ c.onRemove }}" style="cursor:pointer;font-size:14px;opacity:.7;">×</span></div></sc-for>
+            </div>
+            <div style="display:flex;gap:8px;max-width:400px;margin-bottom:26px;"><input value="{{ panelsCustomInput }}" onChange="{{ onPanelsCustomInput }}" placeholder="Add a custom panel" style="flex:1;padding:11px 14px;border-radius:10px;background:#12151C;border:1px solid #232733;color:#F5F7FA;font-size:13px;"/><button type="button" onclick="{{ panelsAddCustom }}" style="padding:11px 18px;border-radius:10px;border:none;background:#1B2030;color:#F5F7FA;font-size:13px;font-weight:700;cursor:pointer;">Add</button></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <button type="button" onclick="{{ panelsGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ panelsGenerate }}" disabled="{{ panelsGenerateDisabled }}" style="padding:13px 30px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ panelsGenerateBtnStyle }}">Generate — {{ panelsCost }} credits</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ panelsOnGenerating }}" hint-placeholder-val="{{ false }}">
+            <div style="height:6px;border-radius:999px;background:#1B2030;overflow:hidden;margin-bottom:28px;max-width:600px;"><div style="height:100%;background:#7C3AED;animation:fillbar 1.5s ease forwards;"></div></div>
+            <div style="display:flex;flex-direction:column;gap:10px;max-width:640px;">
+              <div style="height:64px;border-radius:14px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="height:64px;border-radius:14px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="height:64px;border-radius:14px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ panelsOnResults }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:10px;max-width:640px;margin-bottom:24px;">
+              <sc-for list="{{ panelsResultsDisplay }}" as="r" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:14px;background:#12151C;border:1px solid #232733;">
+                  <div style="width:48px;height:48px;border-radius:10px;background:{{ r.g }};flex-shrink:0;"></div>
+                  <div style="flex:1;font-size:14px;font-weight:600;color:#F5F7FA;">{{ r.label }}</div>
+                  <button type="button" onclick="{{ r.onDownload }}" style="padding:7px 12px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#E5E7EB;font-size:12px;font-weight:600;cursor:pointer;">Download</button>
+                  <button type="button" onclick="{{ r.onSave }}" style="padding:7px 12px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;{{ r.saveStyle }}">{{ r.saveLabel }}</button>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" onclick="{{ panelsRefine }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">‹ Edit panels</button>
+              <button type="button" onclick="{{ panelsRegenerate }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">↺ Regenerate ({{ panelsCost }} cr)</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isScreens }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:1300px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;">
+            <div><sc-if value="{{ screensShowStepCounter }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#A78BFA;font-weight:700;margin-bottom:4px;">STEP {{ screensStepNum }} OF {{ screensStepCount }}</div></sc-if><div style="font-size:22px;font-weight:700;color:#F5F7FA;">{{ screensStepTitle }}</div></div>
+            <div style="padding:8px 16px;border-radius:999px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#E9D8FD;font-size:13px;font-weight:600;">Est. cost: {{ screensCost }} credits</div>
+          </div>
+
+          <sc-if value="{{ screensOnPlatform }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:26px;max-width:800px;">
+              <sc-for list="{{ screensPlatforms }}" as="p" hint-placeholder-count="5">
+                <div onclick="{{ p.onClick }}" style="padding:18px;border-radius:14px;border:1px solid;text-align:center;{{ p.style }}">
+                  <div style="font-size:14px;font-weight:700;color:#F5F7FA;margin-bottom:4px;">{{ p.label }}</div>
+                  <sc-if value="{{ p.locked }}" hint-placeholder-val="{{ false }}"><div style="font-size:11px;color:#6E7686;">Coming soon</div></sc-if>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:flex-end;"><button type="button" onclick="{{ screensGoNext }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;background:#7C3AED;color:#fff;cursor:pointer;">Continue</button></div>
+          </sc-if>
+
+          <sc-if value="{{ screensOnTemplates }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:26px;">
+              <sc-for list="{{ screensStyles }}" as="t" hint-placeholder-count="6">
+                <div onclick="{{ t.onClick }}" style="cursor:pointer;position:relative;border-radius:14px;overflow:hidden;aspect-ratio:16/9;{{ t.cardStyle }}background:{{ t.g }};">
+                  <div style="position:absolute;left:0;right:0;bottom:0;padding:10px 14px;background:linear-gradient(0deg,rgba(0,0,0,.6),transparent);"><div style="color:#fff;font-size:14px;font-weight:700;">{{ t.label }}</div></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <button type="button" onclick="{{ screensGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ screensGoNext }}" disabled="{{ screensNextDisabled }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ screensNextBtnStyle }}">Continue</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ screensOnChips }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+              <sc-for list="{{ screensChipOptions }}" as="c" hint-placeholder-count="4"><button type="button" onclick="{{ c.onClick }}" style="padding:9px 16px;border-radius:999px;border:1px solid;font-size:13px;font-weight:600;cursor:pointer;{{ c.style }}">{{ c.label }}</button></sc-for>
+              <sc-for list="{{ screensCustomChips }}" as="c" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:6px;padding:9px 12px 9px 16px;border-radius:999px;{{ c.style }}"><span style="font-size:13px;font-weight:600;">{{ c.label }}</span><span onclick="{{ c.onRemove }}" style="cursor:pointer;font-size:14px;opacity:.7;">×</span></div></sc-for>
+            </div>
+            <div style="display:flex;gap:8px;max-width:400px;margin-bottom:26px;"><input value="{{ screensCustomInput }}" onChange="{{ onScreensCustomInput }}" placeholder="Add a custom screen" style="flex:1;padding:11px 14px;border-radius:10px;background:#12151C;border:1px solid #232733;color:#F5F7FA;font-size:13px;"/><button type="button" onclick="{{ screensAddCustom }}" style="padding:11px 18px;border-radius:10px;border:none;background:#1B2030;color:#F5F7FA;font-size:13px;font-weight:700;cursor:pointer;">Add</button></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <button type="button" onclick="{{ screensGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ screensGenerate }}" disabled="{{ screensGenerateDisabled }}" style="padding:13px 30px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ screensGenerateBtnStyle }}">Generate — {{ screensCost }} credits</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ screensOnGenerating }}" hint-placeholder-val="{{ false }}">
+            <div style="height:6px;border-radius:999px;background:#1B2030;overflow:hidden;margin-bottom:28px;max-width:600px;"><div style="height:100%;background:#7C3AED;animation:fillbar 1.5s ease forwards;"></div></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;">
+              <div style="aspect-ratio:16/9;border-radius:14px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:16/9;border-radius:14px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:16/9;border-radius:14px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ screensOnResults }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-bottom:24px;">
+              <sc-for list="{{ screensResultsDisplay }}" as="r" hint-placeholder-count="3">
+                <div style="border-radius:14px;overflow:hidden;background:#12151C;border:1px solid #232733;">
+                  <div style="aspect-ratio:16/9;background:{{ r.g }};"></div>
+                  <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <span style="font-size:13px;font-weight:600;color:#F5F7FA;">{{ r.label }}</span>
+                    <div style="display:flex;gap:6px;flex-shrink:0;">
+                      <button type="button" onclick="{{ r.onDownload }}" style="padding:7px 12px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#E5E7EB;font-size:12px;font-weight:600;cursor:pointer;">Download</button>
+                      <button type="button" onclick="{{ r.onSave }}" style="padding:7px 12px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;{{ r.saveStyle }}">{{ r.saveLabel }}</button>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" onclick="{{ screensRefine }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">‹ Edit screens</button>
+              <button type="button" onclick="{{ screensRegenerate }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">↺ Regenerate ({{ screensCost }} cr)</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isEmote }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:1300px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;">
+            <div><sc-if value="{{ emoteShowStepCounter }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#A78BFA;font-weight:700;margin-bottom:4px;">STEP {{ emoteStepNum }} OF {{ emoteStepCount }}</div></sc-if><div style="font-size:22px;font-weight:700;color:#F5F7FA;">{{ emoteStepTitle }}</div></div>
+            <div style="padding:8px 16px;border-radius:999px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#E9D8FD;font-size:13px;font-weight:600;">Est. cost: {{ emoteCost }} credits</div>
+          </div>
+
+          <sc-if value="{{ emoteOnSource }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:8px;margin-bottom:20px;"><sc-for list="{{ emoteSourceTabs }}" as="tab" hint-placeholder-count="2"><button type="button" onclick="{{ tab.onClick }}" style="padding:9px 18px;border-radius:999px;border:none;font-size:13px;font-weight:700;cursor:pointer;{{ tab.style }}">{{ tab.label }}</button></sc-for></div>
+            <sc-if value="{{ emoteIsUploadMode }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ emoteNotUploaded }}" hint-placeholder-val="{{ true }}"><div onclick="{{ emoteSimUpload }}" style="cursor:pointer;border:2px dashed #2A3040;border-radius:20px;padding:56px 24px;text-align:center;background:#12151C;margin-bottom:26px;max-width:480px;"><div style="font-size:28px;color:#7C3AED;margin-bottom:10px;font-weight:800;">+</div><div style="font-size:14px;font-weight:600;color:#F5F7FA;margin-bottom:4px;">Click to upload a photo</div><div style="font-size:12px;color:#6E7686;">We'll turn it into emote-ready expressions</div></div></sc-if>
+              <sc-if value="{{ emoteUploaded }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:20px;margin-bottom:26px;"><div style="width:120px;height:120px;border-radius:20px;background:linear-gradient(135deg,#EC4899,#F43F5E);flex-shrink:0;"></div><button type="button" onclick="{{ emoteReplaceUpload }}" style="padding:9px 16px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:600;cursor:pointer;">Replace photo</button></div></sc-if>
+            </sc-if>
+            <sc-if value="{{ emoteIsStyleMode }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;margin-bottom:26px;max-width:800px;">
+                <sc-for list="{{ emoteStyles }}" as="t" hint-placeholder-count="6">
+                  <div onclick="{{ t.onClick }}" style="cursor:pointer;position:relative;border-radius:14px;overflow:hidden;aspect-ratio:1/1;{{ t.cardStyle }}background:{{ t.g }};"><div style="position:absolute;left:0;right:0;bottom:0;padding:10px;background:linear-gradient(0deg,rgba(0,0,0,.6),transparent);"><div style="color:#fff;font-size:13px;font-weight:700;">{{ t.label }}</div></div></div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="display:flex;justify-content:flex-end;"><button type="button" onclick="{{ emoteGoNext }}" disabled="{{ emoteNextDisabled }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ emoteNextBtnStyle }}">Continue</button></div>
+          </sc-if>
+
+          <sc-if value="{{ emoteOnChips }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+              <sc-for list="{{ emoteChipOptions }}" as="c" hint-placeholder-count="6"><button type="button" onclick="{{ c.onClick }}" style="padding:9px 16px;border-radius:999px;border:1px solid;font-size:13px;font-weight:600;cursor:pointer;{{ c.style }}">{{ c.label }}</button></sc-for>
+              <sc-for list="{{ emoteCustomChips }}" as="c" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:6px;padding:9px 12px 9px 16px;border-radius:999px;{{ c.style }}"><span style="font-size:13px;font-weight:600;">{{ c.label }}</span><span onclick="{{ c.onRemove }}" style="cursor:pointer;font-size:14px;opacity:.7;">×</span></div></sc-for>
+            </div>
+            <div style="display:flex;gap:8px;max-width:400px;margin-bottom:26px;"><input value="{{ emoteCustomInput }}" onChange="{{ onEmoteCustomInput }}" placeholder="Add a custom expression" style="flex:1;padding:11px 14px;border-radius:10px;background:#12151C;border:1px solid #232733;color:#F5F7FA;font-size:13px;"/><button type="button" onclick="{{ emoteAddCustom }}" style="padding:11px 18px;border-radius:10px;border:none;background:#1B2030;color:#F5F7FA;font-size:13px;font-weight:700;cursor:pointer;">Add</button></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <button type="button" onclick="{{ emoteGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ emoteGenerate }}" disabled="{{ emoteGenerateDisabled }}" style="padding:13px 30px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ emoteGenerateBtnStyle }}">Generate — {{ emoteCost }} credits</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ emoteOnGenerating }}" hint-placeholder-val="{{ false }}">
+            <div style="height:6px;border-radius:999px;background:#1B2030;overflow:hidden;margin-bottom:28px;max-width:600px;"><div style="height:100%;background:#7C3AED;animation:fillbar 1.5s ease forwards;"></div></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;">
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:1/1;border-radius:16px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ emoteOnResults }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px;margin-bottom:24px;">
+              <sc-for list="{{ emoteResultsDisplay }}" as="r" hint-placeholder-count="3">
+                <div style="border-radius:16px;overflow:hidden;background:#12151C;border:1px solid #232733;">
+                  <div style="aspect-ratio:1/1;background-image:linear-gradient(45deg,#242424 25%,transparent 25%),linear-gradient(-45deg,#242424 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#242424 75%),linear-gradient(-45deg,transparent 75%,#242424 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0;background-color:#161616;display:flex;align-items:center;justify-content:center;"><div style="width:64%;height:64%;border-radius:999px;background:{{ r.g }};"></div></div>
+                  <div style="padding:12px 14px;">
+                    <div style="font-size:13px;font-weight:700;color:#F5F7FA;margin-bottom:8px;">{{ r.label }}</div>
+                    <div style="display:flex;gap:6px;margin-bottom:10px;"><span style="font-size:10px;padding:3px 8px;border-radius:6px;background:#1B2030;color:#8992A3;">112px</span><span style="font-size:10px;padding:3px 8px;border-radius:6px;background:#1B2030;color:#8992A3;">56px</span><span style="font-size:10px;padding:3px 8px;border-radius:6px;background:#1B2030;color:#8992A3;">28px</span></div>
+                    <div style="display:flex;gap:6px;">
+                      <button type="button" onclick="{{ r.onDownload }}" style="flex:1;padding:7px 10px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#E5E7EB;font-size:12px;font-weight:600;cursor:pointer;">Download</button>
+                      <button type="button" onclick="{{ r.onSave }}" style="padding:7px 10px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;{{ r.saveStyle }}">{{ r.saveLabel }}</button>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" onclick="{{ emoteRefine }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">‹ Edit expressions</button>
+              <button type="button" onclick="{{ emoteRegenerate }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">↺ Regenerate ({{ emoteCost }} cr)</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isThumbnail }}" hint-placeholder-val="{{ false }}">
+        <div style="max-width:1300px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;">
+            <div><sc-if value="{{ thumbnailShowStepCounter }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#A78BFA;font-weight:700;margin-bottom:4px;">STEP {{ thumbnailStepNum }} OF {{ thumbnailStepCount }}</div></sc-if><div style="font-size:22px;font-weight:700;color:#F5F7FA;">{{ thumbnailStepTitle }}</div></div>
+            <div style="display:flex;align-items:center;gap:10px;"><sc-if value="{{ thumbnailLowCredit }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#FCD34D;">Running low on credits</span></sc-if><div style="padding:8px 16px;border-radius:999px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#E9D8FD;font-size:13px;font-weight:600;">Est. cost: {{ thumbnailCost }} credits</div></div>
+          </div>
+
+          <sc-if value="{{ thumbnailOnTemplates }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;"><sc-for list="{{ thumbnailGameFilters }}" as="f" hint-placeholder-count="7"><button type="button" onclick="{{ f.onClick }}" style="padding:7px 14px;border-radius:999px;border:1px solid;font-size:12px;font-weight:600;cursor:pointer;{{ f.style }}">{{ f.label }}</button></sc-for></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-bottom:26px;">
+              <sc-for list="{{ thumbnailTemplates }}" as="t" hint-placeholder-count="6">
+                <div onclick="{{ t.onClick }}" style="cursor:pointer;position:relative;border-radius:14px;overflow:hidden;aspect-ratio:16/9;{{ t.cardStyle }}background:{{ t.g }};"><div style="position:absolute;left:0;right:0;bottom:0;padding:10px 14px;background:linear-gradient(0deg,rgba(0,0,0,.6),transparent);"><div style="color:#fff;font-size:14px;font-weight:700;">{{ t.label }}</div></div></div>
+                </sc-for>
+            </div>
+            <div style="display:flex;justify-content:flex-end;"><button type="button" onclick="{{ thumbnailGoNext }}" disabled="{{ thumbnailNextDisabled }}" style="padding:12px 26px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ thumbnailNextBtnStyle }}">Continue</button></div>
+          </sc-if>
+
+          <sc-if value="{{ thumbnailOnPersonalize }}" hint-placeholder-val="{{ false }}">
+            <div style="max-width:480px;margin-bottom:16px;"><label style="display:block;font-size:13px;font-weight:600;color:#C9CED9;margin-bottom:6px;">Thumbnail title</label><input value="{{ thumbnailTitle }}" onChange="{{ onThumbnailTitle }}" placeholder="e.g. INSANE 1v5 CLUTCH" style="width:100%;box-sizing:border-box;padding:13px 16px;border-radius:12px;background:#12151C;border:1px solid #232733;color:#F5F7FA;font-size:14px;"/></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;"><sc-for list="{{ thumbnailToneTags }}" as="tg" hint-placeholder-count="4"><button type="button" onclick="{{ tg.onClick }}" style="padding:8px 16px;border-radius:999px;border:1px solid;font-size:12px;font-weight:600;cursor:pointer;{{ tg.style }}">{{ tg.label }}</button></sc-for></div>
+            <sc-if value="{{ thumbnailFaceNotUploaded }}" hint-placeholder-val="{{ true }}"><div onclick="{{ thumbnailSimFaceUpload }}" style="cursor:pointer;border:2px dashed #2A3040;border-radius:14px;padding:20px;text-align:center;background:#12151C;margin-bottom:26px;max-width:320px;"><div style="font-size:13px;font-weight:600;color:#F5F7FA;">+ Upload your face (optional)</div></div></sc-if>
+            <sc-if value="{{ thumbnailFaceUploaded }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:12px;margin-bottom:26px;"><div style="width:48px;height:48px;border-radius:999px;background:#7C3AED;"></div><button type="button" onclick="{{ thumbnailRemoveFace }}" style="padding:8px 14px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:12px;font-weight:600;cursor:pointer;">Remove</button></div></sc-if>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <button type="button" onclick="{{ thumbnailGoBack }}" style="padding:12px 22px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:14px;font-weight:700;cursor:pointer;">Back</button>
+              <button type="button" onclick="{{ thumbnailGenerate }}" disabled="{{ thumbnailGenerateDisabled }}" style="padding:13px 30px;border-radius:999px;border:none;font-size:14px;font-weight:700;{{ thumbnailGenerateBtnStyle }}">Generate — {{ thumbnailCost }} credits</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ thumbnailOnGenerating }}" hint-placeholder-val="{{ false }}">
+            <div style="height:6px;border-radius:999px;background:#1B2030;overflow:hidden;margin-bottom:28px;max-width:600px;"><div style="height:100%;background:#7C3AED;animation:fillbar 1.5s ease forwards;"></div></div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;">
+              <div style="aspect-ratio:16/9;border-radius:14px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+              <div style="aspect-ratio:16/9;border-radius:14px;background:linear-gradient(100deg,#161A22 20%,#1F2430 40%,#161A22 60%);background-size:600px 100%;animation:shimmer 1.4s infinite linear;"></div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ thumbnailOnResults }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-bottom:24px;">
+              <sc-for list="{{ thumbnailResultsDisplay }}" as="r" hint-placeholder-count="2">
+                <div style="border-radius:14px;overflow:hidden;background:#12151C;border:1px solid #232733;">
+                  <div style="aspect-ratio:16/9;background:{{ r.g }};"></div>
+                  <div style="padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <span style="font-size:13px;font-weight:600;color:#F5F7FA;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ r.label }}</span>
+                    <div style="display:flex;gap:6px;flex-shrink:0;">
+                      <button type="button" onclick="{{ r.onDownload }}" style="padding:7px 12px;border-radius:8px;border:none;background:rgba(255,255,255,.08);color:#E5E7EB;font-size:12px;font-weight:600;cursor:pointer;">Download</button>
+                      <button type="button" onclick="{{ r.onSave }}" style="padding:7px 12px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;{{ r.saveStyle }}">{{ r.saveLabel }}</button>
+                    </div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" onclick="{{ thumbnailRefine }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">‹ Refine inputs</button>
+              <button type="button" onclick="{{ thumbnailRegenerate }}" style="padding:11px 20px;border-radius:999px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:13px;font-weight:700;cursor:pointer;">↺ Regenerate ({{ thumbnailCost }} cr)</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isCollection }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:22px;font-weight:700;color:#F5F7FA;margin-bottom:16px;">My Collection</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;"><sc-for list="{{ collectionFilters }}" as="f" hint-placeholder-count="8"><button type="button" onclick="{{ f.onClick }}" style="padding:8px 16px;border-radius:999px;border:1px solid;font-size:12px;font-weight:600;cursor:pointer;{{ f.style }}">{{ f.label }}</button></sc-for></div>
+        <sc-if value="{{ collectionHasItems }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;">
+            <sc-for list="{{ collectionItems }}" as="c" hint-placeholder-count="8">
+              <div onclick="{{ c.onOpen }}" style="cursor:pointer;border-radius:16px;overflow:hidden;background:#12151C;border:1px solid #232733;">
+                <div style="aspect-ratio:4/3;background:{{ c.g }};"></div>
+                <div style="padding:12px 14px;"><div style="font-size:13px;font-weight:600;color:#F5F7FA;margin-bottom:3px;">{{ c.label }}</div><div style="font-size:11px;color:#6E7686;">{{ c.toolLabel }} · {{ c.date }}</div></div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ collectionNoItems }}" hint-placeholder-val="{{ false }}"><div style="text-align:center;padding:80px 20px;color:#6E7686;"><div style="font-size:15px;font-weight:600;color:#C9CED9;margin-bottom:6px;">Nothing here yet</div><div style="font-size:13px;">Generations from this tool will show up here once you create one.</div></div></sc-if>
+      </sc-if>
+
+      <sc-if value="{{ isCredits }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:6px;"><div style="font-size:40px;font-weight:800;color:#F5F7FA;">{{ credits }}</div><div style="font-size:14px;color:#8992A3;">credits available</div></div>
+        <sc-if value="{{ creditsIsLow }}" hint-placeholder-val="{{ false }}"><div style="display:inline-block;padding:6px 14px;border-radius:999px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#FCD34D;font-size:12px;font-weight:600;margin-bottom:22px;">Running low — top up to avoid interruptions</div></sc-if>
+        <sc-if value="{{ creditsIsZero }}" hint-placeholder-val="{{ false }}"><div style="display:inline-block;padding:6px 14px;border-radius:999px;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#FCA5A5;font-size:12px;font-weight:600;margin-bottom:22px;">Out of credits — buy a pack to keep generating</div></sc-if>
+        <div style="font-size:15px;font-weight:700;color:#F5F7FA;margin:28px 0 14px;">Buy credits</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:36px;">
+          <sc-for list="{{ creditPackCards }}" as="p" hint-placeholder-count="4">
+            <div style="padding:20px;border-radius:16px;background:#12151C;border:1px solid #232733;position:relative;">
+              <sc-if value="{{ p.best }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-10px;right:16px;background:#7C3AED;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:999px;">BEST VALUE</span></sc-if>
+              <div style="font-size:14px;font-weight:700;color:#F5F7FA;margin-bottom:6px;">{{ p.label }}</div>
+              <div style="font-size:22px;font-weight:800;color:#F5F7FA;margin-bottom:2px;">{{ p.credits }}</div>
+              <div style="font-size:12px;color:#6E7686;margin-bottom:16px;">credits</div>
+              <button type="button" onclick="{{ p.onBuy }}" style="width:100%;padding:10px;border-radius:10px;border:none;background:#7C3AED;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">{{ p.price }}</button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:15px;font-weight:700;color:#F5F7FA;margin-bottom:14px;">Purchase &amp; usage history</div>
+        <div style="display:flex;flex-direction:column;gap:2px;margin-bottom:32px;max-width:600px;">
+          <sc-for list="{{ purchaseHistory }}" as="h" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 4px;border-bottom:1px solid #1E222C;">
+              <div><div style="font-size:13px;font-weight:600;color:#F5F7FA;">{{ h.desc }}</div><div style="font-size:11px;color:#6E7686;">{{ h.date }}</div></div>
+              <div style="font-size:13px;font-weight:700;color:#F5F7FA;">{{ h.amount }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:16px;border:1px dashed #2A3040;border-radius:12px;max-width:620px;">
+          <div style="font-size:11px;color:#6E7686;margin-bottom:10px;">PROTOTYPE CONTROLS — simulate credit states</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" onclick="{{ setCreditsReset }}" style="padding:8px 14px;border-radius:8px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:12px;font-weight:600;cursor:pointer;">Set 32 (normal)</button>
+            <button type="button" onclick="{{ setCreditsLow }}" style="padding:8px 14px;border-radius:8px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:12px;font-weight:600;cursor:pointer;">Set 6 (low)</button>
+            <button type="button" onclick="{{ setCreditsZero }}" style="padding:8px 14px;border-radius:8px;border:1px solid #232733;background:transparent;color:#C9CED9;font-size:12px;font-weight:600;cursor:pointer;">Set 0 (zero)</button>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </div>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#1B2030;border:1px solid #2A3040;color:#F5F7FA;padding:12px 22px;border-radius:999px;font-size:13px;font-weight:600;box-shadow:0 12px 30px -8px rgba(0,0,0,.5);animation:toastIn .2s ease;z-index:9999;">{{ toast }}</div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+const G=['linear-gradient(135deg,#7C3AED,#2563EB)','linear-gradient(135deg,#EC4899,#F43F5E)','linear-gradient(135deg,#0EA5E9,#22D3EE)','linear-gradient(135deg,#1E293B,#334155)','linear-gradient(135deg,#F59E0B,#EA580C)','linear-gradient(135deg,#10B981,#059669)','linear-gradient(135deg,#A855F7,#EC4899)','linear-gradient(135deg,#475569,#1E293B)','linear-gradient(135deg,#DC2626,#7C2D12)','linear-gradient(135deg,#6366F1,#8B5CF6)'];
+function findG(id,list){const f=list.find(x=>x.id===id);return f?f.g:G[0];}
+const CLR_CHIP_SEL='background:#7C3AED;color:#fff;border-color:#7C3AED;';
+const CLR_CHIP_DEF='background:#12151C;color:#9AA1B2;border-color:#232733;';
+function chipStyleFn(sel){return sel?CLR_CHIP_SEL:CLR_CHIP_DEF;}
+function cardStyleFn(sel){return sel?'box-shadow:0 0 0 3px #7C3AED,0 12px 30px -10px rgba(0,0,0,.5);':'box-shadow:0 12px 30px -10px rgba(0,0,0,.5);';}
+function tabStyleFn(active){return active?'background:#7C3AED;color:#fff;':'background:transparent;color:#9AA1B2;';}
+function platformStyleFn(active,locked){if(locked)return 'opacity:.45;cursor:not-allowed;background:#12151C;border-color:#1E222C;';return active?'cursor:pointer;background:rgba(124,58,237,.14);border-color:#7C3AED;':'cursor:pointer;background:#12151C;border-color:#232733;';}
+function engineStyleFn(sel){return sel?'border-color:#7C3AED;background:rgba(124,58,237,.12);':'border-color:#232733;background:#12151C;';}
+function mkFilterChips(options,activeId,onSelect){return options.map(o=>({id:o.id,label:o.label,style:chipStyleFn(o.id===activeId),onClick:()=>onSelect(o.id)}));}
+function mkTemplateCards(list,selectedId,onSelect){return list.map(t=>({...t,selected:t.id===selectedId,cardStyle:cardStyleFn(t.id===selectedId),onClick:()=>onSelect(t.id)}));}
+function mkToggleChips(options,selectedIds,onToggle){return options.map(o=>({id:o.id,label:o.label,style:chipStyleFn(selectedIds.includes(o.id)),onClick:()=>onToggle(o.id)}));}
+function mkCustomChips(customArr,onRemove){return customArr.map(c=>({id:c.id,label:c.label,style:CLR_CHIP_SEL,onRemove:()=>onRemove(c.id)}));}
+
+const LOW_THRESHOLD=10;
+const GAME_FILTERS=[{id:'all',label:'All Games'},{id:'minecraft',label:'Minecraft'},{id:'valorant',label:'Valorant'},{id:'fortnite',label:'Fortnite'},{id:'apex',label:'Apex Legends'},{id:'csgo',label:'CS2'},{id:'league',label:'League of Legends'}];
+const PLATFORMS=[{id:'twitch',label:'Twitch',locked:false},{id:'youtube',label:'YouTube',locked:true},{id:'kick',label:'Kick',locked:true},{id:'discord',label:'Discord',locked:true},{id:'tiktok',label:'TikTok',locked:true}];
+const PANEL_OPTIONS=[{id:'about',label:'About'},{id:'donate',label:'Donate'},{id:'socials',label:'Socials'},{id:'rules',label:'Rules'},{id:'schedule',label:'Schedule'},{id:'sub',label:'Sub Perks'}];
+const SCREEN_OPTIONS=[{id:'starting',label:'Starting Soon'},{id:'brb',label:'Be Right Back'},{id:'offline',label:'Offline'},{id:'ending',label:'Stream Ending'}];
+const EXPR_OPTIONS=[{id:'gg',label:'GG'},{id:'lol',label:'LOL'},{id:'pog',label:'POG'},{id:'hype',label:'HYPE'},{id:'rip',label:'RIP'},{id:'love',label:'LOVE'}];
+const LOGO_TEMPLATES=[{id:'l1',label:'Vortex Beast',mode:'mascot',game:'minecraft',tag:'Bold',g:G[0]},{id:'l2',label:'Neon Circuit',mode:'text',game:'valorant',tag:'Neon',g:G[2]},{id:'l3',label:'Shield Crest',mode:'mascot',game:'fortnite',tag:'Shield',g:G[6]},{id:'l4',label:'Glitch Type',mode:'text',game:'csgo',tag:'Glitch',g:G[3]},{id:'l5',label:'Blaze Fang',mode:'mascot',game:'apex',tag:'Fierce',g:G[4]},{id:'l6',label:'Vector Wolf',mode:'mascot',game:'league',tag:'Sharp',g:G[5]},{id:'l7',label:'Arcade Bolt',mode:'text',game:'minecraft',tag:'Retro',g:G[8]},{id:'l8',label:'Chrome Tag',mode:'text',game:'valorant',tag:'Minimal',g:G[9]}];
+const PFP_STYLES=[{id:'p1',label:'Anime',g:G[1]},{id:'p2',label:'Cartoon',g:G[4]},{id:'p3',label:'Cyberpunk',g:G[2]},{id:'p4',label:'Pixel',g:G[5]},{id:'p5',label:'Realistic',g:G[7]},{id:'p6',label:'Game Skin',g:G[0]}];
+const BANNER_TEMPLATES=[{id:'b1',label:'Neon Grid',game:'valorant',g:G[2]},{id:'b2',label:'Blockcraft',game:'minecraft',g:G[5]},{id:'b3',label:'Battle Royale',game:'fortnite',g:G[6]},{id:'b4',label:'Tactical Dark',game:'csgo',g:G[3]},{id:'b5',label:'Apex Heat',game:'apex',g:G[4]},{id:'b6',label:'Rift Glow',game:'league',g:G[9]}];
+const PANEL_STYLES=[{id:'ps1',label:'Minimal',g:G[3]},{id:'ps2',label:'Neon',g:G[2]},{id:'ps3',label:'Retro',g:G[8]},{id:'ps4',label:'Grunge',g:G[7]},{id:'ps5',label:'Pastel',g:G[1]},{id:'ps6',label:'Chrome',g:G[9]}];
+const SCREEN_STYLES=[{id:'ss1',label:'Minimal Dark',g:G[3]},{id:'ss2',label:'Neon Pulse',g:G[2]},{id:'ss3',label:'Retro Grid',g:G[8]},{id:'ss4',label:'Cozy',g:G[4]},{id:'ss5',label:'Glitch',g:G[7]},{id:'ss6',label:'Clean Light',g:G[9]}];
+const EMOTE_STYLES=[{id:'es1',label:'Chibi',g:G[1]},{id:'es2',label:'Pixel',g:G[5]},{id:'es3',label:'Anime',g:G[2]},{id:'es4',label:'Meme',g:G[4]},{id:'es5',label:'Realistic',g:G[7]},{id:'es6',label:'Cartoon',g:G[0]}];
+const THUMB_TEMPLATES=[{id:'t1',label:'Bold Callout',game:'valorant',g:G[2]},{id:'t2',label:'Blocky Fun',game:'minecraft',g:G[5]},{id:'t3',label:'Victory Royale',game:'fortnite',g:G[6]},{id:'t4',label:'Clutch Moment',game:'csgo',g:G[3]},{id:'t5',label:'Legend Drop',game:'apex',g:G[4]},{id:'t6',label:'Pentakill',game:'league',g:G[9]}];
+const TONE_TAGS=[{id:'bold',label:'Bold'},{id:'clickbait',label:'Clickbait'},{id:'clean',label:'Clean'},{id:'dramatic',label:'Dramatic'}];
+const CREDIT_PACKS=[{id:'starter',label:'Starter',credits:50,price:'$4.99',best:false},{id:'popular',label:'Popular',credits:150,price:'$12.99',best:true},{id:'pro',label:'Pro',credits:400,price:'$29.99',best:false},{id:'mega',label:'Mega',credits:1000,price:'$59.99',best:false}];
+const PURCHASE_HISTORY=[{id:'h1',date:'Jul 18, 2026',desc:'Popular Pack — 150 credits',amount:'+150'},{id:'h2',date:'Jul 2, 2026',desc:'Gaming Logo Maker — Enhanced',amount:'-2'},{id:'h3',date:'Jun 29, 2026',desc:'Twitch Banner Maker',amount:'-10'},{id:'h4',date:'Jun 20, 2026',desc:'Starter Pack — 50 credits',amount:'+50'}];
+const COLLECTION_SEED=[{id:'c1',tool:'logo',label:'Vortex Beast — Minecraft',g:G[0],date:'Jul 20, 2026'},{id:'c2',tool:'pfp',label:'Cyberpunk Avatar',g:G[2],date:'Jul 19, 2026'},{id:'c3',tool:'banner',label:'Neon Grid Banner',g:G[2],date:'Jul 18, 2026'},{id:'c4',tool:'panels',label:'Neon Panel Set',g:G[2],date:'Jul 15, 2026'},{id:'c5',tool:'screens',label:'Cozy Stream Screens',g:G[4],date:'Jul 12, 2026'},{id:'c6',tool:'emote',label:'GG Emote Pack',g:G[1],date:'Jul 10, 2026'},{id:'c7',tool:'thumbnail',label:'Victory Royale Thumb',g:G[6],date:'Jul 8, 2026'},{id:'c8',tool:'logo',label:'Chrome Tag — Valorant',g:G[9],date:'Jul 3, 2026'}];
+const STEP_FLOW={logo:['templates','personalize','engine','generating','results'],pfp:['upload','templates','finalize','generating','results'],banner:['platform','templates','personalize','generating','results'],panels:['templates','chips','generating','results'],screens:['platform','templates','chips','generating','results'],emote:['source','chips','generating','results'],thumbnail:['templates','personalize','generating','results']};
+const STEP_TITLES={logo:{templates:'Choose a style',personalize:'Personalize your logo',engine:'Engine & variations',generating:'Generating your logo…',results:'Your logos are ready'},pfp:{upload:'Upload your photo',templates:'Choose a style',finalize:'Finishing touches',generating:'Generating your avatar…',results:'Your avatars are ready'},banner:{platform:'Choose a platform',templates:'Choose a template',personalize:'Personalize your banner',generating:'Generating your banner…',results:'Your banner is ready'},panels:{templates:'Choose a panel style',chips:'Choose your panels',generating:'Generating your panels…',results:'Your panel set is ready'},screens:{platform:'Choose a platform',templates:'Choose a style',chips:'Choose your screens',generating:'Generating your screens…',results:'Your stream screens are ready'},emote:{source:'Start your emote',chips:'Choose expressions',generating:'Generating your emotes…',results:'Your emotes are ready'},thumbnail:{templates:'Choose a template',personalize:'Personalize your thumbnail',generating:'Generating your thumbnail…',results:'Your thumbnail is ready'}};
+const TOOL_META={logo:{group:'Logos',label:'Gaming Logo Maker',short:'GL'},pfp:{group:'Logos',label:'PFP / Avatar Maker',short:'PF'},banner:{group:'Streaming',label:'Twitch Banner Maker',short:'TB'},panels:{group:'Streaming',label:'Twitch Panels Maker',short:'TP'},screens:{group:'Streaming',label:'Stream Screens',short:'SS'},emote:{group:'Streaming',label:'Emote Maker',short:'EM'},thumbnail:{group:'Content',label:'YouTube Thumbnail Maker',short:'YT'}};
+
+class Component extends DCLogic {
+  state = {
+    sidebarCollapsed:false, activeTool:'logo', credits:32, toast:null, collectionFilter:'all',
+    logo:{step:'templates',mode:'mascot',filterGame:'all',selectedTemplate:null,name:'',tagline:'',styleNote:'',engine:'standard',variations:4,results:null},
+    pfp:{step:'upload',uploaded:false,selectedTemplate:null,name:'',engine:'standard',variations:4,results:null},
+    banner:{step:'platform',platform:'twitch',filterGame:'all',selectedTemplate:null,channelName:'',tagline:'',logoUploaded:false,results:null},
+    panels:{step:'templates',selectedTemplate:null,chips:['about','socials'],customChips:[],customInput:'',results:null},
+    screens:{step:'platform',platform:'twitch',selectedTemplate:null,chips:['starting','brb','offline'],customChips:[],customInput:'',results:null},
+    emote:{step:'source',sourceMode:'upload',uploaded:false,selectedTemplate:null,chips:['gg','pog'],customChips:[],customInput:'',results:null},
+    thumbnail:{step:'templates',filterGame:'all',selectedTemplate:null,title:'',faceUploaded:false,toneTag:'bold',results:null},
+  };
+
+  showToast=(msg)=>{ this.setState({toast:msg}); clearTimeout(this._toastT); this._toastT=setTimeout(()=>this.setState({toast:null}),2200); };
+  setField=(tool,field,value)=>{ this.setState(s=>({[tool]:{...s[tool],[field]:value}})); };
+  selectTemplate=(tool,id)=>{ this.setField(tool,'selectedTemplate',id); };
+  toggleChip=(tool,id)=>{ this.setState(s=>{ const cur=s[tool].chips||[]; const has=cur.includes(id); return {[tool]:{...s[tool],chips:has?cur.filter(x=>x!==id):[...cur,id]}}; }); };
+  addCustomChip=(tool)=>{ this.setState(s=>{ const text=(s[tool].customInput||'').trim(); if(!text) return {}; const item={id:'custom-'+Date.now(),label:text}; return {[tool]:{...s[tool],customChips:[...(s[tool].customChips||[]),item],customInput:''}}; }); };
+  removeCustomChip=(tool,id)=>{ this.setState(s=>({[tool]:{...s[tool],customChips:(s[tool].customChips||[]).filter(c=>c.id!==id)}})); };
+
+  costFor=(tool)=>{
+    const st=this.state[tool];
+    switch(tool){
+      case 'logo': return st.engine==='enhanced'?2:1;
+      case 'pfp': return st.engine==='enhanced'?6:4;
+      case 'banner': return 10;
+      case 'thumbnail': return 10;
+      case 'panels': { const n=Math.min((st.chips||[]).length,6); const custom=(st.customChips||[]).length; const tier=n<=0?0:n<=2?2:n<=4?5:8; return tier+custom*3; }
+      case 'screens': return 4*((st.chips||[]).length+(st.customChips||[]).length);
+      case 'emote': { const n=(st.chips||[]).length+(st.customChips||[]).length; return n<=0?0:3+3*(n-1); }
+      default: return 0;
+    }
+  };
+
+  canProceed=(tool)=>{
+    const st=this.state[tool]; const step=st.step;
+    switch(step){
+      case 'upload': return !!st.uploaded;
+      case 'source': return st.sourceMode==='style'? !!st.selectedTemplate : !!st.uploaded;
+      case 'platform': return true;
+      case 'templates': return !!st.selectedTemplate;
+      case 'personalize':
+        if(tool==='logo') return !!st.name.trim();
+        if(tool==='banner') return !!st.channelName.trim();
+        if(tool==='thumbnail') return !!st.title.trim();
+        return true;
+      case 'finalize': return true;
+      case 'chips': return ((st.chips||[]).length+(st.customChips||[]).length)>0;
+      default: return true;
+    }
+  };
+
+  goNext=(tool)=>{ if(!this.canProceed(tool)) return; const flow=STEP_FLOW[tool]; const idx=flow.indexOf(this.state[tool].step); const next=flow[idx+1]; if(next==='generating'){ this.generate(tool); } else { this.setField(tool,'step',next); } };
+  goBack=(tool)=>{ const flow=STEP_FLOW[tool]; const idx=flow.indexOf(this.state[tool].step); if(idx>0){ this.setField(tool,'step',flow[idx-1]); } };
+
+  buildResults=(tool)=>{
+    const st=this.state[tool];
+    if(tool==='logo'){ const base=findG(st.selectedTemplate,LOGO_TEMPLATES); const bi=G.indexOf(base); return Array.from({length:st.variations},(_,i)=>({id:'r'+i,label:st.name||'Your Logo',g:G[(bi+i)%G.length],saved:false})); }
+    if(tool==='pfp'){ const base=findG(st.selectedTemplate,PFP_STYLES); const bi=G.indexOf(base); return Array.from({length:st.variations},(_,i)=>({id:'r'+i,label:st.name||'Your Avatar',g:G[(bi+i)%G.length],saved:false})); }
+    if(tool==='banner'){ const base=findG(st.selectedTemplate,BANNER_TEMPLATES); const bi=G.indexOf(base); return Array.from({length:2},(_,i)=>({id:'r'+i,label:st.channelName,g:G[(bi+i)%G.length],saved:false})); }
+    if(tool==='thumbnail'){ const base=findG(st.selectedTemplate,THUMB_TEMPLATES); const bi=G.indexOf(base); return Array.from({length:2},(_,i)=>({id:'r'+i,label:st.title,g:G[(bi+i)%G.length],saved:false})); }
+    if(tool==='panels'){ const all=[...PANEL_OPTIONS.filter(o=>st.chips.includes(o.id)),...st.customChips]; return all.map((o,i)=>({id:'r'+i,label:o.label,g:G[i%G.length],saved:false})); }
+    if(tool==='screens'){ const all=[...SCREEN_OPTIONS.filter(o=>st.chips.includes(o.id)),...st.customChips]; return all.map((o,i)=>({id:'r'+i,label:o.label,g:G[i%G.length],saved:false})); }
+    if(tool==='emote'){ const all=[...EXPR_OPTIONS.filter(o=>st.chips.includes(o.id)),...st.customChips]; return all.map((o,i)=>({id:'r'+i,label:o.label,g:G[i%G.length],saved:false})); }
+    return [];
+  };
+
+  generate=(tool)=>{
+    const cost=this.costFor(tool);
+    if(this.state.credits<cost) return;
+    this.setField(tool,'step','generating');
+    setTimeout(()=>{ const results=this.buildResults(tool); this.setState(s=>({credits:s.credits-cost,[tool]:{...s[tool],step:'results',results}})); },1500);
+  };
+  regenerate=(tool)=>{ this.generate(tool); };
+  refine=(tool)=>{ const flow=STEP_FLOW[tool]; const idx=flow.indexOf('generating'); this.setField(tool,'step',flow[idx-1]); this.setField(tool,'results',null); };
+  toggleSaved=(tool,id)=>{ this.setState(s=>({[tool]:{...s[tool],results:(s[tool].results||[]).map(r=>r.id===id?{...r,saved:!r.saved}:r)}})); this.showToast('Saved to your collection'); };
+  download=()=>{ this.showToast('Downloading…'); };
+  selectTool=(tool)=>{ this.setState({activeTool:tool}); };
+  setCredits=(n)=>{ this.setState({credits:n}); };
+
+  buildSidebarGroups(){
+    const at=this.state.activeTool;
+    const mk=(id,label,short)=>({id,label,short,rowStyle:at===id?'background:#7C3AED;':'background:transparent;',textStyle:at===id?'color:#fff;':'color:#C9CED9;',iconStyle:at===id?'background:rgba(255,255,255,.18);color:#fff;':'background:rgba(255,255,255,.05);color:#9AA1B2;',onClick:()=>this.selectTool(id)});
+    return [
+      {label:'Logos', items:[mk('logo','Gaming Logo Maker','GL'), mk('pfp','PFP / Avatar Maker','PF')]},
+      {label:'Streaming', items:[mk('banner','Twitch Banner Maker','TB'), mk('panels','Twitch Panels Maker','TP'), mk('screens','Stream Screens','SS'), mk('emote','Emote Maker','EM')]},
+      {label:'Content', items:[mk('thumbnail','YouTube Thumbnail Maker','YT')]},
+      {label:'You', items:[mk('collection','My Collection','MC'), mk('credits','Credits','CR')]},
+    ];
+  }
+
+  flags(tool){
+    const step=this.state[tool].step, flow=STEP_FLOW[tool], idx=flow.indexOf(step);
+    const inputSteps=flow.filter(s=>s!=='generating'&&s!=='results');
+    const idx2=inputSteps.indexOf(step);
+    const canNext=this.canProceed(tool), cost=this.costFor(tool), blocked=this.state.credits<cost;
+    const out={};
+    flow.forEach(s=>{ out[tool+'On'+cap(s)]=(s===step); });
+    out[tool+'ShowStepCounter']=step!=='generating'&&step!=='results';
+    out[tool+'StepNum']=idx2+1; out[tool+'StepCount']=inputSteps.length;
+    out[tool+'StepTitle']=(STEP_TITLES[tool]||{})[step]||'';
+    out[tool+'Cost']=cost;
+    out[tool+'LowCredit']=this.state.credits<LOW_THRESHOLD&&this.state.credits>0;
+    out[tool+'ResultsDisplayRaw']=this.state[tool].results||[];
+    out[tool+'NextDisabled']=!canNext; out[tool+'NextBtnStyle']=canNext?'background:#7C3AED;color:#fff;cursor:pointer;':'background:#232733;color:#5B6472;cursor:not-allowed;';
+    out[tool+'GenerateDisabled']=blocked; out[tool+'GenerateBtnStyle']=blocked?'background:#232733;color:#5B6472;cursor:not-allowed;':'background:#7C3AED;color:#fff;cursor:pointer;';
+    out[tool+'GoBack']=()=>this.goBack(tool); out[tool+'GoNext']=()=>this.goNext(tool);
+    out[tool+'Refine']=()=>this.refine(tool); out[tool+'Regenerate']=()=>this.regenerate(tool);
+    out[tool+'Generate']=()=>this.generate(tool);
+    return out;
+  }
+
+  renderVals(){
+    const st=this.state;
+    const vals={};
+    const collapsed=st.sidebarCollapsed;
+    vals.sidebarWidth=collapsed?76:268;
+    vals.sidebarLabelStyle=collapsed?'display:inline-block;opacity:0;width:0;margin-left:0;overflow:hidden;white-space:nowrap;transition:opacity .18s,width .18s;':'display:inline-block;opacity:1;width:auto;min-width:0;margin-left:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;transition:opacity .18s,width .18s;';
+    vals.sidebarJustify=collapsed?'center':'flex-start';
+    vals.sidebarArrow=collapsed?'\u203A':'\u2039';
+    vals.sidebarToggleLabel=collapsed?'Expand':'Collapse';
+    vals.toggleSidebar=()=>this.setState(s=>({sidebarCollapsed:!s.sidebarCollapsed}));
+    vals.sidebarGroups=this.buildSidebarGroups();
+
+    vals.credits=st.credits;
+    vals.creditBadgeStyle= st.credits<=0?'background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#FCA5A5;':st.credits<LOW_THRESHOLD?'background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.4);color:#FCD34D;':'background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.35);color:#E9D8FD;';
+    vals.creditDotStyle= st.credits<=0?'background:#EF4444;':st.credits<LOW_THRESHOLD?'background:#F59E0B;':'background:#C9A6FA;';
+    vals.goToCredits=()=>this.selectTool('credits');
+    vals.goToMyDesigns=()=>this.selectTool('collection');
+    vals.toast=st.toast;
+
+    vals.activeTool=st.activeTool;
+    const metaNow=TOOL_META[st.activeTool];
+    vals.currentToolLabel= metaNow? metaNow.label : (st.activeTool==='collection'?'My Collection':st.activeTool==='credits'?'Credits':'');
+    vals.currentToolGroup= metaNow? metaNow.group : 'You';
+    vals.currentScreenLabel= st.activeTool+((st[st.activeTool]&&st[st.activeTool].step)?('-'+st[st.activeTool].step):'');
+
+    vals.isLogo=st.activeTool==='logo'; vals.isPfp=st.activeTool==='pfp'; vals.isBanner=st.activeTool==='banner'; vals.isPanels=st.activeTool==='panels'; vals.isScreens=st.activeTool==='screens'; vals.isEmote=st.activeTool==='emote'; vals.isThumbnail=st.activeTool==='thumbnail'; vals.isCollection=st.activeTool==='collection'; vals.isCredits=st.activeTool==='credits';
+
+    Object.assign(vals, this.flags('logo'), this.flags('pfp'), this.flags('banner'), this.flags('panels'), this.flags('screens'), this.flags('emote'), this.flags('thumbnail'));
+
+    const saveRow=(tool)=> (vals[tool+'ResultsDisplayRaw']||[]).map(r=>({...r,saveLabel:r.saved?'Saved':'Save',saveStyle:r.saved?'background:#10B981;color:#fff;':'background:rgba(255,255,255,.08);color:#E5E7EB;',onSave:()=>this.toggleSaved(tool,r.id),onDownload:this.download}));
+
+    vals.logoModeTabs=['mascot','text'].map(m=>({id:m,label:m==='mascot'?'Mascot Logo':'Text Logo',style:tabStyleFn(m===st.logo.mode),onClick:()=>{this.setField('logo','mode',m);this.setField('logo','selectedTemplate',null);}}));
+    vals.logoGameFilters=mkFilterChips(GAME_FILTERS,st.logo.filterGame,v=>this.setField('logo','filterGame',v));
+    vals.logoTemplates=mkTemplateCards(LOGO_TEMPLATES.filter(t=>t.mode===st.logo.mode&&(st.logo.filterGame==='all'||t.game===st.logo.filterGame)),st.logo.selectedTemplate,id=>this.selectTemplate('logo',id));
+    vals.logoName=st.logo.name; vals.logoTagline=st.logo.tagline; vals.logoStyleNote=st.logo.styleNote;
+    vals.onLogoName=e=>this.setField('logo','name',e.target.value); vals.onLogoTagline=e=>this.setField('logo','tagline',e.target.value); vals.onLogoStyleNote=e=>this.setField('logo','styleNote',e.target.value);
+    vals.logoEngineOptions=[{id:'standard',cost:1,desc:'Great everyday quality'},{id:'enhanced',cost:2,desc:'Sharper detail, extra passes'}].map(e=>({id:e.id,label:cap(e.id),cost:e.cost,desc:e.desc,cardStyle:engineStyleFn(e.id===st.logo.engine),onClick:()=>this.setField('logo','engine',e.id)}));
+    vals.logoVariationOptions=[2,4,6,8].map(n=>({id:n,label:String(n),style:n===st.logo.variations?CLR_CHIP_SEL:CLR_CHIP_DEF,onClick:()=>this.setField('logo','variations',n)}));
+    vals.logoResultsDisplay=saveRow('logo');
+
+    vals.pfpUploaded=st.pfp.uploaded; vals.pfpNotUploaded=!st.pfp.uploaded;
+    vals.pfpSimUpload=()=>this.setField('pfp','uploaded',true); vals.pfpReplaceUpload=()=>this.setField('pfp','uploaded',false);
+    vals.pfpStyles=mkTemplateCards(PFP_STYLES,st.pfp.selectedTemplate,id=>this.selectTemplate('pfp',id));
+    vals.pfpName=st.pfp.name; vals.onPfpName=e=>this.setField('pfp','name',e.target.value);
+    vals.pfpEngineOptions=[{id:'standard',cost:4,desc:'Great everyday quality'},{id:'enhanced',cost:6,desc:'Sharper detail, extra passes'}].map(e=>({id:e.id,label:cap(e.id),cost:e.cost,desc:e.desc,cardStyle:engineStyleFn(e.id===st.pfp.engine),onClick:()=>this.setField('pfp','engine',e.id)}));
+    vals.pfpVariationOptions=[2,4,6,8].map(n=>({id:n,label:String(n),style:n===st.pfp.variations?CLR_CHIP_SEL:CLR_CHIP_DEF,onClick:()=>this.setField('pfp','variations',n)}));
+    vals.pfpResultsDisplay=saveRow('pfp');
+
+    vals.bannerPlatforms=PLATFORMS.map(p=>({id:p.id,label:p.label,locked:p.locked,style:platformStyleFn(p.id===st.banner.platform,p.locked),onClick:p.locked?(()=>{}):(()=>this.setField('banner','platform',p.id))}));
+    vals.bannerGameFilters=mkFilterChips(GAME_FILTERS,st.banner.filterGame,v=>this.setField('banner','filterGame',v));
+    vals.bannerTemplates=mkTemplateCards(BANNER_TEMPLATES.filter(t=>st.banner.filterGame==='all'||t.game===st.banner.filterGame),st.banner.selectedTemplate,id=>this.selectTemplate('banner',id));
+    vals.bannerChannelName=st.banner.channelName; vals.bannerTagline=st.banner.tagline; vals.bannerLogoUploaded=st.banner.logoUploaded; vals.bannerLogoNotUploaded=!st.banner.logoUploaded;
+    vals.onBannerChannelName=e=>this.setField('banner','channelName',e.target.value); vals.onBannerTagline=e=>this.setField('banner','tagline',e.target.value);
+    vals.bannerSimLogoUpload=()=>this.setField('banner','logoUploaded',true); vals.bannerRemoveLogo=()=>this.setField('banner','logoUploaded',false);
+    vals.bannerResultsDisplay=saveRow('banner');
+
+    vals.panelsStyles=mkTemplateCards(PANEL_STYLES,st.panels.selectedTemplate,id=>this.selectTemplate('panels',id));
+    vals.panelsChipOptions=mkToggleChips(PANEL_OPTIONS,st.panels.chips,id=>this.toggleChip('panels',id));
+    vals.panelsCustomChips=mkCustomChips(st.panels.customChips,id=>this.removeCustomChip('panels',id));
+    vals.panelsCustomInput=st.panels.customInput; vals.onPanelsCustomInput=e=>this.setField('panels','customInput',e.target.value); vals.panelsAddCustom=()=>this.addCustomChip('panels');
+    vals.panelsResultsDisplay=saveRow('panels');
+
+    vals.screensPlatforms=PLATFORMS.map(p=>({id:p.id,label:p.label,locked:p.locked,style:platformStyleFn(p.id===st.screens.platform,p.locked),onClick:p.locked?(()=>{}):(()=>this.setField('screens','platform',p.id))}));
+    vals.screensStyles=mkTemplateCards(SCREEN_STYLES,st.screens.selectedTemplate,id=>this.selectTemplate('screens',id));
+    vals.screensChipOptions=mkToggleChips(SCREEN_OPTIONS,st.screens.chips,id=>this.toggleChip('screens',id));
+    vals.screensCustomChips=mkCustomChips(st.screens.customChips,id=>this.removeCustomChip('screens',id));
+    vals.screensCustomInput=st.screens.customInput; vals.onScreensCustomInput=e=>this.setField('screens','customInput',e.target.value); vals.screensAddCustom=()=>this.addCustomChip('screens');
+    vals.screensResultsDisplay=saveRow('screens');
+
+    vals.emoteSourceTabs=['upload','style'].map(m=>({id:m,label:m==='upload'?'Upload Photo':'Pick Base Style',style:tabStyleFn(m===st.emote.sourceMode),onClick:()=>this.setField('emote','sourceMode',m)}));
+    vals.emoteIsUploadMode=st.emote.sourceMode==='upload'; vals.emoteIsStyleMode=st.emote.sourceMode==='style';
+    vals.emoteUploaded=st.emote.uploaded; vals.emoteNotUploaded=!st.emote.uploaded;
+    vals.emoteSimUpload=()=>this.setField('emote','uploaded',true); vals.emoteReplaceUpload=()=>this.setField('emote','uploaded',false);
+    vals.emoteStyles=mkTemplateCards(EMOTE_STYLES,st.emote.selectedTemplate,id=>this.selectTemplate('emote',id));
+    vals.emoteChipOptions=mkToggleChips(EXPR_OPTIONS,st.emote.chips,id=>this.toggleChip('emote',id));
+    vals.emoteCustomChips=mkCustomChips(st.emote.customChips,id=>this.removeCustomChip('emote',id));
+    vals.emoteCustomInput=st.emote.customInput; vals.onEmoteCustomInput=e=>this.setField('emote','customInput',e.target.value); vals.emoteAddCustom=()=>this.addCustomChip('emote');
+    vals.emoteResultsDisplay=saveRow('emote');
+
+    vals.thumbnailGameFilters=mkFilterChips(GAME_FILTERS,st.thumbnail.filterGame,v=>this.setField('thumbnail','filterGame',v));
+    vals.thumbnailTemplates=mkTemplateCards(THUMB_TEMPLATES.filter(t=>st.thumbnail.filterGame==='all'||t.game===st.thumbnail.filterGame),st.thumbnail.selectedTemplate,id=>this.selectTemplate('thumbnail',id));
+    vals.thumbnailTitle=st.thumbnail.title; vals.onThumbnailTitle=e=>this.setField('thumbnail','title',e.target.value);
+    vals.thumbnailFaceUploaded=st.thumbnail.faceUploaded; vals.thumbnailFaceNotUploaded=!st.thumbnail.faceUploaded;
+    vals.thumbnailSimFaceUpload=()=>this.setField('thumbnail','faceUploaded',true); vals.thumbnailRemoveFace=()=>this.setField('thumbnail','faceUploaded',false);
+    vals.thumbnailToneTags=TONE_TAGS.map(t=>({id:t.id,label:t.label,style:t.id===st.thumbnail.toneTag?CLR_CHIP_SEL:CLR_CHIP_DEF,onClick:()=>this.setField('thumbnail','toneTag',t.id)}));
+    vals.thumbnailResultsDisplay=saveRow('thumbnail');
+
+    vals.collectionFilters=[{id:'all',label:'All'},{id:'logo',label:'Logos'},{id:'pfp',label:'PFPs'},{id:'banner',label:'Banners'},{id:'panels',label:'Panels'},{id:'screens',label:'Screens'},{id:'emote',label:'Emotes'},{id:'thumbnail',label:'Thumbnails'}].map(f=>({id:f.id,label:f.label,style:f.id===st.collectionFilter?CLR_CHIP_SEL:CLR_CHIP_DEF,onClick:()=>this.setState({collectionFilter:f.id})}));
+    vals.collectionItems=COLLECTION_SEED.filter(c=>st.collectionFilter==='all'||c.tool===st.collectionFilter).map(c=>({...c,toolLabel:(TOOL_META[c.tool]||{}).label||'',onOpen:()=>this.selectTool(c.tool)}));
+    vals.collectionHasItems=vals.collectionItems.length>0; vals.collectionNoItems=!vals.collectionHasItems;
+
+    vals.creditPackCards=CREDIT_PACKS.map(p=>({...p,onBuy:()=>{ this.setState(s=>({credits:s.credits+p.credits})); this.showToast('Purchased '+p.credits+' credits'); }}));
+    vals.purchaseHistory=PURCHASE_HISTORY;
+    vals.setCreditsReset=()=>this.setCredits(32); vals.setCreditsLow=()=>this.setCredits(6); vals.setCreditsZero=()=>this.setCredits(0);
+    vals.creditsIsLow= st.credits>0&&st.credits<LOW_THRESHOLD; vals.creditsIsZero= st.credits<=0;
+
+    return vals;
+  }
+}
+
+</script>
+</body>
+</html>

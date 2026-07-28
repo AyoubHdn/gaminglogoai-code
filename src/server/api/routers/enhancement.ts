@@ -48,6 +48,12 @@ const modelMap = {
   "nano-banana-pro": "google/nano-banana-pro",
 };
 
+const modelCreditCost = {
+  "flux-kontext-pro": 3,
+  "flux-kontext-max": 3,
+  "nano-banana-pro": 4,
+} as const;
+
 // --- START: THE FINAL, ROBUST HELPER FUNCTION (INSPIRED BY faceLogo.ts) ---
 async function enhanceImageWithAI(
   prompt: string,
@@ -138,7 +144,7 @@ export const enhancementRouter = createTRPCRouter({
         referenceImageUrl: z.string().url(),
     }))
     .mutation(async ({ ctx, input }) => {
-        const creditCost = 3;
+        const creditCost = modelCreditCost[input.model];
 
     // 1️⃣ Deduct credits
     const { count } = await ctx.prisma.user.updateMany({

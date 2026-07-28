@@ -18,7 +18,11 @@ interface PfpThemePageServerProps {
 
 const PfpThemePage: NextPage<PfpThemePageServerProps> = ({ themeName, styleItem, slug, relatedItems, otherShowcaseItems }) => {
   const router = useRouter();
-  const handleCtaClick = () => { void router.push(`/pfp-maker#${encodeURIComponent(themeName)}`); };
+  const handleCtaClick = () => {
+    void router.push(
+      `/studio?tool=pfp&game=${encodeURIComponent(themeName.toLowerCase())}`,
+    );
+  };
 
   const templateProps: PseoPfpPageTemplateProps = {
     gameTitle: themeName,

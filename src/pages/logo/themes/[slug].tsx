@@ -20,7 +20,7 @@ const ThemeLogoPage: NextPage<ThemeLogoPageServerProps> = ({ theme, images, slug
 
   const handleCtaClick = () => {
     // Note: The query param is '?theme='
-    void router.push(`/gaming-logo-maker#${encodeURIComponent(theme)}`);
+    void router.push("/studio?tool=logo");
   };
 
   // Construct the full props for the template here (client-side)

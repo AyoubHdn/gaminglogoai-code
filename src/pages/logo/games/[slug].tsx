@@ -22,7 +22,9 @@ const GameTitleLogoPage: NextPage<GameTitleLogoPageServerProps> = ({ gameTitle, 
 
   const handleCtaClick = () => {
     // Note: The query param is '?game='
-    void router.push(`/gaming-logo-maker#${encodeURIComponent(gameTitle)}`);
+    void router.push(
+      `/studio?tool=logo&game=${encodeURIComponent(gameTitle.toLowerCase())}`,
+    );
   };
 
   // Construct the full props for the template here (client-side)
@@ -37,6 +39,7 @@ const GameTitleLogoPage: NextPage<GameTitleLogoPageServerProps> = ({ gameTitle, 
     introParagraph: <>Forge a unique identity inspired by <strong>{gameTitle}</strong> with our AI-powered logo creator. Perfect for crafting a memorable <strong>clan logo</strong>.</>,
     ctaText: `Design Your ${gameTitle} Logo Now`,
     handleCtaClick: handleCtaClick,
+    studioPromoHref: `/studio?tool=logo&game=${encodeURIComponent(gameTitle.toLowerCase())}`,
     showcaseTitle: <>Inspiring <span className="text-purple-600 dark:text-cyan-400">{gameTitle}</span> Logo Ideas</>,
     imageShowcaseGrid: images.slice(0, 8).map(img => ({ src: img.src, alt: `${gameTitle} gaming logo design — clan and esports logo example` })),
     crossPromoLinks,

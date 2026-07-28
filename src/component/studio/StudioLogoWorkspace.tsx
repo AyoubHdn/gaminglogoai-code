@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 
 import { gamerStylesData } from "~/data/gamerStylesData";
+import { LOGO_MODEL_CREDITS } from "~/lib/generationPricing";
 import { StudioLogoFunnel } from "./StudioLogoFunnel";
 
 function resolveGameSubcategory(gameQuery: string | undefined): string | null {
@@ -78,7 +79,8 @@ export function StudioLogoWorkspace() {
           </p>
         </div>
         <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-400">
-          1–2 credits per logo
+          {LOGO_MODEL_CREDITS["flux-schnell"]}–
+          {LOGO_MODEL_CREDITS["flux-dev"]} credits per logo
         </div>
       </div>
 

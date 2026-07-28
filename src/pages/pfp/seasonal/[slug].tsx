@@ -18,7 +18,11 @@ interface PfpSeasonalPageServerProps {
 
 const PfpSeasonalPage: NextPage<PfpSeasonalPageServerProps> = ({ seasonalName, styleItem, slug, relatedItems, otherShowcaseItems }) => {
   const router = useRouter();
-  const handleCtaClick = () => { void router.push(`/pfp-maker#${encodeURIComponent(seasonalName)}`); };
+  const handleCtaClick = () => {
+    void router.push(
+      `/studio?tool=pfp&game=${encodeURIComponent(seasonalName.toLowerCase())}`,
+    );
+  };
 
   const templateProps: PseoPfpPageTemplateProps = {
     gameTitle: seasonalName,

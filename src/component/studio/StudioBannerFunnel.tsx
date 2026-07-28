@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import imageCompression from "browser-image-compression";
 import Image from "next/image";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
@@ -16,8 +17,13 @@ import {
 
 import { Button } from "~/component/Button";
 import { useFunnel } from "~/component/bannerFunnel/FunnelContext";
-import { BANNER_TEMPLATES, type BannerTemplate } from "~/data/bannerTemplates";
+import {
+  BANNER_GENERATION_CREDITS,
+  BANNER_TEMPLATES,
+  type BannerTemplate,
+} from "~/data/bannerTemplates";
 import { PLATFORMS, type PlatformId } from "~/data/platforms";
+import { getReferenceAwareGenerationCredits } from "~/lib/generationPricing";
 import { filterTemplates, getAvailableFilters } from "~/lib/templateBrowser";
 import { api } from "~/utils/api";
 import { type BannerDeepLinkContext } from "./StudioBannerWorkspace";
@@ -25,6 +31,7 @@ import { type BannerDeepLinkContext } from "./StudioBannerWorkspace";
 type StudioBannerStep = "step0" | "step1" | "step2" | "step3";
 
 const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
+const MAX_REFERENCE_DIMENSION = 1024;
 const CHANNEL_NAME_LIMIT = 30;
 const TAGLINE_LIMIT = 60;
 const REFINEMENT_PROMPT_LIMIT = 500;
@@ -357,7 +364,7 @@ function TemplateCard({
           </div>
           <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-cyan-500/10 px-2 py-1 text-[10px] font-bold text-cyan-300">
             <FaCoins aria-hidden="true" />
-            {template.credits}
+            from {template.credits}
           </span>
         </div>
       </div>
@@ -770,7 +777,12 @@ export function StudioBannerFunnel({
   const bannerCanvas = PLATFORMS.twitch.surfaces.banner?.canvas;
   const bannerWidth = bannerCanvas?.width ?? 1200;
   const bannerHeight = bannerCanvas?.height ?? 480;
-  const generationCost = selectedTemplate?.credits ?? 10;
+  const generationCost = selectedTemplate
+    ? getReferenceAwareGenerationCredits(
+        selectedTemplate.credits,
+        logoSource === "upload" && Boolean(logoUrl),
+      )
+    : BANNER_GENERATION_CREDITS;
 
   useEffect(() => {
     if (!hasHydrated || !requestedContext) {
@@ -826,21 +838,27 @@ export function StudioBannerFunnel({
     setLogoSource("upload");
     resetResultState();
 
-    if (localPreviewUrl) {
-      URL.revokeObjectURL(localPreviewUrl);
-    }
-    setLocalPreviewUrl(URL.createObjectURL(file));
-
     try {
+      const resizedFile = await imageCompression(file, {
+        maxWidthOrHeight: MAX_REFERENCE_DIMENSION,
+        useWebWorker: true,
+        fileType: file.type,
+      });
+
+      if (localPreviewUrl) {
+        URL.revokeObjectURL(localPreviewUrl);
+      }
+      setLocalPreviewUrl(URL.createObjectURL(resizedFile));
+
       const presigned = await createUploadUrl.mutateAsync({
-        filename: file.name,
-        filetype: file.type,
+        filename: resizedFile.name,
+        filetype: resizedFile.type,
       });
       const formData = new FormData();
       Object.entries(presigned.fields).forEach(([key, value]) => {
         formData.append(key, value);
       });
-      formData.append("file", file);
+      formData.append("file", resizedFile);
 
       const response = await fetch(presigned.url, {
         method: "POST",

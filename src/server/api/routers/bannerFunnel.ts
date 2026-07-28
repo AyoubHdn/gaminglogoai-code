@@ -12,6 +12,10 @@ import { b64Image } from "~/data/b64Image";
 import { BANNER_TEMPLATES } from "~/data/bannerTemplates";
 import { PLATFORMS } from "~/data/platforms";
 import { env } from "~/env.mjs";
+import {
+  BANNER_THUMBNAIL_REFINEMENT_CREDITS,
+  getReferenceAwareGenerationCredits,
+} from "~/lib/generationPricing";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { buildBannerPrompt } from "~/server/lib/buildBannerPrompt";
 import { computeGenerationDimensions } from "~/server/lib/computeGenerationDimensions";
@@ -36,6 +40,7 @@ const replicate = new Replicate({
   auth: env.REPLICATE_API_TOKEN,
 });
 const BANNER_FUNNEL_RATE_LIMIT_MS = 3000;
+const MAX_FLUX_REFERENCE_DIMENSION = 1024;
 const lastGenerateCallByUserId = new Map<string, number>();
 const lastRefineCallByUserId = new Map<string, number>();
 
@@ -137,6 +142,20 @@ async function resolveReplicateOutputToBuffer(output: unknown): Promise<Buffer> 
   });
 }
 
+async function normalizeFluxReferenceImage(url: string): Promise<string> {
+  const sourceBuffer = await fetchBufferFromUrl(url);
+  const normalizedBuffer = await sharp(sourceBuffer)
+    .rotate()
+    .resize(MAX_FLUX_REFERENCE_DIMENSION, MAX_FLUX_REFERENCE_DIMENSION, {
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .png()
+    .toBuffer();
+
+  return `data:image/png;base64,${normalizedBuffer.toString("base64")}`;
+}
+
 async function fetchGeneratedBannerBuffer(
   prompt: string,
   width: number,
@@ -156,7 +175,9 @@ async function fetchGeneratedBannerBuffer(
   };
 
   if (logoReferenceUrl) {
-    replicateInput.input_images = [logoReferenceUrl];
+    replicateInput.input_images = [
+      await normalizeFluxReferenceImage(logoReferenceUrl),
+    ];
   }
 
   // FLUX.2 Max supports custom width/height, stronger prompt adherence, and
@@ -311,10 +332,14 @@ export const bannerFunnelRouter = createTRPCRouter({
         socialHandles: input.socialHandles,
         hasLogo: Boolean(input.logoUrl),
       });
+      const generationCredits = getReferenceAwareGenerationCredits(
+        template.credits,
+        Boolean(input.logoUrl),
+      );
 
       return withCreditTransaction(
         ctx.session.user.id,
-        template.credits,
+        generationCredits,
         async () => {
           let createdIconId: string | null = null;
 
@@ -397,7 +422,7 @@ export const bannerFunnelRouter = createTRPCRouter({
             return {
               url: getPublicBannerUrl(imageKey),
               iconId: icon.id,
-              creditsCharged: template.credits,
+              creditsCharged: generationCredits,
             };
           } catch (error) {
             if (createdIconId) {
@@ -462,7 +487,10 @@ export const bannerFunnelRouter = createTRPCRouter({
       const sourceImageUrl = getPublicBannerUrl(sourceIcon.imageKey ?? sourceIcon.id);
       const refinePrompt = `Edit this ${platformName} banner: ${input.refinementPrompt}. Maintain the overall composition, channel name visibility, and professional banner aesthetic. Do not add watermarks or signatures.`;
 
-      return withCreditTransaction(ctx.session.user.id, 6, async () => {
+      return withCreditTransaction(
+        ctx.session.user.id,
+        BANNER_THUMBNAIL_REFINEMENT_CREDITS,
+        async () => {
         let createdIconId: string | null = null;
 
         try {
@@ -519,7 +547,7 @@ export const bannerFunnelRouter = createTRPCRouter({
           return {
             url: getPublicBannerUrl(imageKey),
             iconId: icon.id,
-            creditsCharged: 6,
+            creditsCharged: BANNER_THUMBNAIL_REFINEMENT_CREDITS,
             originalIconId: sourceIcon.id,
           };
         } catch (error) {

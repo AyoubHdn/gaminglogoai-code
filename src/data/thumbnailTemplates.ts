@@ -2,6 +2,8 @@ import { type BannerTemplate } from "./bannerTemplates";
 
 export type ThumbnailTemplate = BannerTemplate;
 
+export const THUMBNAIL_GENERATION_CREDITS = 10;
+
 type ThumbnailTemplateSeed = Omit<ThumbnailTemplate, "platform">;
 
 function templatePreview(templateId: string): string {
@@ -26,7 +28,7 @@ const YOUTUBE_THUMBNAIL_TEMPLATE_SEEDS: ThumbnailTemplateSeed[] = [
       compositionHints:
         "thumbnail-first composition, strong subject focus, large readable headline zone, high click-through contrast",
     },
-    credits: 10,
+    credits: THUMBNAIL_GENERATION_CREDITS,
   },
   {
     id: "youtube-fortnite-hype",
@@ -45,7 +47,7 @@ const YOUTUBE_THUMBNAIL_TEMPLATE_SEEDS: ThumbnailTemplateSeed[] = [
       compositionHints:
         "thumbnail-first composition, oversized hero subject, bold title placement, dramatic foreground-background separation",
     },
-    credits: 10,
+    credits: THUMBNAIL_GENERATION_CREDITS,
   },
   {
     id: "youtube-minecraft-build",
@@ -64,7 +66,7 @@ const YOUTUBE_THUMBNAIL_TEMPLATE_SEEDS: ThumbnailTemplateSeed[] = [
       compositionHints:
         "thumbnail-first composition, clear central hero subject, bold headline block, high-clarity visual storytelling",
     },
-    credits: 10,
+    credits: THUMBNAIL_GENERATION_CREDITS,
   },
   {
     id: "youtube-apex-squad",
@@ -83,7 +85,7 @@ const YOUTUBE_THUMBNAIL_TEMPLATE_SEEDS: ThumbnailTemplateSeed[] = [
       compositionHints:
         "thumbnail-first composition, explosive hero framing, clean title area, strong visual depth for click appeal",
     },
-    credits: 10,
+    credits: THUMBNAIL_GENERATION_CREDITS,
   },
   {
     id: "youtube-cyberpunk-breakdown",
@@ -102,7 +104,7 @@ const YOUTUBE_THUMBNAIL_TEMPLATE_SEEDS: ThumbnailTemplateSeed[] = [
       compositionHints:
         "thumbnail-first composition, high-contrast focal subject, oversized title zone, layered cinematic sci-fi depth",
     },
-    credits: 10,
+    credits: THUMBNAIL_GENERATION_CREDITS,
   },
   {
     id: "youtube-roblox-chaos",
@@ -121,7 +123,7 @@ const YOUTUBE_THUMBNAIL_TEMPLATE_SEEDS: ThumbnailTemplateSeed[] = [
       compositionHints:
         "thumbnail-first composition, big expressive subject, cheerful visual hierarchy, bold easy-to-read title block",
     },
-    credits: 10,
+    credits: THUMBNAIL_GENERATION_CREDITS,
   },
 ];
 

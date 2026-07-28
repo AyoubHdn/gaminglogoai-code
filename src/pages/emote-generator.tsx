@@ -5,6 +5,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "~/component/Button";
+import { StudioPromo } from "~/component/StudioPromo";
 //import { Input } from "~/component/Input";
 import { api } from "~/utils/api";
 import { useSession, signIn } from "next-auth/react";
@@ -294,6 +295,11 @@ No transparent or semi-transparent areas inside the face.
         </div>
       </header>
 
+        <StudioPromo
+          toolName="Emote Generator"
+          href="/studio?tool=emote"
+          className="mb-10"
+        />
 
         {/* Upload */}
         <section className="mb-8">

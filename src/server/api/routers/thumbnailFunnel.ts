@@ -12,6 +12,10 @@ import { b64Image } from "~/data/b64Image";
 import { THUMBNAIL_TEMPLATES } from "~/data/thumbnailTemplates";
 import { THUMBNAIL_PLATFORMS } from "~/data/thumbnailPlatforms";
 import { env } from "~/env.mjs";
+import {
+  BANNER_THUMBNAIL_REFINEMENT_CREDITS,
+  getReferenceAwareGenerationCredits,
+} from "~/lib/generationPricing";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { buildThumbnailPrompt } from "~/server/lib/buildThumbnailPrompt";
 import { computeGenerationDimensions } from "~/server/lib/computeGenerationDimensions";
@@ -36,6 +40,7 @@ const replicate = new Replicate({
 });
 
 const THUMBNAIL_FUNNEL_RATE_LIMIT_MS = 3000;
+const MAX_FLUX_REFERENCE_DIMENSION = 1024;
 const lastGenerateCallByUserId = new Map<string, number>();
 const lastRefineCallByUserId = new Map<string, number>();
 
@@ -137,6 +142,20 @@ async function resolveReplicateOutputToBuffer(output: unknown): Promise<Buffer> 
   });
 }
 
+async function normalizeFluxReferenceImage(url: string): Promise<string> {
+  const sourceBuffer = await fetchBufferFromUrl(url);
+  const normalizedBuffer = await sharp(sourceBuffer)
+    .rotate()
+    .resize(MAX_FLUX_REFERENCE_DIMENSION, MAX_FLUX_REFERENCE_DIMENSION, {
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .png()
+    .toBuffer();
+
+  return `data:image/png;base64,${normalizedBuffer.toString("base64")}`;
+}
+
 async function fetchGeneratedThumbnailBuffer(
   prompt: string,
   width: number,
@@ -156,7 +175,9 @@ async function fetchGeneratedThumbnailBuffer(
   };
 
   if (referenceImageUrl) {
-    replicateInput.input_images = [referenceImageUrl];
+    replicateInput.input_images = [
+      await normalizeFluxReferenceImage(referenceImageUrl),
+    ];
   }
 
   const output = await replicate.run("black-forest-labs/flux-2-max", {
@@ -285,10 +306,14 @@ export const thumbnailFunnelRouter = createTRPCRouter({
         subtitle: input.subtitle,
         hasReferenceImage: Boolean(input.referenceImageUrl),
       });
+      const generationCredits = getReferenceAwareGenerationCredits(
+        template.credits,
+        Boolean(input.referenceImageUrl),
+      );
 
       return withCreditTransaction(
         ctx.session.user.id,
-        template.credits,
+        generationCredits,
         async () => {
           let createdIconId: string | null = null;
 
@@ -345,7 +370,7 @@ export const thumbnailFunnelRouter = createTRPCRouter({
             return {
               url: getPublicThumbnailUrl(imageKey),
               iconId: icon.id,
-              creditsCharged: template.credits,
+              creditsCharged: generationCredits,
             };
           } catch (error) {
             if (createdIconId) {
@@ -400,7 +425,10 @@ export const thumbnailFunnelRouter = createTRPCRouter({
       );
       const refinePrompt = `Edit this ${platform.displayName} thumbnail: ${input.refinementPrompt}. Maintain the overall composition, title visibility, and professional thumbnail aesthetic. Do not add watermarks or signatures.`;
 
-      return withCreditTransaction(ctx.session.user.id, 6, async () => {
+      return withCreditTransaction(
+        ctx.session.user.id,
+        BANNER_THUMBNAIL_REFINEMENT_CREDITS,
+        async () => {
         let createdIconId: string | null = null;
 
         try {
@@ -446,7 +474,7 @@ export const thumbnailFunnelRouter = createTRPCRouter({
           return {
             url: getPublicThumbnailUrl(imageKey),
             iconId: icon.id,
-            creditsCharged: 6,
+            creditsCharged: BANNER_THUMBNAIL_REFINEMENT_CREDITS,
             originalIconId: sourceIcon.id,
           };
         } catch (error) {

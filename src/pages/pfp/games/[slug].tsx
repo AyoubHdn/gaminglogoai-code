@@ -26,7 +26,11 @@ interface PfpGamePageServerProps {
 const PfpGamePage: NextPage<PfpGamePageServerProps> = ({ gameTitle, styleItem, slug, relatedItems, otherShowcaseItems }) => {
   const router = useRouter();
   const crossPromoLinks = getGameCrossPromoLinks(gameTitle);
-  const handleCtaClick = () => { void router.push(`/pfp-maker#${encodeURIComponent(gameTitle)}`); };
+  const handleCtaClick = () => {
+    void router.push(
+      `/studio?tool=pfp&game=${encodeURIComponent(gameTitle.toLowerCase())}`,
+    );
+  };
 
   const templateProps: PseoPfpPageTemplateProps = {
     gameTitle: gameTitle,
@@ -40,6 +44,7 @@ const PfpGamePage: NextPage<PfpGamePageServerProps> = ({ gameTitle, styleItem, s
     introParagraph: <>Turn your photo into a legendary {gameTitle}-style avatar! Create a custom profile picture for Discord, YouTube, Twitch, and more in seconds.</>,
     ctaText: "Make Your PFP Now (1 Free Credit)",
     handleCtaClick,
+    studioPromoHref: `/studio?tool=pfp&game=${encodeURIComponent(gameTitle.toLowerCase())}`,
     showcaseTitle: <>From Selfie to <span className="text-purple-600 dark:text-cyan-400">{gameTitle} Legend</span></>,
     imageShowcaseGrid: [
       { src: styleItem.src, alt: `AI generated custom PFP in the style of ${styleItem.name}` },

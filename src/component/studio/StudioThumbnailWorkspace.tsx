@@ -3,6 +3,7 @@ import { useMemo } from "react";
 
 import { FunnelProvider } from "~/component/thumbnailFunnel/FunnelContext";
 import {
+  THUMBNAIL_GENERATION_CREDITS,
   THUMBNAIL_TEMPLATES,
   type ThumbnailTemplate,
 } from "~/data/thumbnailTemplates";
@@ -85,7 +86,7 @@ export function StudioThumbnailWorkspace() {
           </p>
         </div>
         <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-400">
-          10 credits per thumbnail
+          From {THUMBNAIL_GENERATION_CREDITS} credits per thumbnail
         </div>
       </div>
 

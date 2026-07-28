@@ -11,12 +11,13 @@ import {
   FaQuestionCircle,
   FaYoutube,
 } from "react-icons/fa";
+import { StudioPromo } from "~/component/StudioPromo";
 
 const YouTubeThumbnailLandingPage: NextPage = () => {
   const router = useRouter();
 
   const handleStart = () => {
-    void router.push("/thumbnail-maker");
+    void router.push("/studio?tool=thumbnail");
   };
 
   const features = [
@@ -178,6 +179,11 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
             </button>
           </div>
         </section>
+
+        <StudioPromo
+          toolName="YouTube Thumbnail Maker"
+          href="/studio?tool=thumbnail"
+        />
 
         <section className="bg-white py-16 dark:bg-slate-900">
           <div className="container mx-auto px-4">

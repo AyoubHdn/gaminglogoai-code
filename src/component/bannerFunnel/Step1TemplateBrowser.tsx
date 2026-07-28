@@ -364,7 +364,8 @@ export function Step1TemplateBrowser() {
                   <div className="relative aspect-[5/2] overflow-hidden bg-slate-100 dark:bg-slate-800">
                     <TemplateThumbnail template={template} />
                     <span className="absolute right-3 top-3 rounded-full bg-slate-950/80 px-2.5 py-1 text-xs font-semibold text-white shadow-sm">
-                      {template.credits} credit{template.credits === 1 ? "" : "s"}
+                      from {template.credits} credit
+                      {template.credits === 1 ? "" : "s"}
                     </span>
                   </div>
                   <div className="space-y-2 p-4">

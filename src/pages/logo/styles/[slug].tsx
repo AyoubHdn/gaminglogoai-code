@@ -20,7 +20,7 @@ const ArtStyleLogoPage: NextPage<ArtStyleLogoPageServerProps> = ({ artStyle, ima
 
   const handleCtaClick = () => {
     // Note: The query param is '?style='
-    void router.push(`/gaming-logo-maker#${encodeURIComponent(artStyle)}`);
+    void router.push("/studio?tool=logo");
   };
 
   // Construct the full props for the template here (client-side)

@@ -12,6 +12,10 @@ import { v4 as uuidv4 } from "uuid";
 import { Plan as PrismaPlan } from "@prisma/client";
 import { syncUserToMautic } from "~/server/api/routers/mautic-utils";
 import { emotes } from "~/data/emotes";
+import {
+  EMOTE_BASE_CREDITS,
+  EMOTE_EXPRESSION_CREDITS,
+} from "~/lib/generationPricing";
 import sharp from "sharp";
 
 const EmoteKeyEnum = z.enum([
@@ -144,7 +148,7 @@ export const emoteRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const BASE_COST = 3;
+      const BASE_COST = EMOTE_BASE_CREDITS;
 
       const user = await ctx.prisma.user.findUnique({
         where: { id: ctx.session.user.id },
@@ -270,7 +274,7 @@ export const emoteRouter = createTRPCRouter({
     })
   )
   .mutation(async ({ ctx, input }) => {
-    const COST_PER_EMOTE = 3;
+    const COST_PER_EMOTE = EMOTE_EXPRESSION_CREDITS;
     const totalCost = input.emotes.length * COST_PER_EMOTE;
 
     const user = await ctx.prisma.user.findUnique({

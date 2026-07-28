@@ -1,3 +1,7 @@
+import {
+  EMOTE_BASE_CREDITS,
+  EMOTE_EXPRESSION_CREDITS,
+} from "~/lib/generationPricing";
 import { StudioEmoteFunnel } from "./StudioEmoteFunnel";
 
 export function StudioEmoteWorkspace() {
@@ -17,7 +21,8 @@ export function StudioEmoteWorkspace() {
           </p>
         </div>
         <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-400">
-          3 credits base · 3 per emote
+          {EMOTE_BASE_CREDITS} credits base · {EMOTE_EXPRESSION_CREDITS} per
+          emote
         </div>
       </div>
 

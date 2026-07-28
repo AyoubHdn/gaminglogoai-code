@@ -6,6 +6,7 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import Replicate from "replicate";
 import { env } from "~/env.mjs";
 import { b64Image as mockB64Image } from "~/data/b64Image"; // Used for MOCK_REPLICATE
+import { PFP_MODEL_CREDITS } from "~/lib/generationPricing";
 import AWS from "aws-sdk";
 import { syncUserToMautic } from "~/server/api/routers/mautic-utils";
 import { v4 as uuidv4 } from 'uuid';
@@ -151,11 +152,7 @@ export const faceLogoRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       console.log("FACELOGO_ROUTER: [1] generateFaceLogo mutation ENTERED. User:", ctx.session.user.id, "Model:", input.model);
-      const modelCosts: Record<typeof input.model, number> = {
-        "flux-kontext-pro": 4, // Example cost
-        "flux-kontext-max": 6, // Example cost
-      };
-      const creditsNeeded = modelCosts[input.model];
+      const creditsNeeded = PFP_MODEL_CREDITS[input.model];
       console.log("FACELOGO_ROUTER: [2] Credits needed:", creditsNeeded);
 
       const user = await ctx.prisma.user.findUnique({ where: { id: ctx.session.user.id } });

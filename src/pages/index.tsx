@@ -13,8 +13,8 @@ const HomePage: NextPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const gamingLogoLandingUrl = "/gaming-logo";
-  const pfpLandingUrl = "/ai-profile-picture-maker";
+  const gamingLogoLandingUrl = "/studio?tool=logo";
+  const pfpLandingUrl = "/studio?tool=pfp";
 
   const handleGoToGamingLogo = () => { void router.push(gamingLogoLandingUrl); };
   const handleGoToPfpMaker = () => { void router.push(pfpLandingUrl); };
@@ -63,7 +63,7 @@ const HomePage: NextPage = () => {
         name: "AI Gaming Logos",
         description: "Generate stunning text, icon, or gaming mascot logos for your clan, team, or channel.",
         icon: "/user-game-logo.webp",
-        href: "/gaming-logo-maker",
+        href: "/studio?tool=logo",
         cta: "Open Gaming Logo Maker",
         id: "link-gaming-logo"
       },
@@ -71,7 +71,7 @@ const HomePage: NextPage = () => {
         name: "AI Photo Avatars (PFP)",
         description: "Upload your photo and let our AI create a stylized gaming mascot or PFP of you!",
         icon: "/face-logo-icon.webp",
-        href: "/face-logo-generator",
+        href: "/studio?tool=pfp",
         cta: "Explore Photo Avatars",
         id: "link-face-logo"
       },
@@ -142,7 +142,7 @@ const HomePage: NextPage = () => {
               </ul>
 
               <Link
-                href="/twitch-banner-generator"
+                href="/studio?tool=banner"
                 className="inline-block px-8 py-3 bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg"
                 id="cta-home-twitch-banner"
               >
@@ -184,7 +184,7 @@ const HomePage: NextPage = () => {
               </ul>
 
               <Link
-                href="/twitch-panels-generator"
+                href="/studio?tool=panels"
                 className="inline-block px-8 py-3 bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg"
                 id="cta-home-twitch-panels"
               >
@@ -249,7 +249,7 @@ const HomePage: NextPage = () => {
               </ul>
 
               <Link
-                href="/twitch-emote-maker"
+                href="/studio?tool=emote"
                 className="inline-block px-8 py-3 bg-purple-600 dark:bg-cyan-500 text-white dark:text-slate-900 font-semibold rounded-lg hover:opacity-90 transition-opacity shadow-lg"
                 id="cta-home-twitch-emotes"
               >
@@ -299,7 +299,7 @@ const HomePage: NextPage = () => {
               </ul>
 
               <Link
-                href="/youtube-thumbnail-maker"
+                href="/studio?tool=thumbnail"
                 className="inline-block px-8 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors shadow-lg"
                 id="cta-home-youtube-thumbnail"
               >
@@ -349,8 +349,8 @@ const HomePage: NextPage = () => {
         { number: "03", title: "Describe Your Style", description: "Tell our AI about colors, themes, and desired aesthetics." },
         { number: "04", title: "Generate & Refine", description: "Let AI create options. Pick your favorite and download!" },
     ];
-    const handleGoToGamingLogo = () => { void router.push("/gaming-logo-maker"); };
-    const handleGoToFaceLogo = () => { void router.push("/face-logo-generator"); };
+    const handleGoToGamingLogo = () => { void router.push("/studio?tool=logo"); };
+    const handleGoToFaceLogo = () => { void router.push("/studio?tool=pfp"); };
     return (
       <section className="py-16 md:py-20 px-4 sm:px-8 bg-slate-100 dark:bg-slate-900">
         <div className="container mx-auto">
@@ -420,8 +420,8 @@ const HomePage: NextPage = () => {
   }
 
   function FinalCTASection() { // Generalize or provide two CTAs
-    const handleGoToGamingLogo = () => { void router.push("/gaming-logo-maker"); };
-    const handleGoToFaceLogo = () => { void router.push("/face-logo-generator"); };
+    const handleGoToGamingLogo = () => { void router.push("/studio?tool=logo"); };
+    const handleGoToFaceLogo = () => { void router.push("/studio?tool=pfp"); };
     return (
         <section className="py-16 md:py-24 px-4 sm:px-8 bg-gradient-to-r from-purple-700 via-indigo-800 to-purple-900 text-white">
             <div className="container mx-auto text-center">
@@ -501,7 +501,7 @@ function StyleShowcaseSection() {
       imageUrl: s3Style("/styles/s486e.webp"), // ** REPLACE with a great mascot logo **
       alt: "An AI-generated fierce dragon gaming mascot logo",
       ctaText: "Create Mascot Logo",
-      ctaLink: "/gaming-logo-maker", // Example of pre-filtering
+      ctaLink: "/studio?tool=logo", // Example of pre-filtering
     },
     {
       title: "Design a Professional Esports PFP",
@@ -509,7 +509,7 @@ function StyleShowcaseSection() {
       imageUrl: "/images/showcase/fortnite-pfp-4.webp", // ** REPLACE with a great emblem logo **
       alt: "A professional esports PFP for a gaming team created by AI",
       ctaText: "Open AI PFP Maker",
-      ctaLink: "/pfp-maker",
+      ctaLink: "/studio?tool=pfp",
     },
   ];
 

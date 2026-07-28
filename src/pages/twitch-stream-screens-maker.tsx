@@ -11,12 +11,13 @@ import {
   FaQuestionCircle,
   FaTv,
 } from "react-icons/fa";
+import { StudioPromo } from "~/component/StudioPromo";
 
 const TwitchStreamScreensLandingPage: NextPage = () => {
   const router = useRouter();
 
   const handleStart = () => {
-    void router.push("/twitch-stream-screens-generator");
+    void router.push("/studio?tool=screens");
   };
 
   const features = [
@@ -225,6 +226,11 @@ const TwitchStreamScreensLandingPage: NextPage = () => {
             </button>
           </div>
         </section>
+
+        <StudioPromo
+          toolName="Twitch Stream Screens Maker"
+          href="/studio?tool=screens"
+        />
 
         <section className="bg-white py-16 dark:bg-slate-900">
           <div className="container mx-auto px-4">

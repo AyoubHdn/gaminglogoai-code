@@ -77,7 +77,7 @@ const CommunityPage: NextPage = () => {
           <div className="text-center py-10 bg-white dark:bg-slate-800 rounded-lg shadow-md">
             <p className="text-xl text-slate-700 dark:text-slate-300 mb-4">The gallery is a bit quiet...</p>
             <p className="text-slate-600 dark:text-slate-400 mb-6">Be the first to showcase your epic gaming logo designs!</p>
-            <Link href="/gaming-logo-maker" className="px-6 py-3 font-semibold rounded-lg transition-all duration-300 ease-in-out
+            <Link href="/studio?tool=logo" className="px-6 py-3 font-semibold rounded-lg transition-all duration-300 ease-in-out
                             bg-purple-600 hover:bg-purple-700 text-white
                             dark:bg-cyan-500 dark:hover:bg-cyan-600 dark:text-slate-900">
               <a >

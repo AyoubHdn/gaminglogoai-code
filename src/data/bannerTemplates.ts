@@ -23,6 +23,8 @@ export interface BannerTemplate {
   credits: number;
 }
 
+export const BANNER_GENERATION_CREDITS = 10;
+
 type TwitchBannerTemplateSeed = Omit<BannerTemplate, "platform">;
 
 function templatePreview(templateId: string): string {
@@ -47,7 +49,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, strong focal center, layered motion streaks, premium streamer branding atmosphere",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
   {
     id: "minecraft-pixel-realms",
@@ -66,7 +68,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, open central horizon, layered block terrain depth, polished streamer channel branding",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
   {
     id: "apex-neon-squad",
@@ -85,7 +87,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, tactical depth, cinematic competitive mood, bold streamer identity framing",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
   {
     id: "call-of-duty-night-ops",
@@ -104,7 +106,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, high-contrast title placement, cinematic battlefield depth, professional channel branding layout",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
   {
     id: "counter-strike-urban-surge",
@@ -123,7 +125,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, balanced open text space, tournament-ready branding, dynamic but controlled action framing",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
   {
     id: "cyberpunk-neon-grid",
@@ -142,7 +144,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, sharp central hero space, high-end streamer branding, cinematic sci-fi atmosphere",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
   {
     id: "free-fire-ember-storm",
@@ -161,7 +163,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, explosive background motion, clear title hierarchy, premium streamer banner layout",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
   {
     id: "valorant-tactical-glow",
@@ -180,7 +182,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, disciplined title zone, strategic visual balance, polished professional streamer branding",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
   {
     id: "league-arcane-clash",
@@ -199,7 +201,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, epic central branding zone, layered mystical depth, streamer-ready competitive showcase",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
   {
     id: "gta-neon-heist",
@@ -218,7 +220,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, bold central wordmark area, city-lit depth, polished broadcast banner framing",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
   {
     id: "roblox-cartoon-party",
@@ -237,7 +239,7 @@ const TWITCH_BANNER_TEMPLATE_SEEDS: TwitchBannerTemplateSeed[] = [
       compositionHints:
         "wide horizontal composition, open readable headline zone, cheerful layered environment, polished family-friendly channel branding",
     },
-    credits: 10,
+    credits: BANNER_GENERATION_CREDITS,
   },
 ];
 

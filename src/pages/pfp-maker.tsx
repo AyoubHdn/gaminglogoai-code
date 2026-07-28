@@ -5,6 +5,7 @@ import Image from "next/image";
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback, ChangeEvent } from "react";
 import { Button } from "~/component/Button";
 import { FormGroup } from "~/component/FormGroup";
+import { StudioPromo } from "~/component/StudioPromo";
 import { api } from "~/utils/api";
 import { Input } from "~/component/Input";
 import { faceStylesData } from "~/data/faceStylesData"; // YOU NEED TO CREATE THIS FILE
@@ -473,6 +474,12 @@ useEffect(() => {
             Transform your photo into a custom gaming avatar. Upload your face, optionally add your gamer tag, pick a style, and let our AI create something legendary!
           </p>
         </header>
+
+        <StudioPromo
+          toolName="PFP Maker"
+          href="/studio?tool=pfp"
+          className="mt-0 mb-10"
+        />
 
         <div className="mb-12 p-6 border border-purple-500/30 dark:border-cyan-500/30 rounded-xl bg-slate-50 dark:bg-slate-800/70 text-sm leading-relaxed shadow-lg backdrop-blur-sm">
           <h2 className="text-2xl font-semibold mb-3 text-purple-700 dark:text-cyan-400">Get Started:</h2>

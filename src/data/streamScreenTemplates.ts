@@ -19,13 +19,15 @@ export interface StreamScreenTemplate {
   };
 }
 
+export const STREAM_SCREEN_GENERATION_CREDITS = 5;
+
 export const STREAM_SCREEN_TEMPLATES: StreamScreenTemplate[] = [
   {
     id: "twitch-cod-night-ops",
     platform: "twitch",
     name: "Night Ops",
     previewUrl: "/twitch/screens/night_ops_prv.webp",
-    credits: 4,
+    credits: STREAM_SCREEN_GENERATION_CREDITS,
     categories: {
       games: ["call-of-duty"],
       styles: ["monogram"],
@@ -46,7 +48,7 @@ export const STREAM_SCREEN_TEMPLATES: StreamScreenTemplate[] = [
     platform: "twitch",
     name: "Fortnite Hype",
     previewUrl: "/twitch/screens/fortnite_hype_prv.webp",
-    credits: 4,
+    credits: STREAM_SCREEN_GENERATION_CREDITS,
     categories: {
       games: ["fortnite"],
       styles: ["cartoon"],
@@ -67,7 +69,7 @@ export const STREAM_SCREEN_TEMPLATES: StreamScreenTemplate[] = [
     platform: "twitch",
     name: "Block Builder",
     previewUrl: "/twitch/screens/minecraft_build_prv.webp",
-    credits: 4,
+    credits: STREAM_SCREEN_GENERATION_CREDITS,
     categories: {
       games: ["minecraft"],
       styles: ["8-bit"],
@@ -88,7 +90,7 @@ export const STREAM_SCREEN_TEMPLATES: StreamScreenTemplate[] = [
     platform: "twitch",
     name: "Apex Squad",
     previewUrl: "/twitch/screens/apex_squad_prv.webp",
-    credits: 4,
+    credits: STREAM_SCREEN_GENERATION_CREDITS,
     categories: {
       games: ["apex-legends"],
       styles: ["esports"],
@@ -109,7 +111,7 @@ export const STREAM_SCREEN_TEMPLATES: StreamScreenTemplate[] = [
     platform: "twitch",
     name: "Cyberpunk Breakdown",
     previewUrl: "/twitch/screens/cyberpunk_breakdown_prv.webp",
-    credits: 4,
+    credits: STREAM_SCREEN_GENERATION_CREDITS,
     categories: {
       games: ["cyberpunk-2077"],
       styles: ["futuristic"],
@@ -130,7 +132,7 @@ export const STREAM_SCREEN_TEMPLATES: StreamScreenTemplate[] = [
     platform: "twitch",
     name: "Valorant Strike",
     previewUrl: "/twitch/screens/valorant_strike_prv.webp",
-    credits: 4,
+    credits: STREAM_SCREEN_GENERATION_CREDITS,
     categories: {
       games: ["valorant"],
       styles: ["competitive"],
@@ -151,7 +153,7 @@ export const STREAM_SCREEN_TEMPLATES: StreamScreenTemplate[] = [
     platform: "twitch",
     name: "Roblox Chaos",
     previewUrl: "/twitch/screens/roblox_chaos_prv.webp",
-    credits: 4,
+    credits: STREAM_SCREEN_GENERATION_CREDITS,
     categories: {
       games: ["roblox"],
       styles: ["cartoon"],
@@ -172,7 +174,7 @@ export const STREAM_SCREEN_TEMPLATES: StreamScreenTemplate[] = [
     platform: "twitch",
     name: "Arcane Champion",
     previewUrl: "/twitch/screens/arcane_champion_prv.webp",
-    credits: 4,
+    credits: STREAM_SCREEN_GENERATION_CREDITS,
     categories: {
       games: ["league-of-legends"],
       styles: ["fantasy"],

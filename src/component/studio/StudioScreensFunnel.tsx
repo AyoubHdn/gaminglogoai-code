@@ -22,6 +22,7 @@ import {
   type StreamScreenPreset,
 } from "~/data/streamScreenPlatforms";
 import {
+  STREAM_SCREEN_GENERATION_CREDITS,
   STREAM_SCREEN_TEMPLATES,
   type StreamScreenTemplate,
 } from "~/data/streamScreenTemplates";
@@ -824,7 +825,8 @@ export function StudioScreensFunnel({
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
 
   const generateScreens = api.streamScreenFunnel.generateBatch.useMutation();
-  const creditsPerScreen = selectedTemplate?.credits ?? 4;
+  const creditsPerScreen =
+    selectedTemplate?.credits ?? STREAM_SCREEN_GENERATION_CREDITS;
   const setCost = screens.length * creditsPerScreen;
 
   useEffect(() => {

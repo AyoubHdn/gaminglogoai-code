@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "~/component/Button";
+import { StudioPromo } from "~/component/StudioPromo";
 import { FaChevronRight, FaCubes, FaCamera, FaDownload } from "react-icons/fa"; // Example Icons
 
 // This array showcases your best photo-to-Minecraft-PFP transformations.
@@ -23,7 +24,7 @@ const MinecraftPfpMakerLandingPage: NextPage = () => {
   const handleStartDesigning = () => {
     // Navigate to your actual PFP maker tool page
     // Example with query param: void router.push("/pfp-tool?style=minecraft");
-    void router.push("/pfp-maker");
+    void router.push("/studio?tool=pfp&game=minecraft");
   };
 
   return (
@@ -120,6 +121,11 @@ const MinecraftPfpMakerLandingPage: NextPage = () => {
             <p className="mt-4 text-xs text-slate-400">Sign up to get a free credit and download your first PFP!</p>
           </div>
         </section>
+
+        <StudioPromo
+          toolName="Minecraft PFP Maker"
+          href="/studio?tool=pfp&game=minecraft"
+        />
 
         {/* Example Gallery Section */}
         <section className="py-16 md:py-20 bg-white dark:bg-slate-900">

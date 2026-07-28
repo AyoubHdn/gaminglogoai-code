@@ -20,7 +20,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
     {
       title: "Gaming Logo Maker",
       desc: "Create a professional Twitch logo or mascot for your channel.",
-      href: "/gaming-logo",
+      href: "/studio?tool=logo",
       cta: "Open Gaming Logo Maker",
       icon: <FaPalette className="h-8 w-8" />,
       img: "gaminglogo-ai-banner.webp",
@@ -28,7 +28,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
     {
       title: "AI Profile Picture (PFP)",
       desc: "Turn your photo into a clean avatar for Twitch, Discord, and socials.",
-      href: "/ai-profile-picture-maker",
+      href: "/studio?tool=pfp",
       cta: "Open AI PFP Maker",
       icon: <FaUserCircle className="h-8 w-8" />,
       img: "face-logo-image.webp",
@@ -36,7 +36,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
     {
       title: "Twitch Banner Maker",
       desc: "Use the guided banner flow to choose a template, personalize branding, and generate a Twitch-ready header.",
-      href: "/twitch-banner-maker",
+      href: "/studio?tool=banner",
       cta: "Open Twitch Banner Maker",
       icon: <FaImages className="h-8 w-8" />,
       img: "/twitch/banner/enhance-after.webp",
@@ -44,7 +44,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
     {
       title: "Twitch Panels Maker",
       desc: "Build full panel sets with platform, template, personalize, and result steps.",
-      href: "/twitch-panels-maker",
+      href: "/studio?tool=panels",
       cta: "Open Twitch Panels Maker",
       icon: <FaLayerGroup className="h-8 w-8" />,
       img: "/twitch/panels/roblox_chaos_prv.webp",
@@ -52,7 +52,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
     {
       title: "Twitch Stream Screens",
       desc: "Generate full stream-screen packs with presets, extra screen types, and custom scenes.",
-      href: "/twitch-stream-screens-maker",
+      href: "/studio?tool=screens",
       cta: "Open Stream Screens Maker",
       icon: <FaPlayCircle className="h-8 w-8" />,
       img: "/twitch/screens/brb-prv.webp",
@@ -60,7 +60,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
     {
       title: "Twitch Emote Maker",
       desc: "Turn your face into custom Twitch emotes with a base character plus full expression-set workflow.",
-      href: "/twitch-emote-maker",
+      href: "/studio?tool=emote",
       cta: "Open Twitch Emote Maker",
       icon: <FaSmile className="h-8 w-8" />,
       img: "/twitch/emotes/emotes-boy.webp",
@@ -204,7 +204,7 @@ const TwitchGraphicsLandingPage: NextPage = () => {
           </p>
 
           <Link
-            href="/gaming-logo"
+            href="/studio?tool=logo"
             className="inline-block rounded-lg bg-gradient-to-r from-purple-500 to-purple-700 px-10 py-4 text-xl font-bold text-white shadow-xl transition hover:scale-105"
           >
             Start Creating Twitch Graphics

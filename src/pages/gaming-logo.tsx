@@ -6,13 +6,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaChevronRight, FaPaintBrush, FaBolt, FaUsers, FaShieldAlt, FaMagic, FaQuestionCircle, FaGamepad, FaCogs, FaStar } from "react-icons/fa"; // Example Icons
+import { StudioPromo } from "~/component/StudioPromo";
 import { s3Style } from "~/utils/s3Paths";
 
 const GamingLogoLandingPage: NextPage = () => {
   const router = useRouter();
 
   const handleStartDesigning = () => {
-    void router.push("/gaming-logo-maker");
+    void router.push("/studio?tool=logo");
   };
 
   const features = [
@@ -159,6 +160,11 @@ const GamingLogoLandingPage: NextPage = () => {
             <p className="mt-4 text-xs text-slate-400">Get 1 free credit to start designing!</p>
           </div>
         </section>
+
+        <StudioPromo
+          toolName="Gaming Logo Maker"
+          href="/studio?tool=logo"
+        />
 
         <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
           <div className="container mx-auto px-4 sm:px-6">

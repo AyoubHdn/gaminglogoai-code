@@ -21,7 +21,7 @@ const GenreLogoPage: NextPage<GenreLogoPageServerProps> = ({ genre, images, slug
 
   // The click handler is defined here, on the client-side, using the router.
   const handleCtaClick = () => {
-    void router.push(`/gaming-logo-maker#${encodeURIComponent(genre)}`);
+    void router.push("/studio?tool=logo");
   };
 
   // STEP 3: CONSTRUCT the complex props (with JSX) inside the component

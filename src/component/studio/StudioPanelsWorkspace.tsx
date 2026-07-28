@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 
 import { PANEL_TEMPLATES, type PanelTemplate } from "~/data/panelTemplates";
+import { getPanelBatchCredits } from "~/lib/panelPricing";
 import { StudioPanelsFunnel } from "./StudioPanelsFunnel";
 
 export interface PanelsDeepLinkContext {
@@ -52,6 +53,9 @@ export function StudioPanelsWorkspace() {
       ),
     [router.query.game],
   );
+  const firstPanelCredits = getPanelBatchCredits(1);
+  const additionalPanelCredits =
+    getPanelBatchCredits(2) - firstPanelCredits;
 
   if (!router.isReady) {
     return (
@@ -80,7 +84,8 @@ export function StudioPanelsWorkspace() {
           </p>
         </div>
         <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-400">
-          2 credits first panel · 3 each after
+          {firstPanelCredits} credits first panel · {additionalPanelCredits} each
+          after
         </div>
       </div>
 

@@ -19,7 +19,7 @@ const CulturalLogoPage: NextPage<CulturalLogoPageServerProps> = ({ culture, imag
   const router = useRouter();
 
   const handleCtaClick = () => {
-    void router.push(`/gaming-logo-maker#${encodeURIComponent(culture)}`);
+    void router.push("/studio?tool=logo");
   };
 
   const templateProps: PseoLogoPageTemplateProps = {

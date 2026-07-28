@@ -26,12 +26,19 @@ import {
   type EmoteBaseStyleItem,
 } from "~/data/emoteBaseStyles";
 import { emotes, type EmoteKey } from "~/data/emotes";
-import { api } from "~/utils/api";
+import {
+  EMOTE_BASE_CREDITS,
+  EMOTE_EXPRESSION_CREDITS,
+} from "~/lib/generationPricing";
+import { S3_BASE } from "~/utils/s3Paths";
+import { api, type RouterOutputs } from "~/utils/api";
 
 type FunnelStep = 1 | 2 | 3 | 4;
+type BaseSourceMode = "generate" | "existing";
+type EmoteBaseIcon = RouterOutputs["icons"]["getEmoteBases"][number];
 
-const BASE_COST = 3;
-const EMOTE_COST = 3;
+const BASE_COST = EMOTE_BASE_CREDITS;
+const EMOTE_COST = EMOTE_EXPRESSION_CREDITS;
 const TWITCH_PREVIEW_SIZES = [112, 56, 28] as const;
 const TEXT_COLORS = [
   "#ffffff",
@@ -96,6 +103,10 @@ Centered face.
 Optimized for small emote sizes.
 No transparent or semi-transparent areas inside the face.
 `.trim();
+}
+
+function getIconImageUrl(icon: EmoteBaseIcon): string {
+  return `${S3_BASE}/${icon.imageKey ?? icon.id}`;
 }
 
 function FunnelProgress({ currentStep }: { currentStep: FunnelStep }) {
@@ -206,11 +217,13 @@ function UploadStep({
   isCompressing,
   onFileChange,
   onNext,
+  onUseExistingBase,
 }: {
   previewUrl: string | null;
   isCompressing: boolean;
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onNext: () => void;
+  onUseExistingBase: () => void;
 }) {
   return (
     <div className="mx-auto flex min-h-[500px] max-w-3xl flex-col justify-center">
@@ -265,7 +278,7 @@ function UploadStep({
         />
       </label>
 
-      <div className="mt-8 flex justify-center">
+      <div className="mt-8 flex flex-wrap justify-center gap-3">
         <Button
           type="button"
           onClick={onNext}
@@ -276,33 +289,55 @@ function UploadStep({
           Choose base style
           <FaArrowRight aria-hidden="true" />
         </Button>
+        <Button type="button" variant="secondary" onClick={onUseExistingBase}>
+          Use an existing base
+          <FaArrowRight aria-hidden="true" />
+        </Button>
       </div>
     </div>
   );
 }
 
 function StyleStep({
+  baseSourceMode,
   activeCategory,
   activeSubcategory,
   selectedStyle,
   baseImageUrl,
+  existingBases,
+  selectedExistingBaseId,
+  isLoggedIn,
+  isLoadingExistingBases,
+  hasExistingBasesError,
   isGenerating,
+  onBaseSourceModeChange,
   onCategoryChange,
   onSubcategoryChange,
   onStyleSelect,
+  onSelectExistingBase,
+  onSignIn,
   onGenerateBase,
   onDownloadBase,
   onBack,
   onNext,
 }: {
+  baseSourceMode: BaseSourceMode;
   activeCategory: string;
   activeSubcategory: string;
   selectedStyle: EmoteBaseStyleItem | null;
   baseImageUrl: string | null;
+  existingBases: EmoteBaseIcon[];
+  selectedExistingBaseId: string | null;
+  isLoggedIn: boolean;
+  isLoadingExistingBases: boolean;
+  hasExistingBasesError: boolean;
   isGenerating: boolean;
+  onBaseSourceModeChange: (mode: BaseSourceMode) => void;
   onCategoryChange: (category: string) => void;
   onSubcategoryChange: (subcategory: string) => void;
   onStyleSelect: (style: EmoteBaseStyleItem) => void;
+  onSelectExistingBase: (icon: EmoteBaseIcon) => void;
+  onSignIn: () => void;
   onGenerateBase: () => void;
   onDownloadBase: () => void;
   onBack: () => void;
@@ -318,171 +353,314 @@ function StyleStep({
     <div>
       <StepHeading
         step={2}
-        title="Choose and generate your base"
-        description="Pick the real art direction used by the existing emote tool, then create one neutral character for the whole expression set."
+        title="Choose your base emote"
+        description="Generate a new neutral character or reuse one you already created without paying the base fee again."
       />
 
-      <div className="mt-8 space-y-5">
-        <div
-          className="flex gap-2 overflow-x-auto pb-1"
-          aria-label="Emote style categories"
-        >
-          {categories.map((category) => (
-            <button
-              key={category}
-              type="button"
-              onClick={() => onCategoryChange(category)}
-              className={clsx(
-                "shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition",
-                activeCategory === category
-                  ? "border-purple-500 bg-purple-600 text-white"
-                  : "border-slate-700 bg-slate-950 text-slate-300 hover:border-purple-500/60 hover:text-white",
-              )}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-
-        <div
-          className="flex gap-2 overflow-x-auto pb-1"
-          aria-label={`${activeCategory} style groups`}
-        >
-          {subcategories.map((subcategory) => (
-            <button
-              key={subcategory}
-              type="button"
-              onClick={() => onSubcategoryChange(subcategory)}
-              className={clsx(
-                "shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition",
-                activeSubcategory === subcategory
-                  ? "border-cyan-500 bg-cyan-500/10 text-cyan-300"
-                  : "border-slate-700 bg-slate-900 text-slate-400 hover:border-slate-600 hover:text-slate-200",
-              )}
-            >
-              {subcategory}
-            </button>
-          ))}
-        </div>
-
-        <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 sm:p-5">
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <div>
-              <h4 className="font-semibold text-white">{activeSubcategory}</h4>
-              <p className="text-xs text-slate-500">
-                {styles.length} style{styles.length === 1 ? "" : "s"}
-              </p>
-            </div>
-            {selectedStyle && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-300">
-                <FaCheck aria-hidden="true" />
-                {selectedStyle.name}
-              </span>
+      <div
+        className="mx-auto mt-8 grid max-w-xl grid-cols-2 rounded-xl border border-slate-800 bg-slate-950 p-1"
+        role="tablist"
+        aria-label="Base emote source"
+      >
+        {(
+          [
+            ["generate", "Generate new base"],
+            ["existing", "Use existing base"],
+          ] as const
+        ).map(([mode, label]) => (
+          <button
+            key={mode}
+            type="button"
+            role="tab"
+            aria-selected={baseSourceMode === mode}
+            onClick={() => onBaseSourceModeChange(mode)}
+            className={clsx(
+              "rounded-lg px-3 py-2.5 text-sm font-semibold transition",
+              baseSourceMode === mode
+                ? "bg-purple-600 text-white shadow-sm"
+                : "text-slate-400 hover:bg-slate-900 hover:text-white",
             )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {styles.map((style) => {
-              const isSelected = selectedStyle?.id === style.id;
-
-              return (
-                <button
-                  key={`${activeCategory}-${activeSubcategory}-${style.id}`}
-                  type="button"
-                  onClick={() => onStyleSelect(style)}
-                  className={clsx(
-                    "group overflow-hidden rounded-xl border-2 bg-slate-900 text-left shadow-sm transition",
-                    isSelected
-                      ? "border-cyan-400 ring-4 ring-cyan-400/10"
-                      : "border-slate-800 hover:-translate-y-0.5 hover:border-purple-500",
-                  )}
-                  aria-pressed={isSelected}
-                >
-                  <div className="relative aspect-square">
-                    <Image
-                      src={style.preview}
-                      alt={`${style.name} emote base style`}
-                      fill
-                      sizes="(max-width: 640px) 45vw, 180px"
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <div className="flex items-center justify-between gap-2 border-t border-slate-800 p-2.5">
-                    <span className="truncate text-xs font-semibold text-slate-200">
-                      {style.name}
-                    </span>
-                    {isSelected && (
-                      <FaCheck
-                        className="shrink-0 text-cyan-400"
-                        aria-hidden="true"
-                      />
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      <div className="mx-auto mt-8 max-w-3xl rounded-xl border border-slate-800 bg-slate-950/60 p-5">
-        <div className="flex flex-col items-center gap-5 sm:flex-row sm:justify-between">
-          <div className="flex items-center gap-4">
+      {baseSourceMode === "generate" ? (
+        <>
+          <div className="mt-8 space-y-5">
             <div
-              className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl border border-slate-700"
-              style={baseImageUrl ? CHECKERBOARD_STYLE : undefined}
+              className="flex gap-2 overflow-x-auto pb-1"
+              aria-label="Emote style categories"
             >
-              {baseImageUrl ? (
-                <img
-                  src={baseImageUrl}
-                  alt="Generated transparent base emote"
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center px-3 text-center text-xs text-slate-600">
-                  Base preview
-                </div>
-              )}
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => onCategoryChange(category)}
+                  className={clsx(
+                    "shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition",
+                    activeCategory === category
+                      ? "border-purple-500 bg-purple-600 text-white"
+                      : "border-slate-700 bg-slate-950 text-slate-300 hover:border-purple-500/60 hover:text-white",
+                  )}
+                >
+                  {category}
+                </button>
+              ))}
             </div>
-            <div>
-              <h4 className="font-bold text-white">
-                {baseImageUrl ? "Base emote ready" : "Generate your base emote"}
-              </h4>
-              <p className="mt-1 max-w-sm text-sm leading-6 text-slate-400">
-                This creates the consistent character used by every selected
-                expression.
-              </p>
-              <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-cyan-300">
-                <FaCoins aria-hidden="true" />
-                {BASE_COST} credits
-              </span>
+
+            <div
+              className="flex gap-2 overflow-x-auto pb-1"
+              aria-label={`${activeCategory} style groups`}
+            >
+              {subcategories.map((subcategory) => (
+                <button
+                  key={subcategory}
+                  type="button"
+                  onClick={() => onSubcategoryChange(subcategory)}
+                  className={clsx(
+                    "shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition",
+                    activeSubcategory === subcategory
+                      ? "border-cyan-500 bg-cyan-500/10 text-cyan-300"
+                      : "border-slate-700 bg-slate-900 text-slate-400 hover:border-slate-600 hover:text-slate-200",
+                  )}
+                >
+                  {subcategory}
+                </button>
+              ))}
+            </div>
+
+            <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <div>
+                  <h4 className="font-semibold text-white">
+                    {activeSubcategory}
+                  </h4>
+                  <p className="text-xs text-slate-500">
+                    {styles.length} style{styles.length === 1 ? "" : "s"}
+                  </p>
+                </div>
+                {selectedStyle && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-300">
+                    <FaCheck aria-hidden="true" />
+                    {selectedStyle.name}
+                  </span>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                {styles.map((style) => {
+                  const isSelected = selectedStyle?.id === style.id;
+
+                  return (
+                    <button
+                      key={`${activeCategory}-${activeSubcategory}-${style.id}`}
+                      type="button"
+                      onClick={() => onStyleSelect(style)}
+                      className={clsx(
+                        "group overflow-hidden rounded-xl border-2 bg-slate-900 text-left shadow-sm transition",
+                        isSelected
+                          ? "border-cyan-400 ring-4 ring-cyan-400/10"
+                          : "border-slate-800 hover:-translate-y-0.5 hover:border-purple-500",
+                      )}
+                      aria-pressed={isSelected}
+                    >
+                      <div className="relative aspect-square">
+                        <Image
+                          src={style.preview}
+                          alt={`${style.name} emote base style`}
+                          fill
+                          sizes="(max-width: 640px) 45vw, 180px"
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
+                      <div className="flex items-center justify-between gap-2 border-t border-slate-800 p-2.5">
+                        <span className="truncate text-xs font-semibold text-slate-200">
+                          {style.name}
+                        </span>
+                        {isSelected && (
+                          <FaCheck
+                            className="shrink-0 text-cyan-400"
+                            aria-hidden="true"
+                          />
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
-          <div className="flex flex-wrap justify-center gap-2 sm:justify-end">
-            {baseImageUrl && (
+
+          <div className="mx-auto mt-8 max-w-3xl rounded-xl border border-slate-800 bg-slate-950/60 p-5">
+            <div className="flex flex-col items-center gap-5 sm:flex-row sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div
+                  className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl border border-slate-700"
+                  style={baseImageUrl ? CHECKERBOARD_STYLE : undefined}
+                >
+                  {baseImageUrl ? (
+                    <img
+                      src={baseImageUrl}
+                      alt="Generated transparent base emote"
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center px-3 text-center text-xs text-slate-600">
+                      Base preview
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <h4 className="font-bold text-white">
+                    {baseImageUrl
+                      ? "Base emote ready"
+                      : "Generate your base emote"}
+                  </h4>
+                  <p className="mt-1 max-w-sm text-sm leading-6 text-slate-400">
+                    This creates the consistent character used by every selected
+                    expression.
+                  </p>
+                  <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-cyan-300">
+                    <FaCoins aria-hidden="true" />
+                    {BASE_COST} credits
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-wrap justify-center gap-2 sm:justify-end">
+                {baseImageUrl && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={onDownloadBase}
+                    disabled={isGenerating}
+                  >
+                    <FaDownload aria-hidden="true" />
+                    Base PNG
+                  </Button>
+                )}
+                <Button
+                  type="button"
+                  onClick={onGenerateBase}
+                  isLoading={isGenerating}
+                  className="min-w-[176px]"
+                >
+                  {baseImageUrl && !isGenerating && (
+                    <FaRedo aria-hidden="true" />
+                  )}
+                  {baseImageUrl ? "Generate base again" : "Generate base"}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="mx-auto mt-8 max-w-5xl rounded-xl border border-slate-800 bg-slate-950/60 p-4 sm:p-5">
+          <div className="mb-5">
+            <h4 className="font-semibold text-white">Your base emotes</h4>
+            <p className="mt-1 text-sm leading-6 text-slate-400">
+              Select a previous transparent base to continue directly to
+              expressions. Reusing it costs 0 base credits.
+            </p>
+          </div>
+
+          {!isLoggedIn ? (
+            <div className="rounded-xl border border-slate-800 bg-slate-900 p-6 text-center">
+              <p className="text-sm text-slate-300">
+                Sign in to browse base emotes saved in your collection.
+              </p>
+              <Button type="button" onClick={onSignIn} className="mt-4">
+                Sign in to browse bases
+              </Button>
+            </div>
+          ) : isLoadingExistingBases ? (
+            <div className="flex min-h-40 items-center justify-center">
+              <div className="text-center">
+                <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-slate-700 border-t-purple-500" />
+                <p className="mt-3 text-sm text-slate-400">
+                  Loading your base emotes…
+                </p>
+              </div>
+            </div>
+          ) : hasExistingBasesError ? (
+            <div
+              className="rounded-xl border border-red-500/30 bg-red-500/10 p-5 text-sm text-red-200"
+              role="alert"
+            >
+              We couldn&apos;t load your saved base emotes. Please try again.
+            </div>
+          ) : existingBases.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-slate-700 px-5 py-10 text-center">
+              <p className="font-semibold text-slate-200">
+                No previous base emotes yet
+              </p>
+              <p className="mt-1 text-sm text-slate-500">
+                Generate your first base once, and it will appear here for
+                future expression packs.
+              </p>
               <Button
                 type="button"
                 variant="secondary"
-                onClick={onDownloadBase}
-                disabled={isGenerating}
+                onClick={() => onBaseSourceModeChange("generate")}
+                className="mt-4"
               >
-                <FaDownload aria-hidden="true" />
-                Base PNG
+                Generate a new base
               </Button>
-            )}
-            <Button
-              type="button"
-              onClick={onGenerateBase}
-              isLoading={isGenerating}
-              className="min-w-[176px]"
-            >
-              {baseImageUrl && !isGenerating && <FaRedo aria-hidden="true" />}
-              {baseImageUrl ? "Generate base again" : "Generate base"}
-            </Button>
-          </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              {existingBases.map((icon) => {
+                const isSelected = selectedExistingBaseId === icon.id;
+
+                return (
+                  <button
+                    key={icon.id}
+                    type="button"
+                    onClick={() => onSelectExistingBase(icon)}
+                    className={clsx(
+                      "group overflow-hidden rounded-xl border-2 bg-slate-900 text-left shadow-sm transition",
+                      isSelected
+                        ? "border-cyan-400 ring-4 ring-cyan-400/10"
+                        : "border-slate-800 hover:-translate-y-0.5 hover:border-purple-500",
+                    )}
+                    aria-pressed={isSelected}
+                  >
+                    <div
+                      className="relative aspect-square overflow-hidden"
+                      style={CHECKERBOARD_STYLE}
+                    >
+                      <img
+                        src={getIconImageUrl(icon)}
+                        alt="Saved transparent base emote"
+                        className="h-full w-full object-contain"
+                        loading="lazy"
+                      />
+                      {isSelected && (
+                        <span className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-cyan-400 text-slate-950 shadow-md">
+                          <FaCheck aria-hidden="true" />
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between gap-2 border-t border-slate-800 p-2.5">
+                      <span className="truncate text-xs font-semibold text-slate-200">
+                        Base emote
+                      </span>
+                      <span className="shrink-0 text-[10px] text-slate-500">
+                        {new Intl.DateTimeFormat("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        }).format(new Date(icon.createdAt))}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
       <StepNavigation
         onBack={onBack}
@@ -538,10 +716,13 @@ function ExpressionsStep({
           </span>
         </div>
 
-        <div className="mt-4 max-h-[360px] overflow-y-auto rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-          <div className="flex flex-wrap gap-2.5">
+        <div className="mt-4 max-h-[560px] overflow-y-auto rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5">
             {emotes.map((emote) => {
               const isSelected = selectedEmotes.includes(emote.key);
+              const previewSrc = `/twitch/emotes/${
+                withText ? "withtext" : "notext"
+              }/${emote.example}`;
 
               return (
                 <button
@@ -549,24 +730,39 @@ function ExpressionsStep({
                   type="button"
                   onClick={() => onToggleEmote(emote.key)}
                   className={clsx(
-                    "inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition",
+                    "group overflow-hidden rounded-xl border-2 bg-slate-900 text-left shadow-sm transition",
                     isSelected
-                      ? "border-purple-500 bg-purple-600 text-white shadow-sm"
-                      : "border-slate-700 bg-slate-900 text-slate-300 hover:border-purple-500/70 hover:text-white",
+                      ? "border-cyan-400 ring-4 ring-cyan-400/10"
+                      : "border-slate-800 hover:-translate-y-0.5 hover:border-purple-500 hover:shadow-lg",
                   )}
                   aria-pressed={isSelected}
+                  aria-label={`${isSelected ? "Remove" : "Add"} ${emote.label} expression`}
                 >
+                  <span className="relative block aspect-square overflow-hidden bg-slate-950">
+                    <Image
+                      src={previewSrc}
+                      alt={`${emote.label} emote expression preview`}
+                      fill
+                      sizes="(max-width: 640px) 45vw, (max-width: 1024px) 22vw, 160px"
+                      className="object-cover transition duration-300 group-hover:scale-105"
+                      unoptimized
+                    />
+                    {isSelected && (
+                      <span className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-cyan-400 text-slate-950 shadow-lg ring-2 ring-slate-950/60">
+                        <FaCheck aria-hidden="true" />
+                      </span>
+                    )}
+                  </span>
                   <span
                     className={clsx(
-                      "flex h-4 w-4 items-center justify-center rounded-full border text-[8px]",
+                      "flex min-h-11 items-center justify-center px-2 py-2 text-center text-sm font-bold transition",
                       isSelected
-                        ? "border-white/70 bg-white/15"
-                        : "border-slate-600",
+                        ? "bg-cyan-400/10 text-cyan-300"
+                        : "text-slate-300 group-hover:text-white",
                     )}
                   >
-                    {isSelected && <FaCheck aria-hidden="true" />}
+                    {emote.label}
                   </span>
-                  {emote.label}
                 </button>
               );
             })}
@@ -751,9 +947,11 @@ function EmoteResults({
 }
 
 export function StudioEmoteFunnel() {
-  const { data: session } = useSession();
-  const isLoggedIn = Boolean(session);
+  const { status: sessionStatus } = useSession();
+  const isLoggedIn = sessionStatus === "authenticated";
   const [currentStep, setCurrentStep] = useState<FunnelStep>(1);
+  const [baseSourceMode, setBaseSourceMode] =
+    useState<BaseSourceMode>("generate");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isCompressing, setIsCompressing] = useState(false);
@@ -763,6 +961,9 @@ export function StudioEmoteFunnel() {
     firstStyle,
   );
   const [baseImageUrl, setBaseImageUrl] = useState<string | null>(null);
+  const [selectedExistingBaseId, setSelectedExistingBaseId] = useState<
+    string | null
+  >(null);
   const [selectedEmotes, setSelectedEmotes] = useState<EmoteKey[]>([]);
   const [withText, setWithText] = useState(true);
   const [textColor, setTextColor] = useState<string | null>(null);
@@ -773,6 +974,9 @@ export function StudioEmoteFunnel() {
 
   const generateBaseImage = api.emoteBase.generateBaseImage.useMutation();
   const generateEmotes = api.emoteBase.generateEmotes.useMutation();
+  const existingBasesQuery = api.icons.getEmoteBases.useQuery(undefined, {
+    enabled: isLoggedIn && currentStep === 2 && baseSourceMode === "existing",
+  });
   const finalSetCost = selectedEmotes.length * EMOTE_COST;
 
   const selectedEmoteLabels = useMemo(
@@ -793,6 +997,7 @@ export function StudioEmoteFunnel() {
 
   const resetGeneratedState = () => {
     setBaseImageUrl(null);
+    setSelectedExistingBaseId(null);
     setGeneratedEmotes([]);
   };
 
@@ -821,6 +1026,7 @@ export function StudioEmoteFunnel() {
       }
       setUploadedFile(compressed);
       setPreviewUrl(URL.createObjectURL(compressed));
+      setBaseSourceMode("generate");
       resetGeneratedState();
       setSelectedEmotes([]);
     } catch (compressionError) {
@@ -852,6 +1058,21 @@ export function StudioEmoteFunnel() {
   const handleStyleSelect = (style: EmoteBaseStyleItem) => {
     setSelectedStyle(style);
     resetGeneratedState();
+  };
+
+  const handleBaseSourceModeChange = (mode: BaseSourceMode) => {
+    setError("");
+    setBaseSourceMode(mode);
+    resetGeneratedState();
+  };
+
+  const handleSelectExistingBase = (icon: EmoteBaseIcon) => {
+    setError("");
+    setBaseSourceMode("existing");
+    setSelectedExistingBaseId(icon.id);
+    setBaseImageUrl(getIconImageUrl(icon));
+    setGeneratedEmotes([]);
+    setCurrentStep(3);
   };
 
   const handleGenerateBase = async () => {
@@ -986,7 +1207,10 @@ export function StudioEmoteFunnel() {
               {[
                 {
                   label: "Base style",
-                  value: selectedStyle?.name ?? "Not selected",
+                  value:
+                    baseSourceMode === "existing"
+                      ? "Saved base"
+                      : (selectedStyle?.name ?? "Not selected"),
                 },
                 {
                   label: "Expressions",
@@ -1123,7 +1347,15 @@ export function StudioEmoteFunnel() {
           previewUrl={previewUrl}
           isCompressing={isCompressing}
           onFileChange={(event) => void handleFileChange(event)}
-          onNext={() => setCurrentStep(2)}
+          onNext={() => {
+            setBaseSourceMode("generate");
+            setCurrentStep(2);
+          }}
+          onUseExistingBase={() => {
+            setBaseSourceMode("existing");
+            resetGeneratedState();
+            setCurrentStep(2);
+          }}
         />
       );
     }
@@ -1131,14 +1363,32 @@ export function StudioEmoteFunnel() {
     if (currentStep === 2) {
       return (
         <StyleStep
+          baseSourceMode={baseSourceMode}
           activeCategory={activeCategory}
           activeSubcategory={activeSubcategory}
           selectedStyle={selectedStyle}
           baseImageUrl={baseImageUrl}
+          existingBases={existingBasesQuery.data ?? []}
+          selectedExistingBaseId={selectedExistingBaseId}
+          isLoggedIn={isLoggedIn}
+          isLoadingExistingBases={
+            sessionStatus === "loading" || existingBasesQuery.isLoading
+          }
+          hasExistingBasesError={existingBasesQuery.isError}
           isGenerating={generateBaseImage.isLoading}
+          onBaseSourceModeChange={handleBaseSourceModeChange}
           onCategoryChange={handleCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}
           onStyleSelect={handleStyleSelect}
+          onSelectExistingBase={handleSelectExistingBase}
+          onSignIn={() => {
+            void signIn("google", {
+              callbackUrl:
+                typeof window !== "undefined"
+                  ? window.location.href
+                  : "/studio?tool=emote",
+            });
+          }}
           onGenerateBase={() => void handleGenerateBase()}
           onDownloadBase={() => {
             if (baseImageUrl) {

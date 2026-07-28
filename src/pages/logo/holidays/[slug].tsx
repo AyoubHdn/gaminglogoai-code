@@ -20,7 +20,7 @@ const HolidayLogoPage: NextPage<HolidayLogoPageServerProps> = ({ holiday, images
 
   const handleCtaClick = () => {
     // Use the 'theme' param as it's a good fit for seasonal events
-    void router.push(`/gaming-logo-maker#${encodeURIComponent(holiday)}`);
+    void router.push("/studio?tool=logo");
   };
 
   // Construct the full props for the template here (client-side)

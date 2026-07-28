@@ -5,6 +5,7 @@ import Image from "next/image"; // Using Image directly from next/image
 import React, { useState, useEffect, useRef, useLayoutEffect, useCallback } from "react";
 import { Button } from "~/component/Button";
 import { FormGroup } from "~/component/FormGroup";
+import { StudioPromo } from "~/component/StudioPromo";
 import { api } from "~/utils/api";
 import { Input } from "~/component/Input";
 import { gamerStylesData } from "~/data/gamerStylesData"; // Ensure this path and data structure are correct
@@ -346,6 +347,12 @@ useEffect(() => {
                 Craft legendary logos for your team, stream, or gamer profile. Our AI makes it fast, easy, and totally epic. No design skills needed!
             </p>
         </header>
+
+        <StudioPromo
+          toolName="Gaming Logo Maker"
+          href="/studio?tool=logo"
+          className="mt-0 mb-10"
+        />
 
         <div className="mb-12 p-6 border border-purple-500/30 dark:border-cyan-500/30 rounded-xl bg-slate-50 dark:bg-slate-800/70 text-sm leading-relaxed shadow-lg backdrop-blur-sm">
           <h2 className="text-2xl font-semibold mb-3 text-purple-700 dark:text-cyan-400">How to Forge Your Logo:</h2>

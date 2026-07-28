@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import imageCompression from "browser-image-compression";
 import Image from "next/image";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
@@ -17,7 +18,9 @@ import {
 import { Button } from "~/component/Button";
 import { useFunnel } from "~/component/thumbnailFunnel/FunnelContext";
 import { THUMBNAIL_PLATFORMS } from "~/data/thumbnailPlatforms";
+import { getReferenceAwareGenerationCredits } from "~/lib/generationPricing";
 import {
+  THUMBNAIL_GENERATION_CREDITS,
   THUMBNAIL_TEMPLATES,
   type ThumbnailTemplate,
 } from "~/data/thumbnailTemplates";
@@ -30,6 +33,7 @@ type StudioThumbnailStep = "step0" | "step1" | "step2" | "step3";
 type UserIcon = RouterOutputs["icons"]["getIcons"][number];
 
 const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
+const MAX_REFERENCE_DIMENSION = 1024;
 const TITLE_LIMIT = 70;
 const SUBTITLE_LIMIT = 50;
 const REFINEMENT_PROMPT_LIMIT = 500;
@@ -326,7 +330,7 @@ function TemplateCard({
           </div>
           <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-cyan-500/10 px-2 py-1 text-[10px] font-bold text-cyan-300">
             <FaCoins aria-hidden="true" />
-            {template.credits}
+            from {template.credits}
           </span>
         </div>
       </div>
@@ -841,7 +845,12 @@ export function StudioThumbnailFunnel({
   const canvas = THUMBNAIL_PLATFORMS.youtube.surface.canvas;
   const imageWidth = canvas.width;
   const imageHeight = canvas.height;
-  const generationCost = selectedTemplate?.credits ?? 10;
+  const generationCost = selectedTemplate
+    ? getReferenceAwareGenerationCredits(
+        selectedTemplate.credits,
+        referenceSource !== "none" && Boolean(referenceUrl),
+      )
+    : THUMBNAIL_GENERATION_CREDITS;
 
   useEffect(() => {
     if (!hasHydrated || !requestedContext) {
@@ -897,21 +906,27 @@ export function StudioThumbnailFunnel({
     setReferenceSource("upload");
     resetResultState();
 
-    if (localPreviewUrl) {
-      URL.revokeObjectURL(localPreviewUrl);
-    }
-    setLocalPreviewUrl(URL.createObjectURL(file));
-
     try {
+      const resizedFile = await imageCompression(file, {
+        maxWidthOrHeight: MAX_REFERENCE_DIMENSION,
+        useWebWorker: true,
+        fileType: file.type,
+      });
+
+      if (localPreviewUrl) {
+        URL.revokeObjectURL(localPreviewUrl);
+      }
+      setLocalPreviewUrl(URL.createObjectURL(resizedFile));
+
       const presigned = await createUploadUrl.mutateAsync({
-        filename: file.name,
-        filetype: file.type,
+        filename: resizedFile.name,
+        filetype: resizedFile.type,
       });
       const formData = new FormData();
       Object.entries(presigned.fields).forEach(([key, value]) => {
         formData.append(key, value);
       });
-      formData.append("file", file);
+      formData.append("file", resizedFile);
 
       const response = await fetch(presigned.url, {
         method: "POST",
