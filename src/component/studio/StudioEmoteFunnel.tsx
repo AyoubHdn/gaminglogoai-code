@@ -21,6 +21,7 @@ import {
 } from "react-icons/fa";
 
 import { Button } from "~/component/Button";
+import { StudioWatermarkNotice } from "~/component/studio/StudioWatermarkNotice";
 import {
   emoteBaseStyles,
   type EmoteBaseStyleItem,
@@ -30,6 +31,7 @@ import {
   EMOTE_BASE_CREDITS,
   EMOTE_EXPRESSION_CREDITS,
 } from "~/lib/generationPricing";
+import { buildStudioDownloadFilename } from "~/lib/studioDownload";
 import { S3_BASE } from "~/utils/s3Paths";
 import { api, type RouterOutputs } from "~/utils/api";
 
@@ -887,6 +889,8 @@ function EmoteResults({
         </p>
       </div>
 
+      <StudioWatermarkNotice />
+
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {results.map(({ emote, imageUrl }) => (
           <article
@@ -947,7 +951,7 @@ function EmoteResults({
 }
 
 export function StudioEmoteFunnel() {
-  const { status: sessionStatus } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const isLoggedIn = sessionStatus === "authenticated";
   const [currentStep, setCurrentStep] = useState<FunnelStep>(1);
   const [baseSourceMode, setBaseSourceMode] =
@@ -1168,7 +1172,10 @@ export function StudioEmoteFunnel() {
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = blobUrl;
-      link.download = `${emote.toLowerCase()}_twitch_emote.png`;
+      link.download = buildStudioDownloadFilename({
+        text: `${session?.user?.name ?? "creator"}-${emote}`,
+        toolType: emote === "emote-base" ? "twitch-emote-base" : "twitch-emote",
+      });
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

@@ -29,8 +29,10 @@ import {
 
 import { Button } from "~/component/Button";
 import { SharePopup } from "~/component/SharePopup";
+import { StudioWatermarkNotice } from "~/component/studio/StudioWatermarkNotice";
 import { faceStylesData } from "~/data/faceStylesData";
 import { PFP_MODEL_CREDITS } from "~/lib/generationPricing";
+import { buildStudioDownloadFilename } from "~/lib/studioDownload";
 import { api } from "~/utils/api";
 
 type FunnelStep = 1 | 2 | 3 | 4;
@@ -718,6 +720,8 @@ function ResultsGrid({
         </Link>
       </div>
 
+      <StudioWatermarkNotice />
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {images.map(({ imageUrl }, index) => (
           <article
@@ -978,32 +982,14 @@ export function StudioPfpFunnel({
       }
 
       const blob = await response.blob();
-      const imageBitmap = await createImageBitmap(blob);
-      const canvas = document.createElement("canvas");
-      canvas.width = imageBitmap.width;
-      canvas.height = imageBitmap.height;
-
-      const context = canvas.getContext("2d");
-      if (!context) {
-        throw new Error("Canvas is unavailable");
-      }
-
-      context.drawImage(imageBitmap, 0, 0);
-      const pngBlob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/png"),
-      );
-
-      if (!pngBlob) {
-        throw new Error("Failed to prepare PNG download.");
-      }
-
-      const blobUrl = window.URL.createObjectURL(pngBlob);
+      const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      const safeName =
-        state.inputText.trim().replace(/[^a-z0-9_]+/gi, "_") || "gaming-pfp";
 
       link.href = blobUrl;
-      link.download = `${safeName}_${state.selectedModel ?? "pfp"}_gaminglogoai.png`;
+      link.download = buildStudioDownloadFilename({
+        text: state.inputText || session?.user?.name,
+        toolType: "gaming-pfp",
+      });
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

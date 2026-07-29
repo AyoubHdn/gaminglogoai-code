@@ -34,7 +34,23 @@
       "Bash(git checkout *)",
       "Bash(node -e ' *)",
       "Bash(git --no-pager diff -- src/)",
-      "Bash(git branch *)"
+      "Bash(git branch *)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(cd \"C:/Users/ULTRAPC/Documents/GitHub/SaaS/gaminglogoai-code\")",
+      "Bash(PYTHONIOENCODING=utf-8 python __TRACKED_VAR__/drift_compare.py https://gaminglogoai.com --json)",
+      "Bash(head -c 300 seo-logs/2026-07-29-postlaunch/drift_err.txt)",
+      "Bash(echo \"---\")",
+      "Bash(tee seo-logs/2026-07-29-postlaunch/drift.txt)",
+      "WebSearch",
+      "Bash(echo \"=== OG / TWITTER / IMAGE meta ===\")",
+      "Read(//tmp/**)",
+      "Bash(echo)",
+      "Bash(echo \"=== <img> tags \\(src + alt\\) ===\")",
+      "Bash(curl -s \"https://gaminglogoai.com/free-fire-logos\")",
+      "Bash(curl -s -o /dev/null -w \"status=%{http_code}\\\\n\" \"https://gaminglogoai.com/studio?tool=logo&game=free%20fire\")",
+      "Bash(xargs echo \"commits ahead of main:\")",
+      "Bash(curl *)",
+      "Bash(git fetch *)"
     ]
   }
 }

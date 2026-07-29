@@ -15,6 +15,7 @@ import {
 } from "react-icons/fa";
 
 import { Button } from "~/component/Button";
+import { StudioWatermarkNotice } from "~/component/studio/StudioWatermarkNotice";
 import {
   PANEL_PLATFORMS,
   type PanelShapeId,
@@ -23,6 +24,7 @@ import {
 } from "~/data/panelPlatforms";
 import { PANEL_TEMPLATES, type PanelTemplate } from "~/data/panelTemplates";
 import { getPanelBatchCredits } from "~/lib/panelPricing";
+import { buildStudioDownloadFilename } from "~/lib/studioDownload";
 import { api } from "~/utils/api";
 import { type PanelsDeepLinkContext } from "./StudioPanelsWorkspace";
 
@@ -770,6 +772,8 @@ function PanelResults({
         </Button>
       </div>
 
+      <StudioWatermarkNotice />
+
       <div className="mt-6 space-y-4">
         {panels.map((panel, index) => {
           const generated = results.find(
@@ -987,7 +991,10 @@ export function StudioPanelsFunnel({
     const blobUrl = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = blobUrl;
-    link.download = `${panel.title.replace(/[^a-z0-9_-]/gi, "_")}_twitch_panel.png`;
+    link.download = buildStudioDownloadFilename({
+      text: panel.title || session?.user?.name,
+      toolType: "twitch-panel",
+    });
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

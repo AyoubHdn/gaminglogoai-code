@@ -17,18 +17,53 @@ import {
   EMOTE_EXPRESSION_CREDITS,
 } from "~/lib/generationPricing";
 import sharp from "sharp";
+import {
+  finalizeGeneratedImage,
+  isFreeGamingPlan,
+} from "~/server/imageWatermark";
 
 const EmoteKeyEnum = z.enum([
-  "GG", "LOL", "RIP", "WOW", "HYPE",
-  "HI", "HEY", "YO", "SUP", "WELCOME",
-  "OMG", "WTF", "REALLY", "YIKES",
-  "POG", "PROGGERS", "OOP", "OOF",
-  "EZ", "EASY", "DUB", "TOP1", "1HP",
-  "CRACK", "TOXIC", "REKT", "FAIL",
-  "THANKS", "BYE", "NOOO", "YESSS",
-  "LEGEND", "POWER", "DEAD", "200IQ",
-  "GOTEM", "GOODVIBES", "CLIPTHAT",
-  "RAID", "BAN", "LIT"
+  "GG",
+  "LOL",
+  "RIP",
+  "WOW",
+  "HYPE",
+  "HI",
+  "HEY",
+  "YO",
+  "SUP",
+  "WELCOME",
+  "OMG",
+  "WTF",
+  "REALLY",
+  "YIKES",
+  "POG",
+  "PROGGERS",
+  "OOP",
+  "OOF",
+  "EZ",
+  "EASY",
+  "DUB",
+  "TOP1",
+  "1HP",
+  "CRACK",
+  "TOXIC",
+  "REKT",
+  "FAIL",
+  "THANKS",
+  "BYE",
+  "NOOO",
+  "YESSS",
+  "LEGEND",
+  "POWER",
+  "DEAD",
+  "200IQ",
+  "GOTEM",
+  "GOODVIBES",
+  "CLIPTHAT",
+  "RAID",
+  "BAN",
+  "LIT",
 ]);
 
 /* ------------------------------------------------------------------ */
@@ -91,16 +126,26 @@ async function fetchAndEncodeImage(url: string): Promise<string> {
 
 async function uploadBase64ToS3(
   base64: string,
-  keyPrefix: string
+  keyPrefix: string,
+  finalization?: {
+    shouldWatermark: boolean;
+    toolType: string;
+  },
 ): Promise<{ key: string; url: string }> {
   const key = `${keyPrefix}/${uuidv4()}.png`;
+  const sourceBuffer = Buffer.from(base64, "base64");
+  const finalImageBuffer = finalization
+    ? await finalizeGeneratedImage(sourceBuffer, finalization)
+    : sourceBuffer;
 
-  await s3.putObject({
-    Bucket: BUCKET_NAME,
-    Key: key,
-    Body: Buffer.from(base64, "base64"),
-    ContentType: "image/png",
-  }).promise();
+  await s3
+    .putObject({
+      Bucket: BUCKET_NAME,
+      Key: key,
+      Body: finalImageBuffer,
+      ContentType: "image/png",
+    })
+    .promise();
 
   return {
     key,
@@ -118,7 +163,7 @@ Optimized for very small sizes (28px–112px).
 const buildTextOverlayPrompt = (
   text: string,
   position: "top-left" | "top-right",
-  color?: string
+  color?: string,
 ) => `
 Add a small text overlay displaying "${text}".
 - Position: ${position === "top-left" ? "top left" : "top right"}
@@ -129,7 +174,6 @@ Add a small text overlay displaying "${text}".
 - Subtle outline for contrast
 ${color ? `Text color: ${color}.` : "Choose a color that fits the style."}
 `;
-
 
 /* ------------------------------------------------------------------ */
 /* ROUTER */
@@ -145,7 +189,7 @@ export const emoteRouter = createTRPCRouter({
         prompt: z.string().min(10),
         platform: z.literal("twitch"),
         inputImageBase64: z.string(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       const BASE_COST = EMOTE_BASE_CREDITS;
@@ -193,7 +237,10 @@ export const emoteRouter = createTRPCRouter({
           message: "Invalid image format",
         });
       }
-      const { url: inputImageUrl } = await uploadBase64ToS3(base64Data, `emotes/input/${user.id}`);
+      const { url: inputImageUrl } = await uploadBase64ToS3(
+        base64Data,
+        `emotes/input/${user.id}`,
+      );
 
       /* ------------------ Replicate call ------------------ */
       let output: string[];
@@ -233,7 +280,15 @@ export const emoteRouter = createTRPCRouter({
 
       /* ------------------ Save output ------------------ */
       const base64 = await fetchAndEncodeImage(output[0]!);
-      const { key: s3Key, url: finalImageUrl } = await uploadBase64ToS3(base64, `emotes/base/${user.id}`);
+      const shouldWatermark = isFreeGamingPlan(user.gamingPlan);
+      const { key: s3Key, url: finalImageUrl } = await uploadBase64ToS3(
+        base64,
+        `emotes/base/${user.id}`,
+        {
+          shouldWatermark,
+          toolType: "Twitch emote base",
+        },
+      );
 
       await ctx.prisma.icon.create({
         data: {
@@ -253,116 +308,119 @@ export const emoteRouter = createTRPCRouter({
             brand_specific_plan:
               user.gamingPlan?.toString() ?? PrismaPlan.None.toString(),
           },
-          "gaminglogoai"
+          "gaminglogoai",
         );
       }
 
       return {
         baseImageUrl: finalImageUrl,
+        watermarked: shouldWatermark,
       };
     }),
-    generateEmotes: protectedProcedure
-  .input(
-    z.object({
-      baseImageUrl: z.string().url(),
-      emotes: z.array(EmoteKeyEnum).min(1),
+  generateEmotes: protectedProcedure
+    .input(
+      z.object({
+        baseImageUrl: z.string().url(),
+        emotes: z.array(EmoteKeyEnum).min(1),
 
-      // NEW
-      withText: z.boolean(),
-      textPosition: z.enum(["top-left", "top-right"]),
-      textColor: z.string().optional(),
-    })
-  )
-  .mutation(async ({ ctx, input }) => {
-    const COST_PER_EMOTE = EMOTE_EXPRESSION_CREDITS;
-    const totalCost = input.emotes.length * COST_PER_EMOTE;
+        // NEW
+        withText: z.boolean(),
+        textPosition: z.enum(["top-left", "top-right"]),
+        textColor: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const COST_PER_EMOTE = EMOTE_EXPRESSION_CREDITS;
+      const totalCost = input.emotes.length * COST_PER_EMOTE;
 
-    const user = await ctx.prisma.user.findUnique({
-      where: { id: ctx.session.user.id },
-    });
-
-    if (!user || (user.gamingCredits ?? 0) < totalCost) {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Not enough gaming credits",
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: ctx.session.user.id },
       });
-    }
 
-    // Deduct credits ONCE
-    await ctx.prisma.user.update({
-      where: { id: user.id },
-      data: { gamingCredits: { decrement: totalCost } },
-    });
+      if (!user || (user.gamingCredits ?? 0) < totalCost) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Not enough gaming credits",
+        });
+      }
 
-    const results: { emote: string; imageUrl: string }[] = [];
+      // Deduct credits ONCE
+      await ctx.prisma.user.update({
+        where: { id: user.id },
+        data: { gamingCredits: { decrement: totalCost } },
+      });
 
-    for (const emoteKey of input.emotes) {
-      const emoteDef = emotes.find((e) => e.key === emoteKey);
-      if (!emoteDef) continue;
+      const results: { emote: string; imageUrl: string }[] = [];
 
-      let prompt = `
+      for (const emoteKey of input.emotes) {
+        const emoteDef = emotes.find((e) => e.key === emoteKey);
+        if (!emoteDef) continue;
+
+        let prompt = `
 ${EMOTE_BASE_PROMPT}
 Same character and same art style as the base image.
 Expression: ${emoteDef.prompt}.
 `;
 
-      if (input.withText) {
-        prompt += buildTextOverlayPrompt(
-          emoteDef.label,
-          input.textPosition,
-          input.textColor
-        );
-      }
+        if (input.withText) {
+          prompt += buildTextOverlayPrompt(
+            emoteDef.label,
+            input.textPosition,
+            input.textColor,
+          );
+        }
 
-      let output: string[];
+        let output: string[];
 
-      try {
-        output = (await replicate.run("openai/gpt-image-1.5", {
-          input: {
-            prompt: prompt.trim(),
-            input_images: [input.baseImageUrl],
-            input_fidelity: "high",
-            aspect_ratio: "1:1",
-            background: "transparent",
-            output_format: "png",
-            number_of_images: 1,
-            user_id: user.id,
+        try {
+          output = (await replicate.run("openai/gpt-image-1.5", {
+            input: {
+              prompt: prompt.trim(),
+              input_images: [input.baseImageUrl],
+              input_fidelity: "high",
+              aspect_ratio: "1:1",
+              background: "transparent",
+              output_format: "png",
+              number_of_images: 1,
+              user_id: user.id,
+            },
+          })) as string[];
+        } catch (err) {
+          console.error("REPLICATE EMOTE ERROR:", err);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to generate emotes",
+          });
+        }
+
+        if (!output?.length) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: `Failed to generate ${emoteKey}`,
+          });
+        }
+
+        const base64 = await fetchAndEncodeImage(output[0]!);
+        const { key: s3Key, url: imageUrl } = await uploadBase64ToS3(
+          base64,
+          `emotes/final/${user.id}/${emoteKey.toLowerCase()}`,
+          {
+            shouldWatermark: isFreeGamingPlan(user.gamingPlan),
+            toolType: "Twitch emote",
           },
-        })) as string[];
-      } catch (err) {
-        console.error("REPLICATE EMOTE ERROR:", err);
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to generate emotes",
+        );
+
+        await ctx.prisma.icon.create({
+          data: {
+            userId: user.id,
+            prompt: `Emote:${emoteKey}${input.withText ? ":text" : ""}`,
+            imageKey: s3Key, // ✅ SAME key
+          },
         });
+
+        results.push({ emote: emoteKey, imageUrl });
       }
 
-      if (!output?.length) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: `Failed to generate ${emoteKey}`,
-        });
-      }
-
-      const base64 = await fetchAndEncodeImage(output[0]!);
-    const { key: s3Key, url: imageUrl } =
-      await uploadBase64ToS3(
-        base64,
-        `emotes/final/${user.id}/${emoteKey.toLowerCase()}`
-      );
-
-    await ctx.prisma.icon.create({
-      data: {
-        userId: user.id,
-        prompt: `Emote:${emoteKey}${input.withText ? ":text" : ""}`,
-        imageKey: s3Key, // ✅ SAME key
-      },
-    });
-
-    results.push({ emote: emoteKey, imageUrl });
-
-    }
-
-    return results;
-  }),
+      return results;
+    }),
 });

@@ -12,6 +12,10 @@ import AWS from "aws-sdk";
 import { syncUserToMautic } from "~/server/api/routers/mautic-utils";
 import { buffer as readStreamIntoBuffer } from "stream/consumers";
 import { Readable } from "stream";
+import {
+  finalizeGeneratedImage,
+  isFreeGamingPlan,
+} from "~/server/imageWatermark";
 
 const s3 = new AWS.S3({
   credentials: {
@@ -40,13 +44,12 @@ async function fetchAndEncodeImage(url: string): Promise<string> {
   return buf.toString("base64");
 }
 
-
 // Generate the image and encode it as Base64
 const generateIcon = async (
   prompt: string,
   numberOfImages = 1,
   aspectRatio = "1:1",
-  model = "flux-schnell"
+  model = "flux-schnell",
 ): Promise<string[]> => {
   let path: `${string}/${string}`;
   let input: Record<string, any>;
@@ -89,17 +92,16 @@ const generateIcon = async (
     return Array(numberOfImages).fill(b64Image) as string[];
   }
 
-    // For flux models, we expect an array of URLs
-    const output = (await replicate.run(path, { input })) as string[];
-    if (!Array.isArray(output) || output.length === 0) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to generate image URLs",
-      });
-    }
-    // Convert each URL to base64
-    outputs = await Promise.all(output.map(fetchAndEncodeImage));
-  
+  // For flux models, we expect an array of URLs
+  const output = (await replicate.run(path, { input })) as string[];
+  if (!Array.isArray(output) || output.length === 0) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Failed to generate image URLs",
+    });
+  }
+  // Convert each URL to base64
+  outputs = await Promise.all(output.map(fetchAndEncodeImage));
 
   return outputs;
 };
@@ -111,11 +113,8 @@ export const generateRouter = createTRPCRouter({
         prompt: z.string(),
         numberOfImages: z.number().min(1).max(10),
         aspectRatio: z.string().optional(),
-        model: z.enum([
-          "flux-schnell",
-          "flux-dev",
-        ]),
-      })
+        model: z.enum(["flux-schnell", "flux-dev"]),
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       // Define credit costs
@@ -131,9 +130,7 @@ export const generateRouter = createTRPCRouter({
       }
 
       // Calculate total credits needed
-      const totalCredits =
-        modelConfig.credits *
-        input.numberOfImages;
+      const totalCredits = modelConfig.credits * input.numberOfImages;
 
       // Deduct credits
       const { count } = await ctx.prisma.user.updateMany({
@@ -163,15 +160,19 @@ export const generateRouter = createTRPCRouter({
           message: "User not found after credit update",
         });
       }
+      const shouldWatermark = isFreeGamingPlan(updatedUser.gamingPlan);
 
       // Update Mautic contact
       try {
-        await syncUserToMautic({
-          email: updatedUser.email,
-          name: updatedUser.name,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          brand_specific_credits: updatedUser.gamingCredits,
-        },'gaminglogoai');
+        await syncUserToMautic(
+          {
+            email: updatedUser.email,
+            name: updatedUser.name,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            brand_specific_credits: updatedUser.gamingCredits,
+          },
+          "gaminglogoai",
+        );
         console.log("Mautic contact updated after credit deduction.");
       } catch (err) {
         console.error("Error updating Mautic after credit deduction:", err);
@@ -182,7 +183,7 @@ export const generateRouter = createTRPCRouter({
         input.prompt,
         input.numberOfImages,
         input.aspectRatio,
-        input.model
+        input.model,
       );
 
       // Store images in DB & upload to S3
@@ -196,13 +197,19 @@ export const generateRouter = createTRPCRouter({
           });
 
           try {
+            const finalImageBuffer = await finalizeGeneratedImage(
+              Buffer.from(image, "base64"),
+              {
+                shouldWatermark,
+                toolType: "Gaming logo",
+              },
+            );
             await s3
               .putObject({
                 Bucket: BUCKET_NAME,
-                Body: Buffer.from(image, "base64"),
+                Body: finalImageBuffer,
                 Key: icon.id,
-                ContentEncoding: "base64",
-                ContentType:"image/webp",
+                ContentType: "image/png",
               })
               .promise();
           } catch (s3Error) {
@@ -214,12 +221,13 @@ export const generateRouter = createTRPCRouter({
           }
 
           return icon;
-        })
+        }),
       );
 
       // Return the URLs
       return createdIcons.map((icon) => ({
         imageUrl: `https://${BUCKET_NAME}.s3.us-east-1.amazonaws.com/${icon.id}`,
+        watermarked: shouldWatermark,
       }));
     }),
 });

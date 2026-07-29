@@ -40,7 +40,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
     },
     {
       q: "How can I make a gaming profile picture for free?",
-      a: "You can start for free with GamingLogoAI! Every new user gets 1 free credit. This credit is enough to generate and download your first high-resolution custom PFP without a watermark. If you want more designs, you can purchase additional credit packs."
+      a: "You can start exploring GamingLogoAI for free, and every new user gets 1 free credit toward a custom gaming profile picture. When you're ready to generate, choose a credit pack for high-resolution, watermark-free downloads and more custom PFP designs."
     },
     {
       q: "Will my PFP be the right size for Discord, Twitch, and YouTube?",

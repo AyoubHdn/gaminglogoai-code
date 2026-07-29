@@ -19,6 +19,10 @@ import { env } from "~/env.mjs";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { buildStreamScreenPrompt } from "~/server/lib/buildStreamScreenPrompt";
 import { withCreditTransaction } from "~/server/lib/creditTransaction";
+import {
+  finalizeGeneratedImage,
+  shouldWatermarkUser,
+} from "~/server/imageWatermark";
 
 const s3 = new AWS.S3({
   credentials: {
@@ -43,7 +47,7 @@ const lastGenerateCallByUserId = new Map<string, number>();
 
 function assertWithinStreamScreenRateLimit(
   userId: string,
-  store: Map<string, number>
+  store: Map<string, number>,
 ): void {
   const now = Date.now();
   const lastCallAt = store.get(userId);
@@ -51,7 +55,8 @@ function assertWithinStreamScreenRateLimit(
   if (lastCallAt && now - lastCallAt < STREAM_SCREEN_FUNNEL_RATE_LIMIT_MS) {
     throw new TRPCError({
       code: "TOO_MANY_REQUESTS",
-      message: "Please wait a moment before generating another stream screen set.",
+      message:
+        "Please wait a moment before generating another stream screen set.",
     });
   }
 
@@ -79,7 +84,7 @@ function isNodeReadableStream(value: unknown): value is Readable {
 }
 
 function isWebReadableStream(
-  value: unknown
+  value: unknown,
 ): value is WebReadableStream<Uint8Array> {
   return (
     typeof value === "object" &&
@@ -102,7 +107,9 @@ async function fetchBufferFromUrl(url: string): Promise<Buffer> {
   return Buffer.from(await imageResponse.arrayBuffer());
 }
 
-async function resolveReplicateOutputToBuffer(output: unknown): Promise<Buffer> {
+async function resolveReplicateOutputToBuffer(
+  output: unknown,
+): Promise<Buffer> {
   if (Array.isArray(output)) {
     const firstItem = output[0];
 
@@ -174,7 +181,7 @@ async function resolveReplicateOutputToBuffer(output: unknown): Promise<Buffer> 
 async function fetchGeneratedStreamScreenBufferWithFluxFlex(
   prompt: string,
   canvas: StreamScreenCanvas,
-  referenceImages: string[]
+  referenceImages: string[],
 ): Promise<Buffer> {
   if (env.MOCK_REPLICATE === "true") {
     return Buffer.from(b64Image, "base64");
@@ -229,7 +236,7 @@ function buildReferenceOverlaySvg(width: number, height: number): Buffer {
 
 async function buildStreamScreenStyleReferenceImage(
   sourceBuffer: Buffer,
-  canvas: StreamScreenCanvas
+  canvas: StreamScreenCanvas,
 ): Promise<string> {
   const referenceBuffer = await sharp(sourceBuffer)
     .resize(canvas.width, canvas.height, {
@@ -251,7 +258,7 @@ async function buildStreamScreenStyleReferenceImage(
 async function normalizeStreamScreenBufferToCanvas(
   sourceBuffer: Buffer,
   canvas: StreamScreenCanvas,
-  contextLabel: string
+  contextLabel: string,
 ): Promise<Buffer> {
   const normalizedBuffer = await sharp(sourceBuffer)
     .rotate()
@@ -278,7 +285,8 @@ async function normalizeStreamScreenBufferToCanvas(
 
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: "Stream screen normalization failed to reach the target canvas size",
+      message:
+        "Stream screen normalization failed to reach the target canvas size",
     });
   }
 
@@ -299,12 +307,12 @@ export const streamScreenFunnelRouter = createTRPCRouter({
         platform: z.literal("twitch"),
         templateId: z.string(),
         screens: z.array(screenInputSchema).min(1).max(12),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       assertWithinStreamScreenRateLimit(
         ctx.session.user.id,
-        lastGenerateCallByUserId
+        lastGenerateCallByUserId,
       );
 
       const platform = STREAM_SCREEN_PLATFORMS[input.platform];
@@ -318,7 +326,8 @@ export const streamScreenFunnelRouter = createTRPCRouter({
 
       const template = STREAM_SCREEN_TEMPLATES.find(
         (candidate) =>
-          candidate.id === input.templateId && candidate.platform === input.platform
+          candidate.id === input.templateId &&
+          candidate.platform === input.platform,
       );
 
       if (!template) {
@@ -329,123 +338,139 @@ export const streamScreenFunnelRouter = createTRPCRouter({
       }
 
       const totalCredits = input.screens.length * template.credits;
+      const shouldWatermark = await shouldWatermarkUser(
+        ctx.prisma,
+        ctx.session.user.id,
+      );
 
-      return withCreditTransaction(ctx.session.user.id, totalCredits, async () => {
-        const createdIconIds: string[] = [];
-        let sharedStyleAnchorBuffer: Buffer | null = null;
+      return withCreditTransaction(
+        ctx.session.user.id,
+        totalCredits,
+        async () => {
+          const createdIconIds: string[] = [];
+          let sharedStyleAnchorBuffer: Buffer | null = null;
 
-        try {
-          const items: Array<{
-            draftId: string;
-            iconId: string;
-            url: string;
-            kind: StreamScreenKind;
-            title: string;
-            subtitle: string;
-          }> = [];
+          try {
+            const items: Array<{
+              draftId: string;
+              iconId: string;
+              url: string;
+              kind: StreamScreenKind;
+              title: string;
+              subtitle: string;
+            }> = [];
 
-          for (const screen of input.screens) {
-            const screenPreset = platform.screenPresets.find(
-              (preset) => preset.id === screen.kind
-            );
+            for (const screen of input.screens) {
+              const screenPreset = platform.screenPresets.find(
+                (preset) => preset.id === screen.kind,
+              );
 
-            if (!screenPreset) {
-              throw new TRPCError({
-                code: "BAD_REQUEST",
-                message: "Invalid stream screen kind",
+              if (!screenPreset) {
+                throw new TRPCError({
+                  code: "BAD_REQUEST",
+                  message: "Invalid stream screen kind",
+                });
+              }
+
+              const referenceImage = sharedStyleAnchorBuffer
+                ? await buildStreamScreenStyleReferenceImage(
+                    sharedStyleAnchorBuffer,
+                    platform.canvas,
+                  )
+                : null;
+
+              const prompt = buildStreamScreenPrompt({
+                platform,
+                template,
+                screenPreset,
+                title: screen.title,
+                subtitle: screen.subtitle,
+                useStyleReference: Boolean(referenceImage),
+              });
+
+              const generatedBuffer = referenceImage
+                ? await fetchGeneratedStreamScreenBufferWithFluxFlex(
+                    prompt,
+                    platform.canvas,
+                    [referenceImage],
+                  )
+                : await fetchGeneratedStreamScreenBufferWithFluxFlex(
+                    prompt,
+                    platform.canvas,
+                    [],
+                  );
+
+              const finalPngBuffer = await normalizeStreamScreenBufferToCanvas(
+                generatedBuffer,
+                platform.canvas,
+                `generate:${screen.draftId}`,
+              );
+
+              if (!sharedStyleAnchorBuffer) {
+                sharedStyleAnchorBuffer = finalPngBuffer;
+              }
+              const storedPngBuffer = await finalizeGeneratedImage(
+                finalPngBuffer,
+                {
+                  shouldWatermark,
+                  toolType: `${platform.displayName} stream screen`,
+                },
+              );
+
+              const icon = await ctx.prisma.icon.create({
+                data: {
+                  prompt: `StreamScreen:${input.platform}:${template.id}:${screen.kind}:${screen.title.trim()}`,
+                  userId: ctx.session.user.id,
+                },
+              });
+
+              createdIconIds.push(icon.id);
+
+              const imageKey = `${platform.storagePrefix}/${ctx.session.user.id}/${icon.id}.png`;
+
+              await ctx.prisma.icon.update({
+                where: { id: icon.id },
+                data: { imageKey },
+              });
+
+              await s3
+                .putObject({
+                  Bucket: BUCKET,
+                  Key: imageKey,
+                  Body: storedPngBuffer,
+                  ContentType: "image/png",
+                })
+                .promise();
+
+              items.push({
+                draftId: screen.draftId,
+                iconId: icon.id,
+                url: getPublicStreamScreenUrl(imageKey),
+                kind: screen.kind,
+                title: screen.title,
+                subtitle: screen.subtitle ?? "",
               });
             }
 
-            const referenceImage = sharedStyleAnchorBuffer
-              ? await buildStreamScreenStyleReferenceImage(
-                  sharedStyleAnchorBuffer,
-                  platform.canvas
-                )
-              : null;
-
-            const prompt = buildStreamScreenPrompt({
-              platform,
-              template,
-              screenPreset,
-              title: screen.title,
-              subtitle: screen.subtitle,
-              useStyleReference: Boolean(referenceImage),
-            });
-
-            const generatedBuffer = referenceImage
-              ? await fetchGeneratedStreamScreenBufferWithFluxFlex(
-                  prompt,
-                  platform.canvas,
-                  [referenceImage]
-                )
-              : await fetchGeneratedStreamScreenBufferWithFluxFlex(
-                  prompt,
-                  platform.canvas,
-                  []
-                );
-
-            const finalPngBuffer = await normalizeStreamScreenBufferToCanvas(
-              generatedBuffer,
-              platform.canvas,
-              `generate:${screen.draftId}`
-            );
-
-            if (!sharedStyleAnchorBuffer) {
-              sharedStyleAnchorBuffer = finalPngBuffer;
+            return {
+              items,
+              totalCreditsCharged: totalCredits,
+              watermarked: shouldWatermark,
+            };
+          } catch (error) {
+            if (createdIconIds.length > 0) {
+              await ctx.prisma.icon.deleteMany({
+                where: {
+                  id: {
+                    in: createdIconIds,
+                  },
+                },
+              });
             }
 
-            const icon = await ctx.prisma.icon.create({
-              data: {
-                prompt: `StreamScreen:${input.platform}:${template.id}:${screen.kind}:${screen.title.trim()}`,
-                userId: ctx.session.user.id,
-              },
-            });
-
-            createdIconIds.push(icon.id);
-
-            const imageKey = `${platform.storagePrefix}/${ctx.session.user.id}/${icon.id}.png`;
-
-            await ctx.prisma.icon.update({
-              where: { id: icon.id },
-              data: { imageKey },
-            });
-
-            await s3
-              .putObject({
-                Bucket: BUCKET,
-                Key: imageKey,
-                Body: finalPngBuffer,
-                ContentType: "image/png",
-              })
-              .promise();
-
-            items.push({
-              draftId: screen.draftId,
-              iconId: icon.id,
-              url: getPublicStreamScreenUrl(imageKey),
-              kind: screen.kind,
-              title: screen.title,
-              subtitle: screen.subtitle ?? "",
-            });
+            throw error;
           }
-
-          return {
-            items,
-            totalCreditsCharged: totalCredits,
-          };
-        } catch (error) {
-          if (createdIconIds.length > 0) {
-            await ctx.prisma.icon.deleteMany({
-              where: {
-                id: {
-                  in: createdIconIds,
-                },
-              },
-            });
-          }
-
-          throw error;
-        }
-      });
+        },
+      );
     }),
 });

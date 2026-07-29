@@ -31,6 +31,10 @@ import { getPanelBatchCredits } from "~/lib/panelPricing";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { buildPanelPrompt } from "~/server/lib/buildPanelPrompt";
 import { withCreditTransaction } from "~/server/lib/creditTransaction";
+import {
+  finalizeGeneratedImage,
+  shouldWatermarkUser,
+} from "~/server/imageWatermark";
 
 const s3 = new AWS.S3({
   credentials: {
@@ -55,7 +59,7 @@ const lastGenerateCallByUserId = new Map<string, number>();
 
 function assertWithinPanelRateLimit(
   userId: string,
-  store: Map<string, number>
+  store: Map<string, number>,
 ): void {
   const now = Date.now();
   const lastCallAt = store.get(userId);
@@ -91,7 +95,7 @@ function isNodeReadableStream(value: unknown): value is Readable {
 }
 
 function isWebReadableStream(
-  value: unknown
+  value: unknown,
 ): value is WebReadableStream<Uint8Array> {
   return (
     typeof value === "object" &&
@@ -114,7 +118,9 @@ async function fetchBufferFromUrl(url: string): Promise<Buffer> {
   return Buffer.from(await imageResponse.arrayBuffer());
 }
 
-async function resolveReplicateOutputToBuffer(output: unknown): Promise<Buffer> {
+async function resolveReplicateOutputToBuffer(
+  output: unknown,
+): Promise<Buffer> {
   if (Array.isArray(output)) {
     const firstItem = output[0];
 
@@ -191,7 +197,7 @@ async function resolveReplicateOutputToBuffer(output: unknown): Promise<Buffer> 
 async function fetchGeneratedPanelBufferWithFluxFlex(
   prompt: string,
   shape: PanelShapeOption,
-  referenceImages: string[]
+  referenceImages: string[],
 ): Promise<Buffer> {
   if (env.MOCK_REPLICATE === "true") {
     return Buffer.from(b64Image, "base64");
@@ -231,11 +237,19 @@ function getPanelIconComponent(title: string): IconType {
     return FaCalendarAlt;
   }
 
-  if (token.includes("about") || token.includes("profile") || token.includes("me")) {
+  if (
+    token.includes("about") ||
+    token.includes("profile") ||
+    token.includes("me")
+  ) {
     return FaUserCircle;
   }
 
-  if (token.includes("donate") || token.includes("tip") || token.includes("heart")) {
+  if (
+    token.includes("donate") ||
+    token.includes("tip") ||
+    token.includes("heart")
+  ) {
     return FaDonate;
   }
 
@@ -247,11 +261,19 @@ function getPanelIconComponent(title: string): IconType {
     return FaDiscord;
   }
 
-  if (token.includes("spec") || token.includes("pc") || token.includes("hardware")) {
+  if (
+    token.includes("spec") ||
+    token.includes("pc") ||
+    token.includes("hardware")
+  ) {
     return FaDesktop;
   }
 
-  if (token.includes("faq") || token.includes("question") || token.includes("info")) {
+  if (
+    token.includes("faq") ||
+    token.includes("question") ||
+    token.includes("info")
+  ) {
     return FaQuestionCircle;
   }
 
@@ -380,7 +402,7 @@ function buildOverlaySvg(
   width: number,
   height: number,
   shape: PanelShapeOption,
-  includeIcon: boolean
+  includeIcon: boolean,
 ): Buffer {
   const layout = getPanelReferenceLayout(shape);
   const iconBoxX = Math.round(width * layout.iconBox.left);
@@ -413,14 +435,14 @@ function buildOverlaySvg(
 
 async function buildPanelIconBuffer(
   title: string,
-  maxSize: number
+  maxSize: number,
 ): Promise<Buffer> {
   const IconComponent = getPanelIconComponent(title);
   const iconMarkup = renderToStaticMarkup(
     createElement(IconComponent, {
       size: maxSize,
       color: "#f8fafc",
-    })
+    }),
   );
 
   return sharp(Buffer.from(iconMarkup))
@@ -436,7 +458,7 @@ async function buildPanelStyleReferenceImage(
   sourceBuffer: Buffer,
   shape: PanelShapeOption,
   title: string,
-  includeIcon: boolean
+  includeIcon: boolean,
 ): Promise<string> {
   const width = shape.width;
   const height = shape.height;
@@ -456,7 +478,7 @@ async function buildPanelStyleReferenceImage(
     const iconBoxY = Math.round(height * layout.iconBox.top);
     const iconSize = Math.max(
       64,
-      Math.round(Math.min(iconBoxWidth, iconBoxHeight) * 0.58)
+      Math.round(Math.min(iconBoxWidth, iconBoxHeight) * 0.58),
     );
     const iconBuffer = await buildPanelIconBuffer(title, iconSize);
     const iconMetadata = await sharp(iconBuffer).metadata();
@@ -489,7 +511,7 @@ async function normalizePanelBufferToCanvas(
   sourceBuffer: Buffer,
   targetWidth: number,
   targetHeight: number,
-  contextLabel: string
+  contextLabel: string,
 ): Promise<Buffer> {
   const inputMetadata = await sharp(sourceBuffer).metadata();
 
@@ -553,7 +575,7 @@ export const panelFunnelRouter = createTRPCRouter({
           "portrait-3-4",
         ]),
         panels: z.array(panelInputSchema).min(1).max(12),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       assertWithinPanelRateLimit(ctx.session.user.id, lastGenerateCallByUserId);
@@ -568,7 +590,8 @@ export const panelFunnelRouter = createTRPCRouter({
 
       const template = PANEL_TEMPLATES.find(
         (candidate) =>
-          candidate.id === input.templateId && candidate.platform === input.platform
+          candidate.id === input.templateId &&
+          candidate.platform === input.platform,
       );
 
       if (!template) {
@@ -588,116 +611,130 @@ export const panelFunnelRouter = createTRPCRouter({
       }
 
       const totalCredits = getPanelBatchCredits(input.panels.length);
+      const shouldWatermark = await shouldWatermarkUser(
+        ctx.prisma,
+        ctx.session.user.id,
+      );
 
-      return withCreditTransaction(ctx.session.user.id, totalCredits, async () => {
-        const createdIconIds: string[] = [];
-        let sharedStyleAnchorBuffer: Buffer | null = null;
+      return withCreditTransaction(
+        ctx.session.user.id,
+        totalCredits,
+        async () => {
+          const createdIconIds: string[] = [];
+          let sharedStyleAnchorBuffer: Buffer | null = null;
 
-        try {
-          const items: Array<{
-            draftId: string;
-            iconId: string;
-            url: string;
-            title: string;
-            includeIcon: boolean;
-            content: string;
-          }> = [];
+          try {
+            const items: Array<{
+              draftId: string;
+              iconId: string;
+              url: string;
+              title: string;
+              includeIcon: boolean;
+              content: string;
+            }> = [];
 
-          for (const panel of input.panels) {
-            const referenceImage = sharedStyleAnchorBuffer
-              ? await buildPanelStyleReferenceImage(
-                  sharedStyleAnchorBuffer,
-                  shape,
-                  panel.title,
-                  panel.includeIcon
-                )
-              : null;
+            for (const panel of input.panels) {
+              const referenceImage = sharedStyleAnchorBuffer
+                ? await buildPanelStyleReferenceImage(
+                    sharedStyleAnchorBuffer,
+                    shape,
+                    panel.title,
+                    panel.includeIcon,
+                  )
+                : null;
 
-            const prompt = buildPanelPrompt({
-              platform,
-              template,
-              shape,
-              title: panel.title,
-              includeIcon: panel.includeIcon,
-              content: panel.content,
-              useStyleReference: Boolean(referenceImage),
-            });
+              const prompt = buildPanelPrompt({
+                platform,
+                template,
+                shape,
+                title: panel.title,
+                includeIcon: panel.includeIcon,
+                content: panel.content,
+                useStyleReference: Boolean(referenceImage),
+              });
 
-            const generatedBuffer = referenceImage
-              ? await fetchGeneratedPanelBufferWithFluxFlex(
-                  prompt,
-                  shape,
-                  [referenceImage]
-                )
-              : await fetchGeneratedPanelBufferWithFluxFlex(
-                  prompt,
-                  shape,
-                  []
-                );
+              const generatedBuffer = referenceImage
+                ? await fetchGeneratedPanelBufferWithFluxFlex(prompt, shape, [
+                    referenceImage,
+                  ])
+                : await fetchGeneratedPanelBufferWithFluxFlex(
+                    prompt,
+                    shape,
+                    [],
+                  );
 
-            const finalPngBuffer = await normalizePanelBufferToCanvas(
-              generatedBuffer,
-              shape.width,
-              shape.height,
-              `generate:${panel.draftId}`
-            );
+              const finalPngBuffer = await normalizePanelBufferToCanvas(
+                generatedBuffer,
+                shape.width,
+                shape.height,
+                `generate:${panel.draftId}`,
+              );
 
-            if (!sharedStyleAnchorBuffer) {
-              sharedStyleAnchorBuffer = finalPngBuffer;
+              if (!sharedStyleAnchorBuffer) {
+                sharedStyleAnchorBuffer = finalPngBuffer;
+              }
+              const storedPngBuffer = await finalizeGeneratedImage(
+                finalPngBuffer,
+                {
+                  shouldWatermark,
+                  toolType: `${platform.displayName} stream panel`,
+                },
+              );
+
+              const icon = await ctx.prisma.icon.create({
+                data: {
+                  prompt: `Panel:${input.platform}:${template.id}:${shape.id}:${panel.title.trim()}`,
+                  userId: ctx.session.user.id,
+                },
+              });
+
+              createdIconIds.push(icon.id);
+
+              const imageKey = `${platform.storagePrefix}/${ctx.session.user.id}/${icon.id}.png`;
+
+              await ctx.prisma.icon.update({
+                where: { id: icon.id },
+                data: { imageKey },
+              });
+
+              await s3
+                .putObject({
+                  Bucket: BUCKET,
+                  Key: imageKey,
+                  Body: storedPngBuffer,
+                  ContentType: "image/png",
+                })
+                .promise();
+
+              items.push({
+                draftId: panel.draftId,
+                iconId: icon.id,
+                url: getPublicPanelUrl(imageKey),
+                title: panel.title,
+                includeIcon: panel.includeIcon,
+                content: panel.content ?? "",
+              });
             }
 
-            const icon = await ctx.prisma.icon.create({
-              data: {
-                prompt: `Panel:${input.platform}:${template.id}:${shape.id}:${panel.title.trim()}`,
-                userId: ctx.session.user.id,
-              },
-            });
-
-            createdIconIds.push(icon.id);
-
-            const imageKey = `${platform.storagePrefix}/${ctx.session.user.id}/${icon.id}.png`;
-
-            await ctx.prisma.icon.update({
-              where: { id: icon.id },
-              data: { imageKey },
-            });
-
-            await s3
-              .putObject({
-                Bucket: BUCKET,
-                Key: imageKey,
-                Body: finalPngBuffer,
-                ContentType: "image/png",
-              })
-              .promise();
-
-            items.push({
-              draftId: panel.draftId,
-              iconId: icon.id,
-              url: getPublicPanelUrl(imageKey),
-              title: panel.title,
-              includeIcon: panel.includeIcon,
-              content: panel.content ?? "",
-            });
-          }
-
-          return {
-            items,
-            totalCreditsCharged: totalCredits,
-          };
-        } catch (error) {
-          if (createdIconIds.length > 0) {
-            await ctx.prisma.icon.deleteMany({
-              where: {
-                id: {
-                  in: createdIconIds,
+            return {
+              items,
+              totalCreditsCharged: totalCredits,
+              watermarked: shouldWatermark,
+            };
+          } catch (error) {
+            if (createdIconIds.length > 0) {
+              await ctx.prisma.icon.deleteMany({
+                where: {
+                  id: {
+                    in: createdIconIds,
+                  },
                 },
-              },
-            });
-          }
+              });
+            }
 
-          throw error;
-        }
-      });
+            throw error;
+          }
+        },
+      );
     }),
 });

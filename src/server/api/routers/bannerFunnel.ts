@@ -21,6 +21,10 @@ import { buildBannerPrompt } from "~/server/lib/buildBannerPrompt";
 import { computeGenerationDimensions } from "~/server/lib/computeGenerationDimensions";
 import { withCreditTransaction } from "~/server/lib/creditTransaction";
 import { BANNER_SOCIAL_PLATFORM_IDS } from "~/lib/bannerSocials";
+import {
+  finalizeGeneratedImage,
+  shouldWatermarkUser,
+} from "~/server/imageWatermark";
 
 const s3 = new AWS.S3({
   credentials: {
@@ -46,7 +50,7 @@ const lastRefineCallByUserId = new Map<string, number>();
 
 function assertWithinBannerRateLimit(
   userId: string,
-  store: Map<string, number>
+  store: Map<string, number>,
 ): void {
   const now = Date.now();
   const lastCallAt = store.get(userId);
@@ -82,7 +86,7 @@ function isNodeReadableStream(value: unknown): value is Readable {
 }
 
 function isWebReadableStream(
-  value: unknown
+  value: unknown,
 ): value is WebReadableStream<Uint8Array> {
   return (
     typeof value === "object" &&
@@ -105,7 +109,9 @@ async function fetchBufferFromUrl(url: string): Promise<Buffer> {
   return Buffer.from(await imageResponse.arrayBuffer());
 }
 
-async function resolveReplicateOutputToBuffer(output: unknown): Promise<Buffer> {
+async function resolveReplicateOutputToBuffer(
+  output: unknown,
+): Promise<Buffer> {
   if (isNodeReadableStream(output)) {
     return streamToBuffer(output);
   }
@@ -160,7 +166,7 @@ async function fetchGeneratedBannerBuffer(
   prompt: string,
   width: number,
   height: number,
-  logoReferenceUrl: string | null
+  logoReferenceUrl: string | null,
 ): Promise<Buffer> {
   if (env.MOCK_REPLICATE === "true") {
     return Buffer.from(b64Image, "base64");
@@ -194,7 +200,7 @@ async function fetchRefinedBannerBuffer(
   sourceImageUrl: string,
   prompt: string,
   width: number,
-  height: number
+  height: number,
 ): Promise<Buffer> {
   if (env.MOCK_REPLICATE === "true") {
     return Buffer.from(b64Image, "base64");
@@ -222,7 +228,7 @@ async function normalizeBannerBufferToCanvas(
   sourceBuffer: Buffer,
   targetWidth: number,
   targetHeight: number,
-  contextLabel: string
+  contextLabel: string,
 ): Promise<Buffer> {
   const inputMetadata = await sharp(sourceBuffer).metadata();
 
@@ -285,15 +291,15 @@ export const bannerFunnelRouter = createTRPCRouter({
             z.object({
               platform: z.enum(BANNER_SOCIAL_PLATFORM_IDS),
               handle: z.string(),
-            })
+            }),
           )
           .max(BANNER_SOCIAL_PLATFORM_IDS.length),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       assertWithinBannerRateLimit(
         ctx.session.user.id,
-        lastGenerateCallByUserId
+        lastGenerateCallByUserId,
       );
       const platform = PLATFORMS[input.platform];
 
@@ -306,7 +312,8 @@ export const bannerFunnelRouter = createTRPCRouter({
 
       const template = BANNER_TEMPLATES.find(
         (candidate) =>
-          candidate.id === input.templateId && candidate.platform === input.platform
+          candidate.id === input.templateId &&
+          candidate.platform === input.platform,
       );
 
       if (!template) {
@@ -336,6 +343,10 @@ export const bannerFunnelRouter = createTRPCRouter({
         template.credits,
         Boolean(input.logoUrl),
       );
+      const shouldWatermark = await shouldWatermarkUser(
+        ctx.prisma,
+        ctx.session.user.id,
+      );
 
       return withCreditTransaction(
         ctx.session.user.id,
@@ -351,7 +362,7 @@ export const bannerFunnelRouter = createTRPCRouter({
               targetHeight,
               1024,
               2048,
-              32
+              32,
             );
             const generationWidth = generationDimensions.width;
             const generationHeight = generationDimensions.height;
@@ -367,7 +378,7 @@ export const bannerFunnelRouter = createTRPCRouter({
               prompt,
               generationWidth,
               generationHeight,
-              input.logoUrl
+              input.logoUrl,
             );
 
             const generatedMetadata = await sharp(generatedBuffer).metadata();
@@ -375,19 +386,29 @@ export const bannerFunnelRouter = createTRPCRouter({
               generatedMetadata.width !== generationWidth ||
               generatedMetadata.height !== generationHeight
             ) {
-              console.warn("[bannerFunnel] flux-2-max output dimensions differ from request", {
-                requestedWidth: generationWidth,
-                requestedHeight: generationHeight,
-                actualWidth: generatedMetadata.width ?? null,
-                actualHeight: generatedMetadata.height ?? null,
-              });
+              console.warn(
+                "[bannerFunnel] flux-2-max output dimensions differ from request",
+                {
+                  requestedWidth: generationWidth,
+                  requestedHeight: generationHeight,
+                  actualWidth: generatedMetadata.width ?? null,
+                  actualHeight: generatedMetadata.height ?? null,
+                },
+              );
             }
 
             const finalPngBuffer = await normalizeBannerBufferToCanvas(
               generatedBuffer,
               targetWidth,
               targetHeight,
-              "generate"
+              "generate",
+            );
+            const storedPngBuffer = await finalizeGeneratedImage(
+              finalPngBuffer,
+              {
+                shouldWatermark,
+                toolType: `${platform.displayName} banner`,
+              },
             );
 
             const icon = await ctx.prisma.icon.create({
@@ -414,7 +435,7 @@ export const bannerFunnelRouter = createTRPCRouter({
               .putObject({
                 Bucket: BUCKET,
                 Key: imageKey,
-                Body: finalPngBuffer,
+                Body: storedPngBuffer,
                 ContentType: "image/png",
               })
               .promise();
@@ -423,6 +444,7 @@ export const bannerFunnelRouter = createTRPCRouter({
               url: getPublicBannerUrl(imageKey),
               iconId: icon.id,
               creditsCharged: generationCredits,
+              watermarked: shouldWatermark,
             };
           } catch (error) {
             if (createdIconId) {
@@ -435,7 +457,7 @@ export const bannerFunnelRouter = createTRPCRouter({
 
             throw error;
           }
-        }
+        },
       );
     }),
   refine: protectedProcedure
@@ -444,13 +466,10 @@ export const bannerFunnelRouter = createTRPCRouter({
         platform: z.enum(["twitch", "youtube", "kick", "discord", "tiktok"]),
         iconId: z.string(),
         refinementPrompt: z.string().trim().min(1).max(500),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
-      assertWithinBannerRateLimit(
-        ctx.session.user.id,
-        lastRefineCallByUserId
-      );
+      assertWithinBannerRateLimit(ctx.session.user.id, lastRefineCallByUserId);
       const platform = PLATFORMS[input.platform];
       const platformName = platform.displayName;
 
@@ -484,84 +503,98 @@ export const bannerFunnelRouter = createTRPCRouter({
         });
       }
 
-      const sourceImageUrl = getPublicBannerUrl(sourceIcon.imageKey ?? sourceIcon.id);
+      const sourceImageUrl = getPublicBannerUrl(
+        sourceIcon.imageKey ?? sourceIcon.id,
+      );
       const refinePrompt = `Edit this ${platformName} banner: ${input.refinementPrompt}. Maintain the overall composition, channel name visibility, and professional banner aesthetic. Do not add watermarks or signatures.`;
+      const shouldWatermark = await shouldWatermarkUser(
+        ctx.prisma,
+        ctx.session.user.id,
+      );
 
       return withCreditTransaction(
         ctx.session.user.id,
         BANNER_THUMBNAIL_REFINEMENT_CREDITS,
         async () => {
-        let createdIconId: string | null = null;
+          let createdIconId: string | null = null;
 
-        try {
-          const refinedBuffer = await fetchRefinedBannerBuffer(
-            sourceImageUrl,
-            refinePrompt,
-            surface.canvas.width,
-            surface.canvas.height
-          );
-          const refinedMetadata = await sharp(refinedBuffer).metadata();
-          console.log("[bannerFunnel] refine raw model output", {
-            inputWidth: refinedMetadata.width ?? null,
-            inputHeight: refinedMetadata.height ?? null,
-            targetWidth: surface.canvas.width,
-            targetHeight: surface.canvas.height,
-          });
+          try {
+            const refinedBuffer = await fetchRefinedBannerBuffer(
+              sourceImageUrl,
+              refinePrompt,
+              surface.canvas.width,
+              surface.canvas.height,
+            );
+            const refinedMetadata = await sharp(refinedBuffer).metadata();
+            console.log("[bannerFunnel] refine raw model output", {
+              inputWidth: refinedMetadata.width ?? null,
+              inputHeight: refinedMetadata.height ?? null,
+              targetWidth: surface.canvas.width,
+              targetHeight: surface.canvas.height,
+            });
 
-          const finalPngBuffer = await normalizeBannerBufferToCanvas(
-            refinedBuffer,
-            surface.canvas.width,
-            surface.canvas.height,
-            "refine"
-          );
+            const finalPngBuffer = await normalizeBannerBufferToCanvas(
+              refinedBuffer,
+              surface.canvas.width,
+              surface.canvas.height,
+              "refine",
+            );
+            const storedPngBuffer = await finalizeGeneratedImage(
+              finalPngBuffer,
+              {
+                shouldWatermark,
+                toolType: `${platformName} banner`,
+              },
+            );
 
-          const icon = await ctx.prisma.icon.create({
-            data: {
-              prompt: `Banner:${input.platform}:refined:${sourceIcon.id}`,
-              userId: ctx.session.user.id,
-            },
-          });
-
-          createdIconId = icon.id;
-
-          const imageKey = `${surface.storagePrefix}/${ctx.session.user.id}/${icon.id}.png`;
-
-          await ctx.prisma.icon.update({
-            where: {
-              id: icon.id,
-            },
-            data: {
-              imageKey,
-            },
-          });
-
-          await s3
-            .putObject({
-              Bucket: BUCKET,
-              Key: imageKey,
-              Body: finalPngBuffer,
-              ContentType: "image/png",
-            })
-            .promise();
-
-          return {
-            url: getPublicBannerUrl(imageKey),
-            iconId: icon.id,
-            creditsCharged: BANNER_THUMBNAIL_REFINEMENT_CREDITS,
-            originalIconId: sourceIcon.id,
-          };
-        } catch (error) {
-          if (createdIconId) {
-            await ctx.prisma.icon.deleteMany({
-              where: {
-                id: createdIconId,
+            const icon = await ctx.prisma.icon.create({
+              data: {
+                prompt: `Banner:${input.platform}:refined:${sourceIcon.id}`,
+                userId: ctx.session.user.id,
               },
             });
-          }
 
-          throw error;
-        }
-      });
+            createdIconId = icon.id;
+
+            const imageKey = `${surface.storagePrefix}/${ctx.session.user.id}/${icon.id}.png`;
+
+            await ctx.prisma.icon.update({
+              where: {
+                id: icon.id,
+              },
+              data: {
+                imageKey,
+              },
+            });
+
+            await s3
+              .putObject({
+                Bucket: BUCKET,
+                Key: imageKey,
+                Body: storedPngBuffer,
+                ContentType: "image/png",
+              })
+              .promise();
+
+            return {
+              url: getPublicBannerUrl(imageKey),
+              iconId: icon.id,
+              creditsCharged: BANNER_THUMBNAIL_REFINEMENT_CREDITS,
+              originalIconId: sourceIcon.id,
+              watermarked: shouldWatermark,
+            };
+          } catch (error) {
+            if (createdIconId) {
+              await ctx.prisma.icon.deleteMany({
+                where: {
+                  id: createdIconId,
+                },
+              });
+            }
+
+            throw error;
+          }
+        },
+      );
     }),
 });
-

@@ -20,6 +20,10 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { buildThumbnailPrompt } from "~/server/lib/buildThumbnailPrompt";
 import { computeGenerationDimensions } from "~/server/lib/computeGenerationDimensions";
 import { withCreditTransaction } from "~/server/lib/creditTransaction";
+import {
+  finalizeGeneratedImage,
+  shouldWatermarkUser,
+} from "~/server/imageWatermark";
 
 const s3 = new AWS.S3({
   credentials: {
@@ -46,7 +50,7 @@ const lastRefineCallByUserId = new Map<string, number>();
 
 function assertWithinThumbnailRateLimit(
   userId: string,
-  store: Map<string, number>
+  store: Map<string, number>,
 ): void {
   const now = Date.now();
   const lastCallAt = store.get(userId);
@@ -82,7 +86,7 @@ function isNodeReadableStream(value: unknown): value is Readable {
 }
 
 function isWebReadableStream(
-  value: unknown
+  value: unknown,
 ): value is WebReadableStream<Uint8Array> {
   return (
     typeof value === "object" &&
@@ -105,7 +109,9 @@ async function fetchBufferFromUrl(url: string): Promise<Buffer> {
   return Buffer.from(await imageResponse.arrayBuffer());
 }
 
-async function resolveReplicateOutputToBuffer(output: unknown): Promise<Buffer> {
+async function resolveReplicateOutputToBuffer(
+  output: unknown,
+): Promise<Buffer> {
   if (isNodeReadableStream(output)) {
     return streamToBuffer(output);
   }
@@ -160,7 +166,7 @@ async function fetchGeneratedThumbnailBuffer(
   prompt: string,
   width: number,
   height: number,
-  referenceImageUrl: string | null
+  referenceImageUrl: string | null,
 ): Promise<Buffer> {
   if (env.MOCK_REPLICATE === "true") {
     return Buffer.from(b64Image, "base64");
@@ -191,7 +197,7 @@ async function fetchRefinedThumbnailBuffer(
   sourceImageUrl: string,
   prompt: string,
   width: number,
-  height: number
+  height: number,
 ): Promise<Buffer> {
   if (env.MOCK_REPLICATE === "true") {
     return Buffer.from(b64Image, "base64");
@@ -219,7 +225,7 @@ async function normalizeThumbnailBufferToCanvas(
   sourceBuffer: Buffer,
   targetWidth: number,
   targetHeight: number,
-  contextLabel: string
+  contextLabel: string,
 ): Promise<Buffer> {
   const inputMetadata = await sharp(sourceBuffer).metadata();
 
@@ -272,12 +278,12 @@ export const thumbnailFunnelRouter = createTRPCRouter({
         referenceImageUrl: z.string().nullable(),
         title: z.string().min(1),
         subtitle: z.string().nullable(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       assertWithinThumbnailRateLimit(
         ctx.session.user.id,
-        lastGenerateCallByUserId
+        lastGenerateCallByUserId,
       );
       const platform = THUMBNAIL_PLATFORMS[input.platform];
 
@@ -290,7 +296,8 @@ export const thumbnailFunnelRouter = createTRPCRouter({
 
       const template = THUMBNAIL_TEMPLATES.find(
         (candidate) =>
-          candidate.id === input.templateId && candidate.platform === input.platform
+          candidate.id === input.templateId &&
+          candidate.platform === input.platform,
       );
 
       if (!template) {
@@ -310,6 +317,10 @@ export const thumbnailFunnelRouter = createTRPCRouter({
         template.credits,
         Boolean(input.referenceImageUrl),
       );
+      const shouldWatermark = await shouldWatermarkUser(
+        ctx.prisma,
+        ctx.session.user.id,
+      );
 
       return withCreditTransaction(
         ctx.session.user.id,
@@ -325,21 +336,28 @@ export const thumbnailFunnelRouter = createTRPCRouter({
               targetHeight,
               1024,
               2048,
-              32
+              32,
             );
 
             const generatedBuffer = await fetchGeneratedThumbnailBuffer(
               prompt,
               generationDimensions.width,
               generationDimensions.height,
-              input.referenceImageUrl
+              input.referenceImageUrl,
             );
 
             const finalPngBuffer = await normalizeThumbnailBufferToCanvas(
               generatedBuffer,
               targetWidth,
               targetHeight,
-              "generate"
+              "generate",
+            );
+            const storedPngBuffer = await finalizeGeneratedImage(
+              finalPngBuffer,
+              {
+                shouldWatermark,
+                toolType: `${platform.displayName} thumbnail`,
+              },
             );
 
             const icon = await ctx.prisma.icon.create({
@@ -362,7 +380,7 @@ export const thumbnailFunnelRouter = createTRPCRouter({
               .putObject({
                 Bucket: BUCKET,
                 Key: imageKey,
-                Body: finalPngBuffer,
+                Body: storedPngBuffer,
                 ContentType: "image/png",
               })
               .promise();
@@ -371,6 +389,7 @@ export const thumbnailFunnelRouter = createTRPCRouter({
               url: getPublicThumbnailUrl(imageKey),
               iconId: icon.id,
               creditsCharged: generationCredits,
+              watermarked: shouldWatermark,
             };
           } catch (error) {
             if (createdIconId) {
@@ -381,7 +400,7 @@ export const thumbnailFunnelRouter = createTRPCRouter({
 
             throw error;
           }
-        }
+        },
       );
     }),
   refine: protectedProcedure
@@ -390,12 +409,12 @@ export const thumbnailFunnelRouter = createTRPCRouter({
         platform: z.literal("youtube"),
         iconId: z.string(),
         refinementPrompt: z.string().trim().min(1).max(500),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       assertWithinThumbnailRateLimit(
         ctx.session.user.id,
-        lastRefineCallByUserId
+        lastRefineCallByUserId,
       );
       const platform = THUMBNAIL_PLATFORMS[input.platform];
 
@@ -421,71 +440,84 @@ export const thumbnailFunnelRouter = createTRPCRouter({
       }
 
       const sourceImageUrl = getPublicThumbnailUrl(
-        sourceIcon.imageKey ?? sourceIcon.id
+        sourceIcon.imageKey ?? sourceIcon.id,
       );
       const refinePrompt = `Edit this ${platform.displayName} thumbnail: ${input.refinementPrompt}. Maintain the overall composition, title visibility, and professional thumbnail aesthetic. Do not add watermarks or signatures.`;
+      const shouldWatermark = await shouldWatermarkUser(
+        ctx.prisma,
+        ctx.session.user.id,
+      );
 
       return withCreditTransaction(
         ctx.session.user.id,
         BANNER_THUMBNAIL_REFINEMENT_CREDITS,
         async () => {
-        let createdIconId: string | null = null;
+          let createdIconId: string | null = null;
 
-        try {
-          const refinedBuffer = await fetchRefinedThumbnailBuffer(
-            sourceImageUrl,
-            refinePrompt,
-            platform.surface.canvas.width,
-            platform.surface.canvas.height
-          );
+          try {
+            const refinedBuffer = await fetchRefinedThumbnailBuffer(
+              sourceImageUrl,
+              refinePrompt,
+              platform.surface.canvas.width,
+              platform.surface.canvas.height,
+            );
 
-          const finalPngBuffer = await normalizeThumbnailBufferToCanvas(
-            refinedBuffer,
-            platform.surface.canvas.width,
-            platform.surface.canvas.height,
-            "refine"
-          );
+            const finalPngBuffer = await normalizeThumbnailBufferToCanvas(
+              refinedBuffer,
+              platform.surface.canvas.width,
+              platform.surface.canvas.height,
+              "refine",
+            );
+            const storedPngBuffer = await finalizeGeneratedImage(
+              finalPngBuffer,
+              {
+                shouldWatermark,
+                toolType: `${platform.displayName} thumbnail`,
+              },
+            );
 
-          const icon = await ctx.prisma.icon.create({
-            data: {
-              prompt: `Thumbnail:${input.platform}:refined:${sourceIcon.id}`,
-              userId: ctx.session.user.id,
-            },
-          });
-
-          createdIconId = icon.id;
-
-          const imageKey = `${platform.surface.storagePrefix}/${ctx.session.user.id}/${icon.id}.png`;
-
-          await ctx.prisma.icon.update({
-            where: { id: icon.id },
-            data: { imageKey },
-          });
-
-          await s3
-            .putObject({
-              Bucket: BUCKET,
-              Key: imageKey,
-              Body: finalPngBuffer,
-              ContentType: "image/png",
-            })
-            .promise();
-
-          return {
-            url: getPublicThumbnailUrl(imageKey),
-            iconId: icon.id,
-            creditsCharged: BANNER_THUMBNAIL_REFINEMENT_CREDITS,
-            originalIconId: sourceIcon.id,
-          };
-        } catch (error) {
-          if (createdIconId) {
-            await ctx.prisma.icon.deleteMany({
-              where: { id: createdIconId },
+            const icon = await ctx.prisma.icon.create({
+              data: {
+                prompt: `Thumbnail:${input.platform}:refined:${sourceIcon.id}`,
+                userId: ctx.session.user.id,
+              },
             });
-          }
 
-          throw error;
-        }
-      });
+            createdIconId = icon.id;
+
+            const imageKey = `${platform.surface.storagePrefix}/${ctx.session.user.id}/${icon.id}.png`;
+
+            await ctx.prisma.icon.update({
+              where: { id: icon.id },
+              data: { imageKey },
+            });
+
+            await s3
+              .putObject({
+                Bucket: BUCKET,
+                Key: imageKey,
+                Body: storedPngBuffer,
+                ContentType: "image/png",
+              })
+              .promise();
+
+            return {
+              url: getPublicThumbnailUrl(imageKey),
+              iconId: icon.id,
+              creditsCharged: BANNER_THUMBNAIL_REFINEMENT_CREDITS,
+              originalIconId: sourceIcon.id,
+              watermarked: shouldWatermark,
+            };
+          } catch (error) {
+            if (createdIconId) {
+              await ctx.prisma.icon.deleteMany({
+                where: { id: createdIconId },
+              });
+            }
+
+            throw error;
+          }
+        },
+      );
     }),
 });

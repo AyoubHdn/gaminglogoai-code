@@ -620,9 +620,6 @@ export function StudioShell({ children }: { children: ReactNode }) {
               <FaFolderOpen aria-hidden="true" />
               My Designs
             </Link>
-            <span className="hidden h-9 w-9 items-center justify-center rounded-lg bg-slate-800 text-slate-400 sm:flex">
-              <FaCoins aria-hidden="true" />
-            </span>
           </div>
         </header>
 

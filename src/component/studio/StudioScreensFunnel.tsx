@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa";
 
 import { Button } from "~/component/Button";
+import { StudioWatermarkNotice } from "~/component/studio/StudioWatermarkNotice";
 import {
   STREAM_SCREEN_PLATFORMS,
   type StreamScreenKind,
@@ -26,6 +27,7 @@ import {
   STREAM_SCREEN_TEMPLATES,
   type StreamScreenTemplate,
 } from "~/data/streamScreenTemplates";
+import { buildStudioDownloadFilename } from "~/lib/studioDownload";
 import { api } from "~/utils/api";
 import { type ScreensDeepLinkContext } from "./StudioScreensWorkspace";
 
@@ -732,6 +734,8 @@ function ScreenResults({
         </Button>
       </div>
 
+      <StudioWatermarkNotice />
+
       <div className="mt-6 space-y-6">
         {screens.map((screen, index) => {
           const generated = results.find(
@@ -998,10 +1002,10 @@ export function StudioScreensFunnel({
     const blobUrl = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = blobUrl;
-    link.download = `${screen.title.replace(
-      /[^a-z0-9_-]/gi,
-      "_",
-    )}_stream_screen.png`;
+    link.download = buildStudioDownloadFilename({
+      text: screen.title || session?.user?.name,
+      toolType: "twitch-stream-screen",
+    });
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa";
 
 import { Button } from "~/component/Button";
+import { StudioWatermarkNotice } from "~/component/studio/StudioWatermarkNotice";
 import { useFunnel } from "~/component/bannerFunnel/FunnelContext";
 import {
   BANNER_GENERATION_CREDITS,
@@ -24,6 +25,7 @@ import {
 } from "~/data/bannerTemplates";
 import { PLATFORMS, type PlatformId } from "~/data/platforms";
 import { getReferenceAwareGenerationCredits } from "~/lib/generationPricing";
+import { buildStudioDownloadFilename } from "~/lib/studioDownload";
 import { filterTemplates, getAvailableFilters } from "~/lib/templateBrowser";
 import { api } from "~/utils/api";
 import { type BannerDeepLinkContext } from "./StudioBannerWorkspace";
@@ -974,29 +976,13 @@ export function StudioBannerFunnel({
       }
 
       const blob = await response.blob();
-      const imageBitmap = await createImageBitmap(blob);
-      const canvas = document.createElement("canvas");
-      canvas.width = bannerWidth;
-      canvas.height = bannerHeight;
-      const context = canvas.getContext("2d");
-      if (!context) {
-        throw new Error("Canvas context is unavailable.");
-      }
-
-      context.drawImage(imageBitmap, 0, 0, bannerWidth, bannerHeight);
-      const pngBlob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/png"),
-      );
-      if (!pngBlob) {
-        throw new Error("Could not prepare the PNG.");
-      }
-
-      const blobUrl = window.URL.createObjectURL(pngBlob);
+      const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      const safeName =
-        channelName.trim().replace(/[^a-z0-9_-]+/gi, "_") || "twitch-banner";
       link.href = blobUrl;
-      link.download = `${safeName}_twitch_banner.png`;
+      link.download = buildStudioDownloadFilename({
+        text: channelName || session?.user?.name,
+        toolType: "twitch-banner",
+      });
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1173,6 +1159,8 @@ export function StudioBannerFunnel({
                 Saved to My Designs
               </Link>
             </div>
+
+            <StudioWatermarkNotice />
 
             <div className="overflow-hidden rounded-xl border border-slate-700 bg-slate-950 shadow-md">
               <div

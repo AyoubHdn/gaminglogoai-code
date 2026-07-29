@@ -2,7 +2,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FaArrowLeft,
   FaArrowRight,
@@ -17,8 +17,10 @@ import {
 
 import { Button } from "~/component/Button";
 import { SharePopup } from "~/component/SharePopup";
+import { StudioWatermarkNotice } from "~/component/studio/StudioWatermarkNotice";
 import { gamerStylesData } from "~/data/gamerStylesData";
 import { LOGO_MODEL_CREDITS } from "~/lib/generationPricing";
+import { buildStudioDownloadFilename } from "~/lib/studioDownload";
 import { api } from "~/utils/api";
 
 type FunnelStep = 1 | 2 | 3 | 4 | 5;
@@ -119,6 +121,41 @@ function getEnginePreview(
   }
 
   return selectedStyleImageSrc;
+}
+
+function EnginePreview({
+  selectedStyleImageSrc,
+  model,
+  engineName,
+}: {
+  selectedStyleImageSrc: string;
+  model: AIModel;
+  engineName: string;
+}) {
+  const preferredSrc = getEnginePreview(selectedStyleImageSrc, model);
+  const [src, setSrc] = useState(preferredSrc);
+
+  useEffect(() => {
+    setSrc(preferredSrc);
+  }, [preferredSrc]);
+
+  return (
+    <div className="relative mx-auto aspect-square w-full max-w-[180px] overflow-hidden rounded-lg border border-slate-700 bg-slate-800">
+      <Image
+        src={src}
+        alt={`${engineName} example preview`}
+        fill
+        sizes="180px"
+        className="object-contain"
+        unoptimized
+        onError={() => {
+          if (src !== selectedStyleImageSrc) {
+            setSrc(selectedStyleImageSrc);
+          }
+        }}
+      />
+    </div>
+  );
 }
 
 function getModelCost(model: AIModel | null): number {
@@ -472,16 +509,11 @@ function EngineStep({
                 </span>
               )}
 
-              <div className="relative mx-auto h-40 w-full max-w-sm overflow-hidden rounded-lg border border-slate-700 bg-slate-800 lg:h-[180px]">
-                <Image
-                  src={getEnginePreview(selectedStyleImageSrc, engine.value)}
-                  alt={`${engine.name} preview`}
-                  fill
-                  sizes="(max-width: 768px) 80vw, 380px"
-                  className="object-cover"
-                  unoptimized
-                />
-              </div>
+              <EnginePreview
+                selectedStyleImageSrc={selectedStyleImageSrc}
+                model={engine.value}
+                engineName={engine.name}
+              />
 
               <div className="mt-5 flex flex-1 flex-col">
                 <div className="flex items-start justify-between gap-3">
@@ -741,6 +773,8 @@ function ResultsGrid({
         </h4>
       </div>
 
+      <StudioWatermarkNotice />
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {images.map(({ imageUrl }, index) => (
           <article
@@ -941,32 +975,14 @@ export function StudioLogoFunnel({
       }
 
       const blob = await response.blob();
-      const imageBitmap = await createImageBitmap(blob);
-      const canvas = document.createElement("canvas");
-      canvas.width = imageBitmap.width;
-      canvas.height = imageBitmap.height;
-
-      const context = canvas.getContext("2d");
-      if (!context) {
-        throw new Error("Canvas is unavailable");
-      }
-
-      context.drawImage(imageBitmap, 0, 0);
-      const pngBlob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/png"),
-      );
-
-      if (!pngBlob) {
-        throw new Error("Failed to create PNG");
-      }
-
-      const blobUrl = window.URL.createObjectURL(pngBlob);
+      const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      const safeName =
-        state.name.trim().replace(/[^a-z0-9_]+/gi, "_") || "gaming-logo";
 
       link.href = blobUrl;
-      link.download = `${safeName}_${state.selectedModel ?? "logo"}_${state.selectedAspectRatio.replace(":", "x")}.png`;
+      link.download = buildStudioDownloadFilename({
+        text: state.name,
+        toolType: "gaming-logo",
+      });
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

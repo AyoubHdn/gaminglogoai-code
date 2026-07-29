@@ -16,9 +16,11 @@ import {
 } from "react-icons/fa";
 
 import { Button } from "~/component/Button";
+import { StudioWatermarkNotice } from "~/component/studio/StudioWatermarkNotice";
 import { useFunnel } from "~/component/thumbnailFunnel/FunnelContext";
 import { THUMBNAIL_PLATFORMS } from "~/data/thumbnailPlatforms";
 import { getReferenceAwareGenerationCredits } from "~/lib/generationPricing";
+import { buildStudioDownloadFilename } from "~/lib/studioDownload";
 import {
   THUMBNAIL_GENERATION_CREDITS,
   THUMBNAIL_TEMPLATES,
@@ -1044,29 +1046,13 @@ export function StudioThumbnailFunnel({
       }
 
       const blob = await response.blob();
-      const imageBitmap = await createImageBitmap(blob);
-      const canvasElement = document.createElement("canvas");
-      canvasElement.width = imageWidth;
-      canvasElement.height = imageHeight;
-      const context = canvasElement.getContext("2d");
-      if (!context) {
-        throw new Error("Canvas context is unavailable.");
-      }
-
-      context.drawImage(imageBitmap, 0, 0, imageWidth, imageHeight);
-      const pngBlob = await new Promise<Blob | null>((resolve) =>
-        canvasElement.toBlob(resolve, "image/png"),
-      );
-      if (!pngBlob) {
-        throw new Error("Could not prepare the PNG.");
-      }
-
-      const blobUrl = window.URL.createObjectURL(pngBlob);
+      const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      const safeName =
-        title.trim().replace(/[^a-z0-9_-]+/gi, "_") || "youtube-thumbnail";
       link.href = blobUrl;
-      link.download = `${safeName}_youtube_thumbnail.png`;
+      link.download = buildStudioDownloadFilename({
+        text: title || session?.user?.name,
+        toolType: "youtube-thumbnail",
+      });
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1241,6 +1227,8 @@ export function StudioThumbnailFunnel({
                 Saved to My Designs
               </Link>
             </div>
+
+            <StudioWatermarkNotice />
 
             <div className="overflow-hidden rounded-xl border border-slate-700 bg-slate-950 shadow-md">
               <div className="relative aspect-video overflow-hidden">
