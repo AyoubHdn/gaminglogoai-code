@@ -17,6 +17,8 @@ interface StoredFunnelState {
   currentStep: FunnelStep;
   selectedPlatform: PlatformId | null;
   selectedTemplateId: string | null;
+  selectedFormatId: string | null;
+  selectedGameId: string | null;
   referenceSource: ReferenceSource;
   referenceUrl: string | null;
   title: string;
@@ -40,6 +42,8 @@ interface FunnelContextValue extends StoredFunnelState {
   setCurrentStep: (step: FunnelStep) => void;
   setSelectedPlatform: (platform: PlatformId | null) => void;
   setSelectedTemplateId: (templateId: string | null) => void;
+  setSelectedFormatId: (formatId: string | null) => void;
+  setSelectedGameId: (gameId: string | null) => void;
   setReferenceSource: (source: ReferenceSource) => void;
   setReferenceUrl: (url: string | null) => void;
   setTitle: (value: string) => void;
@@ -55,7 +59,7 @@ interface FunnelContextValue extends StoredFunnelState {
       url: string;
       prompt: string;
       timestamp: string;
-    }>
+    }>,
   ) => void;
   setTemplateFilters: (filters: TemplateFilters) => void;
   resetResultState: () => void;
@@ -70,6 +74,8 @@ const defaultState: StoredFunnelState = {
   currentStep: "step0",
   selectedPlatform: null,
   selectedTemplateId: null,
+  selectedFormatId: null,
+  selectedGameId: null,
   referenceSource: null,
   referenceUrl: null,
   title: "",
@@ -105,11 +111,34 @@ function normalizeStoredState(rawValue: unknown): StoredFunnelState {
   }
 
   const value = rawValue as Partial<StoredFunnelState>;
-  const selectedPlatform = value.selectedPlatform === "youtube" ? "youtube" : null;
+  const selectedPlatform =
+    value.selectedPlatform === "youtube" ? "youtube" : null;
   const selectedTemplateId =
-    typeof value.selectedTemplateId === "string" ? value.selectedTemplateId : null;
+    typeof value.selectedTemplateId === "string"
+      ? value.selectedTemplateId
+      : null;
+  const selectedFormatId =
+    typeof value.selectedFormatId === "string" ? value.selectedFormatId : null;
+  const selectedGameId =
+    typeof value.selectedGameId === "string" ? value.selectedGameId : null;
 
   const normalizedStep: FunnelStep = (() => {
+    if (selectedFormatId || selectedGameId) {
+      if (!selectedFormatId || value.currentStep === "step0") {
+        return "step0";
+      }
+
+      if (!selectedGameId) {
+        return "step1";
+      }
+
+      if (value.currentStep === "step2" || value.currentStep === "step3") {
+        return value.currentStep;
+      }
+
+      return "step1";
+    }
+
     if (!selectedPlatform) {
       return "step0";
     }
@@ -129,17 +158,22 @@ function normalizeStoredState(rawValue: unknown): StoredFunnelState {
     currentStep: normalizedStep,
     selectedPlatform,
     selectedTemplateId,
+    selectedFormatId,
+    selectedGameId,
     referenceSource:
       value.referenceSource === "upload" ||
       value.referenceSource === "designs" ||
       value.referenceSource === "none"
         ? value.referenceSource
         : null,
-    referenceUrl: typeof value.referenceUrl === "string" ? value.referenceUrl : null,
+    referenceUrl:
+      typeof value.referenceUrl === "string" ? value.referenceUrl : null,
     title: typeof value.title === "string" ? value.title : "",
     subtitle: typeof value.subtitle === "string" ? value.subtitle : "",
     originalImageUrl:
-      typeof value.originalImageUrl === "string" ? value.originalImageUrl : null,
+      typeof value.originalImageUrl === "string"
+        ? value.originalImageUrl
+        : null,
     originalIconId:
       typeof value.originalIconId === "string" ? value.originalIconId : null,
     currentImageUrl:
@@ -156,7 +190,7 @@ function normalizeStoredState(rawValue: unknown): StoredFunnelState {
       ? value.refinementHistory
           .filter(
             (
-              item
+              item,
             ): item is {
               url: string;
               prompt: string;
@@ -164,11 +198,11 @@ function normalizeStoredState(rawValue: unknown): StoredFunnelState {
             } =>
               Boolean(
                 item &&
-                  typeof item === "object" &&
-                  typeof item.url === "string" &&
-                  typeof item.prompt === "string" &&
-                  typeof item.timestamp === "string"
-              )
+                typeof item === "object" &&
+                typeof item.url === "string" &&
+                typeof item.prompt === "string" &&
+                typeof item.timestamp === "string",
+              ),
           )
           .slice(0, 5)
       : [],
@@ -176,11 +210,7 @@ function normalizeStoredState(rawValue: unknown): StoredFunnelState {
   };
 }
 
-export function FunnelProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function FunnelProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<StoredFunnelState>(defaultState);
   const [hasHydrated, setHasHydrated] = useState(false);
 
@@ -249,6 +279,8 @@ export function FunnelProvider({
           selectedPlatform,
           currentStep: selectedPlatform ? "step1" : "step0",
           selectedTemplateId: null,
+          selectedFormatId: null,
+          selectedGameId: null,
           templateFilters: {},
           referenceSource: null,
           referenceUrl: null,
@@ -264,11 +296,22 @@ export function FunnelProvider({
           selectedTemplateId: templateId,
           currentStep: templateId ? state.currentStep : "step1",
         }),
+      setSelectedFormatId: (selectedFormatId) =>
+        patchState({
+          selectedFormatId,
+          currentStep: selectedFormatId ? state.currentStep : "step0",
+        }),
+      setSelectedGameId: (selectedGameId) =>
+        patchState({
+          selectedGameId,
+          currentStep: selectedGameId ? state.currentStep : "step1",
+        }),
       setReferenceSource: (referenceSource) => patchState({ referenceSource }),
       setReferenceUrl: (referenceUrl) => patchState({ referenceUrl }),
       setTitle: (title) => patchState({ title }),
       setSubtitle: (subtitle) => patchState({ subtitle }),
-      setOriginalImageUrl: (originalImageUrl) => patchState({ originalImageUrl }),
+      setOriginalImageUrl: (originalImageUrl) =>
+        patchState({ originalImageUrl }),
       setOriginalIconId: (originalIconId) => patchState({ originalIconId }),
       setCurrentImageUrl: (currentImageUrl) => patchState({ currentImageUrl }),
       setCurrentIconId: (currentIconId) => patchState({ currentIconId }),
@@ -278,7 +321,9 @@ export function FunnelProvider({
       setRefinementHistory: (refinementHistory) =>
         patchState({ refinementHistory: refinementHistory.slice(0, 5) }),
       setTemplateFilters: (templateFilters) =>
-        patchState({ templateFilters: sanitizeTemplateFilters(templateFilters) }),
+        patchState({
+          templateFilters: sanitizeTemplateFilters(templateFilters),
+        }),
       resetResultState,
       selectTemplate: (templateId) =>
         patchState({
@@ -301,7 +346,7 @@ export function FunnelProvider({
       resetResultState,
       startOver,
       state,
-    ]
+    ],
   );
 
   return (

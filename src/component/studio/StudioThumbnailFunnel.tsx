@@ -4,34 +4,58 @@ import Image from "next/image";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { type IconType } from "react-icons";
 import {
   FaArrowLeft,
   FaArrowRight,
+  FaCar,
   FaCheck,
   FaCloudUploadAlt,
   FaCoins,
+  FaCrosshairs,
+  FaCrown,
   FaDownload,
+  FaDragon,
+  FaFire,
+  FaGamepad,
+  FaGhost,
+  FaHatWizard,
+  FaHorse,
+  FaBolt,
+  FaParachuteBox,
   FaRedo,
+  FaRing,
+  FaRobot,
+  FaShieldAlt,
   FaYoutube,
 } from "react-icons/fa";
+import {
+  SiActivision,
+  SiEa,
+  SiEpicgames,
+  SiMinecraft,
+  SiRoblox,
+  SiValorant,
+} from "react-icons/si";
 
 import { Button } from "~/component/Button";
 import { StudioWatermarkNotice } from "~/component/studio/StudioWatermarkNotice";
 import { useFunnel } from "~/component/thumbnailFunnel/FunnelContext";
+import {
+  THUMBNAIL_FORMATS,
+  type ThumbnailFormat,
+} from "~/data/thumbnailFormats";
+import { THUMBNAIL_GAMES } from "~/data/thumbnailGames";
 import { THUMBNAIL_PLATFORMS } from "~/data/thumbnailPlatforms";
+import { THUMBNAIL_GENERATION_CREDITS } from "~/data/thumbnailTemplates";
 import { getReferenceAwareGenerationCredits } from "~/lib/generationPricing";
 import { buildStudioDownloadFilename } from "~/lib/studioDownload";
-import {
-  THUMBNAIL_GENERATION_CREDITS,
-  THUMBNAIL_TEMPLATES,
-  type ThumbnailTemplate,
-} from "~/data/thumbnailTemplates";
-import { filterTemplates, getAvailableFilters } from "~/lib/templateBrowser";
 import { S3_BASE } from "~/utils/s3Paths";
 import { api, type RouterOutputs } from "~/utils/api";
 import { type ThumbnailDeepLinkContext } from "./StudioThumbnailWorkspace";
 
 type StudioThumbnailStep = "step0" | "step1" | "step2" | "step3";
+type StudioThumbnailStage = "platform" | StudioThumbnailStep;
 type UserIcon = RouterOutputs["icons"]["getIcons"][number];
 
 const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024;
@@ -40,23 +64,40 @@ const TITLE_LIMIT = 70;
 const SUBTITLE_LIMIT = 50;
 const REFINEMENT_PROMPT_LIMIT = 500;
 
+const GAME_ICONS: Record<string, IconType> = {
+  generic: FaGamepad,
+  fortnite: SiEpicgames,
+  minecraft: SiMinecraft,
+  "call-of-duty": SiActivision,
+  "free-fire": FaFire,
+  valorant: SiValorant,
+  "apex-legends": SiEa,
+  roblox: SiRoblox,
+  gta: FaCar,
+  "elden-ring": FaRing,
+  "legend-of-zelda": FaHatWizard,
+  "counter-strike-2": FaCrosshairs,
+  "five-nights-at-freddys": FaGhost,
+  "league-of-legends": FaCrown,
+  "mortal-kombat": FaDragon,
+  "overwatch-2": FaShieldAlt,
+  "red-dead-redemption-2": FaHorse,
+  pokemon: FaBolt,
+  "cyberpunk-2077": FaRobot,
+  pubg: FaParachuteBox,
+};
+
 const STEP_DETAILS: Array<{
-  step: StudioThumbnailStep;
+  step: StudioThumbnailStage;
   number: number;
   shortTitle: string;
 }> = [
-  { step: "step0", number: 1, shortTitle: "Platform" },
-  { step: "step1", number: 2, shortTitle: "Template" },
-  { step: "step2", number: 3, shortTitle: "Personalize" },
-  { step: "step3", number: 4, shortTitle: "Generate" },
+  { step: "platform", number: 1, shortTitle: "Platform" },
+  { step: "step0", number: 2, shortTitle: "Format" },
+  { step: "step1", number: 3, shortTitle: "Game" },
+  { step: "step2", number: 4, shortTitle: "Personalize" },
+  { step: "step3", number: 5, shortTitle: "Generate" },
 ];
-
-function formatGameLabel(value: string): string {
-  return value
-    .split("-")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-}
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error && error.message.trim()) {
@@ -95,14 +136,18 @@ function isReferenceCandidate(icon: UserIcon): boolean {
   return !excludedPrefixes.some((prefix) => prompt.startsWith(prefix));
 }
 
-function FunnelProgress({ currentStep }: { currentStep: StudioThumbnailStep }) {
+function FunnelProgress({
+  currentStep,
+}: {
+  currentStep: StudioThumbnailStage;
+}) {
   const currentIndex = STEP_DETAILS.findIndex(
     (item) => item.step === currentStep,
   );
 
   return (
     <ol
-      className="grid grid-cols-4 overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-sm"
+      className="grid grid-cols-5 overflow-hidden rounded-xl border border-slate-800 bg-slate-900 shadow-sm"
       aria-label="Thumbnail creation progress"
     >
       {STEP_DETAILS.map((item, index) => {
@@ -161,7 +206,7 @@ function StepHeading({
   return (
     <header className="mx-auto max-w-2xl text-center">
       <p className="text-xs font-bold uppercase tracking-[0.16em] text-purple-400">
-        Step {step} of 4
+        Step {step} of 5
       </p>
       <h3 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
         {title}
@@ -203,32 +248,18 @@ function StepNavigation({
 }
 
 function PlatformStep({ onNext }: { onNext: () => void }) {
-  const { selectedPlatform, setSelectedPlatform } = useFunnel();
   const platform = THUMBNAIL_PLATFORMS.youtube;
-  const [isSelected, setIsSelected] = useState(
-    selectedPlatform === "youtube" || selectedPlatform === null,
-  );
 
   return (
     <div>
       <StepHeading
         step={1}
         title="Choose your platform"
-        description="The existing thumbnail generator is purpose-built for YouTube and its standard 16:9 canvas."
+        description="Start with YouTube's standard 16:9 thumbnail canvas, then choose the content format and game."
       />
 
       <div className="mx-auto mt-10 max-w-md">
-        <button
-          type="button"
-          onClick={() => setIsSelected(true)}
-          className={clsx(
-            "w-full rounded-xl border-2 bg-slate-950 p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-purple-500/70 hover:shadow-lg",
-            isSelected
-              ? "border-purple-500 ring-4 ring-purple-500/10"
-              : "border-slate-700",
-          )}
-          aria-pressed={isSelected}
-        >
+        <div className="w-full rounded-xl border-2 border-purple-500 bg-slate-950 p-5 text-left shadow-lg ring-4 ring-purple-500/10">
           <div className="flex items-start justify-between gap-3">
             <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-600 text-xl text-white">
               <FaYoutube aria-hidden="true" />
@@ -245,23 +276,12 @@ function PlatformStep({ onNext }: { onNext: () => void }) {
             {platform.surface.canvas.width} × {platform.surface.canvas.height}px
             · 16:9
           </p>
-        </button>
+        </div>
       </div>
 
       <div className="mt-10 flex justify-center">
-        <Button
-          type="button"
-          onClick={() => {
-            if (selectedPlatform !== "youtube") {
-              setSelectedPlatform("youtube");
-              return;
-            }
-            onNext();
-          }}
-          disabled={!isSelected}
-          className="min-w-40"
-        >
-          Browse templates
+        <Button type="button" onClick={onNext} className="min-w-40">
+          Choose a format
           <FaArrowRight aria-hidden="true" />
         </Button>
       </div>
@@ -269,12 +289,12 @@ function PlatformStep({ onNext }: { onNext: () => void }) {
   );
 }
 
-function TemplateCard({
-  template,
+function FormatCard({
+  format,
   isSelected,
   onSelect,
 }: {
-  template: ThumbnailTemplate;
+  format: ThumbnailFormat;
   isSelected: boolean;
   onSelect: () => void;
 }) {
@@ -295,8 +315,8 @@ function TemplateCard({
       <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-purple-700 via-indigo-700 to-slate-900">
         {!hasImageError ? (
           <Image
-            src={template.thumbnailUrl}
-            alt={`${template.name} YouTube thumbnail template`}
+            src={format.previewImage}
+            alt={`${format.name} thumbnail format preview`}
             fill
             sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 330px"
             className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
@@ -304,8 +324,11 @@ function TemplateCard({
             unoptimized
           />
         ) : (
-          <div className="flex h-full items-center justify-center px-5 text-center text-sm font-bold text-white">
-            {template.name}
+          <div className="flex h-full flex-col items-center justify-center px-5 text-center">
+            <span className="text-sm font-bold text-white">{format.name}</span>
+            <span className="mt-1 text-[11px] font-medium text-purple-200">
+              Preview coming soon
+            </span>
           </div>
         )}
         <span
@@ -320,146 +343,117 @@ function TemplateCard({
         </span>
       </div>
       <div className="p-3.5">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h4 className="truncate text-sm font-bold text-white">
-              {template.name}
-            </h4>
-            <p className="mt-1 truncate text-xs text-slate-500">
-              {template.categories.games.map(formatGameLabel).join(", ")} ·{" "}
-              {template.categories.styles.map(formatGameLabel).join(", ")}
-            </p>
-          </div>
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-cyan-500/10 px-2 py-1 text-[10px] font-bold text-cyan-300">
-            <FaCoins aria-hidden="true" />
-            from {template.credits}
-          </span>
-        </div>
+        <h4 className="text-sm font-bold text-white">{format.name}</h4>
+        <p className="mt-1 text-xs leading-5 text-slate-500">
+          {format.description}
+        </p>
       </div>
     </button>
   );
 }
 
-function TemplateStep({
+function FormatStep({
   onBack,
   onNext,
 }: {
   onBack: () => void;
   onNext: () => void;
 }) {
-  const {
-    selectedTemplateId,
-    setSelectedTemplateId,
-    templateFilters,
-    setTemplateFilters,
-    resetResultState,
-  } = useFunnel();
-  const gameOptions = useMemo(
-    () =>
-      Array.from(getAvailableFilters(THUMBNAIL_TEMPLATES).games).sort((a, b) =>
-        formatGameLabel(a).localeCompare(formatGameLabel(b)),
-      ),
-    [],
-  );
-  const filteredTemplates = useMemo(
-    () => filterTemplates(THUMBNAIL_TEMPLATES, templateFilters),
-    [templateFilters],
-  );
-  const activeGame = templateFilters.games?.[0] ?? null;
-
-  const selectGame = (game: string | null) => {
-    setTemplateFilters(game ? { games: [game] } : {});
-    if (
-      selectedTemplateId &&
-      !THUMBNAIL_TEMPLATES.filter(
-        (template) => !game || template.categories.games.includes(game),
-      ).some((template) => template.id === selectedTemplateId)
-    ) {
-      setSelectedTemplateId(null);
-    }
-  };
+  const { selectedFormatId, setSelectedFormatId, resetResultState } =
+    useFunnel();
 
   return (
     <div>
       <StepHeading
         step={2}
-        title="Choose a thumbnail template"
-        description="Browse the existing presets by game. Each template already carries its real visual style and prompt direction."
+        title="Choose your content format"
+        description="Pick the composition and story that best matches your video. You will choose the game next."
       />
 
-      <div className="mt-8 space-y-5">
-        <div
-          className="flex gap-2 overflow-x-auto pb-1"
-          aria-label="Thumbnail game filters"
-        >
-          <button
-            type="button"
-            onClick={() => selectGame(null)}
-            className={clsx(
-              "shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition",
-              !activeGame
-                ? "border-purple-500 bg-purple-600 text-white"
-                : "border-slate-700 bg-slate-950 text-slate-300 hover:border-purple-500/60 hover:text-white",
-            )}
-          >
-            All games
-          </button>
-          {gameOptions.map((game) => (
-            <button
-              key={game}
-              type="button"
-              onClick={() => selectGame(game)}
-              className={clsx(
-                "shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition",
-                activeGame === game
-                  ? "border-purple-500 bg-purple-600 text-white"
-                  : "border-slate-700 bg-slate-950 text-slate-300 hover:border-purple-500/60 hover:text-white",
-              )}
-            >
-              {formatGameLabel(game)}
-            </button>
-          ))}
-        </div>
-
-        <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 sm:p-5">
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <div>
-              <h4 className="font-semibold text-white">
-                {activeGame ? formatGameLabel(activeGame) : "YouTube templates"}
-              </h4>
-              <p className="text-xs text-slate-500">
-                {filteredTemplates.length} template
-                {filteredTemplates.length === 1 ? "" : "s"} · 16:9 previews
-              </p>
-            </div>
-            {selectedTemplateId && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-300">
-                <FaCheck aria-hidden="true" />
-                Template selected
-              </span>
-            )}
-          </div>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredTemplates.map((template) => (
-              <TemplateCard
-                key={template.id}
-                template={template}
-                isSelected={selectedTemplateId === template.id}
-                onSelect={() => {
-                  setSelectedTemplateId(template.id);
-                  resetResultState();
-                }}
-              />
-            ))}
-          </div>
-        </div>
+      <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {THUMBNAIL_FORMATS.map((format) => (
+          <FormatCard
+            key={format.id}
+            format={format}
+            isSelected={selectedFormatId === format.id}
+            onSelect={() => {
+              setSelectedFormatId(format.id);
+              resetResultState();
+            }}
+          />
+        ))}
       </div>
 
       <StepNavigation
         onBack={onBack}
         onNext={onNext}
-        nextDisabled={!selectedTemplateId}
+        nextDisabled={!selectedFormatId}
+        nextLabel="Choose a game"
+      />
+    </div>
+  );
+}
+
+function GameStep({
+  onBack,
+  onNext,
+}: {
+  onBack: () => void;
+  onNext: () => void;
+}) {
+  const { selectedGameId, setSelectedGameId, resetResultState } = useFunnel();
+
+  return (
+    <div>
+      <StepHeading
+        step={3}
+        title="Choose your game"
+        description="Add a recognizable game world, or choose generic for a flexible gaming look without a specific franchise."
+      />
+
+      <div className="mx-auto mt-10 grid max-w-4xl grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {THUMBNAIL_GAMES.map((game) => {
+          const isSelected = selectedGameId === game.id;
+          const GameIcon = GAME_ICONS[game.id] ?? FaGamepad;
+
+          return (
+            <button
+              key={game.id}
+              type="button"
+              onClick={() => {
+                setSelectedGameId(game.id);
+                resetResultState();
+              }}
+              className={clsx(
+                "flex min-h-36 flex-col items-center justify-center rounded-xl border-2 bg-slate-950 p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-purple-500/70",
+                isSelected
+                  ? "border-cyan-400 ring-4 ring-cyan-400/10"
+                  : "border-slate-800",
+              )}
+              aria-pressed={isSelected}
+            >
+              <span
+                className={clsx(
+                  "flex h-16 w-16 items-center justify-center rounded-2xl text-3xl transition",
+                  isSelected
+                    ? "bg-cyan-500 text-slate-950"
+                    : "bg-slate-800 text-slate-300",
+                )}
+              >
+                <GameIcon aria-hidden="true" />
+              </span>
+              <span className="mt-3 text-sm font-bold leading-5 text-white">
+                {game.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <StepNavigation
+        onBack={onBack}
+        onNext={onNext}
+        nextDisabled={!selectedGameId}
         nextLabel="Personalize thumbnail"
       />
     </div>
@@ -517,7 +511,7 @@ function PersonalizeStep({
   return (
     <div>
       <StepHeading
-        step={3}
+        step={4}
         title="Personalize your thumbnail"
         description="Add a concise headline and optional subtitle, then choose whether the AI should use an image reference."
       />
@@ -574,8 +568,8 @@ function PersonalizeStep({
               <span className="font-normal text-slate-500">(optional)</span>
             </h4>
             <p className="mt-1 text-xs text-slate-500">
-              Use a face, game capture, saved design, or let the selected
-              template lead.
+              Use a face, game capture, saved design, or let the selected format
+              and game lead.
             </p>
           </div>
 
@@ -584,7 +578,7 @@ function PersonalizeStep({
               {
                 value: "none" as const,
                 title: "No reference",
-                description: "Generate from the template and text.",
+                description: "Generate from the format, game, and text.",
               },
               {
                 value: "upload" as const,
@@ -799,7 +793,9 @@ export function StudioThumbnailFunnel({
   const {
     currentStep,
     hasHydrated,
-    selectedTemplateId,
+    selectedPlatform,
+    selectedFormatId,
+    selectedGameId,
     referenceSource,
     referenceUrl,
     title,
@@ -813,7 +809,7 @@ export function StudioThumbnailFunnel({
     refinementHistory,
     setCurrentStep,
     setSelectedPlatform,
-    setSelectedTemplateId,
+    setSelectedGameId,
     setReferenceSource,
     setReferenceUrl,
     setOriginalImageUrl,
@@ -823,7 +819,6 @@ export function StudioThumbnailFunnel({
     setIsGenerating,
     setSessionCreditsSpent,
     setRefinementHistory,
-    setTemplateFilters,
     resetResultState,
     startOver,
   } = useFunnel();
@@ -831,52 +826,50 @@ export function StudioThumbnailFunnel({
   const [uploadError, setUploadError] = useState("");
   const [error, setError] = useState("");
   const [refinementPrompt, setRefinementPrompt] = useState("");
+  const [hasSummaryPreviewError, setHasSummaryPreviewError] = useState(false);
   const appliedDeepLinkRef = useRef<string | null>(null);
 
   const createUploadUrl = api.s3.createUploadUrl.useMutation();
   const generateThumbnail = api.thumbnailFunnel.generate.useMutation();
   const refineThumbnail = api.thumbnailFunnel.refine.useMutation();
 
-  const selectedTemplate = useMemo(
+  const selectedFormat = useMemo(
     () =>
-      THUMBNAIL_TEMPLATES.find(
-        (template) => template.id === selectedTemplateId,
-      ) ?? null,
-    [selectedTemplateId],
+      THUMBNAIL_FORMATS.find((format) => format.id === selectedFormatId) ??
+      null,
+    [selectedFormatId],
+  );
+  const selectedGame = useMemo(
+    () => THUMBNAIL_GAMES.find((game) => game.id === selectedGameId) ?? null,
+    [selectedGameId],
   );
   const canvas = THUMBNAIL_PLATFORMS.youtube.surface.canvas;
   const imageWidth = canvas.width;
   const imageHeight = canvas.height;
-  const generationCost = selectedTemplate
-    ? getReferenceAwareGenerationCredits(
-        selectedTemplate.credits,
-        referenceSource !== "none" && Boolean(referenceUrl),
-      )
-    : THUMBNAIL_GENERATION_CREDITS;
+  const generationCost = getReferenceAwareGenerationCredits(
+    THUMBNAIL_GENERATION_CREDITS,
+    referenceSource !== "none" && Boolean(referenceUrl),
+  );
 
   useEffect(() => {
     if (!hasHydrated || !requestedContext) {
       return;
     }
 
-    const deepLinkKey = `${requestedContext.game}:${requestedContext.template.id}`;
+    const deepLinkKey = requestedContext.game.id;
     if (appliedDeepLinkRef.current === deepLinkKey) {
       return;
     }
 
     appliedDeepLinkRef.current = deepLinkKey;
-    setSelectedPlatform("youtube");
-    setTemplateFilters({ games: [requestedContext.game] });
-    setSelectedTemplateId(requestedContext.template.id);
-    setCurrentStep("step1");
-  }, [
-    hasHydrated,
-    requestedContext,
-    setCurrentStep,
-    setSelectedPlatform,
-    setSelectedTemplateId,
-    setTemplateFilters,
-  ]);
+    setSelectedGameId(requestedContext.game.id);
+  }, [hasHydrated, requestedContext, setSelectedGameId]);
+
+  useEffect(() => {
+    if (hasHydrated && !selectedFormat && currentStep !== "step0") {
+      setCurrentStep("step0");
+    }
+  }, [currentStep, hasHydrated, selectedFormat, setCurrentStep]);
 
   useEffect(() => {
     return () => {
@@ -885,6 +878,10 @@ export function StudioThumbnailFunnel({
       }
     };
   }, [localPreviewUrl]);
+
+  useEffect(() => {
+    setHasSummaryPreviewError(false);
+  }, [selectedFormatId]);
 
   const handleUploadChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
@@ -960,7 +957,7 @@ export function StudioThumbnailFunnel({
       return;
     }
 
-    if (!selectedTemplate || !title.trim()) {
+    if (!selectedFormat || !selectedGame || !title.trim()) {
       setError("Please complete each step before generating your thumbnail.");
       return;
     }
@@ -969,7 +966,8 @@ export function StudioThumbnailFunnel({
     try {
       const result = await generateThumbnail.mutateAsync({
         platform: "youtube",
-        templateId: selectedTemplate.id,
+        formatId: selectedFormat.id,
+        gameId: selectedGame.id,
         referenceImageUrl:
           referenceSource === "none" || !referenceUrl ? null : referenceUrl,
         title: title.trim(),
@@ -1066,7 +1064,7 @@ export function StudioThumbnailFunnel({
   const renderGenerateStep = () => (
     <div>
       <StepHeading
-        step={4}
+        step={5}
         title="Review and generate"
         description="Confirm the essentials and credit cost, then create your exact 1280 × 720 YouTube thumbnail."
       />
@@ -1075,16 +1073,26 @@ export function StudioThumbnailFunnel({
         <div className="grid gap-6 lg:grid-cols-[320px,minmax(0,1fr)]">
           <div className="space-y-3">
             <div className="relative aspect-video overflow-hidden rounded-xl border border-slate-700 bg-slate-950 shadow-md">
-              {selectedTemplate && (
+              {selectedFormat && !hasSummaryPreviewError ? (
                 <Image
-                  src={selectedTemplate.thumbnailUrl}
-                  alt={`${selectedTemplate.name} summary preview`}
+                  src={selectedFormat.previewImage}
+                  alt={`${selectedFormat.name} format summary preview`}
                   fill
                   sizes="320px"
                   className="object-cover"
+                  onError={() => setHasSummaryPreviewError(true)}
                   unoptimized
                 />
-              )}
+              ) : selectedFormat ? (
+                <div className="flex h-full flex-col items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-700 to-slate-900 px-5 text-center">
+                  <span className="font-bold text-white">
+                    {selectedFormat.name}
+                  </span>
+                  <span className="mt-1 text-xs text-purple-200">
+                    Preview coming soon
+                  </span>
+                </div>
+              ) : null}
             </div>
             {referenceSource !== "none" && referenceUrl && (
               <div className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950/70 p-3">
@@ -1104,8 +1112,12 @@ export function StudioThumbnailFunnel({
             {[
               { label: "Platform", value: "YouTube" },
               {
-                label: "Template",
-                value: selectedTemplate?.name ?? "Not selected",
+                label: "Format",
+                value: selectedFormat?.name ?? "Not selected",
+              },
+              {
+                label: "Game",
+                value: selectedGame?.name ?? "Not selected",
               },
               { label: "Title", value: title.trim() },
               { label: "Subtitle", value: subtitle.trim() || "No subtitle" },
@@ -1201,7 +1213,7 @@ export function StudioThumbnailFunnel({
               Building your YouTube thumbnail
             </p>
             <p className="mt-1 text-sm text-slate-400">
-              Applying the template, headline, and image reference.
+              Applying the format, game theme, headline, and image reference.
             </p>
           </div>
         )}
@@ -1363,12 +1375,28 @@ export function StudioThumbnailFunnel({
 
   return (
     <div className="mx-auto max-w-6xl">
-      <FunnelProgress currentStep={currentStep} />
+      <FunnelProgress
+        currentStep={selectedPlatform === "youtube" ? currentStep : "platform"}
+      />
       <section className="mt-5 rounded-xl border border-slate-800 bg-slate-900 p-5 shadow-md sm:p-8 lg:p-10">
-        {currentStep === "step0" ? (
-          <PlatformStep onNext={() => setCurrentStep("step1")} />
+        {selectedPlatform !== "youtube" ? (
+          <PlatformStep
+            onNext={() => {
+              const deepLinkedGameId = selectedGameId;
+              setSelectedPlatform("youtube");
+              if (deepLinkedGameId) {
+                setSelectedGameId(deepLinkedGameId);
+              }
+              setCurrentStep("step0");
+            }}
+          />
+        ) : currentStep === "step0" ? (
+          <FormatStep
+            onBack={() => setSelectedPlatform(null)}
+            onNext={() => setCurrentStep("step1")}
+          />
         ) : currentStep === "step1" ? (
-          <TemplateStep
+          <GameStep
             onBack={() => setCurrentStep("step0")}
             onNext={() => setCurrentStep("step2")}
           />

@@ -2,16 +2,12 @@ import { useRouter } from "next/router";
 import { useMemo } from "react";
 
 import { FunnelProvider } from "~/component/thumbnailFunnel/FunnelContext";
-import {
-  THUMBNAIL_GENERATION_CREDITS,
-  THUMBNAIL_TEMPLATES,
-  type ThumbnailTemplate,
-} from "~/data/thumbnailTemplates";
+import { THUMBNAIL_GAMES, type ThumbnailGame } from "~/data/thumbnailGames";
+import { THUMBNAIL_GENERATION_CREDITS } from "~/data/thumbnailTemplates";
 import { StudioThumbnailFunnel } from "./StudioThumbnailFunnel";
 
 export interface ThumbnailDeepLinkContext {
-  game: string;
-  template: ThumbnailTemplate;
+  game: ThumbnailGame;
 }
 
 function normalizeGameSlug(value: string): string {
@@ -37,15 +33,13 @@ function resolveThumbnailContext(
     return null;
   }
 
-  const template = THUMBNAIL_TEMPLATES.find(
+  const selectedGame = THUMBNAIL_GAMES.find(
     (candidate) =>
-      candidate.platform === "youtube" &&
-      candidate.categories.games.some(
-        (candidateGame) => normalizeGameSlug(candidateGame) === game,
-      ),
+      normalizeGameSlug(candidate.id) === game ||
+      normalizeGameSlug(candidate.name) === game,
   );
 
-  return template ? { game, template } : null;
+  return selectedGame ? { game: selectedGame } : null;
 }
 
 export function StudioThumbnailWorkspace() {
@@ -80,9 +74,8 @@ export function StudioThumbnailWorkspace() {
             Create your YouTube thumbnail
           </h2>
           <p className="mt-1 max-w-2xl text-sm text-slate-400">
-            Choose an existing gaming preset, add your title and reference, and
-            generate with the same credits, storage, and refinement flow as the
-            thumbnail maker.
+            Choose a proven gaming content format, add a game, title, and
+            optional reference, then generate a platform-ready thumbnail.
           </p>
         </div>
         <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-400">

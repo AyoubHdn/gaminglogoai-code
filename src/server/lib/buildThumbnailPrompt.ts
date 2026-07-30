@@ -1,12 +1,27 @@
 import { type BannerTemplate } from "../../data/bannerTemplates";
+import { type ThumbnailFormat } from "../../data/thumbnailFormats";
+import { type ThumbnailGame } from "../../data/thumbnailGames";
 import { THUMBNAIL_PLATFORMS } from "../../data/thumbnailPlatforms";
 
-export interface BuildThumbnailPromptInput {
-  template: BannerTemplate;
+interface BuildThumbnailPromptBaseInput {
   title: string;
   subtitle: string | null;
   hasReferenceImage: boolean;
 }
+
+export type BuildThumbnailPromptInput = BuildThumbnailPromptBaseInput &
+  (
+    | {
+        template: BannerTemplate;
+        format?: never;
+        game?: never;
+      }
+    | {
+        template?: never;
+        format: ThumbnailFormat;
+        game: ThumbnailGame;
+      }
+  );
 
 function escapeQuotedText(value: string): string {
   return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
@@ -37,25 +52,25 @@ function buildTemplateDirection(template: BannerTemplate): string | null {
 
   if (template.categories.games.length > 0) {
     parts.push(
-      `${formatList(template.categories.games.map(humanizeTaxonomyValue))} game influence`
+      `${formatList(template.categories.games.map(humanizeTaxonomyValue))} game influence`,
     );
   }
 
   if (template.categories.styles.length > 0) {
     parts.push(
-      `${formatList(template.categories.styles.map(humanizeTaxonomyValue))} art style`
+      `${formatList(template.categories.styles.map(humanizeTaxonomyValue))} art style`,
     );
   }
 
   if (template.categories.themes.length > 0) {
     parts.push(
-      `${formatList(template.categories.themes.map(humanizeTaxonomyValue))} theme`
+      `${formatList(template.categories.themes.map(humanizeTaxonomyValue))} theme`,
     );
   }
 
   if (template.categories.colors.length > 0) {
     parts.push(
-      `${formatList(template.categories.colors.map(humanizeTaxonomyValue))} color palette`
+      `${formatList(template.categories.colors.map(humanizeTaxonomyValue))} color palette`,
     );
   }
 
@@ -79,11 +94,17 @@ function buildTypographyDirection(template: BannerTemplate): string {
     return "Use bold tactical gaming typography with aggressive, sharp letterforms and strong thumbnail readability.";
   }
 
-  if (combinedContext.includes("minecraft") || combinedContext.includes("8-bit")) {
+  if (
+    combinedContext.includes("minecraft") ||
+    combinedContext.includes("8-bit")
+  ) {
     return "Use bold blocky arcade-inspired typography with strong contrast and easy thumbnail readability.";
   }
 
-  if (combinedContext.includes("fortnite") || combinedContext.includes("cartoon")) {
+  if (
+    combinedContext.includes("fortnite") ||
+    combinedContext.includes("cartoon")
+  ) {
     return "Use bold stylized creator-first typography with playful energy, strong contrast, and oversized readability.";
   }
 
@@ -97,13 +118,49 @@ function buildTypographyDirection(template: BannerTemplate): string {
   return "Use typography that feels native to the selected game and theme while staying oversized, bold, and instantly readable in a thumbnail.";
 }
 
+function renderFormatPrompt(
+  format: ThumbnailFormat,
+  game: ThumbnailGame,
+  safeTitle: string,
+): string {
+  return format.promptTemplate
+    .replace(/\{game\}/g, game.promptTheme)
+    .replace(/\{text\}/g, safeTitle);
+}
+
 export function buildThumbnailPrompt(input: BuildThumbnailPromptInput): string {
-  const platformName =
-    THUMBNAIL_PLATFORMS.youtube.displayName ?? input.template.platform;
+  const platformName = THUMBNAIL_PLATFORMS.youtube.displayName;
   const safeTitle = escapeQuotedText(input.title.trim());
   const safeSubtitle = input.subtitle?.trim()
     ? escapeQuotedText(input.subtitle.trim())
     : null;
+
+  if (input.format && input.game) {
+    const formatPrompt = renderFormatPrompt(
+      input.format,
+      input.game,
+      safeTitle,
+    );
+
+    return [
+      `Create a premium ${platformName} gaming thumbnail.`,
+      `Primary content format and composition: ${formatPrompt}`,
+      `Use ${input.game.name === "No specific game / generic" ? "an original generic gaming identity" : `${input.game.name} as the game identity`} while letting the selected ${input.format.name} format control the main composition, visual hierarchy, and story.`,
+      input.hasReferenceImage
+        ? "Use the attached image only as a visual reference for identity, pose, silhouette, and color direction. Do not paste, frame, crop, box, or place the exact uploaded image anywhere in the thumbnail. If the reference includes a person or face, redesign that subject so they look dressed, posed, lit, and styled like they belong naturally inside the selected game world."
+        : "Do not add a pasted source image. Let the thumbnail artwork carry the energy of the selected game and format.",
+      "Build a high-click-through thumbnail composition with one dominant focal subject and one dominant text block.",
+      `Place the main title "${safeTitle}" in large bold highly legible thumbnail typography.`,
+      "Use bold gaming typography that fits the selected game identity and content format while remaining oversized and instantly readable.",
+      safeSubtitle
+        ? `Place the subtitle "${safeSubtitle}" as smaller supporting text near the main title.`
+        : "Do not add subtitle text.",
+      "Render the title and subtitle exactly as provided. Do not misspell, paraphrase, mutate, or invent any words or letters.",
+      "Keep the composition clean, dramatic, high-contrast, and optimized for small-screen readability and strong click appeal.",
+      `Final result should feel platform-ready for ${platformName}, with production-quality typography, no watermark, and no signature.`,
+    ].join(" ");
+  }
+
   const templateDirection = buildTemplateDirection(input.template);
   const typographyDirection = buildTypographyDirection(input.template);
 
@@ -117,7 +174,7 @@ export function buildThumbnailPrompt(input: BuildThumbnailPromptInput): string {
     input.hasReferenceImage
       ? "Use the attached image only as a visual reference for identity, pose, silhouette, and color direction. Do not paste, frame, crop, box, or place the exact uploaded image anywhere in the thumbnail. If the reference includes a person or face, redesign that subject so they look dressed, posed, lit, and styled like they belong naturally inside the selected game world."
       : "Do not add a pasted source image. Let the thumbnail artwork carry the energy of the selected game and style.",
-    'Build a high-click-through thumbnail composition with one dominant focal subject and one dominant text block.',
+    "Build a high-click-through thumbnail composition with one dominant focal subject and one dominant text block.",
     `Place the main title "${safeTitle}" in large bold highly legible thumbnail typography.`,
     typographyDirection,
     safeSubtitle

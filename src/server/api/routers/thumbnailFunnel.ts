@@ -9,7 +9,12 @@ import type { ReadableStream as WebReadableStream } from "stream/web";
 import { z } from "zod";
 
 import { b64Image } from "~/data/b64Image";
-import { THUMBNAIL_TEMPLATES } from "~/data/thumbnailTemplates";
+import { getThumbnailFormat } from "~/data/thumbnailFormats";
+import { getThumbnailGame } from "~/data/thumbnailGames";
+import {
+  THUMBNAIL_GENERATION_CREDITS,
+  THUMBNAIL_TEMPLATES,
+} from "~/data/thumbnailTemplates";
 import { THUMBNAIL_PLATFORMS } from "~/data/thumbnailPlatforms";
 import { env } from "~/env.mjs";
 import {
@@ -274,7 +279,9 @@ export const thumbnailFunnelRouter = createTRPCRouter({
     .input(
       z.object({
         platform: z.literal("youtube"),
-        templateId: z.string(),
+        templateId: z.string().optional(),
+        formatId: z.string().optional(),
+        gameId: z.string().optional(),
         referenceImageUrl: z.string().nullable(),
         title: z.string().min(1),
         subtitle: z.string().nullable(),
@@ -294,27 +301,65 @@ export const thumbnailFunnelRouter = createTRPCRouter({
         });
       }
 
-      const template = THUMBNAIL_TEMPLATES.find(
-        (candidate) =>
-          candidate.id === input.templateId &&
-          candidate.platform === input.platform,
-      );
+      const usesFormatFlow =
+        input.formatId !== undefined || input.gameId !== undefined;
+      const template = input.templateId
+        ? THUMBNAIL_TEMPLATES.find(
+            (candidate) =>
+              candidate.id === input.templateId &&
+              candidate.platform === input.platform,
+          )
+        : undefined;
+      const format = input.formatId
+        ? getThumbnailFormat(input.formatId)
+        : undefined;
+      const game = input.gameId ? getThumbnailGame(input.gameId) : undefined;
 
-      if (!template) {
+      if (usesFormatFlow && (!input.formatId || !input.gameId)) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Choose both a thumbnail format and game.",
+        });
+      }
+
+      if (usesFormatFlow && !format) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Thumbnail format not found",
+        });
+      }
+
+      if (usesFormatFlow && !game) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Thumbnail game not found",
+        });
+      }
+
+      if (!usesFormatFlow && !template) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Thumbnail template not found",
         });
       }
 
-      const prompt = buildThumbnailPrompt({
-        template,
-        title: input.title,
-        subtitle: input.subtitle,
-        hasReferenceImage: Boolean(input.referenceImageUrl),
-      });
+      const prompt =
+        format && game
+          ? buildThumbnailPrompt({
+              format,
+              game,
+              title: input.title,
+              subtitle: input.subtitle,
+              hasReferenceImage: Boolean(input.referenceImageUrl),
+            })
+          : buildThumbnailPrompt({
+              template: template!,
+              title: input.title,
+              subtitle: input.subtitle,
+              hasReferenceImage: Boolean(input.referenceImageUrl),
+            });
       const generationCredits = getReferenceAwareGenerationCredits(
-        template.credits,
+        format ? THUMBNAIL_GENERATION_CREDITS : template!.credits,
         Boolean(input.referenceImageUrl),
       );
       const shouldWatermark = await shouldWatermarkUser(
@@ -362,7 +407,9 @@ export const thumbnailFunnelRouter = createTRPCRouter({
 
             const icon = await ctx.prisma.icon.create({
               data: {
-                prompt: `Thumbnail:${input.platform}:${template.id}:${input.title.trim()}`,
+                prompt: format
+                  ? `Thumbnail:${input.platform}:${format.id}:${game!.id}:${input.title.trim()}`
+                  : `Thumbnail:${input.platform}:${template!.id}:${input.title.trim()}`,
                 userId: ctx.session.user.id,
               },
             });
