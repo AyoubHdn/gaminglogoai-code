@@ -1,5 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { isFreeGamingPlan } from "~/server/imageWatermark";
+import { shouldWatermarkPurchaseStatus } from "~/server/imageWatermark";
 
 export const userRouter = createTRPCRouter({
   getCredits: protectedProcedure.query(async ({ ctx }) => {
@@ -17,12 +17,12 @@ export const userRouter = createTRPCRouter({
         id: ctx.session.user.id,
       },
       select: {
-        gamingPlan: true,
+        hasPurchasedCredits: true,
       },
     });
 
     return {
-      watermarked: isFreeGamingPlan(user?.gamingPlan),
+      watermarked: shouldWatermarkPurchaseStatus(user?.hasPurchasedCredits),
     };
   }),
 });

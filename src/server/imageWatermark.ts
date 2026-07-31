@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import type { Plan, PrismaClient } from "@prisma/client";
+import type { PrismaClient } from "@prisma/client";
 import sharp from "sharp";
 
 const WATERMARK_WIDTH_RATIO = 0.28;
@@ -20,8 +20,10 @@ function loadWatermarkAsset(): Promise<Buffer> {
   return watermarkAssetPromise;
 }
 
-export function isFreeGamingPlan(plan: Plan | null | undefined): boolean {
-  return plan === "None";
+export function shouldWatermarkPurchaseStatus(
+  hasPurchasedCredits: boolean | null | undefined,
+): boolean {
+  return hasPurchasedCredits !== true;
 }
 
 export async function shouldWatermarkUser(
@@ -30,10 +32,10 @@ export async function shouldWatermarkUser(
 ): Promise<boolean> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { gamingPlan: true },
+    select: { hasPurchasedCredits: true },
   });
 
-  return isFreeGamingPlan(user?.gamingPlan);
+  return shouldWatermarkPurchaseStatus(user?.hasPurchasedCredits);
 }
 
 function escapeXml(value: string): string {

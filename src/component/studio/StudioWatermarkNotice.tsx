@@ -17,7 +17,8 @@ export function StudioWatermarkNotice() {
   return (
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3">
       <p className="text-sm text-amber-100">
-        Free-plan downloads include a small GamingLogoAI.com watermark.
+        Downloads before your first credit purchase include a small
+        GamingLogoAI.com watermark.
       </p>
       <Link
         href="/buy-credits"

@@ -61,6 +61,7 @@ model User {
     image         String?
     gamingCredits Int       @default(1)
     gamingPlan    Plan      @default(None)
+    hasPurchasedCredits Boolean   @default(false)
     accounts      Account[]
     sessions      Session[]
     icons         Icon[]

@@ -106,6 +106,7 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
               increment: incrementCredits,
             },
             gamingPlan: plan,
+            hasPurchasedCredits: true,
           },
         });
 

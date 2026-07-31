@@ -15,7 +15,7 @@ import { buffer as streamToBuffer } from "stream/consumers";
 import { Readable } from "stream";
 import {
   finalizeGeneratedImage,
-  isFreeGamingPlan,
+  shouldWatermarkPurchaseStatus,
 } from "~/server/imageWatermark";
 
 // S3 Client Configuration (uses gaming specific env vars)
@@ -258,7 +258,9 @@ export const faceLogoRouter = createTRPCRouter({
       const updatedUser = await ctx.prisma.user.findUnique({
         where: { id: ctx.session.user.id },
       });
-      const shouldWatermark = isFreeGamingPlan(updatedUser?.gamingPlan);
+      const shouldWatermark = shouldWatermarkPurchaseStatus(
+        updatedUser?.hasPurchasedCredits,
+      );
       if (updatedUser?.email && env.MAUTIC_BASE_URL) {
         try {
           await syncUserToMautic(

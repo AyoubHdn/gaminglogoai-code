@@ -19,7 +19,7 @@ import {
 import sharp from "sharp";
 import {
   finalizeGeneratedImage,
-  isFreeGamingPlan,
+  shouldWatermarkPurchaseStatus,
 } from "~/server/imageWatermark";
 
 const EmoteKeyEnum = z.enum([
@@ -280,7 +280,9 @@ export const emoteRouter = createTRPCRouter({
 
       /* ------------------ Save output ------------------ */
       const base64 = await fetchAndEncodeImage(output[0]!);
-      const shouldWatermark = isFreeGamingPlan(user.gamingPlan);
+      const shouldWatermark = shouldWatermarkPurchaseStatus(
+        user.hasPurchasedCredits,
+      );
       const { key: s3Key, url: finalImageUrl } = await uploadBase64ToS3(
         base64,
         `emotes/base/${user.id}`,
@@ -405,7 +407,9 @@ Expression: ${emoteDef.prompt}.
           base64,
           `emotes/final/${user.id}/${emoteKey.toLowerCase()}`,
           {
-            shouldWatermark: isFreeGamingPlan(user.gamingPlan),
+            shouldWatermark: shouldWatermarkPurchaseStatus(
+              user.hasPurchasedCredits,
+            ),
             toolType: "Twitch emote",
           },
         );

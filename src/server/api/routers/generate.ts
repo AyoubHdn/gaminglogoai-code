@@ -14,7 +14,7 @@ import { buffer as readStreamIntoBuffer } from "stream/consumers";
 import { Readable } from "stream";
 import {
   finalizeGeneratedImage,
-  isFreeGamingPlan,
+  shouldWatermarkPurchaseStatus,
 } from "~/server/imageWatermark";
 
 const s3 = new AWS.S3({
@@ -160,7 +160,9 @@ export const generateRouter = createTRPCRouter({
           message: "User not found after credit update",
         });
       }
-      const shouldWatermark = isFreeGamingPlan(updatedUser.gamingPlan);
+      const shouldWatermark = shouldWatermarkPurchaseStatus(
+        updatedUser.hasPurchasedCredits,
+      );
 
       // Update Mautic contact
       try {
