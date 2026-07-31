@@ -21,6 +21,7 @@ import {
   finalizeGeneratedImage,
   shouldWatermarkPurchaseStatus,
 } from "~/server/imageWatermark";
+import { withCreditTransaction } from "~/server/lib/creditTransaction";
 
 const EmoteKeyEnum = z.enum([
   "GG",
@@ -205,119 +206,115 @@ export const emoteRouter = createTRPCRouter({
         });
       }
 
-      /* ------------------ Deduct credits ------------------ */
-      await ctx.prisma.user.update({
-        where: { id: user.id },
-        data: { gamingCredits: { decrement: BASE_COST } },
-      });
-
-      /* ------------------ Upload input image ------------------ */
-      if (!input.inputImageBase64.startsWith("data:image")) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Invalid image format",
-        });
-      }
-
-      const parts = input.inputImageBase64.split(",");
-
-      if (parts.length !== 2 || !parts[1]) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Invalid base64 image format",
-        });
-      }
-
-      const rawBase64 = parts[1]; // now guaranteed string
-      const base64Data = await normalizeImage(rawBase64);
-
-      if (!base64Data) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Invalid image format",
-        });
-      }
-      const { url: inputImageUrl } = await uploadBase64ToS3(
-        base64Data,
-        `emotes/input/${user.id}`,
-      );
-
-      /* ------------------ Replicate call ------------------ */
-      let output: string[];
-
-      try {
-        const prediction = await replicate.run("openai/gpt-image-1.5", {
-          input: {
-            prompt: input.prompt,
-            input_images: [inputImageUrl],
-            input_fidelity: "high",
-            aspect_ratio: "1:1",
-            background: "transparent",
-            output_format: "png",
-            number_of_images: 1,
-            user_id: user.id,
-          },
-        });
-
-        if (!Array.isArray(prediction)) {
-          console.error("Replicate non-array output:", prediction);
-          throw new Error("Invalid Replicate output");
+      return withCreditTransaction(user.id, BASE_COST, async () => {
+        /* ------------------ Upload input image ------------------ */
+        if (!input.inputImageBase64.startsWith("data:image")) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Invalid image format",
+          });
         }
 
-        output = prediction;
-      } catch (err: any) {
-        console.error("REPLICATE ERROR FULL:", {
-          message: err?.message,
-          response: err?.response?.data,
-          stack: err?.stack,
-        });
+        const parts = input.inputImageBase64.split(",");
 
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Image generation failed. Please try a different image.",
-        });
-      }
+        if (parts.length !== 2 || !parts[1]) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Invalid base64 image format",
+          });
+        }
 
-      /* ------------------ Save output ------------------ */
-      const base64 = await fetchAndEncodeImage(output[0]!);
-      const shouldWatermark = shouldWatermarkPurchaseStatus(
-        user.hasPurchasedCredits,
-      );
-      const { key: s3Key, url: finalImageUrl } = await uploadBase64ToS3(
-        base64,
-        `emotes/base/${user.id}`,
-        {
-          shouldWatermark,
-          toolType: "Twitch emote base",
-        },
-      );
+        const rawBase64 = parts[1]; // now guaranteed string
+        const base64Data = await normalizeImage(rawBase64);
 
-      await ctx.prisma.icon.create({
-        data: {
-          userId: user.id,
-          prompt: `EmoteBase: ${input.prompt.substring(0, 150)}`,
-          imageKey: s3Key, // ✅ SAME key
-        },
-      });
-
-      /* ------------------ Sync Mautic ------------------ */
-      if (user.email && env.MAUTIC_BASE_URL) {
-        await syncUserToMautic(
-          {
-            email: user.email,
-            name: user.name,
-            brand_specific_credits: (user.gamingCredits ?? 0) - BASE_COST,
-            brand_specific_plan:
-              user.gamingPlan?.toString() ?? PrismaPlan.None.toString(),
-          },
-          "gaminglogoai",
+        if (!base64Data) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Invalid image format",
+          });
+        }
+        const { url: inputImageUrl } = await uploadBase64ToS3(
+          base64Data,
+          `emotes/input/${user.id}`,
         );
-      }
 
-      return {
-        baseImageUrl: finalImageUrl,
-        watermarked: shouldWatermark,
-      };
+        /* ------------------ Replicate call ------------------ */
+        let output: string[];
+
+        try {
+          const prediction = await replicate.run("openai/gpt-image-1.5", {
+            input: {
+              prompt: input.prompt,
+              input_images: [inputImageUrl],
+              input_fidelity: "high",
+              aspect_ratio: "1:1",
+              background: "transparent",
+              output_format: "png",
+              number_of_images: 1,
+              user_id: user.id,
+            },
+          });
+
+          if (!Array.isArray(prediction)) {
+            console.error("Replicate non-array output:", prediction);
+            throw new Error("Invalid Replicate output");
+          }
+
+          output = prediction;
+        } catch (err: any) {
+          console.error("REPLICATE ERROR FULL:", {
+            message: err?.message,
+            response: err?.response?.data,
+            stack: err?.stack,
+          });
+
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Image generation failed. Please try a different image.",
+          });
+        }
+
+        /* ------------------ Save output ------------------ */
+        const base64 = await fetchAndEncodeImage(output[0]!);
+        const shouldWatermark = shouldWatermarkPurchaseStatus(
+          user.hasPurchasedCredits,
+        );
+        const { key: s3Key, url: finalImageUrl } = await uploadBase64ToS3(
+          base64,
+          `emotes/base/${user.id}`,
+          {
+            shouldWatermark,
+            toolType: "Twitch emote base",
+          },
+        );
+
+        await ctx.prisma.icon.create({
+          data: {
+            userId: user.id,
+            prompt: `EmoteBase: ${input.prompt.substring(0, 150)}`,
+            imageKey: s3Key, // ✅ SAME key
+          },
+        });
+
+        /* ------------------ Sync Mautic ------------------ */
+        if (user.email && env.MAUTIC_BASE_URL) {
+          await syncUserToMautic(
+            {
+              email: user.email,
+              name: user.name,
+              brand_specific_credits: (user.gamingCredits ?? 0) - BASE_COST,
+              brand_specific_plan:
+                user.gamingPlan?.toString() ?? PrismaPlan.None.toString(),
+            },
+            "gaminglogoai",
+          );
+        }
+
+        return {
+          baseImageUrl: finalImageUrl,
+          watermarked: shouldWatermark,
+        };
+      });
     }),
   generateEmotes: protectedProcedure
     .input(
@@ -346,85 +343,81 @@ export const emoteRouter = createTRPCRouter({
         });
       }
 
-      // Deduct credits ONCE
-      await ctx.prisma.user.update({
-        where: { id: user.id },
-        data: { gamingCredits: { decrement: totalCost } },
-      });
+      return withCreditTransaction(user.id, totalCost, async () => {
+        const results: { emote: string; imageUrl: string }[] = [];
 
-      const results: { emote: string; imageUrl: string }[] = [];
+        for (const emoteKey of input.emotes) {
+          const emoteDef = emotes.find((e) => e.key === emoteKey);
+          if (!emoteDef) continue;
 
-      for (const emoteKey of input.emotes) {
-        const emoteDef = emotes.find((e) => e.key === emoteKey);
-        if (!emoteDef) continue;
-
-        let prompt = `
+          let prompt = `
 ${EMOTE_BASE_PROMPT}
 Same character and same art style as the base image.
 Expression: ${emoteDef.prompt}.
 `;
 
-        if (input.withText) {
-          prompt += buildTextOverlayPrompt(
-            emoteDef.label,
-            input.textPosition,
-            input.textColor,
-          );
-        }
+          if (input.withText) {
+            prompt += buildTextOverlayPrompt(
+              emoteDef.label,
+              input.textPosition,
+              input.textColor,
+            );
+          }
 
-        let output: string[];
+          let output: string[];
 
-        try {
-          output = (await replicate.run("openai/gpt-image-1.5", {
-            input: {
-              prompt: prompt.trim(),
-              input_images: [input.baseImageUrl],
-              input_fidelity: "high",
-              aspect_ratio: "1:1",
-              background: "transparent",
-              output_format: "png",
-              number_of_images: 1,
-              user_id: user.id,
+          try {
+            output = (await replicate.run("openai/gpt-image-1.5", {
+              input: {
+                prompt: prompt.trim(),
+                input_images: [input.baseImageUrl],
+                input_fidelity: "high",
+                aspect_ratio: "1:1",
+                background: "transparent",
+                output_format: "png",
+                number_of_images: 1,
+                user_id: user.id,
+              },
+            })) as string[];
+          } catch (err) {
+            console.error("REPLICATE EMOTE ERROR:", err);
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to generate emotes",
+            });
+          }
+
+          if (!output?.length) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: `Failed to generate ${emoteKey}`,
+            });
+          }
+
+          const base64 = await fetchAndEncodeImage(output[0]!);
+          const { key: s3Key, url: imageUrl } = await uploadBase64ToS3(
+            base64,
+            `emotes/final/${user.id}/${emoteKey.toLowerCase()}`,
+            {
+              shouldWatermark: shouldWatermarkPurchaseStatus(
+                user.hasPurchasedCredits,
+              ),
+              toolType: "Twitch emote",
             },
-          })) as string[];
-        } catch (err) {
-          console.error("REPLICATE EMOTE ERROR:", err);
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Failed to generate emotes",
+          );
+
+          await ctx.prisma.icon.create({
+            data: {
+              userId: user.id,
+              prompt: `Emote:${emoteKey}${input.withText ? ":text" : ""}`,
+              imageKey: s3Key, // ✅ SAME key
+            },
           });
+
+          results.push({ emote: emoteKey, imageUrl });
         }
 
-        if (!output?.length) {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: `Failed to generate ${emoteKey}`,
-          });
-        }
-
-        const base64 = await fetchAndEncodeImage(output[0]!);
-        const { key: s3Key, url: imageUrl } = await uploadBase64ToS3(
-          base64,
-          `emotes/final/${user.id}/${emoteKey.toLowerCase()}`,
-          {
-            shouldWatermark: shouldWatermarkPurchaseStatus(
-              user.hasPurchasedCredits,
-            ),
-            toolType: "Twitch emote",
-          },
-        );
-
-        await ctx.prisma.icon.create({
-          data: {
-            userId: user.id,
-            prompt: `Emote:${emoteKey}${input.withText ? ":text" : ""}`,
-            imageKey: s3Key, // ✅ SAME key
-          },
-        });
-
-        results.push({ emote: emoteKey, imageUrl });
-      }
-
-      return results;
+        return results;
+      });
     }),
 });

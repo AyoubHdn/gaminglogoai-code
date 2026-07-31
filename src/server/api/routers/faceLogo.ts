@@ -17,6 +17,7 @@ import {
   finalizeGeneratedImage,
   shouldWatermarkPurchaseStatus,
 } from "~/server/imageWatermark";
+import { withCreditTransaction } from "~/server/lib/creditTransaction";
 
 // S3 Client Configuration (uses gaming specific env vars)
 const s3 = new AWS.S3({
@@ -246,149 +247,151 @@ export const faceLogoRouter = createTRPCRouter({
           message: "You do not have enough gaming credits for this face logo.",
         });
       }
-      await ctx.prisma.user.update({
-        where: { id: ctx.session.user.id },
-        data: { gamingCredits: { decrement: creditsNeeded } },
-      });
-      console.log(
-        "FACELOGO_ROUTER: [3] Credits deducted for user:",
+
+      return withCreditTransaction(
         ctx.session.user.id,
-      );
-
-      const updatedUser = await ctx.prisma.user.findUnique({
-        where: { id: ctx.session.user.id },
-      });
-      const shouldWatermark = shouldWatermarkPurchaseStatus(
-        updatedUser?.hasPurchasedCredits,
-      );
-      if (updatedUser?.email && env.MAUTIC_BASE_URL) {
-        try {
-          await syncUserToMautic(
-            {
-              email: updatedUser.email,
-              name: updatedUser.name,
-              brand_specific_credits: updatedUser.gamingCredits,
-              brand_specific_plan:
-                updatedUser.gamingPlan?.toString() ??
-                PrismaPlan.None.toString(),
-            },
-            "gaminglogoai", // This is for gaminglogoai context
+        creditsNeeded,
+        async () => {
+          const updatedUser = await ctx.prisma.user.findUnique({
+            where: { id: ctx.session.user.id },
+          });
+          const shouldWatermark = shouldWatermarkPurchaseStatus(
+            updatedUser?.hasPurchasedCredits,
           );
-        } catch (err) {
-          console.error("Error updating Mautic (generateFaceLogo):", err);
-        }
-      }
+          if (updatedUser?.email && env.MAUTIC_BASE_URL) {
+            try {
+              await syncUserToMautic(
+                {
+                  email: updatedUser.email,
+                  name: updatedUser.name,
+                  brand_specific_credits: updatedUser.gamingCredits,
+                  brand_specific_plan:
+                    updatedUser.gamingPlan?.toString() ??
+                    PrismaPlan.None.toString(),
+                },
+                "gaminglogoai", // This is for gaminglogoai context
+              );
+            } catch (err) {
+              console.error("Error updating Mautic (generateFaceLogo):", err);
+            }
+          }
 
-      let userImageS3Url: string;
-      console.log(
-        "FACELOGO_ROUTER: [5] Starting S3 upload for user's input image.",
-      );
-      try {
-        if (!input.inputImageBase64.startsWith("data:image"))
-          throw new Error("Invalid base64 data URI for user image.");
-        const parts = input.inputImageBase64.split(",");
-        const mimeMatch = parts[0]?.match(/:(.*?);/);
-        if (!mimeMatch || !mimeMatch[1] || !parts[1])
-          throw new Error("Cannot parse base64 data URI parts.");
-        const contentType = mimeMatch[1];
-        const base64Data = parts[1];
-        const imageBuffer = Buffer.from(base64Data, "base64");
-        const extensionPart = contentType.split("/")[1];
-        if (!extensionPart)
-          throw new Error("Cannot determine file extension from content type.");
-        const extension = extensionPart.replace("jpeg", "jpg");
-        const s3Key = `user-uploads/faces/${ctx.session.user.id}/${uuidv4()}.${extension}`;
-        if (!BUCKET_NAME)
-          throw new Error("S3_BUCKET_NAME_GAMING not configured.");
-        await s3
-          .putObject({
-            Bucket: BUCKET_NAME,
-            Key: s3Key,
-            Body: imageBuffer,
-            ContentType: contentType,
-          })
-          .promise();
-        userImageS3Url = `https://${BUCKET_NAME}.s3.${env.NEXT_PUBLIC_AWS_REGION_GAMING || "us-east-1"}.amazonaws.com/${s3Key}`;
-        console.log(
-          "FACELOGO_ROUTER: [6] User image uploaded to S3:",
-          userImageS3Url,
-        );
-      } catch (e) {
-        const msg = e instanceof Error ? e.message : "S3 Upload failed";
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: `Input image S3 upload: ${msg}`,
-        });
-      }
-
-      console.log(
-        `FACELOGO_ROUTER: [7] Calling generateKontextFaceLogo. Model: ${input.model}, S3 URL: ${userImageS3Url}`,
-      );
-      const base64ImageString = await generateKontextFaceLogo(
-        // Call the specific helper
-        input.prompt,
-        input.model,
-        input.aspectRatio,
-        userImageS3Url,
-      );
-      // Since generateKontextFaceLogo now returns a single string, wrap it in an array if needed by downstream.
-      // Or, adjust the S3 upload logic to handle a single base64 string.
-      // For consistency with how b64Images was used before, let's make it an array of one.
-      const b64Images = [base64ImageString];
-      console.log(
-        "FACELOGO_ROUTER: [9] Received base64 images from Replicate helper. Count:",
-        b64Images.length,
-      );
-
-      const awsRegionToUse = env.NEXT_PUBLIC_AWS_REGION_GAMING || "us-east-1";
-      if (!BUCKET_NAME)
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "S3_BUCKET_NAME_GAMING not configured for final upload.",
-        });
-
-      const createdIcons = await Promise.all(
-        b64Images.map(async (imgBase64) => {
-          if (
-            !imgBase64 ||
-            typeof imgBase64 !== "string" ||
-            imgBase64.length < 100
-          ) {
+          let userImageS3Url: string;
+          console.log(
+            "FACELOGO_ROUTER: [5] Starting S3 upload for user's input image.",
+          );
+          try {
+            if (!input.inputImageBase64.startsWith("data:image"))
+              throw new Error("Invalid base64 data URI for user image.");
+            const parts = input.inputImageBase64.split(",");
+            const mimeMatch = parts[0]?.match(/:(.*?);/);
+            if (!mimeMatch || !mimeMatch[1] || !parts[1])
+              throw new Error("Cannot parse base64 data URI parts.");
+            const contentType = mimeMatch[1];
+            const base64Data = parts[1];
+            const imageBuffer = Buffer.from(base64Data, "base64");
+            const extensionPart = contentType.split("/")[1];
+            if (!extensionPart)
+              throw new Error(
+                "Cannot determine file extension from content type.",
+              );
+            const extension = extensionPart.replace("jpeg", "jpg");
+            const s3Key = `user-uploads/faces/${ctx.session.user.id}/${uuidv4()}.${extension}`;
+            if (!BUCKET_NAME)
+              throw new Error("S3_BUCKET_NAME_GAMING not configured.");
+            await s3
+              .putObject({
+                Bucket: BUCKET_NAME,
+                Key: s3Key,
+                Body: imageBuffer,
+                ContentType: contentType,
+              })
+              .promise();
+            userImageS3Url = `https://${BUCKET_NAME}.s3.${env.NEXT_PUBLIC_AWS_REGION_GAMING || "us-east-1"}.amazonaws.com/${s3Key}`;
+            console.log(
+              "FACELOGO_ROUTER: [6] User image uploaded to S3:",
+              userImageS3Url,
+            );
+          } catch (e) {
+            const msg = e instanceof Error ? e.message : "S3 Upload failed";
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",
-              message: "Received invalid image data from AI after processing.",
+              message: `Input image S3 upload: ${msg}`,
             });
           }
-          const icon = await ctx.prisma.icon.create({
-            data: {
-              prompt: `FaceLogo: ${input.prompt.substring(0, 150)}...`,
-              userId: ctx.session.user.id /* type: "FACE_LOGO" */,
-            },
-          });
-          const finalImageBuffer = await finalizeGeneratedImage(
-            Buffer.from(imgBase64, "base64"),
-            {
-              shouldWatermark,
-              toolType: "Gaming PFP",
-            },
+
+          console.log(
+            `FACELOGO_ROUTER: [7] Calling generateKontextFaceLogo. Model: ${input.model}, S3 URL: ${userImageS3Url}`,
           );
-          await s3
-            .putObject({
-              Bucket: BUCKET_NAME,
-              Body: finalImageBuffer,
-              Key: icon.id,
-              ContentType: "image/png",
-            })
-            .promise();
-          return icon;
-        }),
+          const base64ImageString = await generateKontextFaceLogo(
+            // Call the specific helper
+            input.prompt,
+            input.model,
+            input.aspectRatio,
+            userImageS3Url,
+          );
+          // Since generateKontextFaceLogo now returns a single string, wrap it in an array if needed by downstream.
+          // Or, adjust the S3 upload logic to handle a single base64 string.
+          // For consistency with how b64Images was used before, let's make it an array of one.
+          const b64Images = [base64ImageString];
+          console.log(
+            "FACELOGO_ROUTER: [9] Received base64 images from Replicate helper. Count:",
+            b64Images.length,
+          );
+
+          const awsRegionToUse =
+            env.NEXT_PUBLIC_AWS_REGION_GAMING || "us-east-1";
+          if (!BUCKET_NAME)
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "S3_BUCKET_NAME_GAMING not configured for final upload.",
+            });
+
+          const createdIcons = await Promise.all(
+            b64Images.map(async (imgBase64) => {
+              if (
+                !imgBase64 ||
+                typeof imgBase64 !== "string" ||
+                imgBase64.length < 100
+              ) {
+                throw new TRPCError({
+                  code: "INTERNAL_SERVER_ERROR",
+                  message:
+                    "Received invalid image data from AI after processing.",
+                });
+              }
+              const icon = await ctx.prisma.icon.create({
+                data: {
+                  prompt: `FaceLogo: ${input.prompt.substring(0, 150)}...`,
+                  userId: ctx.session.user.id /* type: "FACE_LOGO" */,
+                },
+              });
+              const finalImageBuffer = await finalizeGeneratedImage(
+                Buffer.from(imgBase64, "base64"),
+                {
+                  shouldWatermark,
+                  toolType: "Gaming PFP",
+                },
+              );
+              await s3
+                .putObject({
+                  Bucket: BUCKET_NAME,
+                  Body: finalImageBuffer,
+                  Key: icon.id,
+                  ContentType: "image/png",
+                })
+                .promise();
+              return icon;
+            }),
+          );
+          console.log(
+            "FACELOGO_ROUTER: [10] Processing complete, returning image URLs to client.",
+          );
+          return createdIcons.map((icon) => ({
+            imageUrl: `https://${BUCKET_NAME}.s3.${awsRegionToUse}.amazonaws.com/${icon.id}`,
+            watermarked: shouldWatermark,
+          }));
+        },
       );
-      console.log(
-        "FACELOGO_ROUTER: [10] Processing complete, returning image URLs to client.",
-      );
-      return createdIcons.map((icon) => ({
-        imageUrl: `https://${BUCKET_NAME}.s3.${awsRegionToUse}.amazonaws.com/${icon.id}`,
-        watermarked: shouldWatermark,
-      }));
     }),
 });
