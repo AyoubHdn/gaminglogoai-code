@@ -289,6 +289,14 @@ const HomePage: NextPage = () => {
               <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
                 Build gaming thumbnails with the new guided flow. Choose YouTube, pick a template,
                 add your title and image, and generate a 1280 x 720 thumbnail designed for clicks.
+                See how the{" "}
+                <Link
+                  href="/youtube-thumbnail-maker"
+                  className="font-semibold text-red-600 underline hover:text-red-700 dark:text-red-400"
+                >
+                  YouTube Thumbnail Maker
+                </Link>{" "}
+                works, including all 25 gaming thumbnail formats.
               </p>
 
               <ul className="space-y-3 text-sm text-slate-700 dark:text-slate-300 mb-8">
@@ -298,13 +306,21 @@ const HomePage: NextPage = () => {
                 <li>Generate, refine, and download from one result step</li>
               </ul>
 
-              <Link
-                href="/studio?tool=thumbnail"
-                className="inline-block px-8 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors shadow-lg"
-                id="cta-home-youtube-thumbnail"
-              >
-                Create YouTube Thumbnails →
-              </Link>
+              <div className="flex flex-wrap items-center gap-4">
+                <Link
+                  href="/studio?tool=thumbnail"
+                  className="inline-block px-8 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors shadow-lg"
+                  id="cta-home-youtube-thumbnail"
+                >
+                  Create YouTube Thumbnails →
+                </Link>
+                <Link
+                  href="/youtube-thumbnail-maker"
+                  className="inline-block font-semibold text-slate-700 underline hover:text-red-600 dark:text-slate-300"
+                >
+                  Learn about the Gaming Thumbnail Maker
+                </Link>
+              </div>
             </div>
           </div>
         </div>

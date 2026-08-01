@@ -13,6 +13,11 @@ const PAGE_TITLE = "Thumbnail Maker - YouTube Gaming Thumbnails | GamingLogoAI";
 const PAGE_DESCRIPTION =
   "Create AI-generated gaming thumbnails with a guided flow. Choose a platform, pick a template, personalize, and generate.";
 const PAGE_URL = "https://gaminglogoai.com/thumbnail-maker";
+// SEO: this bare tool route and /youtube-thumbnail-maker target the same
+// "youtube thumbnail maker" intent. Canonicalize to the richer content landing
+// page so ranking signal consolidates there. The tool stays fully functional
+// and indexable-as-canonicalized (no redirect, no noindex).
+const CANONICAL_URL = "https://gaminglogoai.com/youtube-thumbnail-maker";
 
 function ThumbnailMakerContent() {
   const { currentStep, hasHydrated } = useFunnel();
@@ -132,7 +137,7 @@ const ThumbnailMakerPage: NextPage = () => {
       <Head>
         <title>{PAGE_TITLE}</title>
         <meta name="description" content={PAGE_DESCRIPTION} />
-        <link rel="canonical" href={PAGE_URL} />
+        <link rel="canonical" href={CANONICAL_URL} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={PAGE_URL} />
         <meta property="og:title" content={PAGE_TITLE} />
