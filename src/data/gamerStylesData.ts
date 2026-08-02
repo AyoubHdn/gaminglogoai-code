@@ -115,6 +115,48 @@ Record<string, { src: string; basePrompt: string }[]>
         basePrompt: "Create a Minecraft cave logo with ores glowing in the background, pickaxe and sword crossing, and bold pixel text 'Text' at the center.",
       },
     ],
+    "Roblox": [
+      {
+        src: s3Style("/styles/r801.webp"),
+        basePrompt: "A highly detailed 3D Roblox-style mascot logo of a blocky avatar character with a cubic head and rectangular body, glossy smooth plastic material with realistic reflections and studio lighting, heroic confident pose, vibrant saturated colors, clean dark gradient background with a soft glow, professional game logo render, sharp high detail, with the text 'Text' in a bold rounded 3D Roblox-style font beneath the character.",
+      },
+      {
+        src: s3Style("/styles/r802.webp"),
+        basePrompt: "A bold 3D Roblox noob mascot, classic bright yellow blocky character with cubic head, big cheerful smile, blue shirt and green shorts, glossy plastic texture, dynamic playful pose, vivid rainbow lighting, glowing rim light, polished game mascot render on a clean background, high detail and contrast, with the name 'Text' in a bold blocky 3D font below.",
+      },
+      {
+        src: s3Style("/styles/r803.webp"),
+        basePrompt: "An epic 3D Roblox warrior mascot holding a glowing sword, blocky cubic character in detailed fantasy armor, dramatic action pose, intense neon energy effects and sparks, cinematic lighting, glossy plastic Roblox render style, dark dramatic background with glowing accents, ultra sharp high detail esports quality, with the text 'Text' in a bold modern gaming font beneath.",
+      },
+      {
+        src: s3Style("/styles/r804.webp"),
+        basePrompt: "An adorable 3D Roblox pet mascot in Adopt Me style, cute blocky animal with huge sparkling eyes, soft pastel colors, glossy toy-like plastic texture, fluffy charming design, gentle magical glow, dreamy soft-lit background, kawaii game mascot render, highly detailed and polished, with the text 'Text' in a friendly bubbly rounded font below.",
+      },
+      {
+        src: s3Style("/styles/r805.webp"),
+        basePrompt: "A fierce 3D Roblox esports mascot, aggressive blocky character with a menacing expression, dark tactical outfit, glowing neon red and blue accents, powerful battle stance, dramatic rim lighting, glossy plastic render, dark background with energy effects and a subtle emblem shape, sharp competitive gaming logo quality, with the text 'Text' in a bold sharp esports font beneath.",
+      },
+      {
+        src: s3Style("/styles/r806.webp"),
+        basePrompt: "The iconic Roblox tilted rounded-square emblem, glossy red 3D plastic material with deep reflections and highlights, floating with a subtle drop shadow, vibrant studio lighting, clean minimal dark background with a soft glow, premium polished brand render, ultra sharp high detail, with the text 'Text' in bold blocky 3D typography beneath the emblem.",
+      },
+      {
+        src: s3Style("/styles/r807.webp"),
+        basePrompt: "An epic 3D Roblox Blox Fruits inspired mascot, adventurous blocky pirate character radiating glowing devil-fruit power, swirling energy aura, ocean and treasure elements in the background, dynamic dramatic pose, cinematic lighting, glossy plastic render, vivid saturated colors, high detail action game logo, with the text 'Text' in a bold epic adventure font beneath.",
+      },
+      {
+        src: s3Style("/styles/r808.webp"),
+        basePrompt: "A dark spooky 3D Roblox Doors inspired scene, dimly lit blocky haunted corridor with an old door, a shadowy blocky entity with glowing eyes lurking, eerie fog and volumetric light, horror atmosphere, moody cinematic lighting, glossy plastic Roblox render, high contrast and detail, with the text 'Text' in a creepy blocky horror font.",
+      },
+      {
+        src: s3Style("/styles/r809.webp"),
+        basePrompt: "A vibrant 3D Roblox mascot character surrounded by a rainbow neon aura and glowing particles, energetic dynamic pose, glossy plastic material with colorful reflections, electric colorful lighting, dark background that makes the neon pop, high energy game mascot render, ultra sharp and polished, with the text 'Text' in a bold vibrant gradient font beneath.",
+      },
+      {
+        src: s3Style("/styles/r810.webp"),
+        basePrompt: "A premium 3D Roblox gaming emblem with a blocky character bust centered inside a modern badge or shield shape, crossed weapons or tools behind, glossy plastic 3D render, vibrant gradient lighting, dramatic highlights, dark background with glow, esports team logo quality, highly detailed and sharp, with the text 'Text' in bold blocky font on a banner below.",
+      },
+    ],
     "Apex Legends": [
       {
         src: s3Style("/styles/s300.webp"),

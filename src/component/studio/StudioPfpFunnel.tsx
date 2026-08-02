@@ -37,6 +37,7 @@ import { api } from "~/utils/api";
 
 type FunnelStep = 1 | 2 | 3 | 4;
 type FaceAIModel = "flux-kontext-pro" | "flux-kontext-max";
+type PfpFraming = "head" | "half-body" | "full-body";
 
 export interface PfpStyleItem {
   name: string;
@@ -54,6 +55,7 @@ interface PfpFunnelState {
   inputText: string;
   selectedStyle: PfpStyleItem | null;
   selectedModel: FaceAIModel | null;
+  selectedFraming: PfpFraming;
 }
 
 const TEXT_PLACEHOLDER_PATTERN =
@@ -62,8 +64,8 @@ const TEXT_DIRECTIVE_PATTERN =
   /\b(text|name|wordmark|lettering|typography|font|title|caption)\b/i;
 
 const STEP_DETAILS: Array<{ step: FunnelStep; shortTitle: string }> = [
-  { step: 1, shortTitle: "Upload" },
-  { step: 2, shortTitle: "Style" },
+  { step: 1, shortTitle: "Style" },
+  { step: 2, shortTitle: "Upload" },
   { step: 3, shortTitle: "Options" },
   { step: 4, shortTitle: "Generate" },
 ];
@@ -92,45 +94,92 @@ const ENGINE_OPTIONS: Array<{
   },
 ];
 
+const FRAMING_OPTIONS: Array<{
+  name: string;
+  value: PfpFraming;
+  description: string;
+  promptInstruction: string;
+}> = [
+  {
+    name: "Head",
+    value: "head",
+    description: "Best for clear, recognizable profile pictures.",
+    promptInstruction:
+      "Crop in tightly to show ONLY the head and face — zoom close on the face, exclude the torso, vest, and body, tight portrait headshot filling the frame. Recompose to a close headshot even if the original photo shows more of the body",
+  },
+  {
+    name: "Half Body",
+    value: "half-body",
+    description: "Shows the character's pose from the waist up.",
+    promptInstruction:
+      "Half-body composition from the chest up, head and upper torso visible",
+  },
+  {
+    name: "Full Body",
+    value: "full-body",
+    description: "Fits the character's complete pose into the square.",
+    promptInstruction:
+      "Full-length full-body shot showing the ENTIRE character standing from head to feet, including legs and full standing pose. Generate the complete full body even if the original photo only shows the upper body — extend and imagine the full standing character",
+  },
+];
+
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 function buildFaceLogoPrompt(
   basePrompt: string,
   inputText: string,
   model: FaceAIModel,
+  framing: PfpFraming,
 ): string {
   const trimmedText = inputText.trim();
+  const framingOption =
+    FRAMING_OPTIONS.find((option) => option.value === framing) ??
+    FRAMING_OPTIONS[0]!;
+  let stylePrompt: string;
+  let textInstruction = "";
 
   if (trimmedText) {
-    const promptWithText = basePrompt.replace(
-      TEXT_PLACEHOLDER_PATTERN,
-      trimmedText,
-    );
+    stylePrompt = basePrompt.replace(TEXT_PLACEHOLDER_PATTERN, trimmedText);
+  } else {
+    const sanitizedSegments = basePrompt
+      .replace(TEXT_PLACEHOLDER_PATTERN, "")
+      .split(/,|—|–|\./)
+      .map((segment) => segment.trim().replace(/\s+/g, " "))
+      .filter(Boolean)
+      .filter((segment) => !TEXT_DIRECTIVE_PATTERN.test(segment));
 
-    return model === "flux-kontext-max"
-      ? `${promptWithText}, ultra detailed face, cinematic lighting, sharp focus on face, masterpiece`
-      : `${promptWithText}, detailed face, good lighting, professional logo`;
+    stylePrompt =
+      sanitizedSegments
+        .join(", ")
+        .replace(/\s+,/g, ",")
+        .replace(/,\s*,+/g, ", ")
+        .trim()
+        .replace(/[,-]\s*$/, "") || "stylized gaming avatar portrait";
+    textInstruction = "No text, letters, wordmark, or typography.";
   }
 
-  const sanitizedSegments = basePrompt
-    .replace(TEXT_PLACEHOLDER_PATTERN, "")
-    .split(/,|—|–|\./)
-    .map((segment) => segment.trim().replace(/\s+/g, " "))
+  const styleDescription = /[.!?]$/.test(stylePrompt.trim())
+    ? stylePrompt.trim()
+    : `${stylePrompt.trim()}.`;
+  const transformationInstruction =
+    "FULLY TRANSFORM the person into the selected style. Replace their ENTIRE outfit including the shirt, top, and upper-body clothing — do not keep their original shirt, sweater, or t-shirt. Give them a complete style-appropriate outfit from head to toe: new top, jacket, or armor for the upper body AND new lower-body clothing, all matching the selected style. Every piece of their original clothing must be replaced. Preserve their recognizable identity and key facial features, but render the face and person completely in the selected visual style.";
+  const backgroundInstruction =
+    "Also completely REPLACE the background — remove the original photo background entirely and generate a new background environment that matches the selected style and its game or theme world (an atmospheric scene, setting, or stylized backdrop fitting the style), with depth, lighting, and effects that complement the character. Do not keep the original photo's background.";
+  const qualityInstruction =
+    model === "flux-kontext-max"
+      ? "Ultra-detailed polished game-art render, cinematic dramatic lighting, strong contrast, sharp professional finish, faithful likeness, and premium avatar quality"
+      : "Highly detailed polished game-art render, dramatic lighting, strong contrast, clean professional finish, faithful likeness, and high-quality avatar artwork";
+
+  return [
+    styleDescription,
+    transformationInstruction,
+    backgroundInstruction,
+    `${framingOption.promptInstruction}.`,
+    textInstruction,
+    `${qualityInstruction}.`,
+  ]
     .filter(Boolean)
-    .filter((segment) => !TEXT_DIRECTIVE_PATTERN.test(segment));
-
-  const sanitizedPrompt = sanitizedSegments
-    .join(", ")
-    .replace(/\s+,/g, ",")
-    .replace(/,\s*,+/g, ", ")
-    .trim()
-    .replace(/[,-]\s*$/, "");
-
-  const promptBase = sanitizedPrompt || "stylized gaming avatar portrait";
-
-  return model === "flux-kontext-max"
-    ? `${promptBase}, no text, no letters, no wordmark, no typography, ultra detailed face, cinematic lighting, sharp focus on face, masterpiece`
-    : `${promptBase}, no text, no letters, no wordmark, no typography, detailed face, good lighting, professional logo`;
+    .join(" ");
 }
 
 function readFileAsDataUrl(file: File): Promise<string> {
@@ -263,6 +312,7 @@ function UploadStep({
   isCompressing,
   error,
   onFileSelect,
+  onBack,
   onNext,
 }: {
   uploadedFile: File | null;
@@ -270,6 +320,7 @@ function UploadStep({
   isCompressing: boolean;
   error: string;
   onFileSelect: (file: File) => void;
+  onBack: () => void;
   onNext: () => void;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -296,7 +347,7 @@ function UploadStep({
   return (
     <div>
       <StepHeading
-        step={1}
+        step={2}
         title="Upload your face photo"
         description="Use a clear, well-lit, front-facing photo. We’ll compress it securely before generation."
       />
@@ -408,9 +459,10 @@ function UploadStep({
       </div>
 
       <StepNavigation
+        onBack={onBack}
         onNext={onNext}
         nextDisabled={!uploadedFile || isCompressing}
-        nextLabel="Choose a style"
+        nextLabel="Set PFP options"
       />
     </div>
   );
@@ -432,7 +484,7 @@ function StyleStep({
   onCategoryChange: (category: string) => void;
   onSubcategoryChange: (subcategory: string) => void;
   onStyleSelect: (style: PfpStyleItem) => void;
-  onBack: () => void;
+  onBack?: () => void;
   onNext: () => void;
 }) {
   const categories = Object.keys(faceStylesData);
@@ -444,7 +496,7 @@ function StyleStep({
   return (
     <div>
       <StepHeading
-        step={2}
+        step={1}
         title="Choose your avatar style"
         description="Browse the existing PFP collection, then pick the transformation you want applied to your photo."
       />
@@ -559,7 +611,7 @@ function StyleStep({
         onBack={onBack}
         onNext={onNext}
         nextDisabled={!selectedStyle}
-        nextLabel="Set PFP options"
+        nextLabel="Upload your photo"
       />
     </div>
   );
@@ -568,15 +620,19 @@ function StyleStep({
 function OptionsStep({
   inputText,
   selectedModel,
+  selectedFraming,
   onTextChange,
   onModelSelect,
+  onFramingSelect,
   onBack,
   onNext,
 }: {
   inputText: string;
   selectedModel: FaceAIModel | null;
+  selectedFraming: PfpFraming;
   onTextChange: (value: string) => void;
   onModelSelect: (model: FaceAIModel) => void;
+  onFramingSelect: (framing: PfpFraming) => void;
   onBack: () => void;
   onNext: () => void;
 }) {
@@ -585,7 +641,7 @@ function OptionsStep({
       <StepHeading
         step={3}
         title="Personalize your PFP"
-        description="Optionally add your name, then choose the face engine that matches your preferred quality."
+        description="Optionally add your name, choose your framing, then select the face engine that matches your preferred quality."
       />
 
       <div className="mx-auto mt-10 max-w-4xl">
@@ -607,6 +663,50 @@ function OptionsStep({
           <p className="mt-2 text-xs text-slate-500">
             Empty means the prompt explicitly asks for no text or lettering.
           </p>
+        </div>
+
+        <div className="mt-8">
+          <h4 className="text-sm font-semibold text-slate-200">Framing</h4>
+          <p className="mt-1 text-xs text-slate-500">
+            Choose how much of your character appears in the square PFP.
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            {FRAMING_OPTIONS.map((option) => {
+              const isSelected = selectedFraming === option.value;
+
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => onFramingSelect(option.value)}
+                  className={clsx(
+                    "flex min-h-[120px] flex-col rounded-xl border-2 bg-slate-950 p-4 text-left shadow-sm transition",
+                    isSelected
+                      ? "border-purple-500 ring-4 ring-purple-500/10"
+                      : "border-slate-700 hover:-translate-y-0.5 hover:border-purple-500/70",
+                  )}
+                  aria-pressed={isSelected}
+                >
+                  <span className="flex w-full items-center justify-between gap-3">
+                    <span className="font-bold text-white">{option.name}</span>
+                    <span
+                      className={clsx(
+                        "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
+                        isSelected
+                          ? "border-purple-500 bg-purple-600 text-white"
+                          : "border-slate-600 text-transparent",
+                      )}
+                    >
+                      <FaCheck className="text-[9px]" aria-hidden="true" />
+                    </span>
+                  </span>
+                  <span className="mt-2 text-xs leading-5 text-slate-400">
+                    {option.description}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="mt-8">
@@ -801,6 +901,7 @@ export function StudioPfpFunnel({
     inputText: "",
     selectedStyle: requestedStyleContext?.style ?? null,
     selectedModel: null,
+    selectedFraming: "head",
   });
   const [error, setError] = useState("");
   const [images, setImages] = useState<Array<{ imageUrl: string }>>([]);
@@ -944,6 +1045,7 @@ export function StudioPfpFunnel({
         state.selectedStyle.basePrompt,
         state.inputText,
         state.selectedModel,
+        state.selectedFraming,
       );
 
       if (typeof window !== "undefined" && window.dataLayer) {
@@ -953,6 +1055,7 @@ export function StudioPfpFunnel({
           gaming_pfp_category: activeCategory,
           gaming_pfp_subcategory: activeSubcategory,
           gaming_pfp_model: state.selectedModel,
+          gaming_pfp_framing: state.selectedFraming,
           gaming_pfp_has_text: Boolean(state.inputText.trim()),
         });
       }
@@ -1042,6 +1145,13 @@ export function StudioPfpFunnel({
               {
                 label: "Engine",
                 value: selectedEngine?.name ?? "Not selected",
+              },
+              {
+                label: "Framing",
+                value:
+                  FRAMING_OPTIONS.find(
+                    (option) => option.value === state.selectedFraming,
+                  )?.name ?? "Head",
               },
               { label: "Output size", value: "Square · 1:1" },
             ].map((item) => (
@@ -1167,18 +1277,6 @@ export function StudioPfpFunnel({
         <FunnelProgress currentStep={currentStep} />
         <section className="mt-5 rounded-xl border border-slate-800 bg-slate-900 p-5 shadow-md sm:p-8 lg:p-10">
           {currentStep === 1 ? (
-            <UploadStep
-              uploadedFile={uploadedFile}
-              previewUrl={previewUrl}
-              isCompressing={isCompressing}
-              error={error}
-              onFileSelect={(file) => void handleFileSelect(file)}
-              onNext={() => {
-                setError("");
-                setCurrentStep(2);
-              }}
-            />
-          ) : currentStep === 2 ? (
             <StyleStep
               activeCategory={activeCategory}
               activeSubcategory={activeSubcategory}
@@ -1189,18 +1287,34 @@ export function StudioPfpFunnel({
                 setState((current) => ({ ...current, selectedStyle }));
                 setError("");
               }}
+              onNext={() => setCurrentStep(2)}
+            />
+          ) : currentStep === 2 ? (
+            <UploadStep
+              uploadedFile={uploadedFile}
+              previewUrl={previewUrl}
+              isCompressing={isCompressing}
+              error={error}
+              onFileSelect={(file) => void handleFileSelect(file)}
               onBack={() => setCurrentStep(1)}
-              onNext={() => setCurrentStep(3)}
+              onNext={() => {
+                setError("");
+                setCurrentStep(3);
+              }}
             />
           ) : currentStep === 3 ? (
             <OptionsStep
               inputText={state.inputText}
               selectedModel={state.selectedModel}
+              selectedFraming={state.selectedFraming}
               onTextChange={(inputText) =>
                 setState((current) => ({ ...current, inputText }))
               }
               onModelSelect={(selectedModel) =>
                 setState((current) => ({ ...current, selectedModel }))
+              }
+              onFramingSelect={(selectedFraming) =>
+                setState((current) => ({ ...current, selectedFraming }))
               }
               onBack={() => setCurrentStep(2)}
               onNext={() => setCurrentStep(4)}

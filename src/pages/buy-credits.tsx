@@ -154,6 +154,80 @@ const BuyCreditsPage: React.FC = () => {
           </div>
         </section>
 
+        <section className="mx-auto mb-20 max-w-6xl">
+          <h2 className="mb-12 text-center text-3xl font-bold">
+            Choose Your Credit Pack
+          </h2>
+
+          <div className="grid gap-8 md:grid-cols-3">
+            {offers.map((offer) => (
+              <div
+                key={offer.plan}
+                className={`relative rounded-xl border bg-white p-6 shadow-xl dark:bg-slate-800 ${
+                  offer.popular
+                    ? "border-purple-600 ring-2 ring-purple-500"
+                    : "border-slate-300 dark:border-slate-700"
+                }`}
+              >
+                {offer.popular && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-purple-600 px-4 py-1 text-xs font-bold text-white">
+                    Most Popular
+                  </span>
+                )}
+
+                <h3 className="mb-2 text-2xl font-bold">{offer.name}</h3>
+                <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+                  {offer.description}
+                </p>
+
+                <p className="mb-2 text-4xl font-extrabold">${offer.price.toFixed(2)}</p>
+                <p className="mb-6 text-sm">{offer.images} Credits</p>
+
+                <button
+                  onClick={() => void handleBuy(offer.plan)}
+                  disabled={loadingPlan === offer.plan}
+                  className={`w-full rounded-lg py-3 font-semibold transition ${
+                    offer.popular
+                      ? "bg-purple-600 text-white hover:bg-purple-700"
+                      : "bg-slate-700 text-white hover:bg-slate-800"
+                  } disabled:opacity-50`}
+                >
+                  {loadingPlan === offer.plan ? "Processing..." : `Get ${offer.name}`}
+                </button>
+
+                <div className="mt-6 text-xs text-slate-500">
+                  <p className="mb-1">What you can make:</p>
+
+                  {offer.plan === "starter" && (
+                    <ul className="list-inside list-disc">
+                      <li>2 text-only banners or 2 text-only thumbnails</li>
+                      <li>1 PFP plus several logos</li>
+                      <li>A small panel or screen bundle</li>
+                    </ul>
+                  )}
+
+                  {offer.plan === "pro" && (
+                    <ul className="list-inside list-disc">
+                      <li>Banner + thumbnail + multiple logos</li>
+                      <li>Full 4-screen Twitch set</li>
+                      <li>Profile picture + panel batch</li>
+                      <li>Base emote plus emote set</li>
+                    </ul>
+                  )}
+
+                  {offer.plan === "elite" && (
+                    <ul className="list-inside list-disc">
+                      <li>Complete stream branding across multiple tools</li>
+                      <li>Multiple banners, thumbnails, and PFPs</li>
+                      <li>Large emote and panel projects</li>
+                    </ul>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <section className="mx-auto mb-20 max-w-5xl">
           <h2 className="mb-6 text-center text-3xl font-bold">How Credits Work</h2>
 
@@ -289,80 +363,6 @@ const BuyCreditsPage: React.FC = () => {
                 <strong>{getPanelBatchCredits(3)} credits</strong> for 3.
               </p>
             </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-6xl">
-          <h2 className="mb-12 text-center text-3xl font-bold">
-            Choose Your Credit Pack
-          </h2>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            {offers.map((offer) => (
-              <div
-                key={offer.plan}
-                className={`relative rounded-xl border bg-white p-6 shadow-xl dark:bg-slate-800 ${
-                  offer.popular
-                    ? "border-purple-600 ring-2 ring-purple-500"
-                    : "border-slate-300 dark:border-slate-700"
-                }`}
-              >
-                {offer.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-purple-600 px-4 py-1 text-xs font-bold text-white">
-                    Most Popular
-                  </span>
-                )}
-
-                <h3 className="mb-2 text-2xl font-bold">{offer.name}</h3>
-                <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
-                  {offer.description}
-                </p>
-
-                <p className="mb-2 text-4xl font-extrabold">${offer.price.toFixed(2)}</p>
-                <p className="mb-6 text-sm">{offer.images} Credits</p>
-
-                <button
-                  onClick={() => void handleBuy(offer.plan)}
-                  disabled={loadingPlan === offer.plan}
-                  className={`w-full rounded-lg py-3 font-semibold transition ${
-                    offer.popular
-                      ? "bg-purple-600 text-white hover:bg-purple-700"
-                      : "bg-slate-700 text-white hover:bg-slate-800"
-                  } disabled:opacity-50`}
-                >
-                  {loadingPlan === offer.plan ? "Processing..." : `Get ${offer.name}`}
-                </button>
-
-                <div className="mt-6 text-xs text-slate-500">
-                  <p className="mb-1">What you can make:</p>
-
-                  {offer.plan === "starter" && (
-                    <ul className="list-inside list-disc">
-                      <li>2 text-only banners or 2 text-only thumbnails</li>
-                      <li>1 PFP plus several logos</li>
-                      <li>A small panel or screen bundle</li>
-                    </ul>
-                  )}
-
-                  {offer.plan === "pro" && (
-                    <ul className="list-inside list-disc">
-                      <li>Banner + thumbnail + multiple logos</li>
-                      <li>Full 4-screen Twitch set</li>
-                      <li>Profile picture + panel batch</li>
-                      <li>Base emote plus emote set</li>
-                    </ul>
-                  )}
-
-                  {offer.plan === "elite" && (
-                    <ul className="list-inside list-disc">
-                      <li>Complete stream branding across multiple tools</li>
-                      <li>Multiple banners, thumbnails, and PFPs</li>
-                      <li>Large emote and panel projects</li>
-                    </ul>
-                  )}
-                </div>
-              </div>
-            ))}
           </div>
         </section>
 

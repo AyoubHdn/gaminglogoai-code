@@ -45,8 +45,8 @@ const STEP_DETAILS: Array<{
   step: FunnelStep;
   shortTitle: string;
 }> = [
-  { step: 1, shortTitle: "Name" },
-  { step: 2, shortTitle: "Style" },
+  { step: 1, shortTitle: "Style" },
+  { step: 2, shortTitle: "Name" },
   { step: 3, shortTitle: "Engine" },
   { step: 4, shortTitle: "Size" },
   { step: 5, shortTitle: "Generate" },
@@ -268,10 +268,12 @@ function StepNavigation({
 function NameStep({
   name,
   onNameChange,
+  onBack,
   onNext,
 }: {
   name: string;
   onNameChange: (name: string) => void;
+  onBack: () => void;
   onNext: () => void;
 }) {
   return (
@@ -285,7 +287,7 @@ function NameStep({
       }}
     >
       <StepHeading
-        step={1}
+        step={2}
         title="Your Gamer Tag / Team Name"
         description="Start with the name you want the AI to build into your gaming logo."
       />
@@ -311,9 +313,13 @@ function NameStep({
         </p>
       </div>
 
-      <div className="mt-10 flex justify-center">
+      <div className="mt-10 flex items-center justify-between gap-4 border-t border-slate-800 pt-6">
+        <Button type="button" variant="ghost" onClick={onBack}>
+          <FaArrowLeft aria-hidden="true" />
+          Back
+        </Button>
         <Button type="submit" disabled={!name.trim()} className="min-w-36">
-          Choose a style
+          Choose an engine
           <FaArrowRight aria-hidden="true" />
         </Button>
       </div>
@@ -337,7 +343,7 @@ function StyleStep({
   onCategoryChange: (category: string) => void;
   onSubcategoryChange: (subcategory: string) => void;
   onStyleSelect: (style: StyleItem) => void;
-  onBack: () => void;
+  onBack?: () => void;
   onNext: () => void;
 }) {
   const categories = Object.keys(gamerStylesData);
@@ -348,7 +354,7 @@ function StyleStep({
   return (
     <div>
       <StepHeading
-        step={2}
+        step={1}
         title="Choose your logo style"
         description="Browse by category, narrow the collection, then select the visual direction for your logo."
       />
@@ -459,7 +465,7 @@ function StyleStep({
         onBack={onBack}
         onNext={onNext}
         nextDisabled={!selectedStyleImageSrc}
-        nextLabel="Choose an engine"
+        nextLabel="Add your name"
       />
     </div>
   );
@@ -996,16 +1002,6 @@ export function StudioLogoFunnel({
   const renderCurrentStep = () => {
     if (currentStep === 1) {
       return (
-        <NameStep
-          name={state.name}
-          onNameChange={(name) => setState((current) => ({ ...current, name }))}
-          onNext={() => setCurrentStep(2)}
-        />
-      );
-    }
-
-    if (currentStep === 2) {
-      return (
         <StyleStep
           activeCategory={activeCategory}
           activeSubcategory={activeSubcategory}
@@ -1013,6 +1009,16 @@ export function StudioLogoFunnel({
           onCategoryChange={handleCategoryChange}
           onSubcategoryChange={handleSubcategoryChange}
           onStyleSelect={handleStyleSelect}
+          onNext={() => setCurrentStep(2)}
+        />
+      );
+    }
+
+    if (currentStep === 2) {
+      return (
+        <NameStep
+          name={state.name}
+          onNameChange={(name) => setState((current) => ({ ...current, name }))}
           onBack={() => setCurrentStep(1)}
           onNext={() => setCurrentStep(3)}
         />
