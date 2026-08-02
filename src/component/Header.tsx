@@ -89,6 +89,7 @@ export function Header() {
   ];
 
   const staticLinks = [
+    { href: "/studio", label: "Studio" },
     { href: "/logo-styles", label: "Browse All Styles" },
     { href: "/community", label: "Community" },
     { href: "/buy-credits", label: "Pricing" },
