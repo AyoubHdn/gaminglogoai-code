@@ -13,7 +13,6 @@ import {
   FaVideo,
   FaYoutube,
 } from "react-icons/fa";
-import { StudioPromo } from "~/component/StudioPromo";
 import {
   THUMBNAIL_FORMATS,
   type ThumbnailFormatId,
@@ -381,11 +380,6 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
             </button>
           </div>
         </section>
-
-        <StudioPromo
-          toolName="YouTube Thumbnail Maker"
-          href="/studio?tool=thumbnail"
-        />
 
         <section className="bg-white py-16 dark:bg-slate-900">
           <div className="container mx-auto max-w-3xl px-4 text-center">

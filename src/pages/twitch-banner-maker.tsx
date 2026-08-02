@@ -13,7 +13,6 @@ import {
   FaQuestionCircle,
   FaUsers,
 } from "react-icons/fa";
-import { StudioPromo } from "~/component/StudioPromo";
 
 const TwitchBannerLandingPage: NextPage = () => {
   const router = useRouter();
@@ -210,11 +209,6 @@ const TwitchBannerLandingPage: NextPage = () => {
             </button>
           </div>
         </section>
-
-        <StudioPromo
-          toolName="Twitch Banner Maker"
-          href="/studio?tool=banner"
-        />
 
         <section className="bg-white py-16 dark:bg-slate-900">
           <div className="container mx-auto px-4">

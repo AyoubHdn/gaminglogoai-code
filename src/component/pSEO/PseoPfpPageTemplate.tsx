@@ -5,7 +5,6 @@ import Link from "next/link";
 import { FaChevronRight, FaCamera, FaPalette, FaMagic } from "react-icons/fa";
 import { GameCrossPromoLink, RelatedItem } from '~/lib/pSEO'; // We'll reuse the RelatedItem type
 import { getPseoContent } from "~/data/pseoContent";
-import { StudioPromo } from "~/component/StudioPromo";
 
 // Define the props our new template will accept
 export interface PseoPfpPageTemplateProps {
@@ -41,7 +40,7 @@ export interface PseoPfpPageTemplateProps {
 const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
   gameTitle, pageTitle, metaDescription, keywords, canonicalUrl, h1,
   heroBeforeImageSrc, heroAfterImageSrc, introParagraph, ctaText, handleCtaClick,
-  studioPromoHref = "/studio?tool=pfp", showcaseTitle, imageShowcaseGrid,
+  showcaseTitle, imageShowcaseGrid,
   howItWorksTitle, crossPromoLinks = [], faqTitle, faqItems, finalCtaTitle,
   finalCtaParagraph, relatedItems
 }) => {
@@ -153,11 +152,6 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
             <p className="mt-4 text-xs text-slate-400">Sign up and use your free credit to download your first PFP!</p>
           </div>
         </section>
-
-        <StudioPromo
-          toolName={`${gameTitle} PFP Maker`}
-          href={studioPromoHref}
-        />
 
         {/* Example Gallery Section */}
         <section className="py-16 md:py-20 bg-white dark:bg-slate-900">

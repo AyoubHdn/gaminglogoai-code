@@ -12,7 +12,6 @@ import {
   FaSmile,
   FaUserCircle,
 } from "react-icons/fa";
-import { StudioPromo } from "~/component/StudioPromo";
 
 const TwitchEmoteMakerPage: NextPage = () => {
   const router = useRouter();
@@ -200,11 +199,6 @@ const TwitchEmoteMakerPage: NextPage = () => {
             </button>
           </div>
         </section>
-
-        <StudioPromo
-          toolName="Twitch Emote Maker"
-          href="/studio?tool=emote"
-        />
 
         <section className="bg-white py-20 dark:bg-slate-900">
           <div className="container mx-auto max-w-6xl px-4">

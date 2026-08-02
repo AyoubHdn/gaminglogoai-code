@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "~/component/Button";
-import { StudioPromo } from "~/component/StudioPromo";
 import { FaChevronRight, FaGamepad, FaDownload, FaPaintBrush, FaUsers } from "react-icons/fa"; // Example Icons
 import { s3Style } from "~/utils/s3Paths";
 
@@ -135,11 +134,6 @@ const FreeFireLogoLandingPage: NextPage = () => {
             <p className="mt-4 text-xs text-slate-400">Sign up to claim your free credit. No design skills needed!</p>
           </div>
         </section>
-
-        <StudioPromo
-          toolName="Free Fire Logo Maker"
-          href="/studio?tool=logo&game=free%20fire"
-        />
 
         {/* Example Gallery Section */}
         <section className="py-16 md:py-20 bg-white dark:bg-slate-900">

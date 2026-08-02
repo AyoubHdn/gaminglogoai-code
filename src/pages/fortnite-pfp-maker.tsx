@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "~/component/Button";
-import { StudioPromo } from "~/component/StudioPromo";
 import { FaChevronRight, FaCamera, FaPalette, FaMagic } from "react-icons/fa"; // Example Icons
 import { s3Style } from "~/utils/s3Paths";
 
@@ -125,11 +124,6 @@ const FortnitePfpMakerLandingPage: NextPage = () => {
             <p className="mt-4 text-xs text-slate-400">Sign up and use your free credit to download your first PFP!</p>
           </div>
         </section>
-
-        <StudioPromo
-          toolName="Fortnite PFP Maker"
-          href="/studio?tool=pfp&game=fortnite"
-        />
 
         {/* Example Gallery Section */}
         <section className="py-16 md:py-20 bg-white dark:bg-slate-900">

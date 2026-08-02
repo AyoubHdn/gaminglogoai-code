@@ -5,7 +5,6 @@ import Link from "next/link";
 import { FaChevronRight, FaMagic, FaPaintBrush, FaBolt, FaUsers, FaShieldAlt, FaCogs, FaQuestionCircle } from "react-icons/fa";
 import { GameCrossPromoLink, RelatedItem } from '~/lib/pSEO';
 import { getPseoContent } from "~/data/pseoContent";
-import { StudioPromo } from "~/component/StudioPromo";
 
 // Define the "contract" for what every pSEO page needs to provide
 export interface PseoLogoPageTemplateProps {
@@ -33,7 +32,7 @@ export interface PseoLogoPageTemplateProps {
 const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
   gameTitle, pageTitle, metaDescription, keywords, canonicalUrl, h1, heroImageSrc,
   introParagraph, ctaText, handleCtaClick, showcaseTitle, imageShowcaseGrid,
-  studioPromoHref = "/studio?tool=logo", crossPromoLinks = [], relatedItems,
+  crossPromoLinks = [], relatedItems,
   faqItems, faqTitle, finalCtaTitle
 }) => {
 
@@ -141,11 +140,6 @@ const PseoLogoPageTemplate: React.FC<PseoLogoPageTemplateProps> = ({
             </button>
           </div>
         </section>
-
-        <StudioPromo
-          toolName={`${gameTitle} Logo Maker`}
-          href={studioPromoHref}
-        />
 
         {/* Dynamic Example Showcase Section */}
         <section className="py-16 md:py-20 bg-white dark:bg-slate-900">
