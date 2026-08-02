@@ -50,7 +50,11 @@
       "Bash(curl -s -o /dev/null -w \"status=%{http_code}\\\\n\" \"https://gaminglogoai.com/studio?tool=logo&game=free%20fire\")",
       "Bash(xargs echo \"commits ahead of main:\")",
       "Bash(curl *)",
-      "Bash(git fetch *)"
+      "Bash(git fetch *)",
+      "WebFetch(domain:gaminglogoai.com)",
+      "Bash(ls /c/Users/ULTRAPC/.claude/plugins/cache/agricidaniel-seo/claude-seo/1.9.9/scripts)",
+      "Bash(tee /c/Users/ULTRAPC/Documents/GitHub/SaaS/gaminglogoai-code/seo-logs/2026-07-29-postlaunch/ytt-inspect.json)",
+      "PowerShell(npm run *)"
     ]
   }
 }

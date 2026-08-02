@@ -8,13 +8,106 @@ import {
   FaImages,
   FaLightbulb,
   FaMagic,
-  FaMobileAlt,
   FaPaintBrush,
   FaQuestionCircle,
   FaVideo,
   FaYoutube,
 } from "react-icons/fa";
 import { StudioPromo } from "~/component/StudioPromo";
+import {
+  THUMBNAIL_FORMATS,
+  type ThumbnailFormatId,
+} from "~/data/thumbnailFormats";
+import { THUMBNAIL_GAMES } from "~/data/thumbnailGames";
+
+const FORMAT_CATEGORY_DEFINITIONS = [
+  {
+    title: "Win & Progression",
+    blurb: "Show results, clutch plays, upgrades, and measurable progress.",
+    formatIds: [
+      "epic-victory",
+      "rank-progression",
+      "before-after",
+      "stats-proof",
+    ],
+  },
+  {
+    title: "Challenge & High Stakes",
+    blurb:
+      "Build urgency around difficult attempts, timers, and major encounters.",
+    formatIds: [
+      "impossible-challenge",
+      "challenge-countdown",
+      "boss-battle",
+      "warning-broken",
+    ],
+  },
+  {
+    title: "Reaction & Comedy",
+    blurb:
+      "Lead with expressive faces, frustration, or an unexpected funny moment.",
+    formatIds: ["reaction-face", "rage-moment", "funny-fail"],
+  },
+  {
+    title: "Comparison & Ranking",
+    blurb: "Compare opponents, rank choices, or organize a countdown clearly.",
+    formatIds: ["vs-battle", "tier-list", "top-10-grid"],
+  },
+  {
+    title: "Reveal & Curiosity",
+    blurb:
+      "Direct attention toward secrets, updates, items, and unanswered questions.",
+    formatIds: [
+      "secret-discovery",
+      "item-reveal",
+      "new-update",
+      "big-arrow-reveal",
+      "highlight-circle",
+      "question-hook",
+    ],
+  },
+  {
+    title: "Number Hooks & Showcase",
+    blurb: "Showcase a big number, loadout, team, story, or stream highlight.",
+    formatIds: [
+      "money-number-hook",
+      "best-loadout",
+      "cinematic-story",
+      "squad-lineup",
+      "stream-highlights",
+    ],
+  },
+] as const satisfies readonly {
+  title: string;
+  blurb: string;
+  formatIds: readonly ThumbnailFormatId[];
+}[];
+
+function getThumbnailFormat(formatId: ThumbnailFormatId) {
+  const format = THUMBNAIL_FORMATS.find(
+    (candidate) => candidate.id === formatId,
+  );
+
+  if (!format) {
+    throw new Error(`Unknown thumbnail format: ${formatId}`);
+  }
+
+  return format;
+}
+
+const FORMAT_CATEGORIES = FORMAT_CATEGORY_DEFINITIONS.map((category) => ({
+  title: category.title,
+  blurb: category.blurb,
+  formats: category.formatIds.map(getThumbnailFormat),
+}));
+
+const EXAMPLE_FORMATS = (
+  ["epic-victory", "boss-battle", "reaction-face", "tier-list"] as const
+).map(getThumbnailFormat);
+
+const SPECIFIC_GAME_NAMES = THUMBNAIL_GAMES.filter(
+  (game) => game.id !== "generic",
+).map((game) => game.name);
 
 const YouTubeThumbnailLandingPage: NextPage = () => {
   const router = useRouter();
@@ -25,123 +118,68 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
 
   const features = [
     {
-      title: "Guided 4-Step Funnel",
+      title: "Guided 5-Step Studio Flow",
       description:
-        "Choose YouTube, pick a template, personalize your content, and generate the thumbnail in one flow.",
+        "Choose YouTube, select a content format and game, personalize the thumbnail, then review and generate.",
       icon: <FaMagic className="h-10 w-10" />,
     },
     {
-      title: "YouTube-Ready Size",
+      title: "YouTube-Ready PNG",
       description:
-        "Every thumbnail is built around the standard 1280 x 720 YouTube canvas for clean uploads.",
+        "Every finished thumbnail is delivered as a standard 1280 x 720, 16:9 PNG ready for a YouTube upload.",
       icon: <FaImages className="h-10 w-10" />,
     },
     {
-      title: "Game-Based Templates",
+      title: "25 Gaming Content Formats",
       description:
-        "Start from creator-ready presets inspired by games like Call of Duty, Fortnite, Minecraft, Apex, Cyberpunk, and Roblox.",
+        "Choose the composition that fits your video, from Epic Victory and Boss Battle to Tier List and Funny Fail.",
       icon: <FaPaintBrush className="h-10 w-10" />,
     },
     {
-      title: "Title and Image Personalization",
+      title: "Game or Generic Direction",
       description:
-        "Add your headline and reference image in the personalize step so the final thumbnail matches your video idea.",
+        "Select one of 19 supported games, or choose the generic option when your video is not tied to a specific title.",
       icon: <FaYoutube className="h-10 w-10" />,
     },
     {
-      title: "Generate and Refine",
+      title: "Flexible Personalization",
       description:
-        "Create a variation, refine the result, and keep pushing for a stronger click-through look.",
+        "Enter a required title, add an optional subtitle, and use no reference, an uploaded image, or one of My Designs.",
       icon: <FaBolt className="h-10 w-10" />,
     },
     {
-      title: "Download Ready",
+      title: "Generate, Refine, and Download",
       description:
-        "Preview and download the final thumbnail once you land on the result step.",
+        "Review your choices, generate the thumbnail, optionally refine it, create another variation, or download the PNG.",
       icon: <FaChevronRight className="h-10 w-10" />,
     },
   ];
 
   const workflowSteps = [
     {
-      step: "1. Pick a format",
+      step: "1. Choose your platform",
       detail:
-        "Start from one of 25 proven gaming thumbnail formats — Epic Victory, Boss Battle, Tier List, Reaction Face, Money / Number Hook and more — so the layout already matches your video's angle.",
+        "Select YouTube, the platform currently available in the thumbnail Studio. This sets the project to a 1280 x 720, 16:9 thumbnail canvas.",
     },
     {
-      step: "2. Pick your game",
+      step: "2. Choose your content format",
       detail:
-        "Choose your game so the art direction, characters, and mood fit titles like Fortnite, Call of Duty, Minecraft, Roblox, Apex, and Cyberpunk.",
+        "Pick one of the 25 real gaming formats. The selected format controls the main composition, visual hierarchy, and story of the thumbnail.",
     },
     {
-      step: "3. Add your title & image",
+      step: "3. Choose your game",
       detail:
-        "Type your headline and drop in a reference image during the personalize step so the thumbnail is tied to your actual upload, face, or in-game moment.",
+        "Choose one of 19 supported games to guide the world, characters, and mood, or select No specific game / generic for an original gaming look.",
     },
     {
-      step: "4. Generate & download",
+      step: "4. Personalize your thumbnail",
       detail:
-        "Generate a 1280 x 720 result, refine the variation until the click-through look is right, then download it ready to upload.",
-    },
-  ];
-
-  const exampleThumbnails = [
-    { src: "/youtube/thumbnail/fortnite-prv.webp", caption: "Fortnite Hype" },
-    { src: "/youtube/thumbnail/cod-prv.webp", caption: "COD Night Ops" },
-    { src: "/youtube/thumbnail/roblox-prv.webp", caption: "Roblox Chaos" },
-    { src: "/youtube/thumbnail/minecraft-prv.webp", caption: "Minecraft Build Rush" },
-  ];
-
-  // The 25 real thumbnail formats the generator ships with, grouped by the job
-  // the thumbnail needs to do. Names mirror src/data/thumbnailFormats.ts.
-  const formatCategories = [
-    {
-      title: "Win & Progression",
-      blurb: "Show off results, clutch plays, and glow-ups.",
-      formats: ["Epic Victory", "Rank Progression", "Before & After", "Stats Proof"],
+        "Enter a thumbnail title, add an optional subtitle, and decide whether to generate without a reference, upload a PNG or JPG, or use an eligible saved design.",
     },
     {
-      title: "Challenge & High Stakes",
-      blurb: "Tension that makes the click feel urgent.",
-      formats: [
-        "Impossible Challenge",
-        "Challenge Countdown",
-        "Boss Battle",
-        "Warning / Broken",
-      ],
-    },
-    {
-      title: "Reaction & Comedy",
-      blurb: "Big expressions and funny moments.",
-      formats: ["Reaction Face", "Rage Moment", "Funny Fail"],
-    },
-    {
-      title: "Comparison & Ranking",
-      blurb: "Head-to-heads and ranked lists.",
-      formats: ["VS Battle", "Tier List", "Top 10 Grid"],
-    },
-    {
-      title: "Reveal & Curiosity",
-      blurb: "Tease something viewers have to see.",
-      formats: [
-        "Secret Discovery",
-        "Item Reveal",
-        "New Update",
-        "Big Arrow Reveal",
-        "Highlight Circle",
-        "Question Hook",
-      ],
-    },
-    {
-      title: "Number Hooks & Showcase",
-      blurb: "Lead with a big number or a clean showcase.",
-      formats: [
-        "Money / Number Hook",
-        "Best Loadout",
-        "Cinematic Story",
-        "Squad Lineup",
-        "Stream Highlights",
-      ],
+      step: "5. Review and generate",
+      detail:
+        "Confirm the platform, format, game, text, reference choice, output, and credit cost. Generate the PNG, then optionally regenerate, refine, download, or start over.",
     },
   ];
 
@@ -153,15 +191,15 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
       icon: <FaYoutube className="h-8 w-8" />,
     },
     {
-      title: "Shorts & vertical clips",
+      title: "Tutorials, challenges & rankings",
       detail:
-        "Reuse the same art direction and headline so your long-form and Shorts feel like one channel.",
-      icon: <FaMobileAlt className="h-8 w-8" />,
+        "Use the 16:9 PNG for guides, challenge runs, updates, comparisons, and ranked-list videos on YouTube.",
+      icon: <FaPaintBrush className="h-8 w-8" />,
     },
     {
-      title: "Stream highlights & VODs",
+      title: "Stream highlights & VOD uploads",
       detail:
-        "Turn your best live moments into highlight covers for Twitch VOD exports and YouTube uploads.",
+        "Turn your best live moments into landscape covers when you publish stream highlights or VOD recordings to YouTube.",
       icon: <FaVideo className="h-8 w-8" />,
     },
     {
@@ -201,14 +239,14 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
     {
       title: "Match the real moment",
       detail:
-        "The thumbnail should promise what the video delivers. Add a reference image so the cover reflects your actual gameplay.",
+        "The thumbnail should promise what the video delivers. When useful, add an optional reference image or saved design to guide the subject and visual direction.",
     },
   ];
 
   const faq = [
     {
       q: "What is this thumbnail maker for?",
-      a: "It is built for YouTube gaming thumbnails and helps you create high-impact cover images using a guided AI workflow — pick a format, pick your game, personalize, and generate.",
+      a: "It is built for YouTube gaming thumbnails and follows the same five-step Studio flow every time: choose YouTube, choose a content format, choose a game, personalize the thumbnail, then review and generate.",
     },
     {
       q: "Is the gaming thumbnail maker free?",
@@ -216,7 +254,7 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
     },
     {
       q: "What games does it work with?",
-      a: "The formats are tuned for popular gaming titles like Fortnite, Call of Duty, Minecraft, Roblox, Apex Legends, and Cyberpunk, and the prompts adapt to the game you choose so the art direction fits.",
+      a: `The game selector currently includes ${SPECIFIC_GAME_NAMES.join(", ")}. You can also choose No specific game / generic for a thumbnail without a named franchise.`,
     },
     {
       q: "How many thumbnail formats are there?",
@@ -224,15 +262,15 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
     },
     {
       q: "What size does the tool use?",
-      a: "The thumbnail generator uses a 1280 x 720 canvas so the result fits standard YouTube thumbnail requirements and the 16:9 aspect ratio.",
+      a: "The thumbnail generator delivers a 1280 x 720 PNG in the standard 16:9 YouTube thumbnail aspect ratio.",
     },
     {
       q: "Can I upload my own image?",
-      a: "Yes. The personalize step supports a reference image so the thumbnail can match your subject, face, or in-game moment.",
+      a: "Yes. The optional reference choices are No reference, Upload image, or My Designs. Device uploads accept PNG or JPG files up to 5 MB and are used as AI visual guidance rather than pasted directly into the result.",
     },
     {
       q: "Can I change the title text?",
-      a: "Yes. You can enter your own thumbnail headline during personalization before generating the result, and update it between variations.",
+      a: "Yes. The title is required and can contain up to 70 characters. You can also add an optional subtitle of up to 50 characters, then return to Personalize before generating another variation if you want to change either field.",
     },
     {
       q: "Do I need design skills?",
@@ -240,31 +278,57 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
     },
     {
       q: "Can I regenerate the same setup?",
-      a: "Yes. Once you reach the result step, you can generate a new variation from the same template and personalization choices until the look is right.",
+      a: "Yes. After generating in Step 5, you can create another variation from the same format, game, title, subtitle, and reference choice. You can also submit an optional refinement request or reset to the original result.",
     },
   ];
 
   return (
     <>
       <Head>
-        <title>YouTube Thumbnail Maker - AI Gaming Thumbnails | GamingLogoAI</title>
+        <title>
+          YouTube Thumbnail Maker - AI Gaming Thumbnails | GamingLogoAI
+        </title>
         <meta
           name="description"
-          content="Create AI-generated YouTube gaming thumbnails. Choose a template, add your title and reference image, and generate a click-ready thumbnail in one guided flow."
+          content="Create AI-generated YouTube gaming thumbnails in five guided steps. Choose a format and game, personalize the text and optional reference, then download a 1280 x 720 PNG."
         />
-        <link rel="canonical" href="https://gaminglogoai.com/youtube-thumbnail-maker" />
+        <link
+          rel="canonical"
+          href="https://gaminglogoai.com/youtube-thumbnail-maker"
+        />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://gaminglogoai.com/youtube-thumbnail-maker" />
-        <meta property="og:title" content="YouTube Thumbnail Maker - AI Gaming Thumbnails" />
-        <meta property="og:description" content="Create AI-generated YouTube gaming thumbnails. Choose a template, add your title and reference image, and generate a click-ready thumbnail in one guided flow." />
-        <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta
+          property="og:url"
+          content="https://gaminglogoai.com/youtube-thumbnail-maker"
+        />
+        <meta
+          property="og:title"
+          content="YouTube Thumbnail Maker - AI Gaming Thumbnails"
+        />
+        <meta
+          property="og:description"
+          content="Create AI-generated YouTube gaming thumbnails in five guided steps. Choose a format and game, personalize the text and optional reference, then download a 1280 x 720 PNG."
+        />
+        <meta
+          property="og:image"
+          content="https://gaminglogoai.com/og-image-gaminglogoai.png"
+        />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:site_name" content="GamingLogoAI" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="YouTube Thumbnail Maker - AI Gaming Thumbnails" />
-        <meta name="twitter:description" content="Create AI-generated YouTube gaming thumbnails. Choose a template, add your title and reference image, and generate a click-ready thumbnail in one guided flow." />
-        <meta name="twitter:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
+        <meta
+          name="twitter:title"
+          content="YouTube Thumbnail Maker - AI Gaming Thumbnails"
+        />
+        <meta
+          name="twitter:description"
+          content="Create AI-generated YouTube gaming thumbnails in five guided steps. Choose a format and game, personalize the text and optional reference, then download a 1280 x 720 PNG."
+        />
+        <meta
+          name="twitter:image"
+          content="https://gaminglogoai.com/og-image-gaminglogoai.png"
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -281,7 +345,8 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
                 "@type": "Offer",
                 price: "0",
                 priceCurrency: "USD",
-                description: "Free to start with 1 credit on signup. Credit packs available.",
+                description:
+                  "Free to start with 1 credit on signup. Credit packs available.",
               },
               publisher: {
                 "@type": "Organization",
@@ -302,16 +367,17 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
               AI <span className="text-red-400">YouTube Thumbnail Maker</span>
             </h1>
             <p className="mb-10 text-lg text-slate-200 md:text-xl">
-              Create gaming thumbnails with a guided flow: choose YouTube, pick a
-              template, personalize your title and image, then generate a
-              click-ready result.
+              Create gaming thumbnails with the real five-step Studio flow:
+              choose YouTube, select a content format and game, personalize your
+              text and optional reference, then review and generate.
             </p>
 
             <button
               onClick={handleStart}
               className="rounded-lg bg-gradient-to-r from-red-500 to-orange-500 px-8 py-4 text-lg font-bold text-white shadow-lg transition-all hover:scale-105"
             >
-              Start Creating Thumbnails <FaChevronRight className="ml-2 inline" />
+              Start Creating Thumbnails{" "}
+              <FaChevronRight className="ml-2 inline" />
             </button>
           </div>
         </section>
@@ -325,19 +391,20 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
           <div className="container mx-auto max-w-3xl px-4 text-center">
             <p className="text-lg leading-relaxed text-slate-600 dark:text-slate-300">
               Your thumbnail is the single biggest factor in whether someone
-              clicks your gaming video. Before anyone reads your title or watches
-              a second of footage, they judge the cover image — and on a crowded
-              YouTube gaming feed you have a fraction of a second to win that
-              click. This AI gaming thumbnail maker helps you produce
-              scroll-stopping, high-contrast thumbnails without opening Photoshop
-              or hiring a designer.
+              clicks your gaming video. Before anyone reads your title or
+              watches a second of footage, they judge the cover image — and on a
+              crowded YouTube gaming feed you have a fraction of a second to win
+              that click. This AI gaming thumbnail maker helps you produce
+              scroll-stopping, high-contrast thumbnails without opening
+              Photoshop or hiring a designer.
             </p>
             <p className="mt-4 text-lg leading-relaxed text-slate-600 dark:text-slate-300">
-              Pick a proven format, choose your game, add your headline and a
-              reference image, and the generator builds a 1280 x 720 thumbnail
-              tuned for click-through. It is built specifically for gaming
-              creators, so every template understands the look of victories, boss
-              fights, rage moments, tier lists, and update videos.
+              Pick a proven content format, choose your game, enter a required
+              headline and optional subtitle, then decide whether you want no
+              reference, a PNG or JPG upload, or one of your eligible saved
+              designs. The generator delivers a 1280 x 720 PNG tuned for
+              click-through, with the selected format shaping victories, boss
+              fights, rage moments, tier lists, update videos, and more.
             </p>
           </div>
         </section>
@@ -345,7 +412,8 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
         <section className="bg-white py-16 dark:bg-slate-900">
           <div className="container mx-auto px-4">
             <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
-              Why Creators Use Our <span className="text-red-500">Thumbnail Maker</span>
+              Why Creators Use Our{" "}
+              <span className="text-red-500">Thumbnail Maker</span>
             </h2>
 
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -356,7 +424,9 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
                 >
                   <div className="mr-5 text-red-500">{feature.icon}</div>
                   <div>
-                    <p className="mb-1 text-lg font-semibold">{feature.title}</p>
+                    <p className="mb-1 text-lg font-semibold">
+                      {feature.title}
+                    </p>
                     <p className="text-sm text-slate-600 dark:text-slate-300">
                       {feature.description}
                     </p>
@@ -370,14 +440,15 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
         <section className="bg-slate-50 py-20 dark:bg-slate-950">
           <div className="container mx-auto px-4">
             <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
-              How to Make a Gaming Thumbnail in 4 Steps
+              How to Make a Gaming Thumbnail in 5 Steps
             </h2>
             <p className="mx-auto mb-12 max-w-3xl text-center text-slate-600 dark:text-slate-300">
-              The whole flow takes a couple of minutes — no design experience
-              needed.
+              These are the same five steps you will see after opening the
+              Studio thumbnail tool — no hidden setup and no separate legacy
+              builder.
             </p>
 
-            <div className="mx-auto grid max-w-5xl gap-4 md:grid-cols-4">
+            <div className="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-5">
               {workflowSteps.map((item) => (
                 <div
                   key={item.step}
@@ -398,6 +469,32 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
         <section className="bg-white py-20 dark:bg-slate-900">
           <div className="container mx-auto px-4">
             <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
+              Choose YouTube, Then Choose Your Game
+            </h2>
+            <p className="mx-auto mb-8 max-w-3xl text-center text-slate-600 dark:text-slate-300">
+              YouTube is currently the only platform available in this Studio
+              tool. In Step 3, choose a recognizable game identity or select No
+              specific game / generic when the video needs a flexible original
+              gaming look. The selected game supplies the world and visual
+              direction while your chosen content format controls the layout and
+              story.
+            </p>
+            <ul className="mx-auto flex max-w-6xl flex-wrap justify-center gap-2">
+              {THUMBNAIL_GAMES.map((game) => (
+                <li
+                  key={game.id}
+                  className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                >
+                  {game.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section className="bg-slate-50 py-20 dark:bg-slate-950">
+          <div className="container mx-auto px-4">
+            <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
               Popular Gaming Thumbnail Formats
             </h2>
             <p className="mx-auto mb-12 max-w-3xl text-center text-slate-600 dark:text-slate-300">
@@ -408,7 +505,7 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
             </p>
 
             <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {formatCategories.map((cat) => (
+              {FORMAT_CATEGORIES.map((cat) => (
                 <div
                   key={cat.title}
                   className="rounded-xl border border-slate-200 bg-slate-50 p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/60"
@@ -419,13 +516,16 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
                   <p className="mb-4 text-sm text-slate-600 dark:text-slate-300">
                     {cat.blurb}
                   </p>
-                  <ul className="flex flex-wrap gap-2">
+                  <ul className="space-y-2">
                     {cat.formats.map((format) => (
                       <li
-                        key={format}
-                        className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-700/60 dark:text-slate-200"
+                        key={format.id}
+                        className="rounded-lg bg-white px-3 py-2 text-sm text-slate-700 dark:bg-slate-700/60 dark:text-slate-200"
                       >
-                        {format}
+                        <span className="font-semibold">{format.name}</span>
+                        <span className="mt-0.5 block text-xs text-slate-500 dark:text-slate-300">
+                          {format.description}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -438,25 +538,25 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
         <section className="bg-white py-20 dark:bg-slate-900">
           <div className="container mx-auto px-4">
             <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
-              Thumbnail Style Examples
+              Real Content Format Preview Examples
             </h2>
 
             <div className="mx-auto grid max-w-5xl grid-cols-2 gap-4 md:grid-cols-4">
-              {exampleThumbnails.map((example) => (
+              {EXAMPLE_FORMATS.map((format) => (
                 <div
-                  key={example.caption}
+                  key={format.id}
                   className="rounded-lg bg-white p-2 shadow-lg dark:bg-slate-800"
                 >
                   <Image
-                    src={example.src}
-                    alt={example.caption}
+                    src={format.previewImage}
+                    alt={`${format.name} gaming thumbnail format preview`}
                     width={640}
                     height={360}
                     className="rounded"
                     unoptimized
                   />
                   <p className="mt-2 text-center text-sm font-medium">
-                    {example.caption}
+                    {format.name}
                   </p>
                 </div>
               ))}
@@ -470,7 +570,8 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
               Where to Use Your Gaming Thumbnails
             </h2>
             <p className="mx-auto mb-12 max-w-3xl text-center text-slate-600 dark:text-slate-300">
-              One thumbnail can carry across every place your audience finds you.
+              One thumbnail can carry across every place your audience finds
+              you.
             </p>
 
             <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -545,7 +646,8 @@ const YouTubeThumbnailLandingPage: NextPage = () => {
 
         <section className="bg-gradient-to-tr from-red-900 via-slate-950 to-black py-20 text-center text-white">
           <h2 className="mb-6 text-3xl font-bold md:text-4xl">
-            Ready to Make Better <span className="text-red-400">YouTube Thumbnails?</span>
+            Ready to Make Better{" "}
+            <span className="text-red-400">YouTube Thumbnails?</span>
           </h2>
           <button
             onClick={handleStart}
