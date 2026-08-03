@@ -102,7 +102,7 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
             }),
           }}
         />
-        {effectiveFaqItems.length > 0 && (
+        {!seo?.suppressFaqSchema && effectiveFaqItems.length > 0 && (
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{

@@ -23,6 +23,7 @@ export interface PseoContent {
   articleSections?: PseoArticleSection[];
   faqs?: PseoFaq[];
   relatedLinks?: PseoRelatedLink[];
+  suppressFaqSchema?: boolean;
 }
 
 // Keyed by slug exactly as it appears in the URL.
@@ -79,6 +80,96 @@ export const pseoContent: Record<string, PseoContent> = {
     relatedLinks: [
       { href: "/blog/top-10-minecraft-logo-ideas", anchor: "Top 10 Minecraft Logo Ideas" },
       { href: "/pfp/games/minecraft-pfp-maker", anchor: "Minecraft PFP Maker" },
+      { href: "/buy-credits", anchor: "View credit packs" },
+    ],
+  },
+  "roblox-logo-maker": {
+    metaTitle: "Roblox Logo Maker – Create Your Roblox Gaming Logo with AI",
+    suppressFaqSchema: true,
+    heroIntro: "Design a bold Roblox logo in seconds with our AI Roblox logo maker. Whether you're branding your Roblox game, YouTube channel, group, or gaming profile, our tool turns your ideas into professional Roblox-style logos — blocky avatars, glossy 3D mascots, esports emblems, and more. Just pick a style, add your name, and generate.",
+    articleSections: [
+      {
+        heading: "Make a Roblox Logo That Stands Out",
+        body: "Roblox creators, group owners, and streamers need a logo that captures the game's iconic blocky, colorful energy. Our AI Roblox logo maker gives you that instantly — from classic Roblox avatar mascots to fierce esports emblems, each rendered in the glossy plastic 3D style Roblox players recognize. Add your channel or group name and get a polished logo ready for your Roblox profile, YouTube thumbnails, Discord, or team branding.",
+      },
+      {
+        heading: "Roblox Logo Styles for Every Creator",
+        body: "Choose from a range of Roblox-inspired styles: blocky avatar hero mascots, the classic Roblox noob character, sword-wielding warrior avatars, cute Adopt Me-style pets, aggressive esports team emblems, Blox Fruits adventure themes, and more. Each style is built to match a different Roblox vibe — whether you run a tycoon game, a PvP group, a roleplay server, or a Roblox YouTube channel, there's a logo style that fits.",
+      },
+      {
+        heading: "How to Create Your Roblox Logo",
+        body: "Making your Roblox logo takes three quick steps. First, browse the Roblox logo styles and pick the one that matches your vibe. Second, enter your game, group, or channel name. Third, hit generate — our AI creates your logo in the Roblox 3D style, ready to download and use. No design skills needed, and you can regenerate until it's perfect.",
+      },
+      {
+        heading: "Where to Use Your Roblox Logo",
+        body: "Your Roblox logo works everywhere your brand appears: as your Roblox group icon, on YouTube video thumbnails and channel art, on your Twitch or Discord, on team jerseys and merch, and across social media. A strong, consistent Roblox logo helps your game or channel look professional and get recognized by the Roblox community.",
+      },
+    ],
+    faqs: [
+      {
+        question: "How do I make a Roblox logo?",
+        answer: "Pick a Roblox logo style from our AI maker, enter your game or channel name, and generate. Your logo is created in seconds in the blocky Roblox 3D style, ready to download.",
+      },
+      {
+        question: "Is the Roblox logo maker free?",
+        answer: "You can start creating for free — generate and preview your Roblox logo, with credits for high-resolution downloads.",
+      },
+      {
+        question: "What Roblox logo styles are available?",
+        answer: "Choose from blocky avatar mascots, the classic noob character, warrior avatars, cute pet styles, esports emblems, Blox Fruits themes, and more Roblox-inspired designs.",
+      },
+      {
+        question: "Can I use my Roblox logo for my group or YouTube channel?",
+        answer: "Yes — your logo is perfect for Roblox group icons, YouTube channel art and thumbnails, Discord, streaming, and team branding.",
+      },
+    ],
+    relatedLinks: [
+      { href: "/pfp/games/roblox-pfp-maker", anchor: "Roblox PFP Maker" },
+      { href: "/buy-credits", anchor: "View credit packs" },
+    ],
+  },
+  "roblox-pfp-maker": {
+    metaTitle: "Roblox PFP Maker – Turn Your Photo into a Roblox Avatar with AI",
+    suppressFaqSchema: true,
+    heroIntro: "Turn your photo into a Roblox-style avatar with our AI Roblox PFP maker. Upload a picture and watch our AI transform you into a blocky Roblox character — glossy plastic style, cubic proportions, and vibrant colors — perfect for your Roblox profile, Discord, YouTube, or gaming socials.",
+    articleSections: [
+      {
+        heading: "Become a Roblox Character",
+        body: "Ever wanted a profile picture that turns you into a Roblox avatar? Our AI Roblox PFP maker does exactly that. Upload your photo and our AI transforms your face and features into the iconic blocky Roblox style — cubic head, glossy plastic texture, and colorful Roblox-style outfit — while keeping you recognizable. It's the perfect avatar for Roblox players who want their profile to match the game they love.",
+      },
+      {
+        heading: "Roblox Avatar Styles",
+        body: "Choose how your Roblox PFP looks — from a classic blocky Roblox avatar to a full-body Roblox character with signature plastic textures and vibrant gaming outfits. Pick your framing (head, half body, or full body) and let the AI render you as a true Roblox character, complete with a matching Roblox-world background.",
+      },
+      {
+        heading: "How to Make Your Roblox PFP",
+        body: "Creating your Roblox avatar is simple. Choose the Roblox style, upload a clear photo of yourself, pick your framing, and generate. The AI transforms you into a blocky Roblox character in seconds, ready to download and set as your profile picture on Roblox, Discord, YouTube, or anywhere else.",
+      },
+      {
+        heading: "Where to Use Your Roblox PFP",
+        body: "Your Roblox avatar PFP is perfect for your Roblox profile, Discord server, YouTube channel, Twitch, and gaming socials. A custom Roblox-style avatar helps you stand out and shows the community you're a real Roblox creator.",
+      },
+    ],
+    faqs: [
+      {
+        question: "How do I make a Roblox PFP?",
+        answer: "Choose the Roblox style in our AI PFP maker, upload your photo, pick your framing, and generate. Your photo becomes a blocky Roblox avatar in seconds.",
+      },
+      {
+        question: "Will my Roblox PFP look like me?",
+        answer: "Yes — the AI keeps your recognizable features and likeness while rendering you in the blocky Roblox character style.",
+      },
+      {
+        question: "Can I make a full-body Roblox avatar?",
+        answer: "Yes — choose full-body framing to get a complete standing Roblox character, or head/half-body for a closer avatar.",
+      },
+      {
+        question: "Is the Roblox PFP maker free?",
+        answer: "You can create and preview your Roblox avatar for free, with credits for high-resolution downloads.",
+      },
+    ],
+    relatedLinks: [
+      { href: "/logo/games/roblox-logo-maker", anchor: "Roblox Logo Maker" },
       { href: "/buy-credits", anchor: "View credit packs" },
     ],
   },
