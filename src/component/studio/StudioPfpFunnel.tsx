@@ -83,7 +83,6 @@ const ENGINE_OPTIONS: Array<{
     cost: PFP_MODEL_CREDITS["flux-kontext-pro"],
     description:
       "High-quality face stylization with strong likeness and clean detail.",
-    recommended: true,
   },
   {
     name: "Max Face Engine",
@@ -91,6 +90,7 @@ const ENGINE_OPTIONS: Array<{
     cost: PFP_MODEL_CREDITS["flux-kontext-max"],
     description:
       "Maximum face detail and realism for complex, cinematic styles.",
+    recommended: true,
   },
 ];
 
@@ -98,12 +98,14 @@ const FRAMING_OPTIONS: Array<{
   name: string;
   value: PfpFraming;
   description: string;
+  previewImage: string;
   promptInstruction: string;
 }> = [
   {
     name: "Head",
     value: "head",
     description: "Best for clear, recognizable profile pictures.",
+    previewImage: "/head.webp",
     promptInstruction:
       "Crop in tightly to show ONLY the head and face — zoom close on the face, exclude the torso, vest, and body, tight portrait headshot filling the frame. Recompose to a close headshot even if the original photo shows more of the body",
   },
@@ -111,6 +113,7 @@ const FRAMING_OPTIONS: Array<{
     name: "Half Body",
     value: "half-body",
     description: "Shows the character's pose from the waist up.",
+    previewImage: "/half-body.webp",
     promptInstruction:
       "Half-body composition from the chest up, head and upper torso visible",
   },
@@ -118,6 +121,7 @@ const FRAMING_OPTIONS: Array<{
     name: "Full Body",
     value: "full-body",
     description: "Fits the character's complete pose into the square.",
+    previewImage: "/full-body.webp",
     promptInstruction:
       "Full-length full-body shot showing the ENTIRE character standing from head to feet, including legs and full standing pose. Generate the complete full body even if the original photo only shows the upper body — extend and imagine the full standing character",
   },
@@ -665,10 +669,15 @@ function OptionsStep({
           </p>
         </div>
 
-        <div className="mt-8">
-          <h4 className="text-sm font-semibold text-slate-200">Framing</h4>
-          <p className="mt-1 text-xs text-slate-500">
-            Choose how much of your character appears in the square PFP.
+        <div className="mt-8" aria-labelledby="pfp-framing-heading">
+          <h4
+            id="pfp-framing-heading"
+            className="text-base font-semibold text-white"
+          >
+            Framing
+          </h4>
+          <p className="mt-1 text-sm text-slate-400">
+            Choose how much of the character shows in your square PFP.
           </p>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             {FRAMING_OPTIONS.map((option) => {
@@ -680,13 +689,22 @@ function OptionsStep({
                   type="button"
                   onClick={() => onFramingSelect(option.value)}
                   className={clsx(
-                    "flex min-h-[120px] flex-col rounded-xl border-2 bg-slate-950 p-4 text-left shadow-sm transition",
+                    "flex flex-col overflow-hidden rounded-xl border-2 bg-slate-950 p-3 text-left shadow-sm transition",
                     isSelected
                       ? "border-purple-500 ring-4 ring-purple-500/10"
                       : "border-slate-700 hover:-translate-y-0.5 hover:border-purple-500/70",
                   )}
                   aria-pressed={isSelected}
                 >
+                  <span className="relative mb-3 block aspect-square w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900">
+                    <Image
+                      src={option.previewImage}
+                      alt={`${option.name} PFP framing example`}
+                      fill
+                      sizes="(min-width: 640px) 30vw, 100vw"
+                      className="object-contain"
+                    />
+                  </span>
                   <span className="flex w-full items-center justify-between gap-3">
                     <span className="font-bold text-white">{option.name}</span>
                     <span
@@ -709,10 +727,17 @@ function OptionsStep({
           </div>
         </div>
 
-        <div className="mt-8">
-          <h4 className="text-sm font-semibold text-slate-200">
-            Quality engine
+        <div className="mt-8" aria-labelledby="pfp-engine-heading">
+          <h4
+            id="pfp-engine-heading"
+            className="text-base font-semibold text-white"
+          >
+            AI engine
           </h4>
+          <p className="mt-1 text-sm text-slate-400">
+            Choose your balance of generation quality and credit cost. Max is
+            recommended for the strongest style detail and likeness.
+          </p>
           <div className="mt-3 grid gap-4 md:grid-cols-2">
             {ENGINE_OPTIONS.map((engine) => {
               const isSelected = selectedModel === engine.value;
@@ -900,7 +925,7 @@ export function StudioPfpFunnel({
   const [state, setState] = useState<PfpFunnelState>({
     inputText: "",
     selectedStyle: requestedStyleContext?.style ?? null,
-    selectedModel: null,
+    selectedModel: "flux-kontext-max",
     selectedFraming: "head",
   });
   const [error, setError] = useState("");
