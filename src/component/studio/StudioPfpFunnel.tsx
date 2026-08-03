@@ -286,14 +286,21 @@ function StepNavigation({
   onNext,
   nextDisabled = false,
   nextLabel,
+  compact = false,
 }: {
   onBack?: () => void;
   onNext: () => void;
   nextDisabled?: boolean;
   nextLabel: string;
+  compact?: boolean;
 }) {
   return (
-    <div className="mt-10 flex items-center justify-between gap-4 border-t border-slate-800 pt-6">
+    <div
+      className={clsx(
+        "flex items-center justify-between gap-4 border-t border-slate-800",
+        compact ? "mt-6 pt-4" : "mt-10 pt-6",
+      )}
+    >
       {onBack ? (
         <Button type="button" variant="ghost" onClick={onBack}>
           <FaArrowLeft aria-hidden="true" />
@@ -648,8 +655,8 @@ function OptionsStep({
         description="Optionally add your name, choose your framing, then select the face engine that matches your preferred quality."
       />
 
-      <div className="mx-auto mt-10 max-w-4xl">
-        <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5 sm:p-6">
+      <div className="mx-auto mt-6 max-w-4xl">
+        <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
           <label
             htmlFor="studio-pfp-text"
             className="text-sm font-semibold text-slate-200"
@@ -662,24 +669,24 @@ function OptionsStep({
             value={inputText}
             onChange={(event) => onTextChange(event.target.value)}
             placeholder="Leave empty for a text-free avatar"
-            className="mt-3 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-base text-white shadow-sm outline-none transition placeholder:text-slate-600 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10"
+            className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-2.5 text-sm text-white shadow-sm outline-none transition placeholder:text-slate-600 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 sm:text-base"
           />
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-slate-500">
             Empty means the prompt explicitly asks for no text or lettering.
           </p>
         </div>
 
-        <div className="mt-8" aria-labelledby="pfp-framing-heading">
+        <div className="mt-5" aria-labelledby="pfp-framing-heading">
           <h4
             id="pfp-framing-heading"
-            className="text-base font-semibold text-white"
+            className="text-sm font-semibold text-white"
           >
             Framing
           </h4>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-0.5 text-xs text-slate-400">
             Choose how much of the character shows in your square PFP.
           </p>
-          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <div className="mx-auto mt-2 grid max-w-2xl grid-cols-3 gap-2 sm:gap-3">
             {FRAMING_OPTIONS.map((option) => {
               const isSelected = selectedFraming === option.value;
 
@@ -689,27 +696,29 @@ function OptionsStep({
                   type="button"
                   onClick={() => onFramingSelect(option.value)}
                   className={clsx(
-                    "flex flex-col overflow-hidden rounded-xl border-2 bg-slate-950 p-3 text-left shadow-sm transition",
+                    "flex min-w-0 flex-col overflow-hidden rounded-xl border-2 bg-slate-950 p-1.5 text-left shadow-sm transition sm:p-2",
                     isSelected
                       ? "border-purple-500 ring-4 ring-purple-500/10"
                       : "border-slate-700 hover:-translate-y-0.5 hover:border-purple-500/70",
                   )}
                   aria-pressed={isSelected}
                 >
-                  <span className="relative mb-3 block aspect-square w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900">
+                  <span className="relative mb-1.5 block h-20 w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-900 sm:h-28">
                     <Image
                       src={option.previewImage}
                       alt={`${option.name} PFP framing example`}
                       fill
-                      sizes="(min-width: 640px) 30vw, 100vw"
+                      sizes="(min-width: 640px) 210px, 30vw"
                       className="object-contain"
                     />
                   </span>
-                  <span className="flex w-full items-center justify-between gap-3">
-                    <span className="font-bold text-white">{option.name}</span>
+                  <span className="flex w-full min-w-0 items-center justify-between gap-1.5">
+                    <span className="truncate text-[11px] font-bold text-white sm:text-sm">
+                      {option.name}
+                    </span>
                     <span
                       className={clsx(
-                        "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
+                        "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border sm:h-5 sm:w-5",
                         isSelected
                           ? "border-purple-500 bg-purple-600 text-white"
                           : "border-slate-600 text-transparent",
@@ -718,7 +727,7 @@ function OptionsStep({
                       <FaCheck className="text-[9px]" aria-hidden="true" />
                     </span>
                   </span>
-                  <span className="mt-2 text-xs leading-5 text-slate-400">
+                  <span className="mt-1 hidden text-xs leading-4 text-slate-400 sm:block">
                     {option.description}
                   </span>
                 </button>
@@ -727,18 +736,18 @@ function OptionsStep({
           </div>
         </div>
 
-        <div className="mt-8" aria-labelledby="pfp-engine-heading">
+        <div className="mt-5" aria-labelledby="pfp-engine-heading">
           <h4
             id="pfp-engine-heading"
-            className="text-base font-semibold text-white"
+            className="text-sm font-semibold text-white"
           >
             AI engine
           </h4>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-0.5 text-xs text-slate-400">
             Choose your balance of generation quality and credit cost. Max is
             recommended for the strongest style detail and likeness.
           </p>
-          <div className="mt-3 grid gap-4 md:grid-cols-2">
+          <div className="mt-2 grid grid-cols-2 gap-2 sm:gap-3">
             {ENGINE_OPTIONS.map((engine) => {
               const isSelected = selectedModel === engine.value;
 
@@ -748,34 +757,36 @@ function OptionsStep({
                   type="button"
                   onClick={() => onModelSelect(engine.value)}
                   className={clsx(
-                    "relative flex min-h-[210px] flex-col rounded-xl border-2 bg-slate-950 p-5 text-left shadow-sm transition",
+                    "relative flex min-h-[150px] min-w-0 flex-col rounded-xl border-2 bg-slate-950 p-3 text-left shadow-sm transition sm:min-h-[145px] sm:p-4",
                     isSelected
                       ? "border-purple-500 ring-4 ring-purple-500/10"
                       : "border-slate-700 hover:-translate-y-0.5 hover:border-purple-500/70 hover:shadow-lg",
                   )}
                   aria-pressed={isSelected}
                 >
-                  {engine.recommended && (
-                    <span className="absolute right-4 top-4 rounded-full bg-purple-600 px-3 py-1 text-xs font-semibold text-white">
-                      Recommended
+                  <span className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2">
+                    <span className="text-sm font-bold leading-5 text-white sm:text-base">
+                      {engine.name}
                     </span>
-                  )}
-                  <span className="text-lg font-bold text-white">
-                    {engine.name}
+                    {engine.recommended && (
+                      <span className="rounded-full bg-purple-600 px-2 py-0.5 text-[10px] font-semibold leading-4 text-white">
+                        Recommended
+                      </span>
+                    )}
                   </span>
-                  <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
+                  <p className="mt-2 max-w-sm text-xs leading-4 text-slate-400">
                     {engine.description}
                   </p>
-                  <div className="mt-auto flex items-end justify-between gap-3 pt-6">
+                  <div className="mt-auto flex flex-col items-start gap-1.5 pt-3 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
                     <span
                       className={clsx(
-                        "inline-flex items-center gap-2 text-sm font-semibold",
+                        "inline-flex items-center gap-1.5 text-xs font-semibold",
                         isSelected ? "text-purple-300" : "text-slate-500",
                       )}
                     >
                       <span
                         className={clsx(
-                          "flex h-5 w-5 items-center justify-center rounded-full border",
+                          "flex h-4 w-4 items-center justify-center rounded-full border",
                           isSelected
                             ? "border-purple-500 bg-purple-600 text-white"
                             : "border-slate-600",
@@ -787,7 +798,7 @@ function OptionsStep({
                       </span>
                       {isSelected ? "Selected" : "Select engine"}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 px-3 py-1 text-xs font-bold text-cyan-300">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/10 px-2 py-0.5 text-[11px] font-bold text-cyan-300">
                       <FaCoins aria-hidden="true" />
                       {engine.cost} credits
                     </span>
@@ -804,6 +815,7 @@ function OptionsStep({
         onNext={onNext}
         nextDisabled={!selectedModel}
         nextLabel="Review and generate"
+        compact
       />
     </div>
   );

@@ -47,7 +47,15 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
     },
     {
       q: "What styles are available?",
-      a: "Our AI profile picture generator offers a wide range of styles, including vibrant cartoon, classic anime, gritty cyberpunk, heroic fantasy, clean vector art, and even transformations inspired by games like Fortnite or Valorant. Explore all the options in our tool!"
+      a: "The AI PFP maker includes more than 100 styles across Game Titles, Art Style, Theme & Motif, and Seasonal & Cultural categories. Available choices include Fortnite, Valorant, anime, cartoon, cyberpunk, fantasy, pixel art, realistic and painterly looks, mascot designs, and seasonal options."
+    },
+    {
+      q: "Can I make a full-body PFP?",
+      a: "Yes. Select Full Body in the Framing options to ask the AI for a complete character from head to toe, including the outfit and standing pose."
+    },
+    {
+      q: "Which framing works best for a profile picture?",
+      a: "Head framing is usually the clearest choice for small profile icons. Half Body gives the outfit more room, while Full Body is useful when the complete character design and pose matter most."
     }
   ];
 
@@ -329,6 +337,111 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
           </div>
         </section>
 
+        {/* Additive PFP Options Content */}
+        <section className="relative overflow-hidden bg-gradient-to-br from-white via-purple-50 to-cyan-50 py-16 dark:from-slate-900 dark:via-slate-950 dark:to-indigo-950 md:py-20">
+          <div
+            className="pointer-events-none absolute -left-24 top-16 h-64 w-64 rounded-full bg-purple-400/15 blur-3xl dark:bg-purple-500/10"
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute -right-24 bottom-10 h-72 w-72 rounded-full bg-cyan-400/15 blur-3xl dark:bg-cyan-500/10"
+            aria-hidden="true"
+          />
+
+          <div className="container relative mx-auto max-w-6xl px-4 sm:px-6">
+            <h2 className="text-center text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">
+              Choose Your PFP Framing and Style
+            </h2>
+
+            <div className="mt-12 grid items-stretch gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(300px,1fr)]">
+              <article className="rounded-2xl border border-white/80 bg-white/90 p-5 shadow-xl shadow-purple-900/10 backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-800/90 sm:p-7">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-600/20">
+                    <FaCameraRetro className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white">
+                    Head, Half Body, or Full Body
+                  </h3>
+                </div>
+                <p className="mt-4 leading-relaxed text-slate-600 dark:text-slate-300">
+                  Choose Head framing for a close profile picture, Half Body to
+                  show more of your character and outfit, or Full Body for a
+                  complete head-to-toe pose. These framing controls let you
+                  decide exactly how much of the character appears in your
+                  square gaming PFP.
+                </p>
+
+                <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <figure className="group relative aspect-square overflow-hidden rounded-xl bg-slate-900 shadow-lg ring-1 ring-slate-900/10 dark:ring-white/10">
+                    <Image
+                      src="/head.webp"
+                      alt="Head framing gaming PFP example"
+                      layout="fill"
+                      objectFit="cover"
+                      className="transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
+                    <figcaption className="absolute inset-x-0 bottom-0 p-4 text-center text-base font-bold text-white drop-shadow-md">
+                      Head
+                    </figcaption>
+                  </figure>
+
+                  <figure className="group relative aspect-square overflow-hidden rounded-xl bg-slate-900 shadow-lg ring-1 ring-slate-900/10 dark:ring-white/10">
+                    <Image
+                      src="/half-body.webp"
+                      alt="Half body gaming PFP example"
+                      layout="fill"
+                      objectFit="cover"
+                      className="transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
+                    <figcaption className="absolute inset-x-0 bottom-0 p-4 text-center text-base font-bold text-white drop-shadow-md">
+                      Half Body
+                    </figcaption>
+                  </figure>
+
+                  <figure className="group relative aspect-square overflow-hidden rounded-xl bg-slate-900 shadow-lg ring-1 ring-slate-900/10 dark:ring-white/10">
+                    <Image
+                      src="/full-body.webp"
+                      alt="Full body gaming PFP example"
+                      layout="fill"
+                      objectFit="cover"
+                      className="transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-transparent" />
+                    <figcaption className="absolute inset-x-0 bottom-0 p-4 text-center text-base font-bold text-white drop-shadow-md">
+                      Full Body
+                    </figcaption>
+                  </figure>
+                </div>
+              </article>
+
+              <article className="relative isolate overflow-hidden rounded-2xl border border-purple-400/30 bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 p-7 text-white shadow-xl shadow-purple-950/20">
+                <div
+                  className="absolute -right-14 -top-14 -z-10 h-48 w-48 rounded-full bg-cyan-400/20 blur-2xl"
+                  aria-hidden="true"
+                />
+                <div
+                  className="absolute -bottom-16 -left-16 -z-10 h-52 w-52 rounded-full bg-purple-500/25 blur-2xl"
+                  aria-hidden="true"
+                />
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 text-cyan-300 ring-1 ring-white/15 backdrop-blur-sm">
+                  <FaPalette className="h-6 w-6" aria-hidden="true" />
+                </span>
+                <h3 className="mt-6 text-2xl font-bold text-white">
+                  Explore 100+ PFP Styles
+                </h3>
+                <p className="mt-4 leading-7 text-slate-200">
+                  Browse more than 100 options across Game Titles, Art Style,
+                  Theme &amp; Motif, and Seasonal &amp; Cultural categories.
+                  Available choices include Fortnite, Valorant, anime, cartoon,
+                  cyberpunk, fantasy, pixel art, and many other distinct looks.
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
         <TestimonialSection />
         <FaqSection /> 
 
@@ -348,6 +461,7 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
             </button>
           </div>
         </section>
+
       </main>
     </>
   );
