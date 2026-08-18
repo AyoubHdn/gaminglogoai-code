@@ -54,7 +54,22 @@
       "WebFetch(domain:gaminglogoai.com)",
       "Bash(ls /c/Users/ULTRAPC/.claude/plugins/cache/agricidaniel-seo/claude-seo/1.9.9/scripts)",
       "Bash(tee /c/Users/ULTRAPC/Documents/GitHub/SaaS/gaminglogoai-code/seo-logs/2026-07-29-postlaunch/ytt-inspect.json)",
-      "PowerShell(npm run *)"
+      "PowerShell(npm run *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(echo \"--- bytes ---\")",
+      "Bash(echo \"--- err \\(if any\\) ---\")",
+      "Bash(cat /c/Users/ULTRAPC/Documents/GitHub/SaaS/gaminglogoai-code/seo-logs/2026-08-18-postvacation/gsc_err.txt)",
+      "Bash(cd \"/c/Users/ULTRAPC/Documents/GitHub/SaaS/gaminglogoai-code/seo-logs/2026-08-18-postvacation\")",
+      "Bash(echo \"exit organic: $?\")",
+      "Bash(echo \"--- err ---\")",
+      "Bash(cat ga4_err.txt)",
+      "Bash(cat ga4p_err.txt)",
+      "Bash(echo \"=== drift history for homepage ===\")",
+      "Bash(echo \"=== crux_history help ===\")",
+      "Bash(echo \"=== CrUX FIELD DATA \\(real users, both form factors\\) ===\")",
+      "Bash(cat crux_err.txt)",
+      "Bash(PYTHONIOENCODING=utf-8 python /c/Users/ULTRAPC/.claude/plugins/cache/agricidaniel-seo/claude-seo/1.9.9/scripts/gsc_query.py query -p sc-domain:gaminglogoai.com --start-date 2026-04-19 --end-date 2026-08-08 --dimensions date,page --limit 25000 --json)",
+      "Bash(head -5 gsc_mc_err.txt)"
     ]
   }
 }

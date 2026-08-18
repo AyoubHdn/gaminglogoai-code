@@ -23,9 +23,45 @@ interface PfpGamePageServerProps {
   otherShowcaseItems: PfpStyleItem[];
 }
 
+const PILOT_GALLERY_EXTRAS: Record<
+  string,
+  { src: string; alt: string }[]
+> = {
+  "gears-of-war-pfp-maker": [
+    {
+      src: "/images/pseo/pfp/gears-of-war/gears-pfp-2.webp",
+      alt: "Gears of War style armored soldier gaming PFP example in a ruined city",
+    },
+    {
+      src: "/images/pseo/pfp/gears-of-war/gears-pfp-3.webp",
+      alt: "Female Gears of War style squad commander profile picture example",
+    },
+    {
+      src: "/images/pseo/pfp/gears-of-war/gears-pfp-4.webp",
+      alt: "Veteran Gears of War style soldier PFP example in heavy battle armor",
+    },
+  ],
+  "rainbow-six-siege-pfp-maker": [
+    {
+      src: "/images/pseo/pfp/rainbow-six-siege/rainbow-six-pfp-2.webp",
+      alt: "Rainbow Six Siege style tactical breach operator PFP example",
+    },
+    {
+      src: "/images/pseo/pfp/rainbow-six-siege/rainbow-six-pfp-3.webp",
+      alt: "Female Rainbow Six Siege style special operations profile picture example",
+    },
+    {
+      src: "/images/pseo/pfp/rainbow-six-siege/rainbow-six-pfp-4.webp",
+      alt: "Rainbow Six Siege style shield operator gaming PFP example",
+    },
+  ],
+};
+
 const PfpGamePage: NextPage<PfpGamePageServerProps> = ({ gameTitle, styleItem, slug, relatedItems, otherShowcaseItems }) => {
   const router = useRouter();
   const crossPromoLinks = getGameCrossPromoLinks(gameTitle);
+  const pilotGalleryExtras = PILOT_GALLERY_EXTRAS[slug];
+  const isBrowseFirstPilot = Boolean(pilotGalleryExtras);
   const handleCtaClick = () => {
     void router.push(
       `/studio?tool=pfp&game=${encodeURIComponent(gameTitle.toLowerCase())}`,
@@ -46,13 +82,22 @@ const PfpGamePage: NextPage<PfpGamePageServerProps> = ({ gameTitle, styleItem, s
     handleCtaClick,
     studioPromoHref: `/studio?tool=pfp&game=${encodeURIComponent(gameTitle.toLowerCase())}`,
     showcaseTitle: <>From Selfie to <span className="text-purple-600 dark:text-cyan-400">{gameTitle} Legend</span></>,
-    imageShowcaseGrid: [
-      { src: styleItem.src, alt: `AI generated custom PFP in the style of ${styleItem.name}` },
-      ...otherShowcaseItems.map(item => ({
-        src: item.src,
-        alt: `AI generated custom PFP in the style of ${item.name}`,
-      }))
-    ],
+    imageShowcaseGrid: pilotGalleryExtras
+      ? [
+          {
+            src: styleItem.src,
+            alt: `${gameTitle} style AI gaming PFP example with game-specific character design`,
+          },
+          ...pilotGalleryExtras,
+        ]
+      : [
+          { src: styleItem.src, alt: `AI generated custom PFP in the style of ${styleItem.name}` },
+          ...otherShowcaseItems.map(item => ({
+            src: item.src,
+            alt: `AI generated custom PFP in the style of ${item.name}`,
+          }))
+        ],
+    browseFirstGallery: isBrowseFirstPilot,
     howItWorksTitle: <>Create Your <span className="text-purple-600 dark:text-cyan-400">Custom {gameTitle} PFP</span></>,
     crossPromoLinks,
     faqTitle: <>Your <span className="text-purple-600 dark:text-cyan-400">{gameTitle} PFP</span> Questions</>,

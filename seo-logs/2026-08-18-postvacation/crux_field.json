@@ -1,0 +1,89 @@
+{
+  "target": "https://gaminglogoai.com",
+  "metrics": {
+    "experimental_time_to_first_byte": {
+      "p75": 910,
+      "rating": "needs-improvement",
+      "label": "TTFB",
+      "unit": "ms",
+      "good_threshold": 800,
+      "poor_threshold": 1800,
+      "distribution": {
+        "good": 71.2,
+        "needs_improvement": 10.7,
+        "poor": 18.1
+      }
+    },
+    "first_contentful_paint": {
+      "p75": 2097,
+      "rating": "needs-improvement",
+      "label": "FCP",
+      "unit": "ms",
+      "good_threshold": 1800,
+      "poor_threshold": 3000,
+      "distribution": {
+        "good": 70.4,
+        "needs_improvement": 11.4,
+        "poor": 18.1
+      }
+    },
+    "interaction_to_next_paint": {
+      "p75": 162,
+      "rating": "good",
+      "label": "INP",
+      "unit": "ms",
+      "good_threshold": 200,
+      "poor_threshold": 500,
+      "distribution": {
+        "good": 82.7,
+        "needs_improvement": 11.1,
+        "poor": 6.2
+      }
+    },
+    "largest_contentful_paint": {
+      "p75": 2126,
+      "rating": "good",
+      "label": "LCP",
+      "unit": "ms",
+      "good_threshold": 2500,
+      "poor_threshold": 4000,
+      "distribution": {
+        "good": 79.1,
+        "needs_improvement": 13.1,
+        "poor": 7.7
+      }
+    },
+    "round_trip_time": {
+      "p75": 171,
+      "rating": "unknown",
+      "label": "round_trip_time",
+      "unit": "",
+      "good_threshold": null,
+      "poor_threshold": null,
+      "distribution": {
+        "good": 38.1,
+        "needs_improvement": 50.1,
+        "poor": 11.8
+      }
+    },
+    "cumulative_layout_shift": {
+      "p75": 0.0,
+      "rating": "good",
+      "label": "CLS",
+      "unit": "",
+      "good_threshold": 0.1,
+      "poor_threshold": 0.25,
+      "distribution": {
+        "good": 98.9,
+        "needs_improvement": 0.6,
+        "poor": 0.4
+      }
+    }
+  },
+  "collection_period": {
+    "first": "2026-07-20",
+    "last": "2026-08-16"
+  },
+  "form_factor": "ALL",
+  "error": null
+}

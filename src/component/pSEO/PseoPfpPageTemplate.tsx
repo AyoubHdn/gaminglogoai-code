@@ -24,6 +24,7 @@ export interface PseoPfpPageTemplateProps {
 
   showcaseTitle: React.ReactNode;
   imageShowcaseGrid: { src: string; alt: string }[];
+  browseFirstGallery?: boolean;
   
   howItWorksTitle: React.ReactNode;
   crossPromoLinks?: GameCrossPromoLink[];
@@ -40,7 +41,7 @@ export interface PseoPfpPageTemplateProps {
 const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
   gameTitle, pageTitle, metaDescription, keywords, canonicalUrl, h1,
   heroBeforeImageSrc, heroAfterImageSrc, introParagraph, ctaText, handleCtaClick,
-  showcaseTitle, imageShowcaseGrid,
+  showcaseTitle, imageShowcaseGrid, browseFirstGallery = false,
   howItWorksTitle, crossPromoLinks = [], faqTitle, faqItems, finalCtaTitle,
   finalCtaParagraph, relatedItems
 }) => {
@@ -142,14 +143,18 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
             <div className="text-lg sm:text-xl text-slate-200 max-w-3xl mx-auto mb-10 drop-shadow-sm">
               {effectiveIntroParagraph}
             </div>
-            {/* DYNAMIC: Using CTA props */}
-            <button
-              onClick={handleCtaClick}
-              className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-900 font-bold rounded-lg text-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-xl hover:shadow-cyan-500/50"
-            >
-              {effectiveCtaText} <FaChevronRight className="inline ml-2 -mr-1" />
-            </button>
-            <p className="mt-4 text-xs text-slate-400">Sign up and use your free credit to download your first PFP!</p>
+            {!browseFirstGallery && (
+              <>
+                {/* DYNAMIC: Using CTA props */}
+                <button
+                  onClick={handleCtaClick}
+                  className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-900 font-bold rounded-lg text-lg hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-xl hover:shadow-cyan-500/50"
+                >
+                  {effectiveCtaText} <FaChevronRight className="inline ml-2 -mr-1" />
+                </button>
+                <p className="mt-4 text-xs text-slate-400">Sign up and use your free credit to download your first PFP!</p>
+              </>
+            )}
           </div>
         </section>
 
@@ -169,6 +174,20 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
                 </div>
               ))}
             </div>
+            {browseFirstGallery && (
+              <div className="mt-10 text-center">
+                <button
+                  onClick={handleCtaClick}
+                  className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-8 py-4 text-lg font-bold text-slate-900 shadow-xl transition-all duration-300 hover:scale-105 hover:from-cyan-600 hover:to-blue-600 hover:shadow-cyan-500/50"
+                >
+                  Like these? Make your own
+                  <FaChevronRight className="ml-2" aria-hidden="true" />
+                </button>
+                <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">
+                  Sign up and use your free credit to download your first PFP!
+                </p>
+              </div>
+            )}
           </div>
         </section>
         
