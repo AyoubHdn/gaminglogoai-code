@@ -28,14 +28,20 @@ export const checkoutRouter = createTRPCRouter({
   )
   .mutation(async ({ ctx, input }) => {
     const priceId = plans[input.plan];
+    const metadata = {
+      userId: ctx.session.user.id,
+      plan: input.plan,
+      credits: String(creditsByPlan[input.plan]),
+      project: "GamingLogoAI",
+    };
 
     try {
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
-        metadata: {
-          userId: ctx.session.user.id,
-          plan: input.plan,
-          credits: String(creditsByPlan[input.plan]),
+        metadata,
+        payment_intent_data: {
+          metadata,
+          description: "GamingLogoAI",
         },
         line_items: [
           {
