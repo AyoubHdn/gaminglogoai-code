@@ -75,7 +75,8 @@ async function generateKontextFaceLogo(
     input_image: inputImageS3Url, // As per model schema
     aspect_ratio: aspectRatio, // Use passed value, likely "1:1" or "match_input_image"
     output_format: "png", // As per model schema default
-    safety_tolerance: 6, // As per model schema default
+    // Kontext caps safety_tolerance at 2 whenever input_image is provided.
+    safety_tolerance: 2,
     seed: Math.floor(Math.random() * 1_000_000_000),
     // num_outputs is not in Kontext schema, they output 1 image
   };

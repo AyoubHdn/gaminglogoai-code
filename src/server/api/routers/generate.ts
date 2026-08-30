@@ -68,6 +68,7 @@ const generateIcon = async (
       output_format: "png",
       output_quality: 80,
       num_inference_steps: 4,
+      disable_safety_checker: true,
     };
   } else if (model === "flux-dev") {
     path = "black-forest-labs/flux-dev";
@@ -80,6 +81,7 @@ const generateIcon = async (
       output_format: "png",
       output_quality: 80,
       num_inference_steps: 28,
+      disable_safety_checker: true,
     };
   } else {
     throw new TRPCError({

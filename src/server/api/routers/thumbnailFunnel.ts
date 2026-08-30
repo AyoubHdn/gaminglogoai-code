@@ -183,6 +183,7 @@ async function fetchGeneratedThumbnailBuffer(
     width,
     height,
     output_format: "png",
+    safety_tolerance: 5,
   };
 
   if (referenceImageUrl) {
@@ -216,6 +217,7 @@ async function fetchRefinedThumbnailBuffer(
       width,
       height,
       output_format: "png",
+      safety_tolerance: 5,
     },
   });
 

@@ -178,6 +178,7 @@ async function fetchGeneratedBannerBuffer(
     width,
     height,
     output_format: "png",
+    safety_tolerance: 5,
   };
 
   if (logoReferenceUrl) {
@@ -214,6 +215,7 @@ async function fetchRefinedBannerBuffer(
       width,
       height,
       output_format: "png",
+      safety_tolerance: 5,
     },
   });
 

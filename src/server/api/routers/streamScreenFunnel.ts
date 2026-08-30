@@ -196,7 +196,7 @@ async function fetchGeneratedStreamScreenBufferWithFluxFlex(
     steps: 32,
     guidance: 4.5,
     prompt_upsampling: false,
-    safety_tolerance: 2,
+    safety_tolerance: 5,
   };
 
   if (referenceImages.length > 0) {

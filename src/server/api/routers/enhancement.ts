@@ -80,6 +80,8 @@ async function enhanceImageWithAI(
           input_image: referenceS3Url, // ✅ Flux models
           aspect_ratio: "match_input_image",
           output_format: "png",
+          // Kontext caps safety_tolerance at 2 for image-edit requests.
+          safety_tolerance: 2,
         };
 
   console.log(`[ENHANCE_HELPER] Calling Replicate with model: ${replicatePath}`);

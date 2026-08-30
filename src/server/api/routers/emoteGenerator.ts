@@ -251,6 +251,7 @@ export const emoteRouter = createTRPCRouter({
               background: "transparent",
               output_format: "png",
               number_of_images: 1,
+              moderation: "low",
               user_id: user.id,
             },
           });
@@ -376,6 +377,7 @@ Expression: ${emoteDef.prompt}.
                 background: "transparent",
                 output_format: "png",
                 number_of_images: 1,
+                moderation: "low",
                 user_id: user.id,
               },
             })) as string[];
