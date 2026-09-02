@@ -4,6 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaChevronRight, FaCamera, FaPalette, FaMagic } from "react-icons/fa";
 import { GameCrossPromoLink, RelatedItem } from '~/lib/pSEO'; // We'll reuse the RelatedItem type
+import {
+  getPfpGameGalleryImages,
+  isPfpGalleryControl,
+} from '~/data/pfpGameGalleries';
 import { getPseoContent } from "~/data/pseoContent";
 
 // Define the props our new template will accept
@@ -41,7 +45,7 @@ export interface PseoPfpPageTemplateProps {
 const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
   gameTitle, pageTitle, metaDescription, keywords, canonicalUrl, h1,
   heroBeforeImageSrc, heroAfterImageSrc, introParagraph, ctaText, handleCtaClick,
-  showcaseTitle, imageShowcaseGrid, browseFirstGallery = false,
+  showcaseTitle, imageShowcaseGrid,
   howItWorksTitle, crossPromoLinks = [], faqTitle, faqItems, finalCtaTitle,
   finalCtaParagraph, relatedItems
 }) => {
@@ -54,6 +58,15 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
   const effectiveFaqItems = seo?.faqs?.length
     ? seo.faqs.map((f) => ({ q: f.question, a: f.answer }))
     : faqItems;
+  const isGamePage = canonicalUrl.includes("/pfp/games/");
+  const browseFirstGallery = isGamePage && !isPfpGalleryControl(slug);
+  const primaryShowcaseImage = imageShowcaseGrid[0];
+  const effectiveShowcaseGrid = browseFirstGallery && primaryShowcaseImage
+    ? [
+        primaryShowcaseImage,
+        ...getPfpGameGalleryImages(slug, gameTitle),
+      ]
+    : imageShowcaseGrid;
 
   return (
     <>
@@ -167,7 +180,7 @@ const PseoPfpPageTemplate: React.FC<PseoPfpPageTemplateProps> = ({
             </h2>
             {/* DYNAMIC: Using image grid prop */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {imageShowcaseGrid.map((example, index) => (
+              {effectiveShowcaseGrid.map((example, index) => (
                 <div key={index} className="group relative rounded-lg shadow-lg overflow-hidden aspect-square">
                   <Image src={example.src} alt={example.alt} layout="fill" objectFit="cover" className="transition-transform duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>

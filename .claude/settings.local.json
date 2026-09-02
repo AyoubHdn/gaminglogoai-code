@@ -69,7 +69,14 @@
       "Bash(echo \"=== CrUX FIELD DATA \\(real users, both form factors\\) ===\")",
       "Bash(cat crux_err.txt)",
       "Bash(PYTHONIOENCODING=utf-8 python /c/Users/ULTRAPC/.claude/plugins/cache/agricidaniel-seo/claude-seo/1.9.9/scripts/gsc_query.py query -p sc-domain:gaminglogoai.com --start-date 2026-04-19 --end-date 2026-08-08 --dimensions date,page --limit 25000 --json)",
-      "Bash(head -5 gsc_mc_err.txt)"
+      "Bash(head -5 gsc_mc_err.txt)",
+      "Bash(cd \"/c/Users/ULTRAPC/Documents/GitHub/SaaS/gaminglogoai-code/seo-logs/2026-08-31-cycle\")",
+      "Bash(PYTHONIOENCODING=utf-8 python /c/Users/ULTRAPC/.claude/plugins/cache/agricidaniel-seo/claude-seo/1.9.9/scripts/gsc_query.py query -p sc-domain:gaminglogoai.com --days 28 --dimensions query,page --limit 1000 --json)",
+      "Bash(head -5 gsc_err.txt)",
+      "Bash(echo \"organic exit: $?\")",
+      "Bash(echo \"pages exit: $?\")",
+      "Bash(cat ga4_err.txt ga4p_err.txt)",
+      "Bash(tee inspect_gaming-logo-maker.json)"
     ]
   }
 }

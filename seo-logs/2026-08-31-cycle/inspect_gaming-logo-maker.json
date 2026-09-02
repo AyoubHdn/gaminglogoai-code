@@ -1,0 +1,30 @@
+{
+  "url": "https://gaminglogoai.com/gaming-logo-maker",
+  "property": "sc-domain:gaminglogoai.com",
+  "index_status": {
+    "verdict": "PASS",
+    "coverage_state": "Submitted and indexed",
+    "robots_txt_state": "ALLOWED",
+    "indexing_state": "INDEXING_ALLOWED",
+    "page_fetch_state": "SUCCESSFUL",
+    "last_crawl_time": "2026-08-06T15:57:29Z",
+    "crawled_as": "MOBILE",
+    "referring_urls": [
+      "https://gaminglogoai.com/logo/styles/8-bit-logo-design",
+      "https://gaminglogoai.com/pfp/seasonal/dia-de-muertos-pfp-maker"
+    ]
+  },
+  "crawl_info": null,
+  "canonical": {
+    "google_canonical": "https://gaminglogoai.com/gaming-logo-maker",
+    "user_canonical": "https://gaminglogoai.com/gaming-logo-maker",
+    "match": true
+  },
+  "mobile_usability": {
+    "verdict": "VERDICT_UNSPECIFIED",
+    "issues": []
+  },
+  "rich_results": null,
+  "verdict": "PASS",
+  "error": null
+}
