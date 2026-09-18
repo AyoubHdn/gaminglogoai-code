@@ -1,0 +1,1748 @@
+{
+  "property": "sc-domain:gaminglogoai.com",
+  "rows": [
+    {
+      "keys": [
+        "usa"
+      ],
+      "clicks": 184,
+      "impressions": 7286,
+      "ctr": 2.53,
+      "position": 15.4,
+      "country": "usa"
+    },
+    {
+      "keys": [
+        "ind"
+      ],
+      "clicks": 80,
+      "impressions": 2768,
+      "ctr": 2.89,
+      "position": 12.7,
+      "country": "ind"
+    },
+    {
+      "keys": [
+        "gbr"
+      ],
+      "clicks": 70,
+      "impressions": 1776,
+      "ctr": 3.94,
+      "position": 11.7,
+      "country": "gbr"
+    },
+    {
+      "keys": [
+        "aus"
+      ],
+      "clicks": 32,
+      "impressions": 928,
+      "ctr": 3.45,
+      "position": 15.6,
+      "country": "aus"
+    },
+    {
+      "keys": [
+        "can"
+      ],
+      "clicks": 29,
+      "impressions": 1044,
+      "ctr": 2.78,
+      "position": 17.0,
+      "country": "can"
+    },
+    {
+      "keys": [
+        "deu"
+      ],
+      "clicks": 27,
+      "impressions": 2155,
+      "ctr": 1.25,
+      "position": 23.6,
+      "country": "deu"
+    },
+    {
+      "keys": [
+        "pak"
+      ],
+      "clicks": 26,
+      "impressions": 465,
+      "ctr": 5.59,
+      "position": 7.6,
+      "country": "pak"
+    },
+    {
+      "keys": [
+        "phl"
+      ],
+      "clicks": 24,
+      "impressions": 901,
+      "ctr": 2.66,
+      "position": 18.3,
+      "country": "phl"
+    },
+    {
+      "keys": [
+        "nld"
+      ],
+      "clicks": 20,
+      "impressions": 417,
+      "ctr": 4.8,
+      "position": 9.1,
+      "country": "nld"
+    },
+    {
+      "keys": [
+        "bgd"
+      ],
+      "clicks": 18,
+      "impressions": 372,
+      "ctr": 4.84,
+      "position": 18.8,
+      "country": "bgd"
+    },
+    {
+      "keys": [
+        "irn"
+      ],
+      "clicks": 15,
+      "impressions": 118,
+      "ctr": 12.71,
+      "position": 6.7,
+      "country": "irn"
+    },
+    {
+      "keys": [
+        "esp"
+      ],
+      "clicks": 14,
+      "impressions": 197,
+      "ctr": 7.11,
+      "position": 12.6,
+      "country": "esp"
+    },
+    {
+      "keys": [
+        "npl"
+      ],
+      "clicks": 13,
+      "impressions": 185,
+      "ctr": 7.03,
+      "position": 6.2,
+      "country": "npl"
+    },
+    {
+      "keys": [
+        "rus"
+      ],
+      "clicks": 13,
+      "impressions": 151,
+      "ctr": 8.61,
+      "position": 10.7,
+      "country": "rus"
+    },
+    {
+      "keys": [
+        "swe"
+      ],
+      "clicks": 13,
+      "impressions": 176,
+      "ctr": 7.39,
+      "position": 7.3,
+      "country": "swe"
+    },
+    {
+      "keys": [
+        "idn"
+      ],
+      "clicks": 11,
+      "impressions": 345,
+      "ctr": 3.19,
+      "position": 18.2,
+      "country": "idn"
+    },
+    {
+      "keys": [
+        "ita"
+      ],
+      "clicks": 11,
+      "impressions": 244,
+      "ctr": 4.51,
+      "position": 14.5,
+      "country": "ita"
+    },
+    {
+      "keys": [
+        "zaf"
+      ],
+      "clicks": 11,
+      "impressions": 120,
+      "ctr": 9.17,
+      "position": 6.9,
+      "country": "zaf"
+    },
+    {
+      "keys": [
+        "egy"
+      ],
+      "clicks": 10,
+      "impressions": 108,
+      "ctr": 9.26,
+      "position": 5.8,
+      "country": "egy"
+    },
+    {
+      "keys": [
+        "fra"
+      ],
+      "clicks": 10,
+      "impressions": 543,
+      "ctr": 1.84,
+      "position": 26.2,
+      "country": "fra"
+    },
+    {
+      "keys": [
+        "lka"
+      ],
+      "clicks": 10,
+      "impressions": 123,
+      "ctr": 8.13,
+      "position": 7.1,
+      "country": "lka"
+    },
+    {
+      "keys": [
+        "mar"
+      ],
+      "clicks": 10,
+      "impressions": 111,
+      "ctr": 9.01,
+      "position": 23.1,
+      "country": "mar"
+    },
+    {
+      "keys": [
+        "dza"
+      ],
+      "clicks": 9,
+      "impressions": 86,
+      "ctr": 10.47,
+      "position": 17.6,
+      "country": "dza"
+    },
+    {
+      "keys": [
+        "are"
+      ],
+      "clicks": 8,
+      "impressions": 121,
+      "ctr": 6.61,
+      "position": 8.4,
+      "country": "are"
+    },
+    {
+      "keys": [
+        "bel"
+      ],
+      "clicks": 8,
+      "impressions": 151,
+      "ctr": 5.3,
+      "position": 9.2,
+      "country": "bel"
+    },
+    {
+      "keys": [
+        "mys"
+      ],
+      "clicks": 8,
+      "impressions": 248,
+      "ctr": 3.23,
+      "position": 20.4,
+      "country": "mys"
+    },
+    {
+      "keys": [
+        "nor"
+      ],
+      "clicks": 8,
+      "impressions": 98,
+      "ctr": 8.16,
+      "position": 6.8,
+      "country": "nor"
+    },
+    {
+      "keys": [
+        "pol"
+      ],
+      "clicks": 8,
+      "impressions": 301,
+      "ctr": 2.66,
+      "position": 10.2,
+      "country": "pol"
+    },
+    {
+      "keys": [
+        "sau"
+      ],
+      "clicks": 8,
+      "impressions": 96,
+      "ctr": 8.33,
+      "position": 9.3,
+      "country": "sau"
+    },
+    {
+      "keys": [
+        "tur"
+      ],
+      "clicks": 8,
+      "impressions": 256,
+      "ctr": 3.12,
+      "position": 25.3,
+      "country": "tur"
+    },
+    {
+      "keys": [
+        "bra"
+      ],
+      "clicks": 7,
+      "impressions": 277,
+      "ctr": 2.53,
+      "position": 12.3,
+      "country": "bra"
+    },
+    {
+      "keys": [
+        "grc"
+      ],
+      "clicks": 7,
+      "impressions": 75,
+      "ctr": 9.33,
+      "position": 6.7,
+      "country": "grc"
+    },
+    {
+      "keys": [
+        "cze"
+      ],
+      "clicks": 5,
+      "impressions": 147,
+      "ctr": 3.4,
+      "position": 11.8,
+      "country": "cze"
+    },
+    {
+      "keys": [
+        "dnk"
+      ],
+      "clicks": 5,
+      "impressions": 101,
+      "ctr": 4.95,
+      "position": 8.2,
+      "country": "dnk"
+    },
+    {
+      "keys": [
+        "kgz"
+      ],
+      "clicks": 5,
+      "impressions": 13,
+      "ctr": 38.46,
+      "position": 10.5,
+      "country": "kgz"
+    },
+    {
+      "keys": [
+        "nzl"
+      ],
+      "clicks": 5,
+      "impressions": 327,
+      "ctr": 1.53,
+      "position": 21.9,
+      "country": "nzl"
+    },
+    {
+      "keys": [
+        "rou"
+      ],
+      "clicks": 5,
+      "impressions": 160,
+      "ctr": 3.12,
+      "position": 12.7,
+      "country": "rou"
+    },
+    {
+      "keys": [
+        "tha"
+      ],
+      "clicks": 5,
+      "impressions": 101,
+      "ctr": 4.95,
+      "position": 25.8,
+      "country": "tha"
+    },
+    {
+      "keys": [
+        "fin"
+      ],
+      "clicks": 4,
+      "impressions": 79,
+      "ctr": 5.06,
+      "position": 6.6,
+      "country": "fin"
+    },
+    {
+      "keys": [
+        "hrv"
+      ],
+      "clicks": 4,
+      "impressions": 51,
+      "ctr": 7.84,
+      "position": 6.3,
+      "country": "hrv"
+    },
+    {
+      "keys": [
+        "khm"
+      ],
+      "clicks": 4,
+      "impressions": 44,
+      "ctr": 9.09,
+      "position": 6.8,
+      "country": "khm"
+    },
+    {
+      "keys": [
+        "mex"
+      ],
+      "clicks": 4,
+      "impressions": 166,
+      "ctr": 2.41,
+      "position": 21.6,
+      "country": "mex"
+    },
+    {
+      "keys": [
+        "nga"
+      ],
+      "clicks": 4,
+      "impressions": 59,
+      "ctr": 6.78,
+      "position": 5.7,
+      "country": "nga"
+    },
+    {
+      "keys": [
+        "aut"
+      ],
+      "clicks": 3,
+      "impressions": 76,
+      "ctr": 3.95,
+      "position": 8.4,
+      "country": "aut"
+    },
+    {
+      "keys": [
+        "blr"
+      ],
+      "clicks": 3,
+      "impressions": 11,
+      "ctr": 27.27,
+      "position": 20,
+      "country": "blr"
+    },
+    {
+      "keys": [
+        "che"
+      ],
+      "clicks": 3,
+      "impressions": 93,
+      "ctr": 3.23,
+      "position": 11.3,
+      "country": "che"
+    },
+    {
+      "keys": [
+        "hun"
+      ],
+      "clicks": 3,
+      "impressions": 107,
+      "ctr": 2.8,
+      "position": 13.5,
+      "country": "hun"
+    },
+    {
+      "keys": [
+        "isr"
+      ],
+      "clicks": 3,
+      "impressions": 52,
+      "ctr": 5.77,
+      "position": 9.0,
+      "country": "isr"
+    },
+    {
+      "keys": [
+        "jam"
+      ],
+      "clicks": 3,
+      "impressions": 23,
+      "ctr": 13.04,
+      "position": 6,
+      "country": "jam"
+    },
+    {
+      "keys": [
+        "lva"
+      ],
+      "clicks": 3,
+      "impressions": 34,
+      "ctr": 8.82,
+      "position": 10.4,
+      "country": "lva"
+    },
+    {
+      "keys": [
+        "tun"
+      ],
+      "clicks": 3,
+      "impressions": 27,
+      "ctr": 11.11,
+      "position": 5.3,
+      "country": "tun"
+    },
+    {
+      "keys": [
+        "vnm"
+      ],
+      "clicks": 3,
+      "impressions": 215,
+      "ctr": 1.4,
+      "position": 36.9,
+      "country": "vnm"
+    },
+    {
+      "keys": [
+        "arm"
+      ],
+      "clicks": 2,
+      "impressions": 14,
+      "ctr": 14.29,
+      "position": 4.6,
+      "country": "arm"
+    },
+    {
+      "keys": [
+        "bgr"
+      ],
+      "clicks": 2,
+      "impressions": 29,
+      "ctr": 6.9,
+      "position": 7.4,
+      "country": "bgr"
+    },
+    {
+      "keys": [
+        "chl"
+      ],
+      "clicks": 2,
+      "impressions": 52,
+      "ctr": 3.85,
+      "position": 9.2,
+      "country": "chl"
+    },
+    {
+      "keys": [
+        "hkg"
+      ],
+      "clicks": 2,
+      "impressions": 46,
+      "ctr": 4.35,
+      "position": 8.7,
+      "country": "hkg"
+    },
+    {
+      "keys": [
+        "kaz"
+      ],
+      "clicks": 2,
+      "impressions": 30,
+      "ctr": 6.67,
+      "position": 7.5,
+      "country": "kaz"
+    },
+    {
+      "keys": [
+        "lbn"
+      ],
+      "clicks": 2,
+      "impressions": 28,
+      "ctr": 7.14,
+      "position": 6.9,
+      "country": "lbn"
+    },
+    {
+      "keys": [
+        "ltu"
+      ],
+      "clicks": 2,
+      "impressions": 40,
+      "ctr": 5.0,
+      "position": 5.8,
+      "country": "ltu"
+    },
+    {
+      "keys": [
+        "mmr"
+      ],
+      "clicks": 2,
+      "impressions": 34,
+      "ctr": 5.88,
+      "position": 6.9,
+      "country": "mmr"
+    },
+    {
+      "keys": [
+        "sgp"
+      ],
+      "clicks": 2,
+      "impressions": 57,
+      "ctr": 3.51,
+      "position": 6.2,
+      "country": "sgp"
+    },
+    {
+      "keys": [
+        "ukr"
+      ],
+      "clicks": 2,
+      "impressions": 76,
+      "ctr": 2.63,
+      "position": 18.2,
+      "country": "ukr"
+    },
+    {
+      "keys": [
+        "afg"
+      ],
+      "clicks": 1,
+      "impressions": 4,
+      "ctr": 25.0,
+      "position": 8,
+      "country": "afg"
+    },
+    {
+      "keys": [
+        "ago"
+      ],
+      "clicks": 1,
+      "impressions": 1,
+      "ctr": 100,
+      "position": 8,
+      "country": "ago"
+    },
+    {
+      "keys": [
+        "arg"
+      ],
+      "clicks": 1,
+      "impressions": 42,
+      "ctr": 2.38,
+      "position": 13.2,
+      "country": "arg"
+    },
+    {
+      "keys": [
+        "aze"
+      ],
+      "clicks": 1,
+      "impressions": 27,
+      "ctr": 3.7,
+      "position": 5.1,
+      "country": "aze"
+    },
+    {
+      "keys": [
+        "bhr"
+      ],
+      "clicks": 1,
+      "impressions": 12,
+      "ctr": 8.33,
+      "position": 6.2,
+      "country": "bhr"
+    },
+    {
+      "keys": [
+        "bol"
+      ],
+      "clicks": 1,
+      "impressions": 8,
+      "ctr": 12.5,
+      "position": 7.1,
+      "country": "bol"
+    },
+    {
+      "keys": [
+        "brb"
+      ],
+      "clicks": 1,
+      "impressions": 2,
+      "ctr": 50.0,
+      "position": 9.5,
+      "country": "brb"
+    },
+    {
+      "keys": [
+        "bwa"
+      ],
+      "clicks": 1,
+      "impressions": 4,
+      "ctr": 25.0,
+      "position": 5.2,
+      "country": "bwa"
+    },
+    {
+      "keys": [
+        "dom"
+      ],
+      "clicks": 1,
+      "impressions": 30,
+      "ctr": 3.33,
+      "position": 7.7,
+      "country": "dom"
+    },
+    {
+      "keys": [
+        "est"
+      ],
+      "clicks": 1,
+      "impressions": 37,
+      "ctr": 2.7,
+      "position": 9,
+      "country": "est"
+    },
+    {
+      "keys": [
+        "gha"
+      ],
+      "clicks": 1,
+      "impressions": 17,
+      "ctr": 5.88,
+      "position": 5.4,
+      "country": "gha"
+    },
+    {
+      "keys": [
+        "irl"
+      ],
+      "clicks": 1,
+      "impressions": 81,
+      "ctr": 1.23,
+      "position": 6.5,
+      "country": "irl"
+    },
+    {
+      "keys": [
+        "jor"
+      ],
+      "clicks": 1,
+      "impressions": 28,
+      "ctr": 3.57,
+      "position": 33.9,
+      "country": "jor"
+    },
+    {
+      "keys": [
+        "jpn"
+      ],
+      "clicks": 1,
+      "impressions": 75,
+      "ctr": 1.33,
+      "position": 9.8,
+      "country": "jpn"
+    },
+    {
+      "keys": [
+        "ken"
+      ],
+      "clicks": 1,
+      "impressions": 29,
+      "ctr": 3.45,
+      "position": 4.6,
+      "country": "ken"
+    },
+    {
+      "keys": [
+        "lby"
+      ],
+      "clicks": 1,
+      "impressions": 4,
+      "ctr": 25.0,
+      "position": 6.2,
+      "country": "lby"
+    },
+    {
+      "keys": [
+        "lux"
+      ],
+      "clicks": 1,
+      "impressions": 2,
+      "ctr": 50.0,
+      "position": 5,
+      "country": "lux"
+    },
+    {
+      "keys": [
+        "mdv"
+      ],
+      "clicks": 1,
+      "impressions": 13,
+      "ctr": 7.69,
+      "position": 7.4,
+      "country": "mdv"
+    },
+    {
+      "keys": [
+        "mkd"
+      ],
+      "clicks": 1,
+      "impressions": 17,
+      "ctr": 5.88,
+      "position": 8.8,
+      "country": "mkd"
+    },
+    {
+      "keys": [
+        "mlt"
+      ],
+      "clicks": 1,
+      "impressions": 11,
+      "ctr": 9.09,
+      "position": 5.2,
+      "country": "mlt"
+    },
+    {
+      "keys": [
+        "moz"
+      ],
+      "clicks": 1,
+      "impressions": 6,
+      "ctr": 16.67,
+      "position": 5.7,
+      "country": "moz"
+    },
+    {
+      "keys": [
+        "nic"
+      ],
+      "clicks": 1,
+      "impressions": 2,
+      "ctr": 50.0,
+      "position": 6,
+      "country": "nic"
+    },
+    {
+      "keys": [
+        "omn"
+      ],
+      "clicks": 1,
+      "impressions": 24,
+      "ctr": 4.17,
+      "position": 5.9,
+      "country": "omn"
+    },
+    {
+      "keys": [
+        "prt"
+      ],
+      "clicks": 1,
+      "impressions": 46,
+      "ctr": 2.17,
+      "position": 6.0,
+      "country": "prt"
+    },
+    {
+      "keys": [
+        "pyf"
+      ],
+      "clicks": 1,
+      "impressions": 2,
+      "ctr": 50.0,
+      "position": 5.5,
+      "country": "pyf"
+    },
+    {
+      "keys": [
+        "qat"
+      ],
+      "clicks": 1,
+      "impressions": 31,
+      "ctr": 3.23,
+      "position": 8.1,
+      "country": "qat"
+    },
+    {
+      "keys": [
+        "svk"
+      ],
+      "clicks": 1,
+      "impressions": 41,
+      "ctr": 2.44,
+      "position": 10.8,
+      "country": "svk"
+    },
+    {
+      "keys": [
+        "svn"
+      ],
+      "clicks": 1,
+      "impressions": 27,
+      "ctr": 3.7,
+      "position": 7.9,
+      "country": "svn"
+    },
+    {
+      "keys": [
+        "syr"
+      ],
+      "clicks": 1,
+      "impressions": 14,
+      "ctr": 7.14,
+      "position": 4.7,
+      "country": "syr"
+    },
+    {
+      "keys": [
+        "tjk"
+      ],
+      "clicks": 1,
+      "impressions": 5,
+      "ctr": 20.0,
+      "position": 7.2,
+      "country": "tjk"
+    },
+    {
+      "keys": [
+        "tto"
+      ],
+      "clicks": 1,
+      "impressions": 12,
+      "ctr": 8.33,
+      "position": 7.1,
+      "country": "tto"
+    },
+    {
+      "keys": [
+        "uga"
+      ],
+      "clicks": 1,
+      "impressions": 10,
+      "ctr": 10.0,
+      "position": 6.1,
+      "country": "uga"
+    },
+    {
+      "keys": [
+        "uzb"
+      ],
+      "clicks": 1,
+      "impressions": 24,
+      "ctr": 4.17,
+      "position": 4.4,
+      "country": "uzb"
+    },
+    {
+      "keys": [
+        "ven"
+      ],
+      "clicks": 1,
+      "impressions": 30,
+      "ctr": 3.33,
+      "position": 8.7,
+      "country": "ven"
+    },
+    {
+      "keys": [
+        "xkk"
+      ],
+      "clicks": 1,
+      "impressions": 6,
+      "ctr": 16.67,
+      "position": 6.2,
+      "country": "xkk"
+    },
+    {
+      "keys": [
+        "zwe"
+      ],
+      "clicks": 1,
+      "impressions": 11,
+      "ctr": 9.09,
+      "position": 7.2,
+      "country": "zwe"
+    },
+    {
+      "keys": [
+        "alb"
+      ],
+      "clicks": 0,
+      "impressions": 15,
+      "ctr": 0,
+      "position": 5.3,
+      "country": "alb"
+    },
+    {
+      "keys": [
+        "and"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5.5,
+      "country": "and"
+    },
+    {
+      "keys": [
+        "ben"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 4,
+      "country": "ben"
+    },
+    {
+      "keys": [
+        "bfa"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1,
+      "country": "bfa"
+    },
+    {
+      "keys": [
+        "bhs"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6,
+      "country": "bhs"
+    },
+    {
+      "keys": [
+        "bih"
+      ],
+      "clicks": 0,
+      "impressions": 22,
+      "ctr": 0,
+      "position": 5.9,
+      "country": "bih"
+    },
+    {
+      "keys": [
+        "blz"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 5.4,
+      "country": "blz"
+    },
+    {
+      "keys": [
+        "bmu"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 8.8,
+      "country": "bmu"
+    },
+    {
+      "keys": [
+        "brn"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 4.4,
+      "country": "brn"
+    },
+    {
+      "keys": [
+        "btn"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 12.5,
+      "country": "btn"
+    },
+    {
+      "keys": [
+        "chn"
+      ],
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0,
+      "position": 9.4,
+      "country": "chn"
+    },
+    {
+      "keys": [
+        "civ"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 6.3,
+      "country": "civ"
+    },
+    {
+      "keys": [
+        "cod"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6,
+      "country": "cod"
+    },
+    {
+      "keys": [
+        "col"
+      ],
+      "clicks": 0,
+      "impressions": 32,
+      "ctr": 0,
+      "position": 19.1,
+      "country": "col"
+    },
+    {
+      "keys": [
+        "cpv"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 6,
+      "country": "cpv"
+    },
+    {
+      "keys": [
+        "cri"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 8.6,
+      "country": "cri"
+    },
+    {
+      "keys": [
+        "cub"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8,
+      "country": "cub"
+    },
+    {
+      "keys": [
+        "cuw"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6.5,
+      "country": "cuw"
+    },
+    {
+      "keys": [
+        "cyp"
+      ],
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 10.6,
+      "country": "cyp"
+    },
+    {
+      "keys": [
+        "dma"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6,
+      "country": "dma"
+    },
+    {
+      "keys": [
+        "ecu"
+      ],
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 4.4,
+      "country": "ecu"
+    },
+    {
+      "keys": [
+        "esh"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 52,
+      "country": "esh"
+    },
+    {
+      "keys": [
+        "eth"
+      ],
+      "clicks": 0,
+      "impressions": 17,
+      "ctr": 0,
+      "position": 5.7,
+      "country": "eth"
+    },
+    {
+      "keys": [
+        "fji"
+      ],
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 5.8,
+      "country": "fji"
+    },
+    {
+      "keys": [
+        "fro"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 5,
+      "country": "fro"
+    },
+    {
+      "keys": [
+        "gab"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8,
+      "country": "gab"
+    },
+    {
+      "keys": [
+        "geo"
+      ],
+      "clicks": 0,
+      "impressions": 18,
+      "ctr": 0,
+      "position": 10.5,
+      "country": "geo"
+    },
+    {
+      "keys": [
+        "gin"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 8.5,
+      "country": "gin"
+    },
+    {
+      "keys": [
+        "grl"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 4,
+      "country": "grl"
+    },
+    {
+      "keys": [
+        "gtm"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 17.5,
+      "country": "gtm"
+    },
+    {
+      "keys": [
+        "guf"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8,
+      "country": "guf"
+    },
+    {
+      "keys": [
+        "gum"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 7.2,
+      "country": "gum"
+    },
+    {
+      "keys": [
+        "guy"
+      ],
+      "clicks": 0,
+      "impressions": 12,
+      "ctr": 0,
+      "position": 5,
+      "country": "guy"
+    },
+    {
+      "keys": [
+        "hnd"
+      ],
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 5.2,
+      "country": "hnd"
+    },
+    {
+      "keys": [
+        "imn"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6,
+      "country": "imn"
+    },
+    {
+      "keys": [
+        "irq"
+      ],
+      "clicks": 0,
+      "impressions": 48,
+      "ctr": 0,
+      "position": 9.6,
+      "country": "irq"
+    },
+    {
+      "keys": [
+        "isl"
+      ],
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 6,
+      "country": "isl"
+    },
+    {
+      "keys": [
+        "jey"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 6,
+      "country": "jey"
+    },
+    {
+      "keys": [
+        "kor"
+      ],
+      "clicks": 0,
+      "impressions": 30,
+      "ctr": 0,
+      "position": 7.4,
+      "country": "kor"
+    },
+    {
+      "keys": [
+        "kwt"
+      ],
+      "clicks": 0,
+      "impressions": 23,
+      "ctr": 0,
+      "position": 7.1,
+      "country": "kwt"
+    },
+    {
+      "keys": [
+        "lao"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1,
+      "country": "lao"
+    },
+    {
+      "keys": [
+        "lca"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6,
+      "country": "lca"
+    },
+    {
+      "keys": [
+        "mac"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6,
+      "country": "mac"
+    },
+    {
+      "keys": [
+        "mda"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 6.2,
+      "country": "mda"
+    },
+    {
+      "keys": [
+        "mdg"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 10,
+      "country": "mdg"
+    },
+    {
+      "keys": [
+        "mli"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7,
+      "country": "mli"
+    },
+    {
+      "keys": [
+        "mne"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8,
+      "country": "mne"
+    },
+    {
+      "keys": [
+        "mng"
+      ],
+      "clicks": 0,
+      "impressions": 19,
+      "ctr": 0,
+      "position": 7.2,
+      "country": "mng"
+    },
+    {
+      "keys": [
+        "mnp"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7,
+      "country": "mnp"
+    },
+    {
+      "keys": [
+        "mtq"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3,
+      "country": "mtq"
+    },
+    {
+      "keys": [
+        "mus"
+      ],
+      "clicks": 0,
+      "impressions": 12,
+      "ctr": 0,
+      "position": 7.2,
+      "country": "mus"
+    },
+    {
+      "keys": [
+        "mwi"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 8.5,
+      "country": "mwi"
+    },
+    {
+      "keys": [
+        "nam"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 14.7,
+      "country": "nam"
+    },
+    {
+      "keys": [
+        "pan"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 10.3,
+      "country": "pan"
+    },
+    {
+      "keys": [
+        "per"
+      ],
+      "clicks": 0,
+      "impressions": 20,
+      "ctr": 0,
+      "position": 8.8,
+      "country": "per"
+    },
+    {
+      "keys": [
+        "png"
+      ],
+      "clicks": 0,
+      "impressions": 26,
+      "ctr": 0,
+      "position": 5.7,
+      "country": "png"
+    },
+    {
+      "keys": [
+        "pri"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 5.5,
+      "country": "pri"
+    },
+    {
+      "keys": [
+        "pry"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5,
+      "country": "pry"
+    },
+    {
+      "keys": [
+        "pse"
+      ],
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 6.8,
+      "country": "pse"
+    },
+    {
+      "keys": [
+        "rwa"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 9.3,
+      "country": "rwa"
+    },
+    {
+      "keys": [
+        "sen"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6,
+      "country": "sen"
+    },
+    {
+      "keys": [
+        "slb"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 4,
+      "country": "slb"
+    },
+    {
+      "keys": [
+        "slv"
+      ],
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0,
+      "position": 9.1,
+      "country": "slv"
+    },
+    {
+      "keys": [
+        "srb"
+      ],
+      "clicks": 0,
+      "impressions": 36,
+      "ctr": 0,
+      "position": 7.6,
+      "country": "srb"
+    },
+    {
+      "keys": [
+        "ssd"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 3,
+      "country": "ssd"
+    },
+    {
+      "keys": [
+        "sur"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 4.7,
+      "country": "sur"
+    },
+    {
+      "keys": [
+        "tgo"
+      ],
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5.5,
+      "country": "tgo"
+    },
+    {
+      "keys": [
+        "tkm"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 2,
+      "country": "tkm"
+    },
+    {
+      "keys": [
+        "tls"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8,
+      "country": "tls"
+    },
+    {
+      "keys": [
+        "twn"
+      ],
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 9.5,
+      "country": "twn"
+    },
+    {
+      "keys": [
+        "tza"
+      ],
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 6.9,
+      "country": "tza"
+    },
+    {
+      "keys": [
+        "ury"
+      ],
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 6.2,
+      "country": "ury"
+    },
+    {
+      "keys": [
+        "vgb"
+      ],
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8,
+      "country": "vgb"
+    },
+    {
+      "keys": [
+        "yem"
+      ],
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1,
+      "country": "yem"
+    },
+    {
+      "keys": [
+        "zmb"
+      ],
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 5.3,
+      "country": "zmb"
+    }
+  ],
+  "totals": {
+    "clicks": 863,
+    "impressions": 25825,
+    "ctr": 3.34,
+    "position": 0
+  },
+  "quick_wins": [],
+  "row_count": 173,
+  "error": null,
+  "date_range": {
+    "start": "2026-08-21",
+    "end": "2026-09-15"
+  }
+}

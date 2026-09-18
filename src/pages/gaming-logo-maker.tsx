@@ -298,7 +298,17 @@ useEffect(() => {
         <title>AI Gaming Logo Maker - Create Epic Esports & Streamer Logos | GamingLogoAI</title>
         <meta name="description" content="Design unique, professional gaming logos in minutes with GamingLogoAI's AI-powered generator. Perfect for esports teams, Twitch streamers, YouTube channels, and gamer profiles. Try it free!" />
         <meta name="keywords" content="ai gaming logo generator, esports logo maker, streamer logo, youtube gaming logo, custom gaming logo, game team logo, free gaming logo trial, ai game art" />
-        <link rel="canonical" href="https://gaminglogoai.com/gaming-logo-maker" />
+        {/*
+          SEO: this dedicated tool page and the homepage target the same
+          "gaming logo maker" family. GSC (90d) shows the homepage also ranks
+          for ~53/54 of this page's queries and outranks it by 15-30 positions
+          on ~51 of them; unique coverage here is ~1 impression. Canonicalize to
+          the homepage so the ranking signal consolidates onto the URL Google
+          already prefers. Page stays fully functional and indexable-as-
+          canonicalized (no redirect, no noindex) -- same pattern as
+          /thumbnail-maker -> /youtube-thumbnail-maker.
+        */}
+        <link rel="canonical" href="https://gaminglogoai.com/" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/gaming-logo-maker" />
         <meta property="og:title" content="AI Gaming Logo Maker - Create Epic Esports & Streamer Logos | GamingLogoAI" />

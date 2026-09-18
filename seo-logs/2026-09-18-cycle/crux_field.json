@@ -1,0 +1,121 @@
+{
+  "target": "https://gaminglogoai.com",
+  "metrics": {
+    "first_contentful_paint": {
+      "p75": 1678,
+      "rating": "good",
+      "label": "FCP",
+      "unit": "ms",
+      "good_threshold": 1800,
+      "poor_threshold": 3000,
+      "distribution": {
+        "good": 77.6,
+        "needs_improvement": 13.1,
+        "poor": 9.3
+      }
+    },
+    "largest_contentful_paint_image_element_render_delay": {
+      "p75": 531,
+      "rating": "unknown",
+      "label": "largest_contentful_paint_image_element_render_delay",
+      "unit": "",
+      "good_threshold": null,
+      "poor_threshold": null
+    },
+    "largest_contentful_paint_image_resource_load_delay": {
+      "p75": 336,
+      "rating": "unknown",
+      "label": "largest_contentful_paint_image_resource_load_delay",
+      "unit": "",
+      "good_threshold": null,
+      "poor_threshold": null
+    },
+    "largest_contentful_paint_image_resource_load_duration": {
+      "p75": 353,
+      "rating": "unknown",
+      "label": "largest_contentful_paint_image_resource_load_duration",
+      "unit": "",
+      "good_threshold": null,
+      "poor_threshold": null
+    },
+    "largest_contentful_paint_image_time_to_first_byte": {
+      "p75": 633,
+      "rating": "unknown",
+      "label": "largest_contentful_paint_image_time_to_first_byte",
+      "unit": "",
+      "good_threshold": null,
+      "poor_threshold": null
+    },
+    "round_trip_time": {
+      "p75": 164,
+      "rating": "unknown",
+      "label": "round_trip_time",
+      "unit": "",
+      "good_threshold": null,
+      "poor_threshold": null,
+      "distribution": {
+        "good": 37.7,
+        "needs_improvement": 53.7,
+        "poor": 8.6
+      }
+    },
+    "cumulative_layout_shift": {
+      "p75": 0.0,
+      "rating": "good",
+      "label": "CLS",
+      "unit": "",
+      "good_threshold": 0.1,
+      "poor_threshold": 0.25,
+      "distribution": {
+        "good": 98.4,
+        "needs_improvement": 1.6,
+        "poor": 0
+      }
+    },
+    "experimental_time_to_first_byte": {
+      "p75": 629,
+      "rating": "good",
+      "label": "TTFB",
+      "unit": "ms",
+      "good_threshold": 800,
+      "poor_threshold": 1800,
+      "distribution": {
+        "good": 83.3,
+        "needs_improvement": 10.1,
+        "poor": 6.6
+      }
+    },
+    "interaction_to_next_paint": {
+      "p75": 162,
+      "rating": "good",
+      "label": "INP",
+      "unit": "ms",
+      "good_threshold": 200,
+      "poor_threshold": 500,
+      "distribution": {
+        "good": 84.4,
+        "needs_improvement": 10.8,
+        "poor": 4.8
+      }
+    },
+    "largest_contentful_paint": {
+      "p75": 1788,
+      "rating": "good",
+      "label": "LCP",
+      "unit": "ms",
+      "good_threshold": 2500,
+      "poor_threshold": 4000,
+      "distribution": {
+        "good": 85.7,
+        "needs_improvement": 7.9,
+        "poor": 6.4
+      }
+    }
+  },
+  "collection_period": {
+    "first": "2026-08-20",
+    "last": "2026-09-16"
+  },
+  "form_factor": "ALL",
+  "error": null
+}
