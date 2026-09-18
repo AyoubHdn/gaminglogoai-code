@@ -1,6 +1,6 @@
 # Weekly SEO Summary — gaminglogoai.com — Cycle 2026-09-18
 
-Companion files: `gsc-report.md`, `ga4-report.md`, `ga4-pages-report.md`, `drift-report.md` (+ raw JSON). Prior cycle: `../2026-08-31-cycle/`.
+Companion files: `gsc-report.md`, `ga4-report.md`, `ga4-pages-report.md`, `drift-report.md`, `pfp-games-gallery-early-read.md`, `gaming-logo-maker-consolidation-memo.md` (+ raw JSON). Prior cycle: `../2026-08-31-cycle/`.
 
 **Windows:** GSC 08-21→09-15 (26d) · GA4 08-21→09-17 (28d) · Drift/CrUX 08-20→09-16. GSC & GA4 overlap the prior cycle by ~8 days → deltas are directional.
 
@@ -48,18 +48,12 @@ Prior cycles reported the **query-dimension** summed clicks as the site total (~
 
 The FIX 2 content enrichment (real 25 formats, ~1,100 words) is now validated on **both** ranking (GSC) and behavior (GA4). The effect was gradual — exactly as the minecraft inflection finding predicted — and has now landed on page 1 with its first clicks and elite engagement. `/thumbnail-maker` still returns 0 GSC rows → the canonical consolidation holds. **Close as a win; the enrichment playbook works.**
 
-### 🔴 DECISION FORCED — `/gaming-logo-maker` consolidation trigger tripped (2nd cycle)
-Decomposing **"gaming logo maker"** (618 impr, blended p21.5) by page:
+### ✅ DECISION MADE + ACTIONED — `/gaming-logo-maker` canonical → homepage
+The trigger tripped for the **2nd consecutive cycle** (head term p59.5 → p60.3; homepage takes it at p19.3). A dedicated 90-day query×page analysis (`gaming-logo-maker-consolidation-memo.md`) settled the "which URL should win" question decisively: of the dedicated page's **54 meaningful queries, the homepage also ranks on 53 and outranks it by 15-30 positions on ~51**; unique coverage is **~1 impression** ("logo generator"). The page is a **near-total weaker duplicate** — consolidating costs essentially nothing and should *help* the homepage by concentrating signals.
 
-| Page | Position | Impr | Clicks |
-|---|---|---|---|
-| **Homepage `/`** | **p19.3** | 585 | 2 |
-| **`/gaming-logo-maker`** | **p60.3** | 125 | 0 |
+**Action taken this cycle (uncommitted edit, pending Codex merge):** set `<link rel="canonical">` on `/gaming-logo-maker` → `https://gaminglogoai.com/`. **No redirect, no noindex** — page stays fully functional and indexable-as-canonicalized (same pattern as the successful `/thumbnail-maker` → `/youtube-thumbnail-maker` fix). Title, H1, OG, Studio banner, tool, and content all unchanged. `npm run build` passed; canonical verified in prerendered HTML.
 
-My stated trigger was *"if ≥~p45 next pull, the leave-it-alone call is void, reconsider consolidation."* It's now ≥p45 for the **2nd consecutive cycle** (p59.5 → p60.3 on the head term; page-agg p54 → p51.5). The homepage has decisively won; the dedicated page is not recovering and won't while it trails the homepage by 40 positions. **GA4 proves the page itself is fine** (42 sessions, 73.8% eng) — so this is purely a *which-URL-should-rank* decision, not a page-quality fix. **Recommendation: make the consolidation call now (Codex/product).** Two clean options:
-- **(A) Consolidate to homepage** — canonical/redirect `/gaming-logo-maker` → `/`, since Google already prefers the homepage. Simplest; formalizes reality.
-- **(B) Back the dedicated page to win** — strengthen internal linking to `/gaming-logo-maker` (inspection showed only ~2 internal links vs the homepage's site-wide presence) and let it reclaim the head term.
-Either resolves the split; leaving it un-decided is what's costing the ~1,800-impression "gaming logo maker" family (see below).
+**Status:** ⏳ awaiting Codex merge + Google recrawl (weeks). **Next-cycle watch:** confirm `/gaming-logo-maker` GSC impressions decay toward zero (signal consolidating) and whether the homepage's "gaming logo maker" position improves from p21 toward the top 10.
 
 ### 🌍 GROWING — FR + DE i18n demand
 DE **2,155 impr / 27 clk / p23.6**, FR **543 impr / 10 clk / p26.2** — combined **2,700+ impr, near-zero clicks**, all clean localized create-intent (`gaming logo erstellen kostenlos`, `creer un logo gaming`, `gaming logo maker kostenlos`). English pages rank p16-48 in these markets but don't convert without localized content. **Untapped, scaled (DE especially) — localized gaming-logo pages / hreflang (Codex backlog).**
@@ -80,7 +74,7 @@ The ~15pp logo>pfp engagement gap holds a 3rd cycle. **New refinement this cycle
 
 | # | Move | Status | Owner | Why |
 |---|---|---|---|---|
-| **1** | **`/gaming-logo-maker` consolidation** — decide (A) redirect→homepage or (B) internal-link the dedicated page to win | 🔴 **DECIDE NOW** | Codex/product | Trigger tripped 2nd cycle; head term split (p19 vs p60) is bleeding the ~1,800-impr "gaming logo maker" family |
+| **1** | **`/gaming-logo-maker` consolidation** — canonical → homepage **SET** (uncommitted); merge + recrawl pending | ✅ **ACTIONED** | Codex (merge) | 90d proof: near-total weaker duplicate (~1 impr unique of 54 queries); no redirect/noindex; watch impressions decay next cycle |
 | **2** | **pfp/games gallery-hybrid** — pilot on **browse-intent games (roblox, rainbow-six)** specifically | 📋 **RECOMMEND** | Codex | ~15pp gap; now narrowed to browse-intent games; COD/rocket-league already engage |
 | **3** | **Replicate the thumbnail-enrichment playbook** on other thin pages | 📋 **NEW** | Codex | FIX 2 validated: enrichment took thumbnail 0→10 clicks, p30s→p9.9. Proven, repeatable |
 | **4** | **Hold PFP title** — gaming-led test shelved | ✅ **CLOSED** | — | 4 cycles: broad "ai pfp" wins; "gaming" drew 395 impr / 1 click |
@@ -103,12 +97,12 @@ The ~15pp logo>pfp engagement gap holds a 3rd cycle. **New refinement this cycle
 ## Status
 - ✅ **First 1,000+ session cycle: 1,029 (+5.4%).** True click size restated to ~869/26d (reconciles with GA4).
 - ✅ **Thumbnail enrichment validated** (0→10 clicks, p30s→p9.9, 81.8% eng) → repeatable playbook (#3).
-- 🔴 **Decision forced:** `/gaming-logo-maker` consolidation (#1) — trigger tripped 2nd cycle.
+- ✅ **`/gaming-logo-maker` consolidation ACTIONED** (#1) — canonical → homepage set (uncommitted, pending Codex merge); 90d memo proved it's a near-total weaker duplicate.
 - ✅ **PFP title-hold closed 4th cycle;** pfp/games mismatch narrowed to browse-intent games (#2).
 - ✅ No SEO drift; field CWV all GOOD and improving; baseline #7 valid.
 - 🌍 FR/DE i18n growing (#5).
 - **Role note:** all "RECOMMEND / DECIDE / Codex" items are code/content/product changes owned by Codex. These reports are analysis only — flags and diagnoses, not edits.
-- Next cycle (~2026-10-12+): re-pull GSC/GA4/drift; confirm the `/gaming-logo-maker` decision landed; watch thumbnail page's click trajectory; check COD cluster + FR/DE.
+- Next cycle (~2026-10-12+): re-pull GSC/GA4/drift; **confirm the `/gaming-logo-maker` canonical merged + its impressions decaying / homepage p21→top-10**; **re-run the `/pfp/games/` gallery split on a full post-09-02 window** (per `pfp-games-gallery-early-read.md`); watch thumbnail click trajectory; check COD cluster + FR/DE.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Built by agricidaniel — Join the AI Marketing Hub community
