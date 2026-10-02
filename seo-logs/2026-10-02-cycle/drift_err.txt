@@ -1,0 +1,2 @@
+    2 WARNING finding(s)
+    1 INFO finding(s)
