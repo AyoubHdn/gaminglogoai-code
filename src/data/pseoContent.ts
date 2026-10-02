@@ -173,6 +173,107 @@ export const pseoContent: Record<string, PseoContent> = {
       { href: "/buy-credits", anchor: "View credit packs" },
     ],
   },
+  // Enriched entry for the Dota PFP page (already ranks p5 for "gaming logo"-adjacent
+  // Dota queries). Content-only enrichment per the thin-page experiment: no metaTitle/
+  // metaDescription (keep the page's existing title/H1/meta), FAQ as visible content
+  // with JSON-LD suppressed (suppressFaqSchema), gallery-hybrid + canonical unchanged.
+  "dota-pfp-maker": {
+    suppressFaqSchema: true,
+    heroIntro:
+      "Turn your photo into a Dota-inspired hero avatar. Upload a selfie and our AI repaints you in dark, painterly fantasy splash-art style — runic armor, an enchanted weapon, and a battlefield backdrop — while keeping your face recognizable. Built for your Steam profile, Discord, Twitch, or gaming socials.",
+    articleSections: [
+      {
+        heading: "What the Dota PFP Style Looks Like",
+        body: "The Dota style renders you as a fantasy hero in a dark, painterly splash-art look: rich textures, dramatic lighting, and heavy contrast. Your everyday clothes are fully replaced with runic armor and hero gear, you're given an enchanted weapon and a commanding pose, and your photo's background is swapped for an atmospheric battlefield. Your facial features stay recognizable, so the avatar still reads as you.",
+      },
+      {
+        heading: "How to Make Your Dota PFP",
+        body: "Pick the Dota style, upload a clear front-facing photo, then choose your options: an optional gamer tag, your framing, and your AI engine. Hit generate and your hero avatar is ready in seconds as a square PNG, sized for profile pictures. You can regenerate as many times as you like until the pose and lighting feel right.",
+      },
+      {
+        heading: "Head, Half Body, or Full Body",
+        body: "Choose how much of your hero shows in the square frame. Head framing gives a close, face-focused portrait that reads well at small avatar sizes. Half Body shows your armor and weapon from the chest up. Full Body renders your complete hero standing on the battlefield, best when you want the whole outfit visible.",
+      },
+      {
+        heading: "Pro vs Max Engine",
+        body: "Two engines are available. Pro costs 4 credits and produces strong, clean results. Max costs 6 credits and adds finer detail and lighting, which shows most in painterly styles like this one, so it's the recommended choice. Credits never expire and work across every GamingLogoAI tool.",
+      },
+      {
+        heading: "Where to Use Your Dota Avatar",
+        body: "Use it as your Steam profile picture, Discord avatar, Twitch or YouTube channel icon, or across your gaming socials. If you want a matching set, the same style approach works in our gaming logo maker for team and clan branding.",
+      },
+    ],
+    faqs: [
+      { question: "How do I make a Dota PFP from my photo?", answer: "Choose the Dota style, upload a clear photo of your face, pick your framing and engine, then generate. The AI turns you into a painterly fantasy hero in seconds." },
+      { question: "Will my Dota avatar still look like me?", answer: "Yes. The AI keeps your key facial features recognizable while replacing your clothing, background, and rendering style with a fantasy hero look." },
+      { question: "Can I add my gamer tag?", answer: "Yes. Enter an optional gamer tag in the options step and it's placed into the design. Leave it blank for a clean, text-free avatar." },
+      { question: "Is the Dota PFP maker free?", answer: "You can create a PFP with your free starting credit. Free creations include a small watermark; purchasing any credit pack gives you clean, watermark-free downloads." },
+      { question: "What size is the finished avatar?", answer: "It's a square PNG, ready to use as a profile picture on Steam, Discord, Twitch, YouTube, and most social platforms." },
+      { question: "Is this an official Dota product?", answer: "No. GamingLogoAI is an independent AI avatar tool. The style is inspired by fantasy MOBA splash art and isn't affiliated with or endorsed by Valve." },
+    ],
+    relatedLinks: [
+      { href: "/logo/games/dota-logo-maker", anchor: "Dota Logo Maker" },
+      { href: "/pfp/games/league-of-legends-pfp-maker", anchor: "League of Legends PFP Maker" },
+      { href: "/ai-profile-picture-maker", anchor: "AI PFP Maker" },
+    ],
+  },
+  // Enrich-arm entry (thin-page experiment). Content-only: no metaTitle/metaDescription
+  // (keep existing title/H1/meta), FAQ as visible content with JSON-LD suppressed,
+  // gallery-hybrid + canonical unchanged. relatedLinks avoid control pages (cs/pubg).
+  "valorant-pfp-maker": {
+    suppressFaqSchema: true,
+    heroIntro:
+      "Turn your photo into a Valorant-inspired agent avatar. Upload a selfie and our AI rebuilds you as a sleek tactical agent — modern sci-fi operator gear, crisp semi-realistic shading, and a mission-ready backdrop — while keeping your face recognizable.",
+    articleSections: [
+      { heading: "What the Valorant PFP Style Looks Like",
+        body: "The Valorant style renders you as a stylized tactical agent: clean sharp shapes, vibrant accent colors, and semi-realistic shading. Your everyday clothes are fully replaced with a modern agent outfit and sci-fi gear, and your photo's background becomes a matching tactical scene. Your facial features stay recognizable." },
+      { heading: "How to Make Your Valorant PFP",
+        body: "Pick the Valorant style, upload a clear front-facing photo, then set your options: an optional gamer tag, your framing, and your AI engine. Generate, and your agent avatar is ready in seconds as a square PNG. Regenerate until the pose and lighting feel right." },
+      { heading: "Head, Half Body, or Full Body",
+        body: "Head framing gives a tight portrait that stays readable at small avatar sizes. Half Body shows your agent gear from the chest up. Full Body renders your complete agent in a standing pose." },
+      { heading: "Pro vs Max Engine",
+        body: "Pro costs 4 credits and produces clean results. Max costs 6 credits and adds finer detail and lighting, so it's the recommended choice. Credits never expire and work across every GamingLogoAI tool." },
+    ],
+    faqs: [
+      { question: "How do I make a Valorant PFP from my photo?", answer: "Choose the Valorant style, upload a clear photo, pick your framing and engine, and generate. The AI turns you into a tactical agent in seconds." },
+      { question: "Will my avatar still look like me?", answer: "Yes. The AI keeps your key facial features while replacing your clothing, background, and rendering style." },
+      { question: "Can I add my gamer tag?", answer: "Yes. Enter an optional gamer tag in the options step, or leave it blank for a clean, text-free avatar." },
+      { question: "Is the Valorant PFP maker free?", answer: "You can create a PFP with your free starting credit. Free creations include a small watermark; purchasing any credit pack gives clean, watermark-free downloads." },
+      { question: "Is this an official Valorant product?", answer: "No. GamingLogoAI is an independent AI avatar tool. The style is inspired by tactical hero-shooter art and isn't affiliated with or endorsed by Riot Games." },
+    ],
+    relatedLinks: [
+      { href: "/pfp/games/call-of-duty-pfp-maker", anchor: "Call of Duty PFP Maker" },
+      { href: "/pfp/games/overwatch-pfp-maker", anchor: "Overwatch PFP Maker" },
+      { href: "/ai-profile-picture-maker", anchor: "AI PFP Maker" },
+    ],
+  },
+  "free-fire-pfp-maker": {
+    suppressFaqSchema: true,
+    heroIntro:
+      "Turn your photo into a Free Fire-inspired survivor avatar. Upload a selfie and our AI repaints you in bold cel-shaded game art — combat vest, headband, urban battle gear, and dramatic rim lighting — while keeping your face recognizable.",
+    articleSections: [
+      { heading: "What the Free Fire PFP Style Looks Like",
+        body: "The Free Fire style renders you as a semi-realistic cartoon survivor with clean cel-shading, sharp digital lines, and vibrant saturated color. Your clothes are fully replaced with tactical gear — combat vest, headband or cap, urban warfare outfit — and your background becomes a matching battleground scene." },
+      { heading: "How to Make Your Free Fire PFP",
+        body: "Pick the Free Fire style, upload a clear front-facing photo, then set your options: an optional gamer tag, your framing, and your AI engine. Generate, and your survivor avatar is ready in seconds as a square PNG." },
+      { heading: "Head, Half Body, or Full Body",
+        body: "Head framing gives a tight portrait for small avatar sizes. Half Body shows your vest and gear from the chest up. Full Body renders your complete survivor in a standing pose." },
+      { heading: "Pro vs Max Engine",
+        body: "Pro costs 4 credits; Max costs 6 credits and adds finer detail and lighting, so it's the recommended choice. Credits never expire and work across every GamingLogoAI tool." },
+    ],
+    faqs: [
+      { question: "How do I make a Free Fire PFP from my photo?", answer: "Choose the Free Fire style, upload a clear photo, pick your framing and engine, and generate. The AI turns you into a battle-ready survivor in seconds." },
+      { question: "Will my avatar still look like me?", answer: "Yes. The AI keeps your key facial features while replacing your clothing, background, and rendering style." },
+      { question: "Can I add my gamer tag or guild name?", answer: "Yes. Enter an optional gamer tag in the options step, or leave it blank for a clean, text-free avatar." },
+      { question: "Is the Free Fire PFP maker free?", answer: "You can create a PFP with your free starting credit. Free creations include a small watermark; purchasing any credit pack gives clean, watermark-free downloads." },
+      { question: "Is this an official Free Fire product?", answer: "No. GamingLogoAI is an independent AI avatar tool. The style is inspired by mobile battle-royale art and isn't affiliated with or endorsed by Garena." },
+    ],
+    relatedLinks: [
+      { href: "/logo/games/free-fire-logo-maker", anchor: "Free Fire Logo Maker" },
+      { href: "/pfp/games/fortnite-pfp-maker", anchor: "Fortnite PFP Maker" },
+      { href: "/ai-profile-picture-maker", anchor: "AI PFP Maker" },
+    ],
+  },
 };
 
 export function getPseoContent(slug: string): PseoContent | undefined {

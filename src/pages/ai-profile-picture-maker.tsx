@@ -2,6 +2,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaChevronRight, FaUserAstronaut, FaCameraRetro, FaMagic, FaPalette, FaQuestionCircle, FaUserCheck, FaShieldVirus, FaBolt, FaGamepad } from "react-icons/fa"; // Example Icons, added FaCameraRetro
 import { s3Style } from "~/utils/s3Paths";
@@ -333,6 +334,34 @@ const AIPFPGeneratorLandingPage: NextPage = () => {
                                   dark:border-cyan-500 dark:text-cyan-400 dark:hover:bg-cyan-500 dark:hover:text-slate-900">
                     Create My Own AI Avatar
                 </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Game PFP styles — EQUAL internal links to 4 game pages (controlled discovery
+            experiment: identical hub, placement, markup, and link count for each, rendered
+            from one array so the only intended difference between pages stays their content).
+            Additive block only — no existing content on this page was changed. */}
+        <section className="py-16 md:py-20 bg-white dark:bg-slate-800">
+          <div className="container mx-auto px-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-center mb-12 text-slate-900 dark:text-white">
+              Popular Game PFP Styles
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              {[
+                { href: "/pfp/games/valorant-pfp-maker", label: "Valorant PFP Maker" },
+                { href: "/pfp/games/free-fire-pfp-maker", label: "Free Fire PFP Maker" },
+                { href: "/pfp/games/counter-strike-pfp-maker", label: "Counter-Strike PFP Maker" },
+                { href: "/pfp/games/pubg-pfp-maker", label: "PUBG PFP Maker" },
+              ].map((game) => (
+                <Link
+                  key={game.href}
+                  href={game.href}
+                  className="flex items-center justify-center rounded-lg border border-slate-200 bg-slate-50 px-4 py-5 text-center font-semibold text-slate-800 shadow-sm transition hover:border-purple-400 hover:shadow-md dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:border-cyan-400"
+                >
+                  {game.label}
+                </Link>
+              ))}
             </div>
           </div>
         </section>
