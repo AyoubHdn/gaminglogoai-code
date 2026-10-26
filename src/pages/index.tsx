@@ -577,12 +577,12 @@ function StyleShowcaseSection() {
         <title>Free AI Gaming Logo Maker — Logos, PFPs & Twitch Graphics</title>
         <meta
           name="description"
-          content="Create a stunning AI gaming logo or mascot with GamingLogoAI! Our generator is perfect for esports teams, streamers, and clans. Sign up to get 1 free credit to start designing now!"
+          content="Free AI gaming logo maker. Create logos, PFPs from your photo, Twitch banners & panels, emotes and YouTube thumbnails in seconds. First logo free."
         />
         <meta name="keywords" content="ai gaming logo generator, gaming logo maker ai, ai gaming logo, gaming mascot, gaming logo ai free, esports logo, custom gaming logo" />
         <link rel="canonical" href="https://gaminglogoai.com/" />
         <meta property="og:title" content="Free AI Gaming Logo Maker — Logos, PFPs & Twitch Graphics" />
-        <meta property="og:description" content="Create a stunning AI gaming logo or mascot with GamingLogoAI! Our generator is perfect for esports teams, streamers, and clans. Sign up to get 1 free credit to start designing now!" />
+        <meta property="og:description" content="Free AI gaming logo maker. Create logos, PFPs from your photo, Twitch banners & panels, emotes and YouTube thumbnails in seconds. First logo free." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://gaminglogoai.com/" />
         <meta property="og:image" content="https://gaminglogoai.com/og-image-gaminglogoai.png" />
