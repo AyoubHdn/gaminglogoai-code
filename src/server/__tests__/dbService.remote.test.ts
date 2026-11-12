@@ -42,7 +42,8 @@ void test("remote service preserves operation inputs and dates at the RPC bounda
   assert.equal(icons[0]?.createdAt.toISOString(), "2026-11-12T00:00:00.000Z");
   const request = requests[0];
   assert.ok(request);
-  assert.deepEqual(await request.json(), {
+  const requestBody: unknown = await request.json();
+  assert.deepEqual(requestBody, {
     operation: "icons.getSavedIcons",
     input: { userId: "user-1" },
   });
@@ -56,8 +57,8 @@ void test("remote service preserves missing-user and bounded public reads", asyn
   const publicIcons = createBinding({ ok: true, data: [] });
   const publicService = createRemoteGamingDbService(publicIcons.binding);
   assert.deepEqual(await publicService.getCommunityIcons(500), []);
-  const body = await publicIcons.requests[0]?.json();
-  assert.deepEqual(body, {
+  const publicBody: unknown = await publicIcons.requests[0]?.json();
+  assert.deepEqual(publicBody, {
     operation: "icons.getCommunityIcons",
     input: { limit: 500 },
   });
