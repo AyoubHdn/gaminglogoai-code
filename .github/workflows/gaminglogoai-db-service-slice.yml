@@ -1,0 +1,56 @@
+name: GamingLogoAI DB-service slice
+
+on:
+  push:
+    branches:
+      - staging/gaminglogoai-db-service-0c14
+  pull_request:
+    paths:
+      - "src/server/dbService.ts"
+      - "src/server/api/trpc.ts"
+      - "src/server/api/routers/user.ts"
+      - "src/server/api/routers/icons.ts"
+      - "src/server/__tests__/dbService.test.ts"
+      - "docs/migration/gaminglogoai-staging-db-service.md"
+      - ".github/workflows/gaminglogoai-db-service-slice.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: gaminglogoai_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci_user -d gaminglogoai_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci
+      NODE_ENV: test
+      NEXTAUTH_URL: https://staging.invalid
+      HOST_NAME: https://staging.invalid
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - run: node --experimental-strip-types --test src/server/__tests__/dbService.test.ts
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm run build
