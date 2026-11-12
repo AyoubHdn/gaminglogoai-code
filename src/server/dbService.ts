@@ -116,12 +116,13 @@ export function createRemoteGamingDbService(
   if (!binding) {
     throw new Error("Remote DB service binding is required");
   }
+  const serviceBinding = binding;
 
   async function call(
     operation: DbServiceOperation,
     input: Record<string, unknown>,
   ): Promise<unknown> {
-    const response = await binding.fetch("https://gaming-db.internal/rpc", {
+    const response = await serviceBinding.fetch("https://gaming-db.internal/rpc", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ operation, input }),
