@@ -3,7 +3,7 @@ import test from "node:test";
 
 import type { Icon, PrismaClient } from "@prisma/client";
 
-import { createPrismaDbService } from "../dbService";
+import { createPrismaDbService } from "../dbService.ts";
 
 function createFakePrisma() {
   const calls: Array<{ model: string; args: unknown }> = [];
