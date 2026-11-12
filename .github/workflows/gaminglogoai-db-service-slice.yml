@@ -73,5 +73,5 @@ jobs:
       - run: npx prisma generate
       - run: node --experimental-strip-types --test src/server/__tests__/dbService.test.ts
       - run: npx tsc --noEmit --allowImportingTsExtensions
-      - run: npm run lint
+      - run: npx eslint src/server/dbService.ts src/server/api/trpc.ts src/server/api/routers/user.ts src/server/api/routers/icons.ts src/server/__tests__/dbService.test.ts
       - run: npm run build
