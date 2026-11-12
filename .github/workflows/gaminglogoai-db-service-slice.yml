@@ -10,7 +10,7 @@ on:
       - "src/server/api/trpc.ts"
       - "src/server/api/routers/user.ts"
       - "src/server/api/routers/icons.ts"
-      - "src/server/__tests__/dbService.test.ts"
+      - "src/server/__tests__/dbService*.test.ts"
       - "docs/migration/gaminglogoai-staging-db-service.md"
       - ".github/workflows/gaminglogoai-db-service-slice.yml"
 
@@ -35,6 +35,7 @@ jobs:
           --health-interval 5s --health-timeout 5s --health-retries 20
     env:
       DATABASE_URL: postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci
+      GAMING_DB_SERVICE_TEST_DATABASE_URL: postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci
       NODE_ENV: test
       NEXTAUTH_SECRET: ci-nextauth-secret
       NEXTAUTH_URL: https://staging.invalid
@@ -71,7 +72,15 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx prisma generate
+      - name: Initialize disposable local PostgreSQL schema
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$DATABASE_URL" = "postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci"
+          test "$GAMING_DB_SERVICE_TEST_DATABASE_URL" = "$DATABASE_URL"
+          npx prisma db push --schema prisma/schema.prisma --skip-generate
       - run: node --experimental-strip-types --test src/server/__tests__/dbService.test.ts
+      - run: node --experimental-strip-types --test src/server/__tests__/dbService.integration.test.ts
       - run: npx tsc --noEmit --allowImportingTsExtensions
-      - run: npx eslint src/server/dbService.ts src/server/api/trpc.ts src/server/api/routers/user.ts src/server/api/routers/icons.ts src/server/__tests__/dbService.test.ts
+      - run: npx eslint src/server/dbService.ts src/server/api/trpc.ts src/server/api/routers/user.ts src/server/api/routers/icons.ts src/server/__tests__/dbService.test.ts src/server/__tests__/dbService.integration.test.ts
       - run: npm run build
