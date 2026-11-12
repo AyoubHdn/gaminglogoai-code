@@ -36,8 +36,29 @@ jobs:
     env:
       DATABASE_URL: postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci
       NODE_ENV: test
+      NEXTAUTH_SECRET: ci-nextauth-secret
       NEXTAUTH_URL: https://staging.invalid
+      GOOGLE_CLIENT_ID: ci-google-client
+      GOOGLE_CLIENT_SECRET: ci-google-secret
+      REPLICATE_API_TOKEN: ci-replicate-token
+      MOCK_REPLICATE: "true"
+      SECRET_ACCESS_KEY: ci-secret
+      ACCESS_KEY_ID: ci-access-key
+      STRIPE_SECRET_KEY: sk_test_ci
       HOST_NAME: https://staging.invalid
+      STRIPE_WEB_HOOK_SECRET: whsec_ci
+      PRICE_ID_STARTER: price_ci_starter
+      PRICE_ID_PRO: price_ci_pro
+      PRICE_ID_ELITE: price_ci_elite
+      MAUTIC_BASE_URL: https://mautic.invalid
+      MAUTIC_USERNAME: ci-mautic
+      MAUTIC_PASSWORD: ci-mautic-password
+      CRON_SECRET: ci-cron-secret
+      MYLEAD_SECURITY_KEY: ci-mylead-key
+      IPAPI_KEY: ci-ipapi-key
+      NEXT_PUBLIC_STRIPE_KEY: pk_test_ci
+      NEXT_PUBLIC_AWS_REGION_GAMING: us-east-1
+      NEXT_PUBLIC_S3_BUCKET_NAME_GAMING: gaminglogoai-ci
       PUPPETEER_SKIP_DOWNLOAD: "true"
     steps:
       - uses: actions/checkout@v4
