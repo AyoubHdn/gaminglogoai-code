@@ -1,7 +1,7 @@
 type DbRow = Record<string, unknown>;
 export type DbQuery = (
   query: string,
-  values: readonly unknown[],
+  values: unknown[],
 ) => Promise<ReadonlyArray<DbRow>>;
 
 type WorkerEnv = {
@@ -29,10 +29,11 @@ function json(data: unknown, status = 200): Response {
 }
 
 function stringInput(input: unknown, name: string): string {
-  if (!isRecord(input) || typeof input[name] !== "string" || input[name].length === 0) {
+  const field = isRecord(input) ? input[name] : undefined;
+  if (typeof field !== "string" || field.length === 0) {
     throw new Error("Invalid " + name);
   }
-  return input[name];
+  return field;
 }
 
 function limitInput(input: unknown): number {
@@ -143,7 +144,9 @@ export default {
 
     const { default: postgres } = await import("postgres");
     const sql = postgres(env.HYPERDRIVE.connectionString, { prepare: false });
-    const handler = createDbRpcHandler((query, values) => sql.unsafe(query, values));
+    const handler = createDbRpcHandler((query, values) =>
+      sql.unsafe(query, values as never[]),
+    );
     try {
       return await handler(request);
     } finally {

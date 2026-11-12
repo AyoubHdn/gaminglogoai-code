@@ -22,7 +22,7 @@ const prisma = new PrismaClient({ datasources: { db: { url: testUrl } } });
 const sql = postgres(testUrl, { prepare: false });
 
 async function rpc(operation: string, input: Record<string, unknown>) {
-  const handler = createDbRpcHandler((query, values) => sql.unsafe(query, values));
+  const handler = createDbRpcHandler((query, values) => sql.unsafe(query, values as never[]));
   const response = await handler(new Request("https://gaming-db.test/rpc", {
     method: "POST",
     headers: { "content-type": "application/json" },
