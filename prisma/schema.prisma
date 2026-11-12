@@ -67,6 +67,7 @@ model User {
     icons         Icon[]
     cpaUnlocks    CpaUnlock[]
     lastCpaNetwork CpaNetwork?
+    gamingStripePurchases GamingStripePurchase[]
 }
 
 model Icon {
@@ -188,4 +189,16 @@ model CpaSwitch {
     id        Int      @id @default(1)
     lastUsed  CpaNetwork
     updatedAt DateTime @updatedAt
+}
+
+model GamingStripePurchase {
+    id              String   @id
+    stripeSessionId String   @unique
+    userId          String
+    user            User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+    credits         Int
+    plan            Plan
+    createdAt       DateTime @default(now())
+
+    @@index([userId, createdAt])
 }
