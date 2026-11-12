@@ -95,7 +95,7 @@ export function createPrismaDbService(
         where: {
           userId,
           prompt: { startsWith: "EmoteBase:" },
-          imageKey: `emotes/base/${userId}/`,
+          imageKey: { startsWith: "emotes/base/" + userId + "/" },
         },
         orderBy: { createdAt: "desc" },
       });
