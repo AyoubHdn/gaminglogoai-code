@@ -1,0 +1,96 @@
+name: GamingLogoAI remote DB service prototype
+
+on:
+  push:
+    branches:
+      - staging/gaminglogoai-remote-db-99f3
+  pull_request:
+    paths:
+      - "src/server/dbService.ts"
+      - "src/server/__tests__/dbService.remote.test.ts"
+      - "workers/db/**"
+      - "tsconfig.json"
+      - "docs/migration/**"
+      - ".github/workflows/gaminglogoai-remote-db-service-prototype.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: gaminglogoai_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci_user -d gaminglogoai_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci
+      GAMING_DB_SERVICE_TEST_DATABASE_URL: postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci
+      NODE_ENV: test
+      NEXTAUTH_SECRET: ci-nextauth-secret
+      NEXTAUTH_URL: https://staging.invalid
+      GOOGLE_CLIENT_ID: ci-google-client
+      GOOGLE_CLIENT_SECRET: ci-google-secret
+      REPLICATE_API_TOKEN: ci-replicate-token
+      MOCK_REPLICATE: "true"
+      SECRET_ACCESS_KEY: ci-secret
+      ACCESS_KEY_ID: ci-access-key
+      STRIPE_SECRET_KEY: sk_test_ci
+      HOST_NAME: https://staging.invalid
+      STRIPE_WEB_HOOK_SECRET: whsec_ci
+      PRICE_ID_STARTER: price_ci_starter
+      PRICE_ID_PRO: price_ci_pro
+      PRICE_ID_ELITE: price_ci_elite
+      MAUTIC_BASE_URL: https://mautic.invalid
+      MAUTIC_USERNAME: ci-mautic
+      MAUTIC_PASSWORD: ci-mautic-password
+      CRON_SECRET: ci-cron-secret
+      MYLEAD_SECURITY_KEY: ci-mylead-key
+      IPAPI_KEY: ci-ipapi-key
+      NEXT_PUBLIC_STRIPE_KEY: pk_test_ci
+      NEXT_PUBLIC_AWS_REGION_GAMING: us-east-1
+      NEXT_PUBLIC_S3_BUCKET_NAME_GAMING: gaminglogoai-ci
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Verify immutable checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx prisma generate
+      - name: Initialize disposable PostgreSQL
+        run: npx prisma db push --schema prisma/schema.prisma --skip-generate
+      - name: Install Worker-only dependency
+        run: npm install --prefix workers/db --no-package-lock --ignore-scripts --no-audit --no-fund
+      - name: Application and adapter tests
+        run: node --experimental-strip-types --test src/server/__tests__/dbService.test.ts src/server/__tests__/dbService.remote.test.ts
+      - name: Prisma and Worker RPC integration tests
+        run: node --experimental-strip-types --test src/server/__tests__/dbService.integration.test.ts workers/db/src/index.test.ts
+      - name: Application typecheck
+        run: npx tsc --noEmit --allowImportingTsExtensions
+      - name: DB Worker typecheck
+        run: npx tsc --project workers/db/tsconfig.json
+      - name: Focused lint
+        run: npx eslint src/server/dbService.ts src/server/api/trpc.ts src/server/api/routers/user.ts src/server/api/routers/icons.ts src/server/__tests__/dbService*.test.ts
+      - name: Worker packaging dry-run
+        run: npx wrangler@4.148.0 deploy --config workers/db/wrangler.jsonc --dry-run
+      - name: Application build
+        run: npm run build

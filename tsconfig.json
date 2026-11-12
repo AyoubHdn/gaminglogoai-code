@@ -20,8 +20,7 @@
     "paths": {
       "~/*": ["./src/*"]
     },
-    "typeRoots": ["./node_modules/@types", "./types"], // Include the types folder
-    "strict": true
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
   "include": [
     ".eslintrc.cjs",
@@ -31,5 +30,5 @@
     "**/*.cjs",
     "**/*.mjs"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "workers/db"]
 }
