@@ -8,18 +8,20 @@ import { createPrismaDbService } from "../dbService.ts";
 function createFakePrisma() {
   const calls: Array<{ model: string; args: unknown }> = [];
   const icon = {
-    async findMany(args: unknown) {
+    findMany(args: unknown) {
       calls.push({ model: "icon", args });
-      return [] as Icon[];
+      return Promise.resolve([] as Icon[]);
     },
   };
   const user = {
-    async findUnique(args: unknown) {
+    findUnique(args: unknown) {
       calls.push({ model: "user", args });
       const select = (args as { select?: Record<string, boolean> }).select;
-      if (select?.gamingCredits) return { gamingCredits: 7 };
-      if (select?.hasPurchasedCredits) return { hasPurchasedCredits: true };
-      return null;
+      if (select?.gamingCredits) return Promise.resolve({ gamingCredits: 7 });
+      if (select?.hasPurchasedCredits) {
+        return Promise.resolve({ hasPurchasedCredits: true });
+      }
+      return Promise.resolve(null);
     },
   };
 
@@ -29,7 +31,7 @@ function createFakePrisma() {
   };
 }
 
-test("typed DB boundary preserves protected credit and purchase reads", async () => {
+void test("typed DB boundary preserves protected credit and purchase reads", async () => {
   const fake = createFakePrisma();
   const service = createPrismaDbService(fake.client);
 
@@ -39,7 +41,7 @@ test("typed DB boundary preserves protected credit and purchase reads", async ()
   assert.deepEqual(fake.calls.map((call) => call.model), ["user", "user"]);
 });
 
-test("typed DB boundary preserves saved, emote-base, and community read scopes", async () => {
+void test("typed DB boundary preserves saved, emote-base, and community read scopes", async () => {
   const fake = createFakePrisma();
   const service = createPrismaDbService(fake.client);
 
