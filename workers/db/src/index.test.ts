@@ -35,19 +35,13 @@ async function rpc(operation: string, input: Record<string, unknown>) {
 void test("Worker RPC boundary reads disposable PostgreSQL", async () => {
   const prefix = "worker-rpc-" + Date.now() + "-" + Math.random().toString(16).slice(2);
   const userId = prefix + "-user";
-  const otherUserId = prefix + "-other-user";
   const iconId = prefix + "-icon";
   try {
-    await prisma.user.createMany({
-      data: [
-        { id: userId, gamingCredits: 12, hasPurchasedCredits: true },
-        { id: otherUserId, gamingCredits: 1 },
-      ],
-    });
+    await prisma.user.create({ data: { id: userId, gamingCredits: 12, hasPurchasedCredits: true } });
     await prisma.icon.createMany({
       data: [
         { id: iconId, userId, prompt: "EmoteBase: worker", imageKey: "emotes/base/" + userId + "/a.webp", createdAt: new Date("2026-01-02") },
-        { id: prefix + "-other", userId: otherUserId, prompt: "other", createdAt: new Date("2026-01-03") },
+        { id: prefix + "-other", userId: prefix + "-other-user", prompt: "other", createdAt: new Date("2026-01-03") },
       ],
     });
 

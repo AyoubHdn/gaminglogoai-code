@@ -82,8 +82,10 @@ jobs:
         run: npm install --prefix workers/db --no-package-lock --ignore-scripts --no-audit --no-fund
       - name: Application and adapter tests
         run: node --experimental-strip-types --test src/server/__tests__/dbService.test.ts src/server/__tests__/dbService.remote.test.ts
-      - name: Prisma and Worker RPC integration tests
-        run: node --experimental-strip-types --test src/server/__tests__/dbService.integration.test.ts workers/db/src/index.test.ts
+      - name: Prisma integration tests
+        run: node --experimental-strip-types --test src/server/__tests__/dbService.integration.test.ts
+      - name: Worker RPC integration tests
+        run: node --experimental-strip-types --test workers/db/src/index.test.ts
       - name: Application typecheck
         run: npx tsc --noEmit --allowImportingTsExtensions
       - name: DB Worker typecheck
