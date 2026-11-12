@@ -40,7 +40,7 @@ jobs:
       NEXTAUTH_URL: https://staging.invalid
       GOOGLE_CLIENT_ID: ci-google-client
       GOOGLE_CLIENT_SECRET: ci-google-secret
-      REPLICATE_API_TOKEN: ci-replicate-token
+      REPLICATE_API_TOKEN: ci-replicATE-token
       MOCK_REPLICATE: "true"
       SECRET_ACCESS_KEY: ci-secret
       ACCESS_KEY_ID: ci-access-key
@@ -86,6 +86,8 @@ jobs:
         run: node --experimental-strip-types --test src/server/__tests__/dbService.integration.test.ts
       - name: Worker RPC integration tests
         run: node --experimental-strip-types --test workers/db/src/index.test.ts
+      - name: Remote adapter to Worker integration tests
+        run: node --experimental-strip-types --test workers/db/src/remote.integration.test.ts
       - name: Application typecheck
         run: npx tsc --noEmit --allowImportingTsExtensions
       - name: DB Worker typecheck
