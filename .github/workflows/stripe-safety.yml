@@ -1,0 +1,59 @@
+name: GamingLogoAI Stripe safety
+on:
+  push:
+    branches: [fix/stripe-safety-cloudflare]
+  pull_request:
+    paths:
+      - 'src/pages/api/stripe.ts'
+      - 'src/server/stripe/**'
+      - 'prisma/**'
+      - 'tests/stripe-*.ts'
+      - 'tsconfig.stripe-tests.json'
+      - '.github/workflows/stripe-safety.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: gaminglogoai_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U ci_user -d gaminglogoai_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci
+      GAMING_STRIPE_TEST_DATABASE_URL: postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Create baseline schema and apply only the new receipt migration in disposable PostgreSQL
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$DATABASE_URL" = "postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci"
+          git show 3c7198f02cd3cb49b873dd75e54d570d4ec704b4:prisma/schema.prisma > /tmp/gaming-baseline.prisma
+          npx prisma db push --schema /tmp/gaming-baseline.prisma --skip-generate
+          npx prisma db execute --schema prisma/schema.prisma --file prisma/migrations/20261112120000_add_gaming_stripe_purchase_receipt/migration.sql
+          npx prisma validate
+      - name: Stripe module and test typecheck
+        run: npx tsc --project tsconfig.stripe-tests.json
+      - name: Real signed Web Crypto payloads
+        run: node --experimental-strip-types --test tests/stripe-webhook.test.ts
+      - name: Real PostgreSQL duplicates, concurrency, and rollback
+        run: node --experimental-strip-types --test tests/stripe-purchase.integration.test.ts
+      - name: Whitespace checks
+        run: git diff --check 3c7198f02cd3cb49b873dd75e54d570d4ec704b4
