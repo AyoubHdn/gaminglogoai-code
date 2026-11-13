@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import postgres from "postgres";
 import { PrismaClient } from "@prisma/client";
+import type { AdapterAccount } from "next-auth/adapters";
 
 import { createRemoteNextAuthAdapter } from "../../../src/server/remoteNextAuthAdapter.ts";
 import { createDbRpcHandler } from "./index.ts";
@@ -93,19 +94,12 @@ void test("remote NextAuth adapter crosses the Worker RPC and PostgreSQL boundar
       null,
     );
 
-    const account = {
+    const account: AdapterAccount = {
       id: `${prefix}-account`,
       userId: user.id,
       type: "oauth" as const,
       provider: "google",
       providerAccountId: prefix,
-      refresh_token: null,
-      access_token: null,
-      expires_at: null,
-      token_type: null,
-      scope: null,
-      id_token: null,
-      session_state: null,
     };
     assert.deepEqual(await linkAccount(account), {
       ...account,
