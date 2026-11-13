@@ -154,14 +154,21 @@ export function createPrismaGamingAuthDbService(
 
 type ParsedAccount = AdapterAccount & {
   id: string;
-  refresh_token: string | null;
-  access_token: string | null;
-  expires_at: number | null;
-  token_type: string | null;
-  scope: string | null;
-  id_token: string | null;
-  session_state: string | null;
+  refresh_token?: string;
+  access_token?: string;
+  expires_at?: number;
+  token_type?: string;
+  scope?: string;
+  id_token?: string;
+  session_state?: string;
 };
+
+function optionalString(value: unknown, field: string): string | undefined {
+  if (value === null || value === undefined) return undefined;
+  if (typeof value !== "string")
+    throw new Error(`Remote DB returned invalid ${field}`);
+  return value;
+}
 
 function parseAccount(value: unknown): ParsedAccount {
   if (!isRecord(value))
@@ -183,13 +190,14 @@ function parseAccount(value: unknown): ParsedAccount {
       value.providerAccountId,
       "account providerAccountId",
     ),
-    refresh_token: nullableString(value.refresh_token, "account refresh_token"),
-    access_token: nullableString(value.access_token, "account access_token"),
-    expires_at: typeof value.expires_at === "number" ? value.expires_at : null,
-    token_type: nullableString(value.token_type, "account token_type"),
-    scope: nullableString(value.scope, "account scope"),
-    id_token: nullableString(value.id_token, "account id_token"),
-    session_state: nullableString(value.session_state, "account session_state"),
+    refresh_token: optionalString(value.refresh_token, "account refresh_token"),
+    access_token: optionalString(value.access_token, "account access_token"),
+    expires_at:
+      typeof value.expires_at === "number" ? value.expires_at : undefined,
+    token_type: optionalString(value.token_type, "account token_type"),
+    scope: optionalString(value.scope, "account scope"),
+    id_token: optionalString(value.id_token, "account id_token"),
+    session_state: optionalString(value.session_state, "account session_state"),
   };
 }
 
