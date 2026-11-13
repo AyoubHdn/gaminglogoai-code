@@ -7,28 +7,31 @@ import { createGamingAuthOptions } from "../authOptionsFactory.ts";
 void test("auth options keep Mautic synchronization outside the adapter boundary", async () => {
   const syncCalls: Array<Record<string, unknown>> = [];
   const adapter: Adapter = {
-    getUser: async () => ({
-      id: "user-1",
-      email: "user@example.test",
-      name: "Test User",
-      image: null,
-      emailVerified: null,
-    }),
+    getUser: () =>
+      Promise.resolve({
+        id: "user-1",
+        email: "user@example.test",
+        name: "Test User",
+        image: null,
+        emailVerified: null,
+      }),
   };
   const options = createGamingAuthOptions({
     adapter,
     clientId: "ci-google-client",
     clientSecret: "ci-google-secret",
     secret: "ci-nextauth-secret",
-    getUserForMautic: async () => ({
-      id: "user-1",
-      email: "user@example.test",
-      name: "Test User",
-      gamingCredits: 7,
-      gamingPlan: "Starter",
-    }),
-    syncUserToMautic: async (input) => {
+    getUserForMautic: () =>
+      Promise.resolve({
+        id: "user-1",
+        email: "user@example.test",
+        name: "Test User",
+        gamingCredits: 7,
+        gamingPlan: "Starter",
+      }),
+    syncUserToMautic: (input) => {
       syncCalls.push(input);
+      return Promise.resolve();
     },
   });
 
