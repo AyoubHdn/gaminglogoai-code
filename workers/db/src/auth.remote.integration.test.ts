@@ -107,7 +107,16 @@ void test("remote NextAuth adapter crosses the Worker RPC and PostgreSQL boundar
       id_token: null,
       session_state: null,
     };
-    assert.deepEqual(await linkAccount(account), account);
+    assert.deepEqual(await linkAccount(account), {
+      ...account,
+      refresh_token: undefined,
+      access_token: undefined,
+      expires_at: undefined,
+      token_type: undefined,
+      scope: undefined,
+      id_token: undefined,
+      session_state: undefined,
+    });
     assert.deepEqual(await getUserByAccount(account), user);
 
     const updated = await updateUser({
