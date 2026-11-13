@@ -37,6 +37,7 @@ void test("Worker RPC boundary reads disposable PostgreSQL", async () => {
   const userId = prefix + "-user";
   const otherUserId = prefix + "-other-user";
   const iconId = prefix + "-icon";
+  const newestCommunityCreatedAt = new Date(Date.now() + 60_000);
   try {
     await prisma.user.createMany({
       data: [
@@ -47,7 +48,7 @@ void test("Worker RPC boundary reads disposable PostgreSQL", async () => {
     await prisma.icon.createMany({
       data: [
         { id: iconId, userId, prompt: "EmoteBase: worker", imageKey: "emotes/base/" + userId + "/a.webp", createdAt: new Date("2026-01-02") },
-        { id: prefix + "-other", userId: otherUserId, prompt: "other", createdAt: new Date("2026-01-03") },
+        { id: prefix + "-other", userId: otherUserId, prompt: "other", createdAt: newestCommunityCreatedAt },
       ],
     });
 
