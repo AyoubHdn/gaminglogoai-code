@@ -46,7 +46,13 @@ export function createGamingAuthOptions(options: {
         return session;
       },
       redirect({ url, baseUrl }) {
-        return url.startsWith(baseUrl) ? url : baseUrl;
+        try {
+          return new URL(url).origin === new URL(baseUrl).origin
+            ? url
+            : baseUrl;
+        } catch {
+          return baseUrl;
+        }
       },
     },
     providers: [

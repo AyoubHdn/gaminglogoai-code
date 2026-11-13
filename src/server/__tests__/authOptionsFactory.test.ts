@@ -66,3 +66,29 @@ void test("auth options keep Mautic synchronization outside the adapter boundary
     },
   ]);
 });
+
+void test("auth redirects reject lookalike domains and preserve same-origin destinations", async () => {
+  const options = createGamingAuthOptions({
+    adapter: {},
+    clientId: "ci-google-client",
+    clientSecret: "ci-google-secret",
+    secret: "ci-nextauth-secret",
+    getUserForMautic: () => Promise.resolve(null),
+    syncUserToMautic: () => Promise.resolve(),
+  });
+  const redirect = options.callbacks?.redirect;
+  assert.ok(redirect);
+  const baseUrl = "https://gaminglogoai.com";
+  const sameOrigin = baseUrl + "/name-logo-generator?from=login";
+  assert.equal(await redirect({ url: sameOrigin, baseUrl }), sameOrigin);
+  for (const url of [
+    "https://gaminglogoai.com.attacker.invalid/path",
+    "https://gaminglogoai.com@attacker.invalid/path",
+    "http://gaminglogoai.com/path",
+    "https://attacker.invalid",
+    "not a URL",
+    "/relative-path",
+  ]) {
+    assert.equal(await redirect({ url, baseUrl }), baseUrl);
+  }
+});

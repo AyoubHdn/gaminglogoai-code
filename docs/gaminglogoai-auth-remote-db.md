@@ -23,3 +23,13 @@ step.
 Integration tests require only the disposable CI/local variable
 `GAMING_DB_SERVICE_TEST_DATABASE_URL` and reject non-local or non-
 `gaminglogoai_ci` targets. They do not load production environment files.
+
+The adapter integration suite covers profile credit-field injection, legacy CUID
+lookups, concurrent account-link ownership, session ownership and revocation,
+account unlinking, and user deletion with dependent account/session cleanup.
+Fixtures are removed by their unique synthetic email namespace because new
+remote users receive opaque UUID IDs. These remain Node/PostgreSQL boundary
+tests, not a live OAuth callback or Cloudflare NextAuth entrypoint test.
+
+Redirect callbacks require an exact URL origin match; a hostname that merely
+starts with the configured base URL cannot be used as an external destination.
