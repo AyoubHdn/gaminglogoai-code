@@ -1,3 +1,5 @@
+import { dispatchAuth, isAuthOperation, type AuthOperation } from "./auth.ts";
+
 type DbRow = Record<string, unknown>;
 export type DbQuery = (
   query: string,
@@ -10,7 +12,7 @@ type WorkerEnv = {
   };
 };
 
-type Operation =
+type ReadOperation =
   | "user.getCredits"
   | "user.getHasPurchasedCredits"
   | "icons.getSavedIcons"
@@ -44,7 +46,9 @@ function limitInput(input: unknown): number {
   return Math.min(Math.max(input.limit, 1), 100);
 }
 
-function serializeIcons(rows: ReadonlyArray<DbRow>): Array<Record<string, unknown>> {
+function serializeIcons(
+  rows: ReadonlyArray<DbRow>,
+): Array<Record<string, unknown>> {
   return rows.map((row) => {
     if (
       typeof row.id !== "string" ||
@@ -54,7 +58,10 @@ function serializeIcons(rows: ReadonlyArray<DbRow>): Array<Record<string, unknow
     ) {
       throw new Error("Invalid icon row");
     }
-    const date = row.createdAt instanceof Date ? row.createdAt : new Date(String(row.createdAt));
+    const date =
+      row.createdAt instanceof Date
+        ? row.createdAt
+        : new Date(String(row.createdAt));
     if (Number.isNaN(date.getTime())) throw new Error("Invalid icon date");
     return {
       id: row.id,
@@ -67,10 +74,11 @@ function serializeIcons(rows: ReadonlyArray<DbRow>): Array<Record<string, unknow
 }
 
 async function dispatch(
-  operation: Operation,
+  operation: ReadOperation | AuthOperation,
   input: unknown,
   query: DbQuery,
 ): Promise<unknown> {
+  if (isAuthOperation(operation)) return dispatchAuth(operation, input, query);
   switch (operation) {
     case "user.getCredits": {
       const userId = stringInput(input, "userId");
@@ -128,9 +136,22 @@ export function createDbRpcHandler(query: DbQuery) {
       if (!isRecord(body) || typeof body.operation !== "string") {
         return json({ ok: false, error: { code: "BAD_REQUEST" } }, 400);
       }
-      const data = await dispatch(body.operation as Operation, body.input, query);
+      const data = await dispatch(
+        body.operation as ReadOperation | AuthOperation,
+        body.input,
+        query,
+      );
       return json({ ok: true, data });
-    } catch {
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "AUTH_ACCOUNT_OWNERSHIP_CONFLICT"
+      ) {
+        return json(
+          { ok: false, error: { code: "AUTH_ACCOUNT_OWNERSHIP_CONFLICT" } },
+          409,
+        );
+      }
       return json({ ok: false, error: { code: "DB_READ_FAILED" } }, 500);
     }
   };
