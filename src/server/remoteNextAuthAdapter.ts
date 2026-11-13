@@ -1,6 +1,6 @@
 import type { Adapter } from "next-auth/adapters";
 
-import { createRemoteGamingAuthDbService } from "./authDbService";
+import { createRemoteGamingAuthDbService } from "./authDbService.ts";
 import type { DbServiceBinding } from "./dbService";
 
 /** Worker-safe adapter: it only depends on the DB service binding and next-auth types. */
