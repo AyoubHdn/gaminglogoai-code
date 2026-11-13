@@ -35,7 +35,7 @@ void test("remote auth adapter fails closed without a binding", () => {
 
 void test("remote auth errors do not fall back to Prisma", async () => {
   const adapter = createRemoteNextAuthAdapter({
-    fetch: async () =>
+    fetch: () =>
       new Response(
         JSON.stringify({ ok: false, error: { code: "DB_READ_FAILED" } }),
         {
@@ -45,7 +45,7 @@ void test("remote auth errors do not fall back to Prisma", async () => {
       ),
   });
   await assert.rejects(
-    Promise.resolve(adapter.getUser!("missing")),
+    Promise.resolve(adapter.getUser("missing")),
     /DB_READ_FAILED/,
   );
 });
@@ -65,17 +65,17 @@ void test("remote NextAuth adapter crosses the Worker RPC and PostgreSQL boundar
   const prefix =
     "auth-rpc-" + Date.now() + "-" + Math.random().toString(16).slice(2);
   const adapter = createRemoteNextAuthAdapter(createWorkerBinding());
-  const createUser = adapter.createUser!;
-  const getUser = adapter.getUser!;
-  const getUserByEmail = adapter.getUserByEmail!;
-  const getUserByAccount = adapter.getUserByAccount!;
-  const updateUser = adapter.updateUser!;
-  const linkAccount = adapter.linkAccount!;
-  const createSession = adapter.createSession!;
-  const getSessionAndUser = adapter.getSessionAndUser!;
-  const updateSession = adapter.updateSession!;
-  const createVerificationToken = adapter.createVerificationToken!;
-  const useVerificationToken = adapter.useVerificationToken!;
+  const createUser = adapter.createUser;
+  const getUser = adapter.getUser;
+  const getUserByEmail = adapter.getUserByEmail;
+  const getUserByAccount = adapter.getUserByAccount;
+  const updateUser = adapter.updateUser;
+  const linkAccount = adapter.linkAccount;
+  const createSession = adapter.createSession;
+  const getSessionAndUser = adapter.getSessionAndUser;
+  const updateSession = adapter.updateSession;
+  const createVerificationToken = adapter.createVerificationToken;
+  const useVerificationToken = adapter.useVerificationToken;
   try {
     const user = await createUser({
       email: `${prefix}@example.test`,
