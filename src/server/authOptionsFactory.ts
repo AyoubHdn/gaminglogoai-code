@@ -1,7 +1,22 @@
 import GoogleProvider from "next-auth/providers/google";
 import type { Adapter } from "next-auth/adapters";
-import type { NextAuthOptions } from "next-auth";
+import type { DefaultSession, NextAuthOptions } from "next-auth";
 import type { GamingAuthProfile } from "./authDbService";
+
+const googleProviderFactory = (() => {
+  const moduleValue = GoogleProvider as unknown as { default?: unknown };
+  return (
+    typeof moduleValue.default === "function"
+      ? moduleValue.default
+      : GoogleProvider
+  ) as typeof GoogleProvider;
+})();
+
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user: { id: string } & DefaultSession["user"];
+  }
+}
 
 type MauticSyncInput = {
   email: string;
@@ -35,7 +50,7 @@ export function createGamingAuthOptions(options: {
       },
     },
     providers: [
-      GoogleProvider({
+      googleProviderFactory({
         clientId: options.clientId,
         clientSecret: options.clientSecret,
         authorization: {

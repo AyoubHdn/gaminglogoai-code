@@ -1,0 +1,163 @@
+name: GamingLogoAI auth DB service
+
+on:
+  push:
+    branches:
+      - staging/gaminglogoai-auth-db-b183
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ci_user
+          POSTGRES_PASSWORD: ci_password
+          POSTGRES_DB: gaminglogoai_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ci_user -d gaminglogoai_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci
+      GAMING_DB_SERVICE_TEST_DATABASE_URL: postgresql://ci_user:ci_password@127.0.0.1:5432/gaminglogoai_ci
+      NODE_ENV: test
+      NEXTAUTH_SECRET: ci-nextauth-secret
+      NEXTAUTH_URL: http://127.0.0.1:3000
+      GOOGLE_CLIENT_ID: ci-google-client
+      GOOGLE_CLIENT_SECRET: ci-google-secret
+      REPLICATE_API_TOKEN: ci-replicate-token
+      MOCK_REPLICATE: "true"
+      SECRET_ACCESS_KEY: ci-secret
+      ACCESS_KEY_ID: ci-access-key
+      STRIPE_SECRET_KEY: sk_test_ci
+      HOST_NAME: http://127.0.0.1:3000
+      STRIPE_WEB_HOOK_SECRET: whsec_ci
+      PRICE_ID_STARTER: price_ci_starter
+      PRICE_ID_PRO: price_ci_pro
+      PRICE_ID_ELITE: price_ci_elite
+      MAUTIC_BASE_URL: http://127.0.0.1:9
+      MAUTIC_USERNAME: ci-mautic
+      MAUTIC_PASSWORD: ci-mautic-password
+      CRON_SECRET: ci-cron-secret
+      MYLEAD_SECURITY_KEY: ci-mylead-key
+      IPAPI_KEY: ci-ipapi-key
+      NEXT_PUBLIC_STRIPE_KEY: pk_test_ci
+      NEXT_PUBLIC_AWS_REGION_GAMING: us-east-1
+      NEXT_PUBLIC_S3_BUCKET_NAME_GAMING: gaminglogoai-ci
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+      - name: Check out the pushed commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Verify immutable checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = "staging/gaminglogoai-auth-db-b183"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install pinned dependencies
+        run: npm ci --include=dev
+
+      - name: Generate pinned Prisma client
+        run: npx prisma generate --schema prisma/schema.prisma
+
+      - name: Validate disposable database target
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const names = ["DATABASE_URL", "GAMING_DB_SERVICE_TEST_DATABASE_URL"];
+          for (const name of names) {
+            const value = process.env[name];
+            if (!value) throw new Error(`${name} is missing`);
+            const url = new URL(value);
+            if (url.protocol !== "postgresql:" || url.hostname !== "127.0.0.1" ||
+                url.port !== "5432" || url.pathname !== "/gaminglogoai_ci" ||
+                url.search || url.hash) {
+              throw new Error(`${name} is not the dedicated localhost database`);
+            }
+          }
+          NODE
+          migration_count="$(find prisma/migrations -mindepth 1 -maxdepth 1 -type d | wc -l)"
+          test "$migration_count" = "24"
+
+      - name: Apply only the pinned local migration history
+        run: npx prisma migrate deploy --schema prisma/schema.prisma
+
+      - name: Install Worker dependencies without manifest changes
+        working-directory: workers/db
+        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund
+
+      - name: Auth options and adapter tests
+        run: >-
+          node --experimental-strip-types --test
+          src/server/__tests__/authOptionsFactory.test.ts
+          workers/db/src/auth.remote.integration.test.ts
+
+      - name: Existing DB service tests
+        run: >-
+          node --experimental-strip-types --test
+          src/server/__tests__/dbService.test.ts
+          src/server/__tests__/dbService.remote.test.ts
+          src/server/__tests__/dbService.integration.test.ts
+          workers/db/src/index.test.ts
+          workers/db/src/remote.integration.test.ts
+
+      - name: Application typecheck
+        run: npx tsc --noEmit --allowImportingTsExtensions
+
+      - name: Worker typecheck
+        run: npx tsc --project workers/db/tsconfig.json
+
+      - name: Auth test and Worker boundary typecheck
+        run: >-
+          npx tsc --noEmit --allowImportingTsExtensions --target ES2022
+          --module ESNext --moduleResolution Bundler --strict --skipLibCheck
+          --types node
+          src/server/authDbService.ts
+          src/server/authOptionsFactory.ts
+          src/server/remoteNextAuthAdapter.ts
+          src/server/__tests__/authOptionsFactory.test.ts
+          workers/db/src/index.ts
+          workers/db/src/auth.ts
+          workers/db/src/auth.remote.integration.test.ts
+
+      - name: Focused lint
+        run: >-
+          npx eslint
+          src/server/auth.ts
+          src/server/authDbService.ts
+          src/server/authOptionsFactory.ts
+          src/server/remoteNextAuthAdapter.ts
+          src/server/__tests__/authOptionsFactory.test.ts
+          workers/db/src/index.ts
+          workers/db/src/auth.ts
+          workers/db/src/auth.remote.integration.test.ts
+
+      - name: Next.js production build
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: DB Worker Wrangler dry-run
+        run: npx wrangler@4.148.0 deploy --config workers/db/wrangler.jsonc --dry-run
+
+      - name: Diff check
+        run: git diff --check
