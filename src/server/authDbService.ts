@@ -274,7 +274,7 @@ export function createRemoteGamingAuthDbService(
       );
     },
     getUserByAccount(account) {
-      return call("auth.getUserByAccount", account).then((value) =>
+      return call("auth.getUserByAccount", { account }).then((value) =>
         value === null ? null : parseUser(value),
       );
     },
