@@ -1,4 +1,8 @@
-import type { Adapter } from "next-auth/adapters";
+import type {
+  Adapter,
+  AdapterAccount,
+  AdapterUser,
+} from "next-auth/adapters";
 
 import { createRemoteGamingAuthDbService } from "./authDbService.ts";
 import type { DbServiceBinding } from "./dbService";
@@ -9,10 +13,12 @@ export function createRemoteNextAuthAdapter(
 ): Adapter {
   const db = createRemoteGamingAuthDbService(binding);
   return {
-    createUser: (user) => db.createUser(user),
+    createUser: (user: Omit<AdapterUser, "id">) => db.createUser(user),
     getUser: (id) => db.getUser(id),
     getUserByEmail: (email) => db.getUserByEmail(email),
-    getUserByAccount: (account) => db.getUserByAccount(account),
+    getUserByAccount: (
+      account: Pick<AdapterAccount, "provider" | "providerAccountId">,
+    ) => db.getUserByAccount(account),
     updateUser: (user) => db.updateUser(user),
     deleteUser: (id) => db.deleteUser(id),
     linkAccount: (account) => db.linkAccount(account),
