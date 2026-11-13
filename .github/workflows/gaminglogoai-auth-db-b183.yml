@@ -107,13 +107,13 @@ jobs:
 
       - name: Auth options and adapter tests
         run: >-
-          node --experimental-strip-types --test
+          node --experimental-strip-types --test --test-concurrency=1
           src/server/__tests__/authOptionsFactory.test.ts
           workers/db/src/auth.remote.integration.test.ts
 
       - name: Existing DB service tests
         run: >-
-          node --experimental-strip-types --test
+          node --experimental-strip-types --test --test-concurrency=1
           src/server/__tests__/dbService.test.ts
           src/server/__tests__/dbService.remote.test.ts
           src/server/__tests__/dbService.integration.test.ts
