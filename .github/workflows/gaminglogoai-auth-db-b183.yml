@@ -142,6 +142,7 @@ jobs:
       - name: Focused lint
         run: >-
           npx eslint
+          --parser-options '{"project":["tsconfig.json","workers/db/tsconfig.json"]}'
           src/server/auth.ts
           src/server/authDbService.ts
           src/server/authOptionsFactory.ts

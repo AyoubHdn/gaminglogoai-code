@@ -9,13 +9,13 @@ export function createRemoteNextAuthAdapter(
 ): Adapter {
   const db = createRemoteGamingAuthDbService(binding);
   return {
-    createUser: db.createUser,
-    getUser: db.getUser,
-    getUserByEmail: db.getUserByEmail,
-    getUserByAccount: db.getUserByAccount,
-    updateUser: db.updateUser,
-    deleteUser: db.deleteUser,
-    linkAccount: db.linkAccount,
+    createUser: (user) => db.createUser(user),
+    getUser: (id) => db.getUser(id),
+    getUserByEmail: (email) => db.getUserByEmail(email),
+    getUserByAccount: (account) => db.getUserByAccount(account),
+    updateUser: (user) => db.updateUser(user),
+    deleteUser: (id) => db.deleteUser(id),
+    linkAccount: (account) => db.linkAccount(account),
     unlinkAccount: ({
       provider,
       providerAccountId,
@@ -25,10 +25,10 @@ export function createRemoteNextAuthAdapter(
     }) => db.unlinkAccount(provider, providerAccountId),
     createSession: (session) =>
       db.createSession(session.sessionToken, session.userId, session.expires),
-    getSessionAndUser: db.getSessionAndUser,
-    updateSession: db.updateSession,
-    deleteSession: db.deleteSession,
-    createVerificationToken: db.createVerificationToken,
+    getSessionAndUser: (sessionToken) => db.getSessionAndUser(sessionToken),
+    updateSession: (session) => db.updateSession(session),
+    deleteSession: (sessionToken) => db.deleteSession(sessionToken),
+    createVerificationToken: (token) => db.createVerificationToken(token),
     useVerificationToken: ({ identifier, token }) =>
       db.useVerificationToken(identifier, token),
   };
