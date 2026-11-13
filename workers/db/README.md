@@ -6,9 +6,13 @@ The Vercel application continues to use Prisma by default. The remote adapter is
 
 The Worker uses postgres@3.4.7 with nodejs_compat and Hyperdrive's connectionString. The CI job installs this Worker-only dependency, runs the Worker TypeScript check, packages it with Wrangler dry-run, and executes the RPC handler against disposable PostgreSQL.
 
-The staging resource IDs are intentionally unresolved:
-- proposed Worker name: gaminglogoai-db-staging
+The staging resource IDs for this private candidate are:
+- Worker name: gaminglogoai-db-staging
 - Hyperdrive binding name: HYPERDRIVE
-- Hyperdrive ID: UNRESOLVED_STAGING_HYPERDRIVE_ID
+- Hyperdrive ID: 207b5736cff94597b679eafb1478be35
+- Hyperdrive target: `gaminglogoai-staging-db` at `db.wvwjeqynnnplmcaljfqk.supabase.co:5432/postgres`
+- Hyperdrive caching: disabled
 
-Before any deployment, replace the unresolved ID through a reviewed configuration change and verify the binding with provider read-only inspection. No production Supabase project or live database is used by this prototype.
+The configuration keeps `workers_dev` and `preview_urls` disabled and declares no routes or custom domains. The staging Hyperdrive was verified read-only before this configuration was prepared. This commit does not deploy the Worker.
+
+Before any deployment, re-verify the binding with provider read-only inspection. No production Supabase project or live database is used by this prototype.

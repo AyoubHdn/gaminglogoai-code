@@ -1,12 +1,16 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
+  "account_id": "29d5671996cfe92470361986eda7b679",
   "name": "gaminglogoai-db-staging",
   "main": "src/index.ts",
   "compatibility_date": "2026-11-12",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": false,
-  "preview_urls": false
-  // The staging Hyperdrive binding is intentionally unresolved in this prototype.
-  // Approved ID must be supplied before a real deployment:
-  // HYPERDRIVE_ID = "UNRESOLVED_STAGING_HYPERDRIVE_ID"
+  "preview_urls": false,
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "207b5736cff94597b679eafb1478be35"
+    }
+  ]
 }
