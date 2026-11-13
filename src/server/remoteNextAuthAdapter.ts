@@ -21,7 +21,7 @@ export function createRemoteNextAuthAdapter(
     ) => db.getUserByAccount(account),
     updateUser: (user) => db.updateUser(user),
     deleteUser: (id) => db.deleteUser(id),
-    linkAccount: (account) => db.linkAccount(account),
+    linkAccount: (account: AdapterAccount) => db.linkAccount(account),
     unlinkAccount: ({
       provider,
       providerAccountId,
