@@ -360,9 +360,10 @@ export async function dispatchAuth(
       return null;
     case "auth.createSession": {
       const rows = await query(
-        `INSERT INTO "Session" ("sessionToken", "userId", "expires") VALUES ($1, $2, $3)
+        `INSERT INTO "Session" ("id", "sessionToken", "userId", "expires") VALUES ($1, $2, $3, $4)
          RETURNING ${sessionColumns()}`,
         [
+          crypto.randomUUID(),
           stringInput(input, "sessionToken"),
           stringInput(input, "userId"),
           dateInput(input, "expires"),
