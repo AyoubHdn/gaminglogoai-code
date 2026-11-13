@@ -36,12 +36,14 @@ void test("remote auth adapter fails closed without a binding", () => {
 void test("remote auth errors do not fall back to Prisma", async () => {
   const adapter = createRemoteNextAuthAdapter({
     fetch: () =>
-      new Response(
-        JSON.stringify({ ok: false, error: { code: "DB_READ_FAILED" } }),
-        {
-          status: 500,
-          headers: { "content-type": "application/json" },
-        },
+      Promise.resolve(
+        new Response(
+          JSON.stringify({ ok: false, error: { code: "DB_READ_FAILED" } }),
+          {
+            status: 500,
+            headers: { "content-type": "application/json" },
+          },
+        ),
       ),
   });
   await assert.rejects(
