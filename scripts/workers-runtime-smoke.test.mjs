@@ -11,7 +11,7 @@ test('runtime compatibility date never exceeds the pinned binary date',()=>{
   assert.throws(()=>supportedRuntimeDate('2026-11-12','unknown'));
 });
 
-test('DB fixture rejects unrelated identities and all non-session operations',async()=>{
+test('DB fixture rejects unrelated identities and write operations',async()=>{
   const fixture=createDbFixture();
   for(const [operation,token] of [
     ['auth.getSessionAndUser','unrelated-token'],
@@ -36,7 +36,7 @@ test('local workerd harness exercises sessions with a mocked service binding',as
     await writeFile(path.join(root,'.open-next/assets/fixture.css'),'body{color:black}');
     await writeFile(path.join(root,'wrangler.jsonc'),JSON.stringify({
       name:'gaminglogoai-cloudflare-staging',compatibility_date:'2026-11-12',workers_dev:false,preview_urls:false,
-      vars:{DB_AUTH_BACKEND:'service'},services:[{binding:'DB_SERVICE',service:'gaminglogoai-db-staging'}],
+      vars:{DB_AUTH_BACKEND:'service',DB_READS_BACKEND:'service',CLOUDFLARE_READ_ONLY_MODE:'true'},services:[{binding:'DB_SERVICE',service:'gaminglogoai-db-staging'}],
     }));
     await writeFile(path.join(root,'.ci-runtime/bundle/worker.js'),`
       export default {async fetch(request,env){
@@ -45,13 +45,28 @@ test('local workerd harness exercises sessions with a mocked service binding',as
         if(url.pathname.endsWith('.css'))return env.ASSETS.fetch(request);
         if(url.pathname==='/api/auth/providers')return Response.json({google:{id:'google',callbackUrl:env.NEXTAUTH_URL+'/api/auth/callback/google'}});
         if(url.pathname==='/api/stripe')return new Response(null,{status:405,headers:{allow:'POST'}});
+        const rpc=url.pathname.startsWith('/api/trpc/');
+        const procedure=rpc?url.pathname.slice('/api/trpc/'.length):'';
+        const procedures={
+          'user.getCredits':'user.getCredits','user.getWatermarkStatus':'user.getHasPurchasedCredits',
+          'icons.getIcons':'icons.getSavedIcons','icons.getEmoteBases':'icons.getEmoteBases','icons.getCommunityIcons':'icons.getCommunityIcons',
+        };
+        const db=async(operation,input)=>env.DB_SERVICE.fetch('https://fixture.invalid/rpc',{method:'POST',body:JSON.stringify({operation,input})});
+        if(rpc&&!procedures[procedure])return Response.json({error:{}},{status:404});
         const cookie=request.headers.get('cookie');
-        if(!cookie)return Response.json(null);
-        const sessionToken=cookie.split('=')[1];
+        if(!cookie&&procedure!=='icons.getCommunityIcons')return rpc?Response.json({error:{}},{status:401}):Response.json(null);
+        const sessionToken=cookie?.split('=')[1];
         const call=async operation=>(await env.DB_SERVICE.fetch('https://fixture.invalid/rpc',{method:'POST',body:JSON.stringify({operation,input:{sessionToken}})})).json();
-        const result=await call('auth.getSessionAndUser');
-        if(new Date(result.data.session.expires)<new Date()){
+        const result=cookie?await call('auth.getSessionAndUser'):null;
+        if(result&&new Date(result.data.session.expires)<new Date()){
           await call('auth.deleteSession');return Response.json(null);
+        }
+        if(rpc){
+          const response=await db(procedures[procedure],procedure==='icons.getCommunityIcons'?{limit:50}:{userId:result.data.user.id});
+          if(!response.ok)return Response.json({error:{}},{status:500});
+          let data=(await response.json()).data;
+          if(procedure==='user.getWatermarkStatus')data={watermarked:data!==true};
+          return Response.json({result:{data:{json:data,...(Array.isArray(data)?{meta:{values:{'0.createdAt':['Date']}}}:{})}}});
         }
         return Response.json({user:result.data.user,expires:result.data.session.expires});
       }};
@@ -59,7 +74,7 @@ test('local workerd harness exercises sessions with a mocked service binding',as
     const result=await runWorkersRuntimeSmoke({root});
     assert.equal(result.result,'WORKERS_RUNTIME_SMOKE_PASS',JSON.stringify(result));
     assert.equal(result.outboundAttempts,0);assert.equal(result.realDatabaseUsed,false);
-    assert.equal(result.dbOperations.filter(x=>x==='auth.getSessionAndUser').length,2);
+    assert.ok(result.dbOperations.filter(x=>x==='auth.getSessionAndUser').length>=2);
     assert.equal(result.dbOperations.filter(x=>x==='auth.deleteSession').length,1);
     const worker=path.join(root,'.ci-runtime/bundle/worker.js');
     const original=await readFile(worker,'utf8');

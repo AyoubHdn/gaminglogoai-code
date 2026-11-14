@@ -19,6 +19,8 @@
   ],
   "vars": {
     "DB_AUTH_BACKEND": "service",
+    "DB_READS_BACKEND": "service",
+    "CLOUDFLARE_READ_ONLY_MODE": "true",
     "DATABASE_URL": "postgresql://invalid:invalid@db.invalid:5432/invalid",
     "NODE_ENV": "production",
     "NEXTAUTH_URL": "https://gaminglogoai-cloudflare-staging.hdnstudio.workers.dev",

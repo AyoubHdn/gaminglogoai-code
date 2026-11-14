@@ -1,5 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { shouldWatermarkPurchaseStatus } from "~/server/imageWatermark";
+import { shouldWatermarkPurchaseStatus } from "~/server/watermarkPolicy";
 
 export const userRouter = createTRPCRouter({
   getCredits: protectedProcedure.query(async ({ ctx }) => {

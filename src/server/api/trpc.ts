@@ -16,13 +16,16 @@
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
+import type { PrismaClient } from "@prisma/client";
 
 import { getServerAuthSession } from "~/server/requestAuth";
-import { createPrismaDbService } from "~/server/dbService";
-import { prisma } from "~/server/db";
+import type { GamingDbService } from "~/server/dbService";
+import { createRequestGamingDbService } from "~/server/requestDbService";
 
 type CreateContextOptions = {
   session: Session | null;
+  dbService: GamingDbService;
+  prisma: PrismaClient | null;
 };
 
 /**
@@ -38,8 +41,17 @@ type CreateContextOptions = {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
-    prisma,
-    dbService: createPrismaDbService(prisma),
+    // A guard, never a fake database: accidental legacy access fails explicitly.
+    prisma:
+      opts.prisma ??
+      new Proxy({} as PrismaClient, {
+        get() {
+          throw new Error(
+            "Legacy Prisma access is unavailable in the Worker read-only profile",
+          );
+        },
+      }),
+    dbService: opts.dbService,
   };
 };
 
@@ -53,10 +65,18 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
 
   // Get the session from the server using the getServerSession wrapper function
-  const session = await getServerAuthSession({ req, res });
+  const [session, dbService, prisma] = await Promise.all([
+    getServerAuthSession({ req, res }),
+    createRequestGamingDbService(),
+    process.env.CLOUDFLARE_READ_ONLY_MODE === "true"
+      ? Promise.resolve(null)
+      : import("~/server/db").then((module) => module.prisma),
+  ]);
 
   return createInnerTRPCContext({
     session,
+    dbService,
+    prisma,
   });
 };
 
@@ -114,7 +134,7 @@ export const config = {
   api: {
     bodyParser: {
       sizeLimit: "8mb", // Or "4mb", "8mb", etc. Choose a reasonable limit.
-                        // Should be large enough for your expected base64 image + other JSON data.
+      // Should be large enough for your expected base64 image + other JSON data.
     },
   },
 };

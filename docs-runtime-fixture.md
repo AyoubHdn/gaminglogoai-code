@@ -30,8 +30,9 @@ runtime supplied by Wrangler's installed Miniflare dependency. It does not
 use a Next.js Node server or deploy anything to Cloudflare.
 
 Only explicit dummy bindings reach workerd. The local `DB_SERVICE` fixture
-accepts the two known synthetic session identities and only session lookup
-and expired-session deletion. It does not connect to PostgreSQL/Hyperdrive.
+accepts the known synthetic session identities, session lookup/expiry deletion,
+and the five read operations for the two fixture accounts. It does not connect
+to PostgreSQL/Hyperdrive.
 The ASSETS service reads the real generated assets from disk, with guarded
 paths. A small local front Worker serves matching files first and forwards
 other requests to the actual application Worker, matching the configured
@@ -41,7 +42,9 @@ Global outbound network calls are blocked and cause the test to fail.
 
 Checks cover startup, homepage, one compiled CSS asset, Google provider
 discovery, anonymous session, synthetic authenticated session, expired-session
-revocation, and the Stripe GET method guard. These do not initiate OAuth,
+revocation, authenticated tRPC reads with account isolation and Date metadata,
+anonymous protection, public community reads, remote-service failure handling,
+an unmigrated-route guard, and the Stripe GET method guard. These do not initiate OAuth,
 generate images, make payments, call Mautic, or create real accounts.
 
 The deployed-style config retains its private settings: workers.dev and preview
@@ -56,6 +59,6 @@ behavior at a newer deployment compatibility date.
 
 The existing unsupported-Next-version build override remains explicitly
 recorded in provenance. Real Google login, production-input equality,
-Cloudflare deployment behavior, and Prisma-backed tRPC/generation/CPA routes
+Cloudflare deployment behavior, and unmigrated tRPC writes/generation/CPA routes
 remain unverified by this fixture. Those routes need their own migration and
 runtime validation before live routing changes.

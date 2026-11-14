@@ -8,6 +8,8 @@ const fixtureOrigin = 'https://gaminglogoai-runtime.fixture.invalid';
 const fixtureUserId = 'gla-local-runtime-user';
 const validToken = 'gla-local-runtime-session';
 const expiredToken = 'gla-local-runtime-expired';
+const secondUserId = 'gla-local-runtime-second-user';
+const secondToken = 'gla-local-runtime-second-session';
 
 /** @param {string} compatibilityDate @param {string} workerdVersion */
 export function supportedRuntimeDate(compatibilityDate, workerdVersion) {
@@ -21,29 +23,56 @@ export function createDbFixture() {
   /** @type {string[]} */
   const operations = [];
   let unexpectedCalls = 0;
+  let failReads = false;
+  /** @type {Array<{operation:string,account:string}>} */
+  const reads = [];
   /** @param {unknown} data @param {number=} status */
   const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json'}});
   return {
     operations,
+    reads,
+    /** @param {boolean} value */
+    setReadFailure(value) { failReads=value; },
     get unexpectedCalls() { return unexpectedCalls; },
     /** @param {Request} request */
     async fetch(request) {
-      const body = /** @type {{operation?:unknown,input?:{sessionToken?:unknown}}} */ (await request.json());
+      const body = /** @type {{operation?:unknown,input?:{sessionToken?:unknown,userId?:unknown,limit?:unknown}}} */ (await request.json());
       const operation = body?.operation;
       const token = body?.input?.sessionToken;
-      if (request.method !== 'POST' ||
-          !['auth.getSessionAndUser','auth.deleteSession'].includes(String(operation)) ||
-          ![validToken,expiredToken].includes(String(token)) ||
-          (operation === 'auth.deleteSession' && token !== expiredToken)) {
+      if (request.method !== 'POST') {
         unexpectedCalls++;
         return json({ok:false,error:{code:'FIXTURE_OPERATION_REJECTED'}},403);
       }
-      operations.push(String(operation));
-      if (operation === 'auth.deleteSession') return json({ok:true,data:null});
-      return json({ok:true,data:{
-        session:{sessionToken:token,userId:fixtureUserId,expires:token===expiredToken?'2000-01-01T00:00:00.000Z':'2030-01-01T00:00:00.000Z'},
-        user:{id:fixtureUserId,email:'runtime-fixture@example.invalid',name:'Runtime fixture',image:null,emailVerified:null},
-      }});
+      if (['auth.getSessionAndUser','auth.deleteSession'].includes(String(operation)) &&
+          [validToken,expiredToken,secondToken].includes(String(token)) &&
+          (operation !== 'auth.deleteSession' || token === expiredToken)) {
+        operations.push(String(operation));
+        if (operation === 'auth.deleteSession') return json({ok:true,data:null});
+        const id=token===secondToken?secondUserId:fixtureUserId;
+        return json({ok:true,data:{
+          session:{sessionToken:token,userId:id,expires:token===expiredToken?'2000-01-01T00:00:00.000Z':'2030-01-01T00:00:00.000Z'},
+          user:{id,email:'runtime-fixture@example.invalid',name:'Runtime fixture',image:null,emailVerified:null},
+        }});
+      }
+      const userId=body?.input?.userId;
+      const publicRead=operation==='icons.getCommunityIcons' && body?.input?.limit===50;
+      const scopedRead=['user.getCredits','user.getHasPurchasedCredits','icons.getSavedIcons','icons.getEmoteBases'].includes(String(operation)) && [fixtureUserId,secondUserId].includes(String(userId));
+      if(publicRead||scopedRead){
+        operations.push(String(operation));reads.push({operation:String(operation),account:publicRead?'public':userId===fixtureUserId?'first':'second'});
+        if(failReads)return json({ok:false,error:{code:'FIXTURE_READ_UNAVAILABLE'}},503);
+        if(operation==='user.getCredits')return json({ok:true,data:userId===fixtureUserId?7:29});
+        if(operation==='user.getHasPurchasedCredits')return json({ok:true,data:userId===secondUserId});
+        /** @param {string} owner @param {boolean=} emote */
+        const icon=(owner,emote=false)=>({
+          id:(owner===fixtureUserId?'fixture-a':'fixture-b')+(emote?'-emote':'-icon'),
+          userId:owner,prompt:emote?'EmoteBase: fixture':'Fixture logo',
+          imageKey:emote?`emotes/base/${owner}/fixture.webp`:`icons/${owner}/fixture.webp`,
+          createdAt:'2026-11-12T12:00:00.000Z',
+        });
+        return json({ok:true,data:publicRead?[icon(fixtureUserId),icon(secondUserId)]:[icon(String(userId),operation==='icons.getEmoteBases')]});
+      }
+      unexpectedCalls++;
+      return json({ok:false,error:{code:'FIXTURE_OPERATION_REJECTED'}},403);
     },
   };
 }
@@ -115,6 +144,8 @@ export async function runWorkersRuntimeSmoke(options={}) {
   assert.equal(config.workers_dev,false);
   assert.equal(config.preview_urls,false);
   assert.equal(config.vars.DB_AUTH_BACKEND,'service');
+  assert.equal(config.vars.DB_READS_BACKEND,'service');
+  assert.equal(config.vars.CLOUDFLARE_READ_ONLY_MODE,'true');
   assert.equal(config.services.length,1);
   assert.equal(config.services[0].binding,'DB_SERVICE');
   assert.equal(config.services[0].service,'gaminglogoai-db-staging');
@@ -139,7 +170,7 @@ export async function runWorkersRuntimeSmoke(options={}) {
     compatibilityDateMatches:runtimeDate===config.compatibility_date,
     miniflareVersion:String(miniflareVersion),workerdVersion:String(workerdVersion),
     checks:/** @type {string[]} */([]),requests,
-    dbOperations:fixture.operations,outboundAttempts:0,
+    dbOperations:fixture.operations,dbReads:fixture.reads,outboundAttempts:0,
     realDatabaseUsed:false,googleLoginTested:false,mauticCalled:false,
     generationSubmitted:false,mutationsToLiveResources:false,
     failurePhase:/** @type {string|null} */(null),diagnostic:/** @type {string|null} */(null),
@@ -147,7 +178,7 @@ export async function runWorkersRuntimeSmoke(options={}) {
   let phase='startup';
   // Only explicit dummy bindings reach workerd; Node process credentials are not copied.
   const bindings={
-    NODE_ENV:'production',DB_AUTH_BACKEND:'service',
+    NODE_ENV:'production',DB_AUTH_BACKEND:'service',DB_READS_BACKEND:'service',CLOUDFLARE_READ_ONLY_MODE:'true',
     DATABASE_URL:'postgresql://invalid:invalid@db.invalid:5432/invalid',
     NEXTAUTH_SECRET:'ci-nextauth-secret',NEXTAUTH_URL:fixtureOrigin,HOST_NAME:fixtureOrigin,
     GOOGLE_CLIENT_ID:'ci-google-client',GOOGLE_CLIENT_SECRET:'ci-google-secret',
@@ -185,11 +216,11 @@ export async function runWorkersRuntimeSmoke(options={}) {
   };
   // Miniflare 5 exposes a public converter for the Miniflare 4 options shape.
   const mf=new Miniflare(typeof convertV4MiniflareOptions==='function'?convertV4MiniflareOptions(runtimeOptions):runtimeOptions);
-  /** @param {string} route @param {string=} token @returns {Promise<Response>} */
-  const get=async(route,token)=>{
+  /** @param {string} route @param {string=} token @param {boolean=} allowServerError @returns {Promise<Response>} */
+  const get=async(route,token,allowServerError=false)=>{
     const response=await bounded(mf.dispatchFetch(fixtureOrigin+route,{method:'GET',redirect:'manual',headers:token?{cookie:`__Secure-next-auth.session-token=${token}`}:{}}),30_000,route);
     requests.push({route,status:response.status});
-    if(response.status>=500)throw new Error(`Worker HTTP ${response.status}: ${(await response.text()).slice(0,4000)}`);
+    if(response.status>=500&&!allowServerError)throw new Error(`Worker HTTP ${response.status}: ${(await response.text()).slice(0,4000)}`);
     return response;
   };
   try {
@@ -213,6 +244,43 @@ export async function runWorkersRuntimeSmoke(options={}) {
     const expired=await get('/api/auth/session',expiredToken);assert.equal(expired.status,200);
     const expiredBody=await expired.json();assert.ok(expiredBody===null||(!expiredBody.user&&!expiredBody.error));
     assert.equal(fixture.operations.filter(x=>x==='auth.deleteSession').length,1);result.checks.push(phase);
+    /** @param {string} procedure @param {string=} token @param {unknown=} input */
+    const rpc=async(procedure,token,input)=>{
+      const query=input===undefined?'':'?input='+encodeURIComponent(JSON.stringify({json:input}));
+      const response=await get('/api/trpc/'+procedure+query,token);
+      assert.equal(response.status,200);
+      const body=await response.json();assert.ok(!body.error&&body.result?.data);
+      return body.result.data;
+    };
+    phase='authenticated-trpc-reads';
+    assert.equal((await rpc('user.getCredits',validToken)).json,7);
+    assert.equal((await rpc('user.getWatermarkStatus',validToken)).json.watermarked,true);
+    const saved=await rpc('icons.getIcons',validToken);
+    assert.equal(saved.json.length,1);assert.equal(saved.json[0].userId,fixtureUserId);
+    assert.deepEqual(saved.meta?.values?.['0.createdAt'],['Date']);
+    const emotes=await rpc('icons.getEmoteBases',validToken);
+    assert.equal(emotes.json.length,1);assert.equal(emotes.json[0].id,'fixture-a-emote');
+    assert.deepEqual(emotes.meta?.values?.['0.createdAt'],['Date']);result.checks.push(phase);
+    phase='account-isolation';
+    assert.equal((await rpc('user.getCredits',secondToken)).json,29);
+    assert.equal((await rpc('user.getWatermarkStatus',secondToken)).json.watermarked,false);
+    const secondSaved=await rpc('icons.getIcons',secondToken);
+    assert.equal(secondSaved.json.length,1);assert.equal(secondSaved.json[0].userId,secondUserId);
+    assert.equal((await rpc('user.getCredits',validToken,{userId:secondUserId})).json,7);result.checks.push(phase);
+    phase='anonymous-read-authorization';
+    const before=fixture.reads.length;
+    const denied=await get('/api/trpc/user.getCredits');assert.equal(denied.status,401);
+    assert.equal(fixture.reads.length,before);result.checks.push(phase);
+    phase='public-community-read';
+    const community=await rpc('icons.getCommunityIcons');assert.equal(community.json.length,2);result.checks.push(phase);
+    phase='remote-read-failure';
+    fixture.setReadFailure(true);
+    const failedRead=await get('/api/trpc/user.getCredits',validToken,true);
+    assert.equal(failedRead.status,500);assert.ok((await failedRead.json()).error);
+    fixture.setReadFailure(false);result.checks.push(phase);
+    phase='unmigrated-trpc-route-closed';
+    const unavailable=await get('/api/trpc/checkout.createCheckout',validToken);
+    assert.equal(unavailable.status,404);result.checks.push(phase);
     phase='stripe-method-guard';
     const stripe=await get('/api/stripe');assert.equal(stripe.status,405);assert.match(stripe.headers.get('allow')??'',/POST/i);result.checks.push(phase);
     assert.equal(fixture.unexpectedCalls,0);assert.equal(outboundAttempts,0);

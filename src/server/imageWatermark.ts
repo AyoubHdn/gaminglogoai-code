@@ -3,6 +3,8 @@ import path from "node:path";
 
 import type { PrismaClient } from "@prisma/client";
 import sharp from "sharp";
+import { shouldWatermarkPurchaseStatus } from "./watermarkPolicy";
+export { shouldWatermarkPurchaseStatus } from "./watermarkPolicy";
 
 const WATERMARK_WIDTH_RATIO = 0.28;
 const WATERMARK_MARGIN_RATIO = 0.02;
@@ -18,12 +20,6 @@ function loadWatermarkAsset(): Promise<Buffer> {
   );
 
   return watermarkAssetPromise;
-}
-
-export function shouldWatermarkPurchaseStatus(
-  hasPurchasedCredits: boolean | null | undefined,
-): boolean {
-  return hasPurchasedCredits !== true;
 }
 
 export async function shouldWatermarkUser(
@@ -57,7 +53,9 @@ function buildXmpMetadata(description: string): string {
       xmlns:xmp="http://ns.adobe.com/xap/1.0/"
       xmlns:xmpRights="http://ns.adobe.com/xap/1.0/rights/">
       <dc:creator><rdf:Seq><rdf:li>${CREATOR}</rdf:li></rdf:Seq></dc:creator>
-      <dc:description><rdf:Alt><rdf:li xml:lang="x-default">${escapeXml(description)}</rdf:li></rdf:Alt></dc:description>
+      <dc:description><rdf:Alt><rdf:li xml:lang="x-default">${escapeXml(
+        description,
+      )}</rdf:li></rdf:Alt></dc:description>
       <dc:rights><rdf:Alt><rdf:li xml:lang="x-default">${COPYRIGHT}</rdf:li></rdf:Alt></dc:rights>
       <xmp:CreatorTool>${CREATOR}</xmp:CreatorTool>
       <xmpRights:Marked>True</xmpRights:Marked>
