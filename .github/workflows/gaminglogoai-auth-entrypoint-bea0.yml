@@ -153,6 +153,11 @@ jobs:
         env:
           NODE_ENV: production
 
+      - name: Verify conditional worker dependency traces
+        run: |
+          node --test scripts/check-worker-dependency-traces.test.mjs
+          node scripts/check-worker-dependency-traces.mjs
+
       - name: Build OpenNext Cloudflare application
         run: npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion
         env:

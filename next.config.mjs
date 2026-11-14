@@ -10,6 +10,18 @@
 const config = {
   reactStrictMode: true,
 
+  experimental: {
+    // Next traces Node exports, but OpenNext later selects worker/browser exports.
+    // Include their implementation trees so those conditional exports can bundle.
+    outputFileTracingIncludes: {
+      '/**': [
+        './node_modules/stripe/esm/**/*',
+        './node_modules/jose/dist/browser/**/*',
+        './node_modules/@panva/hkdf/dist/web/**/*',
+      ],
+    },
+  },
+
   eslint: {
     ignoreDuringBuilds: true,
   },
