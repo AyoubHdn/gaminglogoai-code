@@ -1,6 +1,5 @@
 // /pages/api/cpa/cpx/result.ts
-import { getServerSession } from "next-auth";
-import { authOptions } from "~/server/auth";
+import { getServerAuthSession } from "~/server/requestAuth";
 import { prisma } from "~/server/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -8,7 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await getServerSession(req, res, authOptions);
+  const session = await getServerAuthSession({ req, res });
 
   if (!session?.user?.id) {
     return res.status(401).json({ error: "Unauthorized" });

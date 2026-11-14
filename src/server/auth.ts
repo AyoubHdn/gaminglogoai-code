@@ -1,15 +1,12 @@
 import { type GetServerSidePropsContext } from "next";
-import {
-  getServerSession,
-  type NextAuthOptions,
-  type DefaultSession,
-} from "next-auth";
+import { type NextAuthOptions, type DefaultSession } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import { syncUserToMautic } from "~/server/api/routers/mautic-utils";
 import { createGamingAuthOptions } from "~/server/authOptionsFactory";
 import { createPrismaGamingAuthDbService } from "~/server/authDbService";
+import { getServerPageAuthSession } from "~/server/requestAuth";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -39,5 +36,5 @@ export const getServerAuthSession = (ctx: {
   req: GetServerSidePropsContext["req"];
   res: GetServerSidePropsContext["res"];
 }) => {
-  return getServerSession(ctx.req, ctx.res, authOptions);
+  return getServerPageAuthSession(ctx);
 };

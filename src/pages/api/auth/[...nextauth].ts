@@ -1,4 +1,10 @@
 import NextAuth from "next-auth";
-import { authOptions } from "~/server/auth";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { createRequestAuthOptions } from "~/server/requestAuth";
 
-export default NextAuth(authOptions);
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  await NextAuth(req, res, await createRequestAuthOptions());
+}

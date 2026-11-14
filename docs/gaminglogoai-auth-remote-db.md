@@ -12,13 +12,15 @@ updates intentionally whitelist only NextAuth profile fields. Account linking
 uses an insert-if-absent operation followed by an ownership check, and
 verification-token consumption is a single `DELETE ... RETURNING` operation.
 
-The Cloudflare request-entrypoint wiring remains unfinished: the root Worker
-does not yet construct NextAuth with `createRemoteNextAuthAdapter` or route
-NextAuth callbacks to the DB Worker. This commit therefore does not claim live
-Google sign-in or session validation in Cloudflare. A later entrypoint change
-must inject the binding and the remote profile reader into
-`createGamingAuthOptions`; no Vercel behavior should be changed as part of that
-step.
+The application request-entrypoint seam now constructs NextAuth with
+`createRemoteNextAuthAdapter` when the trusted server-only
+`DB_AUTH_BACKEND=service` setting is active. It obtains `DB_SERVICE` from the
+request-scoped OpenNext Cloudflare context and fails closed when the binding is
+absent; Vercel continues to use the Prisma adapter. The NextAuth API route,
+tRPC context, SSR session helper, and CPA API handlers use the same resolver.
+The root OpenNext/Wrangler deployment configuration is not part of this slice,
+so the packaged/deployed Cloudflare route and live Google sign-in/session
+behavior remain unverified. No live OAuth validation is claimed here.
 
 Integration tests require only the disposable CI/local variable
 `GAMING_DB_SERVICE_TEST_DATABASE_URL` and reject non-local or non-
