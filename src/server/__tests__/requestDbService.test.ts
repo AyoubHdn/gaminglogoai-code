@@ -22,12 +22,14 @@ async function withBackend<T>(
 function binding(value: unknown, status = 200) {
   const calls: unknown[] = [];
   const service: DbServiceBinding = {
-    async fetch(_input, init) {
+    fetch(_input, init) {
       calls.push(JSON.parse(String(init?.body)) as unknown);
-      return new Response(JSON.stringify({ ok: true, data: value }), {
-        status,
-        headers: { "content-type": "application/json" },
-      });
+      return Promise.resolve(
+        new Response(JSON.stringify({ ok: true, data: value }), {
+          status,
+          headers: { "content-type": "application/json" },
+        }),
+      );
     },
   };
   return { service, calls };
