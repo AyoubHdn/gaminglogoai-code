@@ -21,7 +21,7 @@
     "DB_AUTH_BACKEND": "service",
     "DATABASE_URL": "postgresql://invalid:invalid@db.invalid:5432/invalid",
     "NODE_ENV": "production",
-    "NEXTAUTH_URL": "https://gaminglogoai-cloudflare-staging.workers.dev",
-    "HOST_NAME": "https://gaminglogoai-cloudflare-staging.workers.dev"
+    "NEXTAUTH_URL": "https://gaminglogoai-cloudflare-staging.hdnstudio.workers.dev",
+    "HOST_NAME": "https://gaminglogoai-cloudflare-staging.hdnstudio.workers.dev"
   }
 }

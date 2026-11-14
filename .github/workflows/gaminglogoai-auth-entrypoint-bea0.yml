@@ -120,6 +120,12 @@ jobs:
           workers/db/src/index.test.ts
           workers/db/src/remote.integration.test.ts
 
+      - name: Runtime harness and artifact fixture tests
+        run: >-
+          node --test
+          scripts/workers-runtime-smoke.test.mjs
+          scripts/package-staging-fixture.test.mjs
+
       - name: Application typecheck
         run: npx tsc --noEmit --allowImportingTsExtensions
 
@@ -159,26 +165,48 @@ jobs:
           node scripts/check-worker-dependency-traces.mjs
 
       - name: Build OpenNext Cloudflare application
+        id: opennext-build
         run: npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion
         env:
           NODE_ENV: production
           DB_AUTH_BACKEND: service
-          NEXTAUTH_URL: https://gaminglogoai-cloudflare-staging.workers.dev
-          HOST_NAME: https://gaminglogoai-cloudflare-staging.workers.dev
+          NEXTAUTH_URL: https://gaminglogoai-cloudflare-staging.hdnstudio.workers.dev
+          HOST_NAME: https://gaminglogoai-cloudflare-staging.hdnstudio.workers.dev
 
       - name: Verify OpenNext bundle layout
         shell: bash
         run: |
-          echo "OpenNext/Cloudflare application packaging: VERIFIED"
           test -s .open-next/worker.js
           test -d .open-next/assets
           test -d .open-next/server-functions
+          echo "OpenNext/Cloudflare application packaging: VERIFIED"
 
       - name: Root Worker Wrangler dry-run
-        run: npx wrangler@4.148.0 deploy --config wrangler.jsonc --dry-run
+        id: root-dry-run
+        run: npx wrangler@4.148.0 deploy --config wrangler.jsonc --dry-run --outdir .ci-runtime/bundle
 
       - name: DB Worker Wrangler dry-run
         run: npx wrangler@4.148.0 deploy --config workers/db/wrangler.jsonc --dry-run
+
+      - name: Local Workers runtime startup and auth smoke test
+        id: runtime-smoke
+        timeout-minutes: 5
+        run: node scripts/workers-runtime-smoke.mjs
+
+      - name: Prepare fixture artifact provenance and content hashes
+        id: fixture-package
+        if: always() && steps.opennext-build.outcome == 'success' && steps.root-dry-run.outcome == 'success'
+        run: node scripts/package-staging-fixture.mjs
+
+      - name: Preserve fixture-only OpenNext artifact
+        if: always() && steps.fixture-package.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gaminglogoai-open-next-staging-fixture-${{ github.sha }}
+          path: .open-next/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Diff check
         run: git diff --check
