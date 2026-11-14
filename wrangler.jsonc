@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "account_id": "29d5671996cfe92470361986eda7b679",
+  "name": "gaminglogoai-cloudflare-staging",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets"
+  },
+  "services": [
+    {
+      "binding": "DB_SERVICE",
+      "service": "gaminglogoai-db-staging"
+    }
+  ],
+  "vars": {
+    "DB_AUTH_BACKEND": "service",
+    "DATABASE_URL": "postgresql://invalid:invalid@db.invalid:5432/invalid",
+    "NODE_ENV": "production",
+    "NEXTAUTH_URL": "https://gaminglogoai-cloudflare-staging.workers.dev",
+    "HOST_NAME": "https://gaminglogoai-cloudflare-staging.workers.dev"
+  }
+}

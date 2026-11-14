@@ -192,6 +192,30 @@ void test("service mode resolves the request-scoped DB_SERVICE binding", async (
   assert.equal(state.prismaLoads.count, 0);
 });
 
+void test("service mode uses the default dependency loader without Prisma import", async () => {
+  const previousBackend = process.env.DB_AUTH_BACKEND;
+  const previousSkipValidation = process.env.SKIP_ENV_VALIDATION;
+  const binding = makeBinding("default-loader");
+  process.env.DB_AUTH_BACKEND = "service";
+  process.env.SKIP_ENV_VALIDATION = "1";
+
+  try {
+    const options = await createRequestAuthOptions({
+      getCloudflareRuntime: () => Promise.resolve({ DB_SERVICE: binding }),
+    });
+    assert.equal(options.session?.strategy, "database");
+    assert.equal(typeof options.adapter?.getUser, "function");
+  } finally {
+    if (previousBackend === undefined) delete process.env.DB_AUTH_BACKEND;
+    else process.env.DB_AUTH_BACKEND = previousBackend;
+    if (previousSkipValidation === undefined) {
+      delete process.env.SKIP_ENV_VALIDATION;
+    } else {
+      process.env.SKIP_ENV_VALIDATION = previousSkipValidation;
+    }
+  }
+});
+
 void test("service mode fails closed for missing binding or context failure", async () => {
   const missingBinding = makeDependencies(() => Promise.resolve({}));
   const contextFailure = makeDependencies(() =>

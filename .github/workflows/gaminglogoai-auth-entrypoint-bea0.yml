@@ -153,12 +153,24 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: OpenNext application packaging status
+      - name: Build OpenNext Cloudflare application
+        run: npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion
+        env:
+          NODE_ENV: production
+          DB_AUTH_BACKEND: service
+          NEXTAUTH_URL: https://gaminglogoai-cloudflare-staging.workers.dev
+          HOST_NAME: https://gaminglogoai-cloudflare-staging.workers.dev
+
+      - name: Verify OpenNext bundle layout
         shell: bash
         run: |
-          echo "OpenNext/Cloudflare application packaging: UNVERIFIED"
-          echo "A successful Next.js build does not validate a Cloudflare bundle."
-          test ! -f wrangler.jsonc
+          echo "OpenNext/Cloudflare application packaging: VERIFIED"
+          test -s .open-next/worker.js
+          test -d .open-next/assets
+          test -d .open-next/server-functions
+
+      - name: Root Worker Wrangler dry-run
+        run: npx wrangler@4.148.0 deploy --config wrangler.jsonc --dry-run
 
       - name: DB Worker Wrangler dry-run
         run: npx wrangler@4.148.0 deploy --config workers/db/wrangler.jsonc --dry-run

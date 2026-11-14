@@ -51,19 +51,15 @@ async function loadDefaultRequestAuthDependencies(): Promise<RequestAuthDependen
   const [
     { getCloudflareContext },
     { env },
-    { syncUserToMautic },
     authDbService,
     authOptionsFactory,
     remoteNextAuthAdapter,
-    legacyAuth,
   ] = await Promise.all([
     import("@opennextjs/cloudflare"),
     import("../env.mjs"),
-    import("./api/routers/mautic-utils"),
     import("./authDbService.ts"),
     import("./authOptionsFactory.ts"),
     import("./remoteNextAuthAdapter.ts"),
-    import("./auth.ts"),
   ]);
 
   return {
@@ -76,13 +72,18 @@ async function loadDefaultRequestAuthDependencies(): Promise<RequestAuthDependen
       const context = await getCloudflareContext({ async: true });
       return context.env as AuthRuntime;
     },
-    getPrismaAuthOptions: () => Promise.resolve(legacyAuth.authOptions),
+    getPrismaAuthOptions: async () => (await import("./auth.ts")).authOptions,
     createRemoteGamingAuthDbService:
       authDbService.createRemoteGamingAuthDbService,
     createRemoteNextAuthAdapter:
       remoteNextAuthAdapter.createRemoteNextAuthAdapter,
     createGamingAuthOptions: authOptionsFactory.createGamingAuthOptions,
-    syncUserToMautic,
+    syncUserToMautic: async (input, brand) => {
+      const { syncUserToMautic } = await import(
+        "./api/routers/mautic-utils.ts"
+      );
+      return syncUserToMautic(input, brand);
+    },
     getServerSession,
   };
 }
