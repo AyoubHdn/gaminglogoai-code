@@ -33,7 +33,10 @@ Only explicit dummy bindings reach workerd. The local `DB_SERVICE` fixture
 accepts the two known synthetic session identities and only session lookup
 and expired-session deletion. It does not connect to PostgreSQL/Hyperdrive.
 The ASSETS service reads the real generated assets from disk, with guarded
-paths; it is a local service fixture, not Cloudflare's deployed asset router.
+paths. A small local front Worker serves matching files first and forwards
+other requests to the actual application Worker, matching the configured
+asset-first boundary. This is a local platform fixture, not Cloudflare's
+deployed asset router.
 Global outbound network calls are blocked and cause the test to fail.
 
 Checks cover startup, homepage, one compiled CSS asset, Google provider

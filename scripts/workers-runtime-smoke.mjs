@@ -133,7 +133,7 @@ export async function runWorkersRuntimeSmoke(options={}) {
   const result={
     result:'WORKERS_RUNTIME_SMOKE_STOPPED',
     fixtureOnly:true,deployable:false,
-    assetsBackend:'generated-files-local-service-fixture',
+    assetsBackend:'generated-files-local-platform-fixture',
     deploymentCompatibilityDate:String(config.compatibility_date),
     runtimeCompatibilityDate:runtimeDate,
     compatibilityDateMatches:runtimeDate===config.compatibility_date,
@@ -158,14 +158,30 @@ export async function runWorkersRuntimeSmoke(options={}) {
     CRON_SECRET:'ci-cron-secret',MYLEAD_SECURITY_KEY:'ci-mylead-key',IPAPI_KEY:'ci-ipapi-key',
     NEXT_PUBLIC_STRIPE_KEY:'pk_test_ci',NEXT_PUBLIC_AWS_REGION_GAMING:'us-east-1',NEXT_PUBLIC_S3_BUCKET_NAME_GAMING:'gaminglogoai-ci',
   };
-  const runtimeOptions={
-    host:'127.0.0.1',port:0,cf:false,log:new Log(LogLevel.ERROR),
+  const applicationOptions={
     name:'gaminglogoai-local-runtime-fixture',modules,modulesRoot:path.dirname(bundle),
     compatibilityDate:runtimeDate,compatibilityFlags:['nodejs_compat'],
     bindings,
     serviceBindings:{DB_SERVICE:/** @param {Request} request */(request)=>fixture.fetch(request),ASSETS:createAssetFixture(assets)},
     outboundService:()=>{outboundAttempts++;return new Response('Outbound network blocked by local fixture',{status:502});},
+  };
+  // Deployed Workers assets run ahead of the user Worker by default. Simulate
+  // that boundary locally rather than requiring Next's handler to serve CSS.
+  const runtimeOptions={
+    host:'127.0.0.1',port:0,cf:false,log:new Log(LogLevel.ERROR),
     cachePersist:false,kvPersist:false,d1Persist:false,r2Persist:false,durableObjectsPersist:false,
+    workers:[{
+      name:'gaminglogoai-local-assets-front',compatibilityDate:runtimeDate,compatibilityFlags:['nodejs_compat'],
+      modules:[{type:'ESModule',path:path.join(path.dirname(bundle),'fixture-assets-front.mjs'),contents:`
+        export default {async fetch(request,env){
+          const asset=await env.ASSETS.fetch(request);
+          return asset.status===404?env.APP.fetch(request):asset;
+        }};
+      `}],
+      modulesRoot:path.dirname(bundle),
+      serviceBindings:{APP:'gaminglogoai-local-runtime-fixture',ASSETS:createAssetFixture(assets)},
+      outboundService:()=>{outboundAttempts++;return new Response('Outbound network blocked by local fixture',{status:502});},
+    },applicationOptions],
   };
   // Miniflare 5 exposes a public converter for the Miniflare 4 options shape.
   const mf=new Miniflare(typeof convertV4MiniflareOptions==='function'?convertV4MiniflareOptions(runtimeOptions):runtimeOptions);
