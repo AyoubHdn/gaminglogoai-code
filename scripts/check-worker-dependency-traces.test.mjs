@@ -12,6 +12,7 @@ async function fixture() {
     jose: ['node_modules/jose/dist/browser/index.js', 'node_modules/jose/dist/browser/lib/crypto.js'],
     hkdf: ['node_modules/@panva/hkdf/dist/web/index.js', 'node_modules/@panva/hkdf/dist/web/runtime/hkdf.js'],
   };
+  /** @type {Array<[string, Array<keyof typeof trees>]>} */
   const requirements = [
     ['api/stripe.js.nft.json', ['stripe']],
     ['api/trpc/[trpc].js.nft.json', ['stripe']],
@@ -54,7 +55,7 @@ test('a traced entrypoint with a missing transitive implementation is rejected',
   const f = await fixture();
   try {
     const trace = path.join(f.root, '.next/server/pages/api/auth/[...nextauth].js.nft.json');
-    const value = JSON.parse(await readFile(trace,'utf8'));
+    const value = /** @type {{version:number, files:string[]}} */ (JSON.parse(await readFile(trace,'utf8')));
     value.files = value.files.filter(file => !file.endsWith('runtime/hkdf.js'));
     await writeFile(trace,JSON.stringify(value));
     await assert.rejects(checkWorkerDependencyTraces(f.root), /runtime[/\\]hkdf.js/);
@@ -64,7 +65,9 @@ test('a traced entrypoint with a missing transitive implementation is rejected',
 test('an entrypoint missing from the installed package is rejected', async () => {
   const f = await fixture();
   try {
-    await rm(path.join(f.root, f.trees.stripe[0]));
+    const entrypoint = f.trees.stripe[0];
+    assert.ok(entrypoint);
+    await rm(path.join(f.root, entrypoint));
     await assert.rejects(checkWorkerDependencyTraces(f.root), /ENOENT/);
   } finally { await f.cleanup(); }
 });

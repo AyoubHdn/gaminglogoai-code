@@ -17,6 +17,7 @@ const dependencyTrees = {
   },
 };
 
+/** @type {Array<[string, Array<keyof typeof dependencyTrees>]>} */
 const routeRequirements = [
   ['api/stripe.js.nft.json', ['stripe']],
   ['api/trpc/[trpc].js.nft.json', ['stripe']],
@@ -24,6 +25,7 @@ const routeRequirements = [
   ['api/auth/[...nextauth].js.nft.json', ['jose', 'hkdf']],
 ];
 
+/** @param {string} directory @returns {Promise<string[]>} */
 async function javascriptFiles(directory) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -36,6 +38,7 @@ async function javascriptFiles(directory) {
 
 export async function checkWorkerDependencyTraces(root = process.cwd()) {
   root = path.resolve(root);
+  /** @type {Map<string, string[]>} */
   const runtimeFiles = new Map();
   for (const [name, tree] of Object.entries(dependencyTrees)) {
     const directory = path.join(root, tree.directory);
@@ -49,13 +52,16 @@ export async function checkWorkerDependencyTraces(root = process.cwd()) {
   let runtimeFilesChecked = 0;
   for (const [route, dependencies] of routeRequirements) {
     const tracePath = path.join(root, '.next/server/pages', route);
-    const trace = JSON.parse(await readFile(tracePath, 'utf8'));
+    const trace = /** @type {{files?: unknown}} */ (JSON.parse(await readFile(tracePath, 'utf8')));
     if (!Array.isArray(trace.files) || !trace.files.every(file => typeof file === 'string')) {
       throw new Error(`Invalid dependency trace: ${route}`);
     }
-    const traced = new Set(trace.files.map(file => path.resolve(path.dirname(tracePath), file)));
+    const files = /** @type {string[]} */ (trace.files);
+    const traced = new Set(files.map(file => path.resolve(path.dirname(tracePath), file)));
     for (const dependency of dependencies) {
-      for (const file of runtimeFiles.get(dependency)) {
+      const implementations = runtimeFiles.get(dependency);
+      if (!implementations) throw new Error(`Missing implementation tree: ${dependency}`);
+      for (const file of implementations) {
         if (!traced.has(file)) {
           throw new Error(`Worker implementation missing from ${route}: ${path.relative(root, file)}`);
         }
