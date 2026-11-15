@@ -7,14 +7,14 @@ import {pathToFileURL} from 'node:url';
 
 const metadataFiles=new Set(['content-manifest.json','build-provenance.json','runtime-smoke-report.json']);
 /** @param {string} file @returns {Promise<string>} */
-async function digest(file){
+export async function digest(file){
   const hash=createHash('sha256');
   for await(const chunk of createReadStream(file))hash.update(chunk);
   return hash.digest('hex');
 }
 
 /** @param {string} directory @param {string} root @returns {Promise<Array<{path:string,size:number,sha256:string}>>} */
-async function manifest(directory,root){
+export async function manifest(directory,root){
   /** @type {Array<{path:string,size:number,sha256:string}>} */
   const entries=[];
   for(const entry of await readdir(directory,{withFileTypes:true})){
@@ -89,3 +89,4 @@ if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1]
     console.log(JSON.stringify(await packageStagingFixture({root:process.cwd(),sourceSha,runId:process.env.GITHUB_RUN_ID??'',runAttempt:process.env.GITHUB_RUN_ATTEMPT??'',workflowRef:process.env.GITHUB_WORKFLOW_REF??''})));
   }catch(error){console.error(error instanceof Error?error.message:'Fixture packaging failed');process.exitCode=1;}
 }
+

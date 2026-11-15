@@ -308,3 +308,15 @@ void test("API and SSR session helpers pass resolved options to NextAuth", async
   assert.equal(state.sessionCalls[1]?.res, pageRes);
   assert.equal(state.sessionCalls[1]?.options, state.serviceOptions);
 });
+
+
+void test("request auth forwards only the trusted server external-sync selector", async () => {
+  const binding = makeBinding("staging-sync-disabled");
+  const state = makeDependencies(() => Promise.resolve({ DB_SERVICE: binding }));
+  state.dependencies.config.AUTH_EXTERNAL_SYNC_MODE = "disabled";
+  await withBackend("service", async () => {
+    await createRequestAuthOptions(state.dependencies);
+  });
+  assert.equal(state.optionInputs[0]?.externalSyncMode, "disabled");
+  assert.equal(state.prismaLoads.count, 0);
+});

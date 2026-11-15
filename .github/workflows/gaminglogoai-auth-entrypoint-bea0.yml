@@ -31,6 +31,7 @@ jobs:
       DB_AUTH_BACKEND: prisma
       DB_READS_BACKEND: prisma
       CLOUDFLARE_READ_ONLY_MODE: "false"
+      AUTH_EXTERNAL_SYNC_MODE: enabled
       NEXTAUTH_SECRET: ci-nextauth-secret
       NEXTAUTH_URL: http://127.0.0.1:3000
       GOOGLE_CLIENT_ID: ci-google-client
@@ -129,6 +130,8 @@ jobs:
           node --test
           scripts/workers-runtime-smoke.test.mjs
           scripts/package-staging-fixture.test.mjs
+          scripts/package-staging-auth.test.mjs
+          workers/staging-auth/profile.test.mjs
 
       - name: Application typecheck
         run: npx tsc --noEmit --allowImportingTsExtensions
@@ -182,6 +185,7 @@ jobs:
           DB_AUTH_BACKEND: service
           DB_READS_BACKEND: service
           CLOUDFLARE_READ_ONLY_MODE: "true"
+          AUTH_EXTERNAL_SYNC_MODE: disabled
           NEXTAUTH_URL: https://gaminglogoai-cloudflare-staging.hdnstudio.workers.dev
           HOST_NAME: https://gaminglogoai-cloudflare-staging.hdnstudio.workers.dev
 
@@ -220,5 +224,28 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Prepare the auth-only staging candidate
+        run: node scripts/package-staging-auth.mjs prepare
+
+      - name: Auth-only Worker Wrangler dry-run
+        run: npx wrangler@4.148.0 deploy --config wrangler.auth-staging.jsonc --dry-run --outdir .ci-auth-runtime/bundle
+
+      - name: Actual workerd Google OAuth fixture round trip
+        timeout-minutes: 5
+        run: node scripts/staging-auth-runtime-smoke.mjs
+
+      - name: Verify auth candidate provenance and complete content manifest
+        run: node scripts/package-staging-auth.mjs finalize
+
+      - name: Preserve the auth-only staging candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: gaminglogoai-staging-google-auth-candidate-${{ github.sha }}
+          path: .staging-auth/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Diff check
         run: git diff --check
+

@@ -26,6 +26,7 @@ type AuthConfig = {
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
   NEXTAUTH_SECRET: string | undefined;
+  AUTH_EXTERNAL_SYNC_MODE?: "enabled" | "disabled";
 };
 
 export type RequestAuthDependencies = {
@@ -67,6 +68,7 @@ async function loadDefaultRequestAuthDependencies(): Promise<RequestAuthDependen
       GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID,
       GOOGLE_CLIENT_SECRET: env.GOOGLE_CLIENT_SECRET,
       NEXTAUTH_SECRET: env.NEXTAUTH_SECRET,
+      AUTH_EXTERNAL_SYNC_MODE: env.AUTH_EXTERNAL_SYNC_MODE,
     },
     getCloudflareRuntime: async () => {
       const context = await getCloudflareContext({ async: true });
@@ -122,6 +124,7 @@ function createOptionsForService(
     clientId: dependencies.config.GOOGLE_CLIENT_ID,
     clientSecret: dependencies.config.GOOGLE_CLIENT_SECRET,
     secret: dependencies.config.NEXTAUTH_SECRET,
+    externalSyncMode: dependencies.config.AUTH_EXTERNAL_SYNC_MODE,
     syncUserToMautic: async (input, brand) =>
       dependencies.syncUserToMautic(
         {
@@ -188,3 +191,4 @@ export async function getServerPageAuthSession(
     await createRequestAuthOptions(dependencies),
   );
 }
+

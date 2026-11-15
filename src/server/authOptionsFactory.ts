@@ -36,8 +36,13 @@ export function createGamingAuthOptions(options: {
   clientSecret: string;
   secret: string | undefined;
   syncUserToMautic: MauticSync;
+  externalSyncMode?: "enabled" | "disabled";
   getUserForMautic: (id: string) => Promise<GamingAuthProfile | null>;
 }): NextAuthOptions {
+  const externalSyncMode = options.externalSyncMode ?? "enabled";
+  if (externalSyncMode !== "enabled" && externalSyncMode !== "disabled") {
+    throw new Error("Unsupported auth external synchronization mode");
+  }
   return {
     adapter: options.adapter,
     callbacks: {
@@ -71,6 +76,11 @@ export function createGamingAuthOptions(options: {
     ],
     secret: options.secret,
     debug: false,
+    logger: externalSyncMode === "disabled" ? {
+      error(code) { console.error("Staging auth error", code); },
+      warn(code) { console.warn("Staging auth warning", code); },
+      debug() {},
+    } : undefined,
     session: { strategy: "database" },
     useSecureCookies: true,
     cookies: {
@@ -81,7 +91,7 @@ export function createGamingAuthOptions(options: {
     },
     events: {
       async signIn({ user }) {
-        if (!user.email) return;
+        if (externalSyncMode === "disabled" || !user.email) return;
         try {
           const latestUser = await options.getUserForMautic(user.id);
           if (!latestUser) return;
@@ -99,7 +109,7 @@ export function createGamingAuthOptions(options: {
         }
       },
       async createUser({ user }) {
-        if (!user.email) return;
+        if (externalSyncMode === "disabled" || !user.email) return;
         try {
           await options.syncUserToMautic(
             {
@@ -117,3 +127,4 @@ export function createGamingAuthOptions(options: {
     },
   };
 }
+

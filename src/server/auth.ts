@@ -21,6 +21,7 @@ export const authOptions: NextAuthOptions = createGamingAuthOptions({
   clientId: env.GOOGLE_CLIENT_ID,
   clientSecret: env.GOOGLE_CLIENT_SECRET,
   secret: env.NEXTAUTH_SECRET,
+  externalSyncMode: env.AUTH_EXTERNAL_SYNC_MODE,
   syncUserToMautic: async (input, brand) =>
     syncUserToMautic(
       {
@@ -38,3 +39,4 @@ export const getServerAuthSession = (ctx: {
 }) => {
   return getServerPageAuthSession(ctx);
 };
+

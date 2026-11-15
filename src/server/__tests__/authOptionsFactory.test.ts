@@ -134,3 +134,36 @@ void test("session handling preserves the database user id and secure cookie", a
   assert.equal(sessionCookie.options?.httpOnly, true);
   assert.equal(sessionCookie.options?.secure, true);
 });
+
+
+void test("disabled staging synchronization makes no Mautic profile read or provider call", async () => {
+  let profileReads = 0;
+  let syncCalls = 0;
+  const adapter: Adapter = {};
+  const options = createGamingAuthOptions({
+    adapter,
+    clientId: "ci-google-client",
+    clientSecret: "ci-google-secret",
+    secret: "ci-nextauth-secret",
+    externalSyncMode: "disabled",
+    getUserForMautic: () => { profileReads++; return Promise.resolve(null); },
+    syncUserToMautic: () => { syncCalls++; return Promise.resolve(); },
+  });
+  assert.equal(options.adapter, adapter);
+  assert.equal(options.providers.length, 1);
+  assert.equal(options.session?.strategy, "database");
+  assert.ok(options.events?.createUser);
+  assert.ok(options.events?.signIn);
+  await options.events.createUser({user: {id: "staging-user", email: "fixture@example.invalid"}});
+  await options.events.signIn({user: {id: "staging-user", email: "fixture@example.invalid"}, account: null});
+  assert.equal(profileReads, 0);
+  assert.equal(syncCalls, 0);
+});
+
+void test("unsupported auth sync modes reject before any event can run", () => {
+  assert.throws(() => createGamingAuthOptions({
+    adapter: {}, clientId: "ci-google-client", clientSecret: "ci-google-secret",
+    secret: "ci-nextauth-secret", externalSyncMode: "invalid" as "disabled",
+    getUserForMautic: () => Promise.resolve(null), syncUserToMautic: () => Promise.resolve(),
+  }), /Unsupported auth external synchronization mode/);
+});
