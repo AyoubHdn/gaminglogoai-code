@@ -116,13 +116,15 @@ void test("remote NextAuth adapter crosses the Worker RPC and PostgreSQL boundar
     );
 
     const account: AdapterAccount = {
-      id: `${prefix}-account`,
       userId: user.id,
       type: "oauth" as const,
       provider: "google",
       providerAccountId: prefix,
     };
-    assert.deepEqual(await linkAccount(account), {
+    const linked = await linkAccount(account);
+    assert.ok("id" in linked && typeof linked.id === "string");
+    assert.deepEqual(linked, {
+      id: linked.id,
       ...account,
       refresh_token: undefined,
       access_token: undefined,
