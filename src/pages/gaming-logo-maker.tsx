@@ -257,6 +257,7 @@ useEffect(() => {
     }
     const finalPrompt = `${form.basePrompt.replace(/(''Text''|'Text'|"Text"|`Text`|\[Text\]|\[USER TEXT\])/gi, form.name.trim())}, gaming logo, esports emblem, vector, vibrant, dynamic, clean background, official game art`;
     triggerGenerateIcon({
+      requestId: crypto.randomUUID(),
       prompt: finalPrompt, numberOfImages: parseInt(form.numberofImages, 10),
       aspectRatio: selectedAspectRatio, model: selectedModel,
     });

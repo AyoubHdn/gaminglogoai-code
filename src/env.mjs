@@ -8,6 +8,7 @@ const server = z.object({
   DATABASE_URL: z.string().url(),
   DB_AUTH_BACKEND: z.enum(["prisma", "service"]).default("prisma"),
   AUTH_EXTERNAL_SYNC_MODE: z.enum(["enabled", "disabled"]).default("enabled"),
+  DB_GENERATION_BACKEND: z.enum(["legacy", "prisma", "service"]).default("legacy"),
   DB_READS_BACKEND: z.enum(["prisma", "service"]).default("prisma"),
   CLOUDFLARE_READ_ONLY_MODE: z.enum(["true", "false"]).default("false"),
   NODE_ENV: z.enum(["development", "test", "production"]),
@@ -64,6 +65,7 @@ const processEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   DB_AUTH_BACKEND: process.env.DB_AUTH_BACKEND,
   DB_READS_BACKEND: process.env.DB_READS_BACKEND,
+  DB_GENERATION_BACKEND: process.env.DB_GENERATION_BACKEND,
   AUTH_EXTERNAL_SYNC_MODE: process.env.AUTH_EXTERNAL_SYNC_MODE,
   CLOUDFLARE_READ_ONLY_MODE: process.env.CLOUDFLARE_READ_ONLY_MODE,
   NODE_ENV: process.env.NODE_ENV,
@@ -138,4 +140,3 @@ if (!!process.env.SKIP_ENV_VALIDATION == false) {
 }
 
 export { env };
-

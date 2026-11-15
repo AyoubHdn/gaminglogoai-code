@@ -966,6 +966,7 @@ export function StudioLogoFunnel({
 
     setImages([]);
     generateIcon.mutate({
+      requestId: crypto.randomUUID(),
       prompt: finalPrompt,
       numberOfImages: state.numberOfImages,
       aspectRatio: state.selectedAspectRatio,

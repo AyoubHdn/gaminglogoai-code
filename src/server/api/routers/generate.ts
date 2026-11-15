@@ -16,6 +16,9 @@ import {
   finalizeGeneratedImage,
   shouldWatermarkPurchaseStatus,
 } from "~/server/imageWatermark";
+import { createRequestGenerationDbService } from "~/server/generation/requestService";
+import { runLogoGeneration } from "~/server/generation/runLogo";
+import { GenerationError } from "~/server/generation/contract";
 import { withCreditTransaction } from "~/server/lib/creditTransaction";
 
 const s3 = new AWS.S3({
@@ -113,6 +116,7 @@ export const generateRouter = createTRPCRouter({
   generateIcon: protectedProcedure
     .input(
       z.object({
+        requestId: z.string().uuid().optional(),
         prompt: z.string(),
         numberOfImages: z.number().min(1).max(10),
         aspectRatio: z.string().optional(),
@@ -120,6 +124,85 @@ export const generateRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const generationService = await createRequestGenerationDbService();
+      if (generationService) {
+        if (!input.requestId)
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "A generation request ID is required",
+          });
+        try {
+          const completed = await runLogoGeneration(
+            {
+              userId: ctx.session.user.id,
+              requestId: input.requestId,
+              prompt: input.prompt,
+              numberOfImages: input.numberOfImages,
+              model: input.model,
+              aspectRatio: input.aspectRatio ?? "1:1",
+            },
+            {
+              service: generationService,
+              generate: (request) =>
+                generateIcon(
+                  request.prompt,
+                  request.numberOfImages,
+                  request.aspectRatio,
+                  request.model,
+                ),
+              async upload(icon, base64, shouldWatermark) {
+                const image = await finalizeGeneratedImage(
+                  Buffer.from(base64, "base64"),
+                  { shouldWatermark, toolType: "Gaming logo" },
+                );
+                await s3
+                  .putObject({
+                    Bucket: BUCKET_NAME,
+                    Body: image,
+                    Key: icon.id,
+                    ContentType: "image/png",
+                  })
+                  .promise();
+              },
+              async sync(reservation) {
+                if (
+                  env.AUTH_EXTERNAL_SYNC_MODE === "disabled" ||
+                  !reservation.email
+                )
+                  return;
+                await syncUserToMautic(
+                  {
+                    email: reservation.email,
+                    name: reservation.name,
+                    brand_specific_credits: reservation.credits,
+                  },
+                  "gaminglogoai",
+                );
+              },
+            },
+          );
+          return completed.icons.map((icon) => ({
+            imageUrl: `https://${BUCKET_NAME}.s3.${env.NEXT_PUBLIC_AWS_REGION_GAMING}.amazonaws.com/${icon.id}`,
+            watermarked: completed.shouldWatermark,
+          }));
+        } catch (error) {
+          if (error instanceof GenerationError) {
+            throw new TRPCError({
+              code:
+                error.code === "GENERATION_BAD_INPUT" ||
+                error.code === "GENERATION_INSUFFICIENT_CREDITS"
+                  ? "BAD_REQUEST"
+                  : "CONFLICT",
+              message:
+                error.code === "GENERATION_INSUFFICIENT_CREDITS"
+                  ? "Not enough gaming credits"
+                  : error.code,
+            });
+          }
+          throw error;
+        }
+      }
+      // Legacy Vercel remains the default until the new migration/backend is explicitly enabled.
       // Define credit costs
       const modelConfig = {
         credits: LOGO_MODEL_CREDITS[input.model],

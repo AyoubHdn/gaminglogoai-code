@@ -100,7 +100,7 @@ jobs:
           }
           NODE
           migration_count="$(find prisma/migrations -mindepth 1 -maxdepth 1 -type d | wc -l)"
-          test "$migration_count" = "24"
+          test "$migration_count" = "25"
 
       - name: Apply only the pinned local migration history
         run: npx prisma migrate deploy --schema prisma/schema.prisma
@@ -124,6 +124,12 @@ jobs:
           src/server/__tests__/dbService.remote.test.ts
           workers/db/src/index.test.ts
           workers/db/src/remote.integration.test.ts
+
+      - name: Generation ledger and orchestration integration tests
+        run: >-
+          node --experimental-strip-types --test --test-concurrency=1
+          src/server/__tests__/generation.test.ts
+          workers/db/src/generation.remote.integration.test.ts
 
       - name: Runtime harness and artifact fixture tests
         run: >-
@@ -149,6 +155,13 @@ jobs:
           src/pages/api/cpa/unlock.ts
           src/pages/api/cpa/cpx/unlock.ts
           src/pages/api/cpa/cpx/result.ts
+          src/server/generation/contract.ts
+          src/server/generation/sqlService.ts
+          src/server/generation/dbService.ts
+          src/server/generation/requestService.ts
+          src/server/generation/runLogo.ts
+          src/server/__tests__/generation.test.ts
+          workers/db/src/generation.remote.integration.test.ts
           src/server/auth.ts
           src/server/authRuntime.ts
           src/server/requestAuth.ts
@@ -248,4 +261,3 @@ jobs:
 
       - name: Diff check
         run: git diff --check
-

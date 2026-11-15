@@ -1,3 +1,8 @@
+import { GenerationError } from "../../../src/server/generation/contract.ts";
+import {
+  createSqlGenerationDbService,
+  type GenerationTransaction,
+} from "../../../src/server/generation/sqlService.ts";
 import { dispatchAuth, isAuthOperation, type AuthOperation } from "./auth.ts";
 
 type DbRow = Record<string, unknown>;
@@ -125,7 +130,10 @@ async function dispatch(
   }
 }
 
-export function createDbRpcHandler(query: DbQuery) {
+export function createDbRpcHandler(
+  query: DbQuery,
+  transaction?: GenerationTransaction,
+) {
   return async (request: Request): Promise<Response> => {
     if (request.method !== "POST" || new URL(request.url).pathname !== "/rpc") {
       return json({ ok: false, error: { code: "NOT_FOUND" } }, 404);
@@ -136,13 +144,36 @@ export function createDbRpcHandler(query: DbQuery) {
       if (!isRecord(body) || typeof body.operation !== "string") {
         return json({ ok: false, error: { code: "BAD_REQUEST" } }, 400);
       }
-      const data = await dispatch(
-        body.operation as ReadOperation | AuthOperation,
-        body.input,
-        query,
-      );
+      let data: unknown;
+      if (
+        [
+          "generation.reserveLogo",
+          "generation.completeLogo",
+          "generation.refundLogo",
+        ].includes(body.operation)
+      ) {
+        if (!transaction)
+          throw new Error("Generation transaction boundary is required");
+        const service = createSqlGenerationDbService(transaction);
+        // Each implementation validates the untrusted input before executing SQL.
+        if (body.operation === "generation.reserveLogo")
+          data = await service.reserveLogo(body.input as never);
+        else if (body.operation === "generation.completeLogo")
+          data = await service.completeLogo(body.input as never);
+        else data = await service.refundLogo(body.input as never);
+      } else
+        data = await dispatch(
+          body.operation as ReadOperation | AuthOperation,
+          body.input,
+          query,
+        );
       return json({ ok: true, data });
     } catch (error) {
+      if (error instanceof GenerationError)
+        return json(
+          { ok: false, error: { code: error.code } },
+          error.code === "GENERATION_BAD_INPUT" ? 400 : 409,
+        );
       if (
         error instanceof Error &&
         error.message === "AUTH_ACCOUNT_OWNERSHIP_CONFLICT"
@@ -165,8 +196,16 @@ export default {
 
     const { default: postgres } = await import("postgres");
     const sql = postgres(env.HYPERDRIVE.connectionString, { prepare: false });
-    const handler = createDbRpcHandler((query, values) =>
-      sql.unsafe(query, values as never[]),
+    const handler = createDbRpcHandler(
+      (query, values) => sql.unsafe(query, values as never[]),
+      (action) =>
+        sql
+          .begin(async (tx) => ({
+            result: await action((query, values) =>
+              tx.unsafe(query, values as never[]),
+            ),
+          }))
+          .then(({ result }) => result),
     );
     try {
       return await handler(request);

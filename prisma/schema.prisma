@@ -68,6 +68,7 @@ model User {
     cpaUnlocks    CpaUnlock[]
     lastCpaNetwork CpaNetwork?
     gamingStripePurchases GamingStripePurchase[]
+    gamingGenerationRequests GamingGenerationRequest[]
 }
 
 model Icon {
@@ -201,4 +202,21 @@ model GamingStripePurchase {
     createdAt       DateTime @default(now())
 
     @@index([userId, createdAt])
+}
+
+
+model GamingGenerationRequest {
+    userId          String
+    requestId       String
+    user            User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+    fingerprint     String
+    creditCost      Int
+    state           String   @default("reserved")
+    icons           Json
+    shouldWatermark Boolean
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @default(now())
+
+    @@id([userId, requestId])
+    @@index([state, createdAt])
 }
