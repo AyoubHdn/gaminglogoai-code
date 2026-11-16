@@ -244,7 +244,7 @@ const appOptions = {
   modules: moduleFiles,
   modulesRoot: outputRoot,
   compatibilityDate: runtimeDate,
-  compatibilityFlags: ["nodejs_compat"],
+  compatibilityFlags: ["nodejs_compat", "nodejs_als"],
   bindings,
   serviceBindings: {
     DB_SERVICE: dbServiceBinding,
@@ -272,7 +272,7 @@ const runtimeOptions = {
       name: "gaminglogoai-generation-http-front",
       routes: ["gaminglogoai-generation.fixture.invalid/*"],
       compatibilityDate: runtimeDate,
-      compatibilityFlags: ["nodejs_compat"],
+      compatibilityFlags: ["nodejs_compat", "nodejs_als"],
       modules: [
         {
           type: "ESModule",
