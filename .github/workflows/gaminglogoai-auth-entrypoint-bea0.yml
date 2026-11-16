@@ -109,6 +109,9 @@ jobs:
         working-directory: workers/db
         run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund
 
+      - name: Install application integration-test postgres dependency
+        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund postgres@3.4.7
+
       - name: Entrypoint and session tests
         run: >-
           node --experimental-strip-types --test --test-concurrency=1
