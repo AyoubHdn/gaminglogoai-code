@@ -204,11 +204,13 @@ await writeFile(
   'import { AsyncLocalStorage } from "node:async_hooks";\n' +
     'import * as fs from "node:fs";\n' +
     'import * as fsPromises from "node:fs/promises";\n' +
+    'import * as path from "node:path";\n' +
     'globalThis.AsyncLocalStorage = AsyncLocalStorage;\n' +
     'globalThis.require = (specifier) => {\n' +
     '  if (specifier === "async_hooks") return { AsyncLocalStorage };\n' +
     '  if (specifier === "fs") return fs;\n' +
     '  if (specifier === "fs/promises") return fsPromises;\n' +
+    '  if (specifier === "path") return path;\n' +
     '  throw new Error(`Unsupported fixture require: ${String(specifier)}`);\n' +
     '};\n' +
     'const compiled = await import("./.ci-generation-worker.mjs");\n' +
