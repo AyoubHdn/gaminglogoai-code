@@ -324,8 +324,8 @@ const headers = (token) => ({
   "content-type": "application/json",
 });
 /** @param {string} requestId @param {string=} prompt */
-const mutationInput = (requestId, prompt = "Fixture gaming logo") => [
-  {
+const mutationInput = (requestId, prompt = "Fixture gaming logo") => ({
+  0: {
     json: {
       requestId,
       prompt,
@@ -334,7 +334,7 @@ const mutationInput = (requestId, prompt = "Fixture gaming logo") => [
       model: "flux-schnell",
     },
   },
-];
+});
 /** @param {string} requestId @param {string=} token @param {string=} prompt */
 async function mutation(requestId, token, prompt) {
   return mf.dispatchFetch(`${origin}/api/trpc/generate.generateIcon?batch=1`, {

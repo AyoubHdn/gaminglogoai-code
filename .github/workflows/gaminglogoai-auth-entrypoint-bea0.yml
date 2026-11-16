@@ -258,7 +258,8 @@ jobs:
       - name: Build separate generation HTTP fixture bundle
         if: steps.fixture-package.outcome == 'success'
         run: |
-          rm -rf .open-next .ci-generation-open-next .ci-generation-runtime
+          rm -rf .next .open-next .ci-generation-open-next .ci-generation-runtime
+          npm run build
           npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion
           mv .open-next .ci-generation-open-next
         env:
