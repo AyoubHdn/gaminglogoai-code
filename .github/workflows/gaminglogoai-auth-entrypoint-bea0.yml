@@ -131,6 +131,13 @@ jobs:
           src/server/__tests__/generation.test.ts
           workers/db/src/generation.remote.integration.test.ts
 
+      - name: Protected generation procedure integration tests
+        env:
+          AUTH_EXTERNAL_SYNC_MODE: disabled
+        run: >-
+          node --experimental-strip-types --test --test-concurrency=1
+          src/server/__tests__/generate.procedure.integration.test.ts
+
       - name: Runtime harness and artifact fixture tests
         run: >-
           node --test
@@ -161,6 +168,7 @@ jobs:
           src/server/generation/requestService.ts
           src/server/generation/runLogo.ts
           src/server/__tests__/generation.test.ts
+          src/server/__tests__/generate.procedure.integration.test.ts
           workers/db/src/generation.remote.integration.test.ts
           src/server/auth.ts
           src/server/authRuntime.ts
@@ -261,3 +269,4 @@ jobs:
 
       - name: Diff check
         run: git diff --check
+

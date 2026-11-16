@@ -18,7 +18,13 @@ import {
 } from "~/server/imageWatermark";
 import { createRequestGenerationDbService } from "~/server/generation/requestService";
 import { runLogoGeneration } from "~/server/generation/runLogo";
-import { GenerationError } from "~/server/generation/contract";
+import {
+  GenerationError,
+  type GenerationDbService,
+  type GenerationIcon,
+  type GenerationReservation,
+  type LogoRequest,
+} from "~/server/generation/contract";
 import { withCreditTransaction } from "~/server/lib/creditTransaction";
 
 const s3 = new AWS.S3({
@@ -112,7 +118,76 @@ const generateIcon = async (
   return outputs;
 };
 
-export const generateRouter = createTRPCRouter({
+export type GenerateRouterDependencies = {
+  createGenerationDbService?: () => Promise<GenerationDbService | null>;
+  generate?: (input: LogoRequest) => Promise<string[]>;
+  upload?: (
+    icon: GenerationIcon,
+    base64: string,
+    shouldWatermark: boolean,
+  ) => Promise<void>;
+  syncUserToMautic?: typeof syncUserToMautic;
+};
+
+const defaultGeneration = (input: LogoRequest) =>
+  generateIcon(
+    input.prompt,
+    input.numberOfImages,
+    input.aspectRatio,
+    input.model,
+  );
+
+const defaultUpload = async (
+  icon: GenerationIcon,
+  base64: string,
+  shouldWatermark: boolean,
+) => {
+  const image = await finalizeGeneratedImage(
+    Buffer.from(base64, "base64"),
+    { shouldWatermark, toolType: "Gaming logo" },
+  );
+  await s3
+    .putObject({
+      Bucket: BUCKET_NAME,
+      Body: image,
+      Key: icon.id,
+      ContentType: "image/png",
+    })
+    .promise();
+};
+
+function createSyncDependency(
+  sync: typeof syncUserToMautic,
+): (reservation: GenerationReservation) => Promise<void> {
+  return async (reservation) => {
+    if (
+      env.AUTH_EXTERNAL_SYNC_MODE === "disabled" ||
+      !reservation.email
+    )
+      return;
+    await sync(
+      {
+        email: reservation.email,
+        name: reservation.name,
+        brand_specific_credits: reservation.credits,
+      },
+      "gaminglogoai",
+    );
+  };
+}
+
+export function createGenerateRouter(
+  overrides: GenerateRouterDependencies = {},
+) {
+  const createGenerationDbService =
+    overrides.createGenerationDbService ?? createRequestGenerationDbService;
+  const generate = overrides.generate ?? defaultGeneration;
+  const upload = overrides.upload ?? defaultUpload;
+  const sync = createSyncDependency(
+    overrides.syncUserToMautic ?? syncUserToMautic,
+  );
+
+  return createTRPCRouter({
   generateIcon: protectedProcedure
     .input(
       z.object({
@@ -124,7 +199,7 @@ export const generateRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const generationService = await createRequestGenerationDbService();
+      const generationService = await createGenerationDbService();
       if (generationService) {
         if (!input.requestId)
           throw new TRPCError({
@@ -143,42 +218,9 @@ export const generateRouter = createTRPCRouter({
             },
             {
               service: generationService,
-              generate: (request) =>
-                generateIcon(
-                  request.prompt,
-                  request.numberOfImages,
-                  request.aspectRatio,
-                  request.model,
-                ),
-              async upload(icon, base64, shouldWatermark) {
-                const image = await finalizeGeneratedImage(
-                  Buffer.from(base64, "base64"),
-                  { shouldWatermark, toolType: "Gaming logo" },
-                );
-                await s3
-                  .putObject({
-                    Bucket: BUCKET_NAME,
-                    Body: image,
-                    Key: icon.id,
-                    ContentType: "image/png",
-                  })
-                  .promise();
-              },
-              async sync(reservation) {
-                if (
-                  env.AUTH_EXTERNAL_SYNC_MODE === "disabled" ||
-                  !reservation.email
-                )
-                  return;
-                await syncUserToMautic(
-                  {
-                    email: reservation.email,
-                    name: reservation.name,
-                    brand_specific_credits: reservation.credits,
-                  },
-                  "gaminglogoai",
-                );
-              },
+              generate,
+              upload,
+              sync,
             },
           );
           return completed.icons.map((icon) => ({
@@ -306,4 +348,8 @@ export const generateRouter = createTRPCRouter({
         },
       );
     }),
-});
+  });
+}
+
+export const generateRouter = createGenerateRouter();
+
