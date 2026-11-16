@@ -203,7 +203,8 @@ await writeFile(
   entryShim,
   'import { AsyncLocalStorage } from "node:async_hooks";\n' +
     'globalThis.AsyncLocalStorage = AsyncLocalStorage;\n' +
-    'export { default } from "./.ci-generation-worker.mjs";\n',
+    'const compiled = await import("./.ci-generation-worker.mjs");\n' +
+    'export default compiled.default;\n',
 );
 const moduleFiles = [
   entryShim,
