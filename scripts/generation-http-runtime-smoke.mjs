@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
-import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -196,14 +196,22 @@ function createDbFixture() {
 
 const bundle = path.join(outputRoot, "worker.js");
 const assets = path.join(outputRoot, "assets");
+const compiledWorker = path.join(root, ".ci-generation-worker.mjs");
+await copyFile(bundle, compiledWorker);
 const entryShim = path.join(root, ".ci-generation-entry.mjs");
 await writeFile(
   entryShim,
   'import { AsyncLocalStorage } from "node:async_hooks";\n' +
     'globalThis.AsyncLocalStorage = AsyncLocalStorage;\n' +
-    'export { default } from "./worker.js";\n',
+    'export { default } from "./.ci-generation-worker.mjs";\n',
 );
-const moduleFiles = [entryShim, bundle, ...(await allFiles(outputRoot)).filter((file) => file !== bundle)]
+const moduleFiles = [
+  entryShim,
+  compiledWorker,
+  ...(await allFiles(outputRoot)).filter(
+    (file) => file !== bundle && file !== compiledWorker && file !== entryShim,
+  ),
+]
   .filter((file) => file.endsWith(".js") || file.endsWith(".mjs"))
   .map((file) => ({ type: "ESModule", path: file }));
 const runtimeDate = supportedRuntimeDate("2026-11-12", workerdVersion);
