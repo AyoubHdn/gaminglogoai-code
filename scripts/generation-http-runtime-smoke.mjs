@@ -196,7 +196,7 @@ function createDbFixture() {
 
 const bundle = path.join(outputRoot, "worker.js");
 const assets = path.join(outputRoot, "assets");
-const moduleFiles = (await allFiles(outputRoot))
+const moduleFiles = [bundle, ...(await allFiles(outputRoot)).filter((file) => file !== bundle)]
   .filter((file) => file.endsWith(".js") || file.endsWith(".mjs"))
   .map((file) => ({ type: "ESModule", path: file }));
 const runtimeDate = supportedRuntimeDate("2026-11-12", workerdVersion);
@@ -270,6 +270,7 @@ const runtimeOptions = {
   workers: [
     {
       name: "gaminglogoai-generation-http-front",
+      routes: ["gaminglogoai-generation.fixture.invalid/*"],
       compatibilityDate: runtimeDate,
       compatibilityFlags: ["nodejs_compat"],
       modules: [
