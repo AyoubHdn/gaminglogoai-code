@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "gaminglogoai-generation-http-fixture",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets"
+  },
+  "vars": {
+    "DB_AUTH_BACKEND": "service",
+    "DB_READS_BACKEND": "service",
+    "DB_GENERATION_BACKEND": "service",
+    "CLOUDFLARE_READ_ONLY_MODE": "false",
+    "AUTH_EXTERNAL_SYNC_MODE": "disabled"
+  }
+}
+

@@ -250,6 +250,85 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+      - name: Preserve read-only bundle for auth candidate packaging
+        if: steps.fixture-package.outcome == 'success'
+        shell: bash
+        run: cp -a .open-next .ci-readonly-open-next
+
+      - name: Build separate generation HTTP fixture bundle
+        if: steps.fixture-package.outcome == 'success'
+        run: |
+          rm -rf .open-next .ci-generation-open-next .ci-generation-runtime
+          npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion
+          mv .open-next .ci-generation-open-next
+        env:
+          NODE_ENV: production
+          DB_AUTH_BACKEND: service
+          DB_READS_BACKEND: service
+          DB_GENERATION_BACKEND: service
+          CLOUDFLARE_READ_ONLY_MODE: "false"
+          AUTH_EXTERNAL_SYNC_MODE: disabled
+          NEXTAUTH_URL: https://gaminglogoai-generation.fixture.invalid
+          HOST_NAME: https://gaminglogoai-generation.fixture.invalid
+
+      - name: Generation fixture Wrangler dry-run
+        if: steps.fixture-package.outcome == 'success'
+        shell: bash
+        run: |
+          cp -a .ci-generation-open-next .open-next
+          npx wrangler@4.148.0 deploy --config wrangler.gaminglogoai-generation-fixture.jsonc --dry-run --outdir .ci-generation-runtime/bundle
+          rm -rf .open-next
+
+      - name: Compiled OpenNext HTTP generation probe
+        if: steps.fixture-package.outcome == 'success'
+        timeout-minutes: 5
+        env:
+          GENERATION_HTTP_FIXTURE_ROOT: ${{ github.workspace }}/.ci-generation-open-next
+        run: node scripts/generation-http-runtime-smoke.mjs
+
+      - name: Package fixture-only generation bundle
+        if: steps.fixture-package.outcome == 'success'
+        shell: bash
+        run: |
+          cp -a .ci-generation-open-next .ci-generation-artifact
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const root = '.ci-generation-artifact';
+          const report = JSON.parse(fs.readFileSync('.ci-generation-runtime/runtime-smoke-report.json', 'utf8'));
+          if (report.result !== 'GAMINGLOGOAI_GENERATION_HTTP_PROBE_PASS' || report.fixtureOnly !== true || report.deployable !== false) throw new Error('Generation fixture report is not a passing non-deployable fixture');
+          const provenance = {
+            schemaVersion: 1,
+            purpose: 'compiled-generation-http-runtime-fixture',
+            fixtureOnly: true,
+            deployable: false,
+            applicationSha: process.env.GITHUB_SHA,
+            workflowSha: process.env.GITHUB_SHA,
+            ciRunId: process.env.GITHUB_RUN_ID,
+            runtimeSmokeResult: report.result,
+            workerdVersion: report.workerdVersion,
+            miniflareVersion: report.miniflareVersion,
+            runtimeCompatibilityDate: report.runtimeCompatibilityDate,
+          };
+          fs.writeFileSync(path.join(root, 'build-provenance.json'), `${JSON.stringify(provenance, null, 2)}\n`, 'utf8');
+          fs.copyFileSync('.ci-generation-runtime/runtime-smoke-report.json', path.join(root, 'runtime-smoke-report.json'));
+          NODE
+
+      - name: Preserve fixture-only generation bundle
+        if: steps.fixture-package.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gaminglogoai-open-next-generation-http-fixture-${{ github.sha }}
+          path: .ci-generation-artifact/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Restore read-only bundle for auth candidate packaging
+        if: steps.fixture-package.outcome == 'success'
+        shell: bash
+        run: mv .ci-readonly-open-next .open-next
+
       - name: Prepare the auth-only staging candidate
         run: node scripts/package-staging-auth.mjs prepare
 
