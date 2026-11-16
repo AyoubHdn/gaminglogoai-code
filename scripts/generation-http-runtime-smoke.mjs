@@ -344,10 +344,28 @@ async function mutation(requestId, token, prompt) {
     body: JSON.stringify(mutationInput(requestId, prompt)),
   });
 }
+
+/** @param {Response} response @returns {Promise<Record<string, unknown>>} */
+async function summarizeErrorResponse(response) {
+  const text = await response.text();
+  const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const firstLine = lines[0]?.slice(0, 240) ?? "empty response";
+  const frames = lines
+    .filter((line) => line.startsWith("at "))
+    .slice(0, 5)
+    .map((line) => line.slice(0, 240));
+  return { status: response.status, firstLine, frames };
+}
 try {
   await mf.ready;
   const anonymous = await mutation(requestA);
-  assert.equal(anonymous.status, 401);
+  if (anonymous.status !== 401) {
+    report.failurePhase = JSON.stringify({
+      expectedStatus: 401,
+      response: await summarizeErrorResponse(anonymous),
+    });
+    throw new Error("anonymous request did not reach the protected route");
+  }
   assert.equal(
     fixture.operations.filter((operation) => operation.startsWith("generation.")).length,
     0,
@@ -421,7 +439,9 @@ try {
   assert.equal(fixture.unexpected, 0);
   report.result = "GAMINGLOGOAI_GENERATION_HTTP_PROBE_PASS";
 } catch (error) {
-  report.failurePhase = error instanceof Error ? error.message : "unknown";
+  if (!report.failurePhase) {
+    report.failurePhase = error instanceof Error ? error.message : "unknown";
+  }
 } finally {
   report.dbOperations = fixture.operations;
   report.dbCalls = fixture.calls.map(({ operation, input }) => ({
