@@ -392,10 +392,14 @@ const mutationInput = (requestId, prompt = "Fixture gaming logo") => ({
 });
 /** @param {string} requestId @param {string=} token @param {string=} prompt */
 async function mutation(requestId, token, prompt) {
+  const body = JSON.stringify(mutationInput(requestId, prompt));
   return mf.dispatchFetch(`${origin}/api/trpc/generate.generateIcon?batch=1`, {
     method: "POST",
-    headers: headers(token),
-    body: JSON.stringify(mutationInput(requestId, prompt)),
+    headers: {
+      ...headers(token),
+      "content-length": String(Buffer.byteLength(body)),
+    },
+    body,
   });
 }
 
@@ -474,12 +478,16 @@ try {
   });
   try {
     await noBindingMf.ready;
+    const missingBody = JSON.stringify(mutationInput(requestA));
     const missing = await noBindingMf.dispatchFetch(
       `${origin}/api/trpc/generate.generateIcon?batch=1`,
       {
         method: "POST",
-        headers: headers(tokenA),
-        body: JSON.stringify(mutationInput(requestA)),
+        headers: {
+          ...headers(tokenA),
+          "content-length": String(Buffer.byteLength(missingBody)),
+        },
+        body: missingBody,
       },
     );
     assert.ok(missing.status >= 400);
