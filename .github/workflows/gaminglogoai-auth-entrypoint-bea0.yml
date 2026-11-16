@@ -138,7 +138,9 @@ jobs:
         env:
           AUTH_EXTERNAL_SYNC_MODE: disabled
         run: >-
-          node --experimental-strip-types --test --test-concurrency=1
+          node --experimental-strip-types
+          --experimental-loader ./scripts/resolve-src-alias-loader.mjs
+          --test --test-concurrency=1
           src/server/__tests__/generate.procedure.integration.test.ts
 
       - name: Runtime harness and artifact fixture tests
