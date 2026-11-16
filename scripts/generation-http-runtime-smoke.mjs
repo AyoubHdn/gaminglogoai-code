@@ -207,6 +207,16 @@ await writeFile(
     'import * as path from "node:path";\n' +
     'import * as url from "node:url";\n' +
     'import * as vm from "node:vm";\n' +
+    'import * as crypto from "node:crypto";\n' +
+    'import * as buffer from "node:buffer";\n' +
+    'import * as util from "node:util";\n' +
+    'import * as processModule from "node:process";\n' +
+    'import * as stream from "node:stream";\n' +
+    'import * as events from "node:events";\n' +
+    'import * as os from "node:os";\n' +
+    'import * as querystring from "node:querystring";\n' +
+    'import * as stringDecoder from "node:string_decoder";\n' +
+    'import * as assert from "node:assert";\n' +
     'globalThis.AsyncLocalStorage = AsyncLocalStorage;\n' +
     'globalThis.require = (specifier) => {\n' +
     '  if (specifier === "async_hooks") return { AsyncLocalStorage };\n' +
@@ -215,6 +225,16 @@ await writeFile(
     '  if (specifier === "path") return path;\n' +
     '  if (specifier === "url") return url;\n' +
     '  if (specifier === "vm") return vm;\n' +
+    '  if (specifier === "crypto") return crypto;\n' +
+    '  if (specifier === "buffer") return buffer;\n' +
+    '  if (specifier === "util") return util;\n' +
+    '  if (specifier === "process") return processModule;\n' +
+    '  if (specifier === "stream") return stream;\n' +
+    '  if (specifier === "events") return events;\n' +
+    '  if (specifier === "os") return os;\n' +
+    '  if (specifier === "querystring") return querystring;\n' +
+    '  if (specifier === "string_decoder") return stringDecoder;\n' +
+    '  if (specifier === "assert") return assert;\n' +
     '  throw new Error(`Unsupported fixture require: ${String(specifier)}`);\n' +
     '};\n' +
     'const compiled = await import("./.ci-generation-worker.mjs");\n' +
