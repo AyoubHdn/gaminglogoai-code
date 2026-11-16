@@ -202,9 +202,13 @@ const entryShim = path.join(root, ".ci-generation-entry.mjs");
 await writeFile(
   entryShim,
   'import { AsyncLocalStorage } from "node:async_hooks";\n' +
+    'import * as fs from "node:fs";\n' +
+    'import * as fsPromises from "node:fs/promises";\n' +
     'globalThis.AsyncLocalStorage = AsyncLocalStorage;\n' +
     'globalThis.require = (specifier) => {\n' +
     '  if (specifier === "async_hooks") return { AsyncLocalStorage };\n' +
+    '  if (specifier === "fs") return fs;\n' +
+    '  if (specifier === "fs/promises") return fsPromises;\n' +
     '  throw new Error(`Unsupported fixture require: ${String(specifier)}`);\n' +
     '};\n' +
     'const compiled = await import("./.ci-generation-worker.mjs");\n' +
