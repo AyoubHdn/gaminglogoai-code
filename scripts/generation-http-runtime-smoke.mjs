@@ -196,7 +196,14 @@ function createDbFixture() {
 
 const bundle = path.join(outputRoot, "worker.js");
 const assets = path.join(outputRoot, "assets");
-const moduleFiles = [bundle, ...(await allFiles(outputRoot)).filter((file) => file !== bundle)]
+const entryShim = path.join(root, ".ci-generation-entry.mjs");
+await writeFile(
+  entryShim,
+  'import { AsyncLocalStorage } from "node:async_hooks";\n' +
+    'globalThis.AsyncLocalStorage = AsyncLocalStorage;\n' +
+    'export { default } from "./worker.js";\n',
+);
+const moduleFiles = [entryShim, bundle, ...(await allFiles(outputRoot)).filter((file) => file !== bundle)]
   .filter((file) => file.endsWith(".js") || file.endsWith(".mjs"))
   .map((file) => ({ type: "ESModule", path: file }));
 const runtimeDate = supportedRuntimeDate("2026-11-12", workerdVersion);
