@@ -112,7 +112,7 @@ function createDbFixture() {
       const input = body?.input ?? {};
       calls.push({ operation, input });
       if (operation === "auth.getSessionAndUser") {
-        const user = users.get(input.sessionToken);
+        const user = users.get(String(input.sessionToken));
         if (!user) return json({ ok: true, data: null });
         operations.push(operation);
         return json({
@@ -237,6 +237,8 @@ const bindings = {
   MYLEAD_SECURITY_KEY: "fixture-mylead-key",
   IPAPI_KEY: "fixture-ipapi-key",
 };
+/** @param {Request} request */
+const dbServiceBinding = (request) => fixture.fetch(request);
 const appOptions = {
   name: "gaminglogoai-generation-http-fixture",
   modules: moduleFiles,
@@ -245,7 +247,7 @@ const appOptions = {
   compatibilityFlags: ["nodejs_compat"],
   bindings,
   serviceBindings: {
-    DB_SERVICE: (request) => fixture.fetch(request),
+    DB_SERVICE: dbServiceBinding,
     ASSETS: createAssetFixture(assets),
   },
   /** @param {Request} request */
@@ -333,7 +335,7 @@ const mutationInput = (requestId, prompt = "Fixture gaming logo") => [
     },
   },
 ];
-/** @param {string} requestId @param {string|undefined} token @param {string=} prompt */
+/** @param {string} requestId @param {string=} token @param {string=} prompt */
 async function mutation(requestId, token, prompt) {
   return mf.dispatchFetch(`${origin}/api/trpc/generate.generateIcon?batch=1`, {
     method: "POST",
