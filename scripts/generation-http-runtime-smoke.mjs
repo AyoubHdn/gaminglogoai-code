@@ -39,6 +39,7 @@ function supportedRuntimeDate(compatibilityDate, version) {
 }
 
 /** @param {string} directory */
+/** @param {string} directory @returns {Promise<string[]>} */
 async function allFiles(directory) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -51,6 +52,7 @@ async function allFiles(directory) {
 
 /** @param {string} directory */
 function createAssetFixture(directory) {
+  /** @param {Request} request */
   return async (request) => {
     const pathname = decodeURIComponent(new URL(request.url).pathname);
     if (pathname.includes("\\") || pathname.includes("\0"))
@@ -68,7 +70,8 @@ function createAssetFixture(directory) {
         if (!(await stat(candidate)).isFile()) continue;
         return new Response(await readFile(candidate));
       } catch (error) {
-        if (error?.code !== "ENOENT" && error?.code !== "ENOTDIR") throw error;
+        const code = /** @type {{code?: string}} */ (error).code;
+        if (code !== "ENOENT" && code !== "ENOTDIR") throw error;
       }
     }
     return new Response(null, { status: 404 });
@@ -76,7 +79,9 @@ function createAssetFixture(directory) {
 }
 
 function createDbFixture() {
+  /** @type {string[]} */
   const operations = [];
+  /** @type {Array<{operation: unknown, input: Record<string, unknown>}>} */
   const calls = [];
   const states = new Map();
   let unexpected = 0;
@@ -84,6 +89,7 @@ function createDbFixture() {
     [tokenA, { id: userA, email: "a@gaminglogoai.invalid" }],
     [tokenB, { id: userB, email: "b@gaminglogoai.invalid" }],
   ]);
+  /** @param {unknown} data @param {number=} status */
   const json = (data, status = 200) =>
     new Response(JSON.stringify(data), {
       status,
@@ -95,12 +101,13 @@ function createDbFixture() {
     get unexpected() {
       return unexpected;
     },
+    /** @param {Request} request */
     async fetch(request) {
       if (request.method !== "POST") {
         unexpected += 1;
         return json({ ok: false, error: { code: "METHOD" } }, 405);
       }
-      const body = await request.json();
+      const body = /** @type {{operation?: unknown, input?: Record<string, unknown>}} */ (await request.json());
       const operation = body?.operation;
       const input = body?.input ?? {};
       calls.push({ operation, input });
@@ -196,6 +203,7 @@ const runtimeDate = supportedRuntimeDate("2026-11-12", workerdVersion);
 const fixture = createDbFixture();
 let blockedOutbound = 0;
 let mockedS3Uploads = 0;
+/** @type {string[]} */
 const blockedUrls = [];
 const bindings = {
   NODE_ENV: "production",
@@ -240,6 +248,7 @@ const appOptions = {
     DB_SERVICE: (request) => fixture.fetch(request),
     ASSETS: createAssetFixture(assets),
   },
+  /** @param {Request} request */
   outboundService: async (request) => {
     const url = new URL(request.url);
     if (url.hostname.endsWith(".amazonaws.com") && request.method === "PUT") {
@@ -278,6 +287,7 @@ const runtimeOptions = {
     appOptions,
   ],
 };
+/** @param {Record<string, unknown>} options */
 const makeMiniflare = (options) =>
   new Miniflare(
     typeof convertV4MiniflareOptions === "function"
@@ -285,7 +295,10 @@ const makeMiniflare = (options) =>
       : options,
   );
 const mf = makeMiniflare(runtimeOptions);
+/** @type {string[]} */
 const checks = [];
+/** @typedef {{result: string, fixtureOnly: boolean, deployable: boolean, workerdVersion: string, miniflareVersion: string, runtimeCompatibilityDate: string, checks: string[], dbOperations: string[], dbCalls: Array<Record<string, unknown>>, mockedProviderCalls: number, mockedS3Uploads: number, blockedOutbound: number, blockedUrls: string[], missingBindingLayer: string|null, failurePhase: string|null}} ProbeReport */
+/** @type {ProbeReport} */
 const report = {
   result: "GAMINGLOGOAI_GENERATION_HTTP_PROBE_STOPPED",
   fixtureOnly: true,
@@ -303,10 +316,12 @@ const report = {
   missingBindingLayer: null,
   failurePhase: null,
 };
+/** @param {string|undefined} token @returns {Record<string, string>} */
 const headers = (token) => ({
   ...(token ? { cookie: `__Secure-next-auth.session-token=${token}` } : {}),
   "content-type": "application/json",
 });
+/** @param {string} requestId @param {string=} prompt */
 const mutationInput = (requestId, prompt = "Fixture gaming logo") => [
   {
     json: {
@@ -318,6 +333,7 @@ const mutationInput = (requestId, prompt = "Fixture gaming logo") => [
     },
   },
 ];
+/** @param {string} requestId @param {string|undefined} token @param {string=} prompt */
 async function mutation(requestId, token, prompt) {
   return mf.dispatchFetch(`${origin}/api/trpc/generate.generateIcon?batch=1`, {
     method: "POST",
@@ -379,7 +395,7 @@ try {
   };
   const noBindingMf = makeMiniflare({
     ...runtimeOptions,
-    workers: [{ name: "gaminglogoai-generation-http-fixture", ...noBindingOptions }],
+    workers: [noBindingOptions],
   });
   try {
     await noBindingMf.ready;
