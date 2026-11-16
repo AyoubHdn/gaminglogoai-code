@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/require-await -- Test doubles implement async contracts. */
 import assert from "node:assert/strict";
 import test from "node:test";
@@ -19,6 +20,14 @@ import type {
 } from "../generation/contract.ts";
 import type { GenerationTransaction } from "../generation/sqlService.ts";
 import type { GamingDbService as ReadGamingDbService } from "../dbService.ts";
+
+type ProcedureInput = {
+  requestId?: string;
+  prompt: string;
+  numberOfImages: number;
+  aspectRatio?: string;
+  model: "flux-schnell" | "flux-dev";
+};
 
 const databaseUrl = process.env.GAMING_DB_SERVICE_TEST_DATABASE_URL;
 if (!databaseUrl)
@@ -45,7 +54,7 @@ const createdUserIds: string[] = [];
 type TestContext = {
   session: Session | null;
   dbService: ReadGamingDbService;
-  prisma: null;
+  prisma: PrismaClient;
 };
 
 const unusedReadService: ReadGamingDbService = {
@@ -84,7 +93,7 @@ async function user(credits = 10): Promise<string> {
   return id;
 }
 
-function request(requestId?: string): Record<string, unknown> {
+function request(requestId?: string): ProcedureInput {
   return {
     ...(requestId ? { requestId } : {}),
     prompt: "synthetic protected logo",
@@ -137,11 +146,7 @@ function callerFor(
   router: ReturnType<typeof createGenerateRouter>,
   session: Session | null,
 ) {
-  const context: TestContext = {
-    session,
-    dbService: unusedReadService,
-    prisma: null,
-  };
+  const context: TestContext = { session, dbService: unusedReadService, prisma };
   return router.createCaller(context);
 }
 
@@ -160,6 +165,7 @@ test("protected procedure uses the remote DB service and authenticated ownership
     },
     async syncUserToMautic() {
       mauticCalls++;
+      return {};
     },
   });
   const anonymous = callerFor(router, null);

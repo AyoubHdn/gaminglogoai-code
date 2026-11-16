@@ -3,6 +3,10 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
 
+/**
+ * @param {URL} base
+ * @param {string} relative
+ */
 function resolveLocal(base, relative) {
   const candidates = [
     `${relative}.ts`,
@@ -19,6 +23,11 @@ function resolveLocal(base, relative) {
   return match ? new URL(match, base).href : null;
 }
 
+/**
+ * @param {string} specifier
+ * @param {{ parentURL?: string }} context
+ * @param {(specifier: string, context: { parentURL?: string }) => Promise<{ url: string }>} nextResolve
+ */
 export async function resolve(specifier, context, nextResolve) {
   if (specifier.startsWith("~/")) {
     const resolved = resolveLocal(pathToFileURL(sourceRoot), specifier.slice(2));
