@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/require-await -- Test doubles implement async contracts. */
 import assert from "node:assert/strict";
 import test from "node:test";
@@ -150,7 +149,7 @@ function callerFor(
   return router.createCaller(context);
 }
 
-test("protected procedure uses the remote DB service and authenticated ownership", async () => {
+void test("protected procedure uses the remote DB service and authenticated ownership", async () => {
   const { service, operations } = remoteService();
   const generated: string[] = [];
   const uploaded: string[] = [];
@@ -231,7 +230,7 @@ test("protected procedure uses the remote DB service and authenticated ownership
   assert.equal(await prisma.icon.count({ where: { userId: accountA } }), 1);
 });
 
-test("provider and upload failures refund through the protected procedure", async () => {
+void test("provider and upload failures refund through the protected procedure", async () => {
   const { service } = remoteService();
   const account = await user();
   const providerRequestId = randomUUID();
@@ -280,9 +279,8 @@ test("provider and upload failures refund through the protected procedure", asyn
   assert.equal(await prisma.icon.count({ where: { userId: uploadAccount } }), 0);
 });
 
-test("service mode missing binding fails closed without Prisma fallback", async () => {
+void test("service mode missing binding fails closed without Prisma fallback", async () => {
   const previous = process.env.DB_GENERATION_BACKEND;
-  const { service } = remoteService();
   const account = await user();
   try {
     process.env.DB_GENERATION_BACKEND = "service";
