@@ -1,28 +1,36 @@
-
 import { existsSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const sourceRoot = fileURLToPath(new URL("../src/", import.meta.url));
 
-export async function resolve(specifier, context, nextResolve) {
-  if (!specifier.startsWith("~/")) return nextResolve(specifier, context);
-
-  const relative = specifier.slice(2);
+function resolveLocal(base, relative) {
   const candidates = [
     `${relative}.ts`,
     `${relative}.tsx`,
     `${relative}.mjs`,
     `${relative}.js`,
+    `${relative}/index.ts`,
+    `${relative}/index.mjs`,
     relative,
   ];
   const match = candidates.find((candidate) =>
-    existsSync(new URL(candidate, pathToFileURL(sourceRoot)),),
+    existsSync(new URL(candidate, base)),
   );
-  if (!match) throw new Error(`Unresolved test source alias: ${specifier}`);
+  return match ? new URL(match, base).href : null;
+}
 
-  return nextResolve(
-    new URL(match, pathToFileURL(sourceRoot)).href,
-    context,
-  );
+export async function resolve(specifier, context, nextResolve) {
+  if (specifier.startsWith("~/")) {
+    const resolved = resolveLocal(pathToFileURL(sourceRoot), specifier.slice(2));
+    if (!resolved) throw new Error(`Unresolved test source alias: ${specifier}`);
+    return nextResolve(resolved, context);
+  }
+
+  if (specifier.startsWith(".") && context.parentURL) {
+    const resolved = resolveLocal(new URL("./", context.parentURL), specifier);
+    if (resolved) return nextResolve(resolved, context);
+  }
+
+  return nextResolve(specifier, context);
 }
 
