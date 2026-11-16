@@ -203,6 +203,10 @@ await writeFile(
   entryShim,
   'import { AsyncLocalStorage } from "node:async_hooks";\n' +
     'globalThis.AsyncLocalStorage = AsyncLocalStorage;\n' +
+    'globalThis.require = (specifier) => {\n' +
+    '  if (specifier === "async_hooks") return { AsyncLocalStorage };\n' +
+    '  throw new Error(`Unsupported fixture require: ${String(specifier)}`);\n' +
+    '};\n' +
     'const compiled = await import("./.ci-generation-worker.mjs");\n' +
     'export default compiled.default;\n',
 );
