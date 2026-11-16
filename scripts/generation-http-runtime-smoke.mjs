@@ -217,6 +217,8 @@ await writeFile(
     'import * as querystring from "node:querystring";\n' +
     'import * as stringDecoder from "node:string_decoder";\n' +
     'import * as assert from "node:assert";\n' +
+    'import * as http from "node:http";\n' +
+    'import * as https from "node:https";\n' +
     'globalThis.AsyncLocalStorage = AsyncLocalStorage;\n' +
     'globalThis.require = (specifier) => {\n' +
     '  if (specifier === "async_hooks") return { AsyncLocalStorage };\n' +
@@ -235,6 +237,8 @@ await writeFile(
     '  if (specifier === "querystring") return querystring;\n' +
     '  if (specifier === "string_decoder") return stringDecoder;\n' +
     '  if (specifier === "assert") return assert;\n' +
+    '  if (specifier === "http") return http;\n' +
+    '  if (specifier === "https") return https;\n' +
     '  throw new Error(`Unsupported fixture require: ${String(specifier)}`);\n' +
     '};\n' +
     'const compiled = await import("./.ci-generation-worker.mjs");\n' +
