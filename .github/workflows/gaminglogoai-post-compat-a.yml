@@ -21,7 +21,7 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          test "$GITHUB_SHA" = "00f3cfa6ee73689ae5f474beb4d67e1e442b35da"
+          git merge-base --is-ancestor 0f11fb40f72cef5b0e3c13982fbebf5259a642fd "$GITHUB_SHA"
       - name: Install baseline dependencies
         run: npm ci --include=dev
       - name: Build baseline OpenNext

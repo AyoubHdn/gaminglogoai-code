@@ -1,8 +1,0 @@
-import application from './worker.js';
-import {stagingAuthFetch} from './staging-auth-profile.mjs';
-
-export default {
-  fetch(request,env,ctx) {
-    return stagingAuthFetch(request,env,ctx,application);
-  },
-};
