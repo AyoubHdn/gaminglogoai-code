@@ -1,0 +1,13 @@
+# *
+User-agent: *
+Disallow: /free-credit
+Disallow: /free-credit/
+Disallow: /free-credit/result
+Disallow: /api/cpa/
+Disallow: /unlock/
+
+# Host
+Host: https://gaminglogoai.com
+
+# Sitemaps
+Sitemap: https://gaminglogoai.com/sitemap.xml

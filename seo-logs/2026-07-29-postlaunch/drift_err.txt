@@ -1,0 +1,2 @@
+usage: drift_compare.py [-h] [--skip-cwv] [--baseline-id BASELINE_ID] url
+drift_compare.py: error: unrecognized arguments: --json

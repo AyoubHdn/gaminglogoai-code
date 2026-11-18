@@ -1,0 +1,163 @@
+/* eslint-disable @typescript-eslint/require-await */
+// src/pages/pfp/games/[slug].tsx
+import { type NextPage, GetStaticPaths, GetStaticProps } from "next";
+import { useRouter } from "next/router";
+import PseoPfpPageTemplate, { PseoPfpPageTemplateProps } from "~/component/pSEO/PseoPfpPageTemplate";
+import { faceStylesData } from "~/data/faceStylesData";
+import { createSlug } from "~/lib/utils";
+import { getGameCrossPromoLinks, getStaticRelatedItems, RelatedItem, getShowcaseItems } from "~/lib/pSEO";
+
+// Define the shape of our style items, which now must include a name
+interface PfpStyleItem {
+    name: string;
+    src: string;
+    basePrompt: string;
+}
+
+// Data from the server for a single game page
+interface PfpGamePageServerProps {
+  gameTitle: string;
+  styleItem: PfpStyleItem;
+  slug: string;
+  relatedItems: RelatedItem[];
+  otherShowcaseItems: PfpStyleItem[];
+}
+
+const PILOT_GALLERY_EXTRAS: Record<
+  string,
+  { src: string; alt: string }[]
+> = {
+  "gears-of-war-pfp-maker": [
+    {
+      src: "/images/pseo/pfp/gears-of-war/gears-pfp-2.webp",
+      alt: "Gears of War style armored soldier gaming PFP example in a ruined city",
+    },
+    {
+      src: "/images/pseo/pfp/gears-of-war/gears-pfp-3.webp",
+      alt: "Female Gears of War style squad commander profile picture example",
+    },
+    {
+      src: "/images/pseo/pfp/gears-of-war/gears-pfp-4.webp",
+      alt: "Veteran Gears of War style soldier PFP example in heavy battle armor",
+    },
+  ],
+  "rainbow-six-siege-pfp-maker": [
+    {
+      src: "/images/pseo/pfp/rainbow-six-siege/rainbow-six-pfp-2.webp",
+      alt: "Rainbow Six Siege style tactical breach operator PFP example",
+    },
+    {
+      src: "/images/pseo/pfp/rainbow-six-siege/rainbow-six-pfp-3.webp",
+      alt: "Female Rainbow Six Siege style special operations profile picture example",
+    },
+    {
+      src: "/images/pseo/pfp/rainbow-six-siege/rainbow-six-pfp-4.webp",
+      alt: "Rainbow Six Siege style shield operator gaming PFP example",
+    },
+  ],
+};
+
+const PfpGamePage: NextPage<PfpGamePageServerProps> = ({ gameTitle, styleItem, slug, relatedItems, otherShowcaseItems }) => {
+  const router = useRouter();
+  const crossPromoLinks = getGameCrossPromoLinks(gameTitle);
+  const pilotGalleryExtras = PILOT_GALLERY_EXTRAS[slug];
+  const isBrowseFirstPilot = Boolean(pilotGalleryExtras);
+  const handleCtaClick = () => {
+    void router.push(
+      `/studio?tool=pfp&game=${encodeURIComponent(gameTitle.toLowerCase())}`,
+    );
+  };
+
+  const templateProps: PseoPfpPageTemplateProps = {
+    gameTitle: gameTitle,
+    pageTitle: `Free ${gameTitle} PFP Maker — AI Avatar Generator | GamingLogoAI`,
+    metaDescription: `Create a custom ${gameTitle} PFP free with AI. Turn your photo or a style into a unique gaming avatar in seconds. Download and use anywhere.`,
+    keywords: `${gameTitle} pfp maker, custom ${gameTitle} pfp, ${gameTitle} profile picture, free ${gameTitle} pfp, ${gameTitle} avatar`,
+    canonicalUrl: `https://gaminglogoai.com/pfp/games/${slug}`,
+    h1: <>AI <span className="text-cyan-400">{gameTitle} PFP</span> Maker</>,
+    heroBeforeImageSrc: "/handsome-man.webp",
+    heroAfterImageSrc: styleItem.src,
+    introParagraph: <>Turn your photo into a legendary {gameTitle}-style avatar! Create a custom profile picture for Discord, YouTube, Twitch, and more in seconds.</>,
+    ctaText: "Make Your PFP Now (1 Free Credit)",
+    handleCtaClick,
+    studioPromoHref: `/studio?tool=pfp&game=${encodeURIComponent(gameTitle.toLowerCase())}`,
+    showcaseTitle: <>From Selfie to <span className="text-purple-600 dark:text-cyan-400">{gameTitle} Legend</span></>,
+    imageShowcaseGrid: pilotGalleryExtras
+      ? [
+          {
+            src: styleItem.src,
+            alt: `${gameTitle} style AI gaming PFP example with game-specific character design`,
+          },
+          ...pilotGalleryExtras,
+        ]
+      : [
+          { src: styleItem.src, alt: `AI generated custom PFP in the style of ${styleItem.name}` },
+          ...otherShowcaseItems.map(item => ({
+            src: item.src,
+            alt: `AI generated custom PFP in the style of ${item.name}`,
+          }))
+        ],
+    browseFirstGallery: isBrowseFirstPilot,
+    howItWorksTitle: <>Create Your <span className="text-purple-600 dark:text-cyan-400">Custom {gameTitle} PFP</span></>,
+    crossPromoLinks,
+    faqTitle: <>Your <span className="text-purple-600 dark:text-cyan-400">{gameTitle} PFP</span> Questions</>,
+    faqItems: [
+        { q: `Is this a free ${gameTitle} PFP maker?`, a: "Yes, you can get started for free! Every new user gets 1 free credit to generate and download their first custom profile picture." },
+        { q: `How do I make my own ${gameTitle} PFP?`, a: `It's easy! Just upload a photo of yourself, choose a style inspired by ${gameTitle}, and our AI PFP creator will do the rest.` },
+    ],
+    finalCtaTitle: <>Ready to Level Up Your Profile?</>,
+    finalCtaParagraph: <>Stop using default icons. Create a custom {gameTitle} PFP that shows off your personality.</>,
+    relatedItems,
+  };
+
+  return <PseoPfpPageTemplate {...templateProps} />;
+};
+export default PfpGamePage;
+
+
+// --- SERVER-SIDE DATA FETCHING (DERIVED DIRECTLY FROM faceStylesData) ---
+
+// Helper to get a flat list of all individual game title styles
+const getAllGameTitleStyles = (): PfpStyleItem[] => {
+    const gameTitleData = faceStylesData["Game Title"] || {};
+    return Object.values(gameTitleData).flat();
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const allGameStyles = getAllGameTitleStyles();
+
+  const paths = allGameStyles.map((item) => ({
+    params: { slug: createSlug(item.name, '-pfp-maker') },
+  }));
+
+  return { paths, fallback: false };
+};
+
+export const getStaticProps: GetStaticProps<PfpGamePageServerProps> = async ({ params }) => {
+  const slug = params?.slug as string;
+  const allGameStyles = getAllGameTitleStyles();
+  
+  // Find the specific style item that matches the slug
+  const matchedStyleItem = allGameStyles.find(
+    (item) => createSlug(item.name, '-pfp-maker') === slug
+  );
+
+  if (!matchedStyleItem) {
+    return { notFound: true };
+  }
+  
+  const gameTitle = matchedStyleItem.name;
+
+  const otherShowcaseItems = getShowcaseItems(faceStylesData, "Game Title", gameTitle, 3);
+  const relatedItems = getStaticRelatedItems({ tool: 'pfp', excludeName: gameTitle });
+
+  return {
+    props: {
+      gameTitle: gameTitle,
+      styleItem: matchedStyleItem,
+      slug: slug,
+      relatedItems: relatedItems,
+      otherShowcaseItems: otherShowcaseItems,
+    },
+  };
+};

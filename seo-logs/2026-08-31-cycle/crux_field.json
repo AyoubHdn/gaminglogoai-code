@@ -1,0 +1,89 @@
+{
+  "target": "https://gaminglogoai.com",
+  "metrics": {
+    "round_trip_time": {
+      "p75": 165,
+      "rating": "unknown",
+      "label": "round_trip_time",
+      "unit": "",
+      "good_threshold": null,
+      "poor_threshold": null,
+      "distribution": {
+        "good": 40.5,
+        "needs_improvement": 50.5,
+        "poor": 9.0
+      }
+    },
+    "cumulative_layout_shift": {
+      "p75": 0.0,
+      "rating": "good",
+      "label": "CLS",
+      "unit": "",
+      "good_threshold": 0.1,
+      "poor_threshold": 0.25,
+      "distribution": {
+        "good": 99.3,
+        "needs_improvement": 0.5,
+        "poor": 0.2
+      }
+    },
+    "experimental_time_to_first_byte": {
+      "p75": 677,
+      "rating": "good",
+      "label": "TTFB",
+      "unit": "ms",
+      "good_threshold": 800,
+      "poor_threshold": 1800,
+      "distribution": {
+        "good": 80.3,
+        "needs_improvement": 11.1,
+        "poor": 8.6
+      }
+    },
+    "first_contentful_paint": {
+      "p75": 1741,
+      "rating": "good",
+      "label": "FCP",
+      "unit": "ms",
+      "good_threshold": 1800,
+      "poor_threshold": 3000,
+      "distribution": {
+        "good": 76.1,
+        "needs_improvement": 12.9,
+        "poor": 11.0
+      }
+    },
+    "interaction_to_next_paint": {
+      "p75": 160,
+      "rating": "good",
+      "label": "INP",
+      "unit": "ms",
+      "good_threshold": 200,
+      "poor_threshold": 500,
+      "distribution": {
+        "good": 83.4,
+        "needs_improvement": 13.1,
+        "poor": 3.5
+      }
+    },
+    "largest_contentful_paint": {
+      "p75": 1877,
+      "rating": "good",
+      "label": "LCP",
+      "unit": "ms",
+      "good_threshold": 2500,
+      "poor_threshold": 4000,
+      "distribution": {
+        "good": 84.6,
+        "needs_improvement": 10.1,
+        "poor": 5.2
+      }
+    }
+  },
+  "collection_period": {
+    "first": "2026-08-02",
+    "last": "2026-08-29"
+  },
+  "form_factor": "ALL",
+  "error": null
+}

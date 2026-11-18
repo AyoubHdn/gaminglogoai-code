@@ -1,0 +1,52 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "account_id": "29d5671996cfe92470361986eda7b679",
+  "name": "gaminglogoai-cloudflare-staging",
+  "main": ".staging-auth/staging-auth-entry.mjs",
+  "compatibility_date": "2026-11-12",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".staging-auth/assets",
+    "run_worker_first": true
+  },
+  "services": [
+    {
+      "binding": "DB_SERVICE",
+      "service": "gaminglogoai-db-staging"
+    }
+  ],
+  "vars": {
+    "NODE_ENV": "production",
+    "GAMING_AUTH_STAGING_ONLY": "true",
+    "DB_AUTH_BACKEND": "service",
+    "DB_READS_BACKEND": "service",
+    "CLOUDFLARE_READ_ONLY_MODE": "true",
+    "AUTH_EXTERNAL_SYNC_MODE": "disabled",
+    "DATABASE_URL": "postgresql://invalid:invalid@db.invalid:5432/invalid",
+    "NEXTAUTH_URL": "https://gaminglogoai-cloudflare-staging.hdnstudio.workers.dev",
+    "HOST_NAME": "https://gaminglogoai-cloudflare-staging.hdnstudio.workers.dev",
+    "MOCK_REPLICATE": "true",
+    "REPLICATE_API_TOKEN": "ci-replicate-token",
+    "ACCESS_KEY_ID": "ci-access-key",
+    "SECRET_ACCESS_KEY": "ci-secret",
+    "STRIPE_SECRET_KEY": "sk_test_ci",
+    "STRIPE_WEB_HOOK_SECRET": "whsec_ci",
+    "PRICE_ID_STARTER": "price_ci_starter",
+    "PRICE_ID_PRO": "price_ci_pro",
+    "PRICE_ID_ELITE": "price_ci_elite",
+    "MAUTIC_BASE_URL": "http://127.0.0.1:9",
+    "MAUTIC_USERNAME": "ci-mautic",
+    "MAUTIC_PASSWORD": "ci-mautic-password",
+    "CRON_SECRET": "ci-cron-secret",
+    "MYLEAD_SECURITY_KEY": "ci-mylead-key",
+    "IPAPI_KEY": "ci-ipapi-key",
+    "NEXT_PUBLIC_STRIPE_KEY": "pk_test_ci",
+    "NEXT_PUBLIC_AWS_REGION_GAMING": "us-east-1",
+    "NEXT_PUBLIC_S3_BUCKET_NAME_GAMING": "gaminglogoai-ci"
+  }
+}
