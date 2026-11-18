@@ -200,6 +200,17 @@ const assets = path.join(outputRoot, "assets");
 const compiledWorker = path.join(root, ".ci-generation-worker.mjs");
 await copyFile(bundle, compiledWorker);
 const entryShim = path.join(root, ".ci-generation-entry.mjs");
+const streamWeb = Object.fromEntries([
+  "ReadableStream",
+  "WritableStream",
+  "TransformStream",
+  "CompressionStream",
+  "DecompressionStream",
+  "TextEncoderStream",
+  "TextDecoderStream",
+  "ByteLengthQueuingStrategy",
+  "CountQueuingStrategy",
+].map((name) => [name, globalThis[name]]));
 await writeFile(
   entryShim,
   'import { AsyncLocalStorage } from "node:async_hooks";\n' +
@@ -213,7 +224,6 @@ await writeFile(
     'import * as util from "node:util";\n' +
     'import * as processModule from "node:process";\n' +
     'import * as stream from "node:stream";\n' +
-    'import * as streamWeb from "node:stream/web";\n' +
     'import * as events from "node:events";\n' +
     'import * as os from "node:os";\n' +
     'import * as querystring from "node:querystring";\n' +
