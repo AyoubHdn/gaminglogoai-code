@@ -64,7 +64,8 @@ await run("npm", ["ci", "--ignore-scripts", "--no-audit", "--no-fund"]);
 await run("npx", ["next", "build"]);
 await run("npx", ["opennextjs-cloudflare", "build"]);
 const port = 18700 + Math.floor(Math.random() * 200);
-const child = spawn("npx", ["wrangler", "dev", "--local", "--config", "wrangler.jsonc", "--ip", "127.0.0.1", "--port", String(port)], {
+const wranglerEntrypoint = path.join(root, "node_modules", "wrangler", "bin", "wrangler.js");
+const child = spawn(process.execPath, [wranglerEntrypoint, "dev", "--local", "--config", "wrangler.jsonc", "--ip", "127.0.0.1", "--port", String(port)], {
   cwd: root, stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, WRANGLER_LOG_SANITIZE: "true" }
 });
 const exited = new Promise(resolve => child.once("exit", resolve));
