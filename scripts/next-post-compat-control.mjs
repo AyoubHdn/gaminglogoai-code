@@ -37,6 +37,17 @@ await writeFile(path.join(root, "pages", "api", "echo.js"), `export default func
 export const config = { api: { bodyParser: true } };
 `);
 await writeFile(path.join(root, "next.config.mjs"), "export default { reactStrictMode: true };\n");
+await writeFile(path.join(root, "tsconfig.json"), JSON.stringify({
+  compilerOptions: {
+    allowJs: true,
+    checkJs: false,
+    noEmit: true,
+    module: "esnext",
+    moduleResolution: "bundler",
+    skipLibCheck: true,
+  },
+  include: ["pages/**/*.js"],
+}, null, 2) + "\n");
 await writeFile(path.join(root, "wrangler.jsonc"), JSON.stringify({
   name: "gaminglogoai-pages-api-compat-fixture",
   main: ".open-next/worker.js",
