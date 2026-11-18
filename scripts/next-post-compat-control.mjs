@@ -10,7 +10,7 @@ const wranglerVersion = process.env.COMPAT_WRANGLER_VERSION;
 const compatibilityDate = process.env.COMPATIBILITY_DATE ?? "2026-10-06";
 if (!nextVersion || !openNextVersion || !wranglerVersion) throw new Error("missing compatibility version");
 
-function run(command, args) {
+/**\n * @param {string} command\n * @param {string[]} args\n * @returns {Promise<void>}\n */\nfunction run(command, args) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, { cwd: root, stdio: "inherit", env: process.env });
     child.on("error", reject);
