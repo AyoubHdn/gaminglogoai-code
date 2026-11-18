@@ -81,7 +81,7 @@ try {
   let ready = false;
   while (Date.now() < deadline) {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, { signal: AbortSignal.timeout(5000) });
       if (response.status > 0) {
         ready = true;
         break;
@@ -91,7 +91,7 @@ try {
   }
   if (!ready) throw new Error("wrangler dev did not become ready within 30 seconds");
   for (const item of cases) {
-    const response = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: item.body });
+    const response = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: item.body, signal: AbortSignal.timeout(5000) });
     const text = await response.text();
     if (response.status !== item.expected) throw new Error(item.name + ": expected " + item.expected + ", got " + response.status);
     results.push({ name: item.name, status: response.status, parsed: item.name === "malformed" ? null : JSON.parse(text) });
