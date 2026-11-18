@@ -68,7 +68,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REF_NAME" = "staging/gaminglogoai-auth-entrypoint-bea0"
+          test "$GITHUB_REF_NAME" = "staging/gaminglogoai-auth-entrypoint-bea0" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git status --porcelain)" = ""
 
