@@ -407,6 +407,17 @@ const mutationInput = (requestId, prompt = "Fixture gaming logo") => ({
     },
   },
 });
+/** @param {unknown} error */
+function allowlistedError(error) {
+  const value = /** @type {{name?: unknown, code?: unknown, cause?: unknown}} */ (error);
+  const cause = /** @type {{name?: unknown, code?: unknown}} */ (value.cause);
+  return {
+    errorType: typeof value.name === "string" ? value.name : "unknown",
+    errorCode: typeof value.code === "string" ? value.code : null,
+    causeType: typeof cause?.name === "string" ? cause.name : null,
+    causeCode: typeof cause?.code === "string" ? cause.code : null,
+  };
+}
 /** @param {string} body @param {string|undefined} token @param {boolean} manual */
 function postInit(body, token, manual) {
   return {
@@ -421,12 +432,23 @@ function postInit(body, token, manual) {
 /** @param {"dispatch"|"loopback"} mode @param {string} pathname @param {string} body @param {string|undefined} token @param {boolean} manual */
 async function post(mode, pathname, body, token, manual) {
   const init = postInit(body, token, manual);
-  if (mode === "dispatch") return mf.dispatchFetch("https://gaminglogoai-generation.fixture.invalid" + pathname, init);
-  const loopback = new URL(pathname, await mf.ready);
-  return fetch(loopback, {
-    ...init,
-    headers: { ...init.headers, host: new URL(origin).host },
-  });
+  try {
+    if (mode === "dispatch") {
+      return await mf.dispatchFetch("https://gaminglogoai-generation.fixture.invalid" + pathname, init);
+    }
+    const loopback = new URL(pathname, await mf.ready);
+    return await fetch(loopback, {
+      ...init,
+      headers: { ...init.headers, host: new URL(origin).host },
+    });
+  } catch (error) {
+    report.transportDiagnostics.lastError = {
+      mode,
+      pathname,
+      error: allowlistedError(error),
+    };
+    throw error;
+  }
 }
 /** @param {string} requestId @param {string=} token @param {string=} prompt @param {"dispatch"|"loopback"} mode @param {boolean} manual */
 async function mutation(requestId, token, prompt, mode = "dispatch", manual = true) {
