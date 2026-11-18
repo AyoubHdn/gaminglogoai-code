@@ -229,7 +229,7 @@ await writeFile(
     '  if (specifier === "url") return url;\n' +
     '  if (specifier === "vm") return vm;\n' +
     '  if (specifier === "crypto" || specifier === "node:crypto") return crypto;\n' +
-    '  if (specifier === "buffer") return buffer;\n' +
+    '  if (specifier === "buffer" || specifier === "node:buffer") return buffer;\n' +
     '  if (specifier === "util") return util;\n' +
     '  if (specifier === "process") return processModule;\n' +
     '  if (specifier === "stream") return stream;\n' +
