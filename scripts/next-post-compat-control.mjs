@@ -69,10 +69,18 @@ const child = spawn("npx", ["wrangler", "dev", "--local", "--config", "wrangler.
 });
 const url = "http://127.0.0.1:" + port + "/api/echo";
 const deadline = Date.now() + 30000;
+let ready = false;
 while (Date.now() < deadline) {
-  try { const response = await fetch(url); if (response.status > 0) break; } catch {}
+  try {
+    const response = await fetch(url);
+    if (response.status > 0) {
+      ready = true;
+      break;
+    }
+  } catch {}
   await new Promise(resolve => setTimeout(resolve, 250));
 }
+if (!ready) throw new Error("wrangler dev did not become ready within 30 seconds");
 const cases = [
   { name: "ascii", body: JSON.stringify({ message: "hello" }), expected: 200 },
   { name: "unicode", body: JSON.stringify({ message: "مرحبا🌙" }), expected: 200 },
@@ -89,6 +97,14 @@ try {
   }
   console.log(JSON.stringify({ result: "PAGES_API_POST_CONTROL_PASS", versions: { node: process.version, next: nextVersion, openNext: openNextVersion, wrangler: wranglerVersion }, lockSha, compatibilityDate, flags: ["nodejs_compat", "nodejs_als"], cases: results }));
 } finally {
+  const exited = new Promise(resolve => child.once("exit", resolve));
   child.kill("SIGTERM");
-  await new Promise(resolve => child.once("exit", resolve));
+  const stopped = await Promise.race([
+    exited.then(() => true),
+    new Promise(resolve => setTimeout(() => resolve(false), 5000)),
+  ]);
+  if (!stopped) {
+    child.kill("SIGKILL");
+    await exited;
+  }
 }
