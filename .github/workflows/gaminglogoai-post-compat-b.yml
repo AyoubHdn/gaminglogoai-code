@@ -1,27 +1,42 @@
 name: GamingLogoAI POST compatibility B
 on:
   push:
-    branches: [experiment/gaminglogoai-post-body-b]
-permissions: { contents: read }
+    branches:
+      - experiment/gaminglogoai-post-body-b
+
+permissions:
+  contents: read
+
 jobs:
   compatibility:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
-      - uses: actions/checkout@v4
-        with: { ref: ${{ github.sha }}, fetch-depth: 0 }
-      - uses: actions/setup-node@v4
-        with: { node-version: 22 }
+      - name: Check out exact pushed commit
+        uses: actions/checkout@v4
+        with:
+          ref: "${{ github.sha }}"
+          fetch-depth: 0
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
       - name: Verify immutable baseline ancestry
+        shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor 0f11fb40f72cef5b0e3c13982fbebf5259a642fd "$GITHUB_SHA"
-      - name: Install baseline application dependencies
+
+      - name: Install baseline dependencies
         run: npm ci --include=dev
+
       - name: Isolate newer Wrangler runtime
         run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund wrangler@4.164.0
-      - name: Build baseline OpenNext
+
+      - name: Build GamingLogoAI OpenNext
         env:
           NODE_ENV: production
           NEXTAUTH_URL: https://fixture.invalid
@@ -33,9 +48,16 @@ jobs:
         run: |
           npm run build
           npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion
+
       - name: Minimal Pages Router POST control
-        env: { COMPAT_NEXT_VERSION: 14.2.15, COMPAT_OPENNEXT_VERSION: 1.14.0, COMPAT_WRANGLER_VERSION: 4.164.0 }
+        env:
+          COMPAT_NEXT_VERSION: "14.2.15"
+          COMPAT_OPENNEXT_VERSION: "1.14.0"
+          COMPAT_WRANGLER_VERSION: "4.164.0"
         run: node scripts/next-post-compat-control.mjs
+
       - name: GamingLogoAI compiled HTTP probe
-        env: { GENERATION_HTTP_FIXTURE_ROOT: ${{ github.workspace }}/.open-next }
+        env:
+          GENERATION_HTTP_FIXTURE_ROOT: "${{ github.workspace }}/.open-next"
         run: node scripts/generation-http-runtime-smoke.mjs
+
