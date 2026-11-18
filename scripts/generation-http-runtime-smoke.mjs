@@ -448,13 +448,13 @@ async function post(mode, pathname, body, token, manual) {
           headers: init.headers,
         },
         (response) => {
-          const chunks = [];
+          const chunks = /** @type {Buffer[]} */ ([]);
           response.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
           response.on("end", () => {
-            const responseHeaders = Object.entries(response.headers).map(([key, value]) => [
-              key,
-              Array.isArray(value) ? value.join(",") : value ?? "",
-            ]);
+            const responseHeaders = /** @type {Record<string, string>} */ ({});
+            for (const [key, value] of Object.entries(response.headers)) {
+              responseHeaders[key] = Array.isArray(value) ? value.join(",") : value ?? "";
+            }
             resolve(
               new Response(Buffer.concat(chunks), {
                 status: response.statusCode ?? 0,
