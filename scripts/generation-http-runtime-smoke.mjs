@@ -454,13 +454,14 @@ async function summarizeErrorResponse(response) {
 try {
   await mf.ready;
   const echoBody = JSON.stringify({ fixture: "body-transport", value: "x".repeat(64) });
-  const echoCases = {};
-  for (const [mode, manual] of [
+  const echoCases = /** @type {Record<string, Record<string, unknown>>} */ ({});
+  const echoModes = /** @type {Array<["dispatch"|"loopback", boolean]>} */ ([
     ["dispatch", true],
     ["dispatch", false],
     ["loopback", true],
     ["loopback", false],
-  ]) {
+  ]);
+  for (const [mode, manual] of echoModes) {
     const key = mode + "-" + (manual ? "manual" : "automatic");
     const echoResponse = await post(mode, "/__fixture/body-echo", echoBody, undefined, manual);
     const echoPayload = await echoResponse.json();
@@ -480,7 +481,11 @@ try {
   checks.push("front-to-app-body-echo-preserved");
 
   const unknownBody = JSON.stringify({ 0: { json: {} } });
-  for (const [mode, manual] of [["dispatch", true], ["loopback", false]]) {
+  const unknownModes = /** @type {Array<["dispatch"|"loopback", boolean]>} */ ([
+    ["dispatch", true],
+    ["loopback", false],
+  ]);
+  for (const [mode, manual] of unknownModes) {
     const key = mode + "-app-post";
     const unknownResponse = await post(
       mode,
