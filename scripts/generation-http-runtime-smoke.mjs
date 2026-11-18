@@ -225,7 +225,7 @@ await writeFile(
     '  if (specifier === "async_hooks") return { AsyncLocalStorage };\n' +
     '  if (specifier === "fs") return fs;\n' +
     '  if (specifier === "fs/promises") return fsPromises;\n' +
-    '  if (specifier === "path") return path;\n' +
+    '  if (specifier === "path" || specifier === "node:path") return path;\n' +
     '  if (specifier === "url") return url;\n' +
     '  if (specifier === "vm") return vm;\n' +
     '  if (specifier === "crypto" || specifier === "node:crypto") return crypto;\n' +
