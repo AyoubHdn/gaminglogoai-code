@@ -68,19 +68,6 @@ const child = spawn("npx", ["wrangler", "dev", "--local", "--config", "wrangler.
   cwd: root, stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, WRANGLER_LOG_SANITIZE: "true" }
 });
 const url = "http://127.0.0.1:" + port + "/api/echo";
-const deadline = Date.now() + 30000;
-let ready = false;
-while (Date.now() < deadline) {
-  try {
-    const response = await fetch(url);
-    if (response.status > 0) {
-      ready = true;
-      break;
-    }
-  } catch {}
-  await new Promise(resolve => setTimeout(resolve, 250));
-}
-if (!ready) throw new Error("wrangler dev did not become ready within 30 seconds");
 const cases = [
   { name: "ascii", body: JSON.stringify({ message: "hello" }), expected: 200 },
   { name: "unicode", body: JSON.stringify({ message: "مرحبا🌙" }), expected: 200 },
@@ -89,6 +76,19 @@ const cases = [
 ];
 const results = [];
 try {
+  const deadline = Date.now() + 30000;
+  let ready = false;
+  while (Date.now() < deadline) {
+    try {
+      const response = await fetch(url);
+      if (response.status > 0) {
+        ready = true;
+        break;
+      }
+    } catch {}
+    await new Promise(resolve => setTimeout(resolve, 250));
+  }
+  if (!ready) throw new Error("wrangler dev did not become ready within 30 seconds");
   for (const item of cases) {
     const response = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: item.body });
     const text = await response.text();
