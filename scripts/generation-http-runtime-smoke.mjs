@@ -228,7 +228,7 @@ await writeFile(
     '  if (specifier === "path") return path;\n' +
     '  if (specifier === "url") return url;\n' +
     '  if (specifier === "vm") return vm;\n' +
-    '  if (specifier === "crypto") return crypto;\n' +
+    '  if (specifier === "crypto" || specifier === "node:crypto") return crypto;\n' +
     '  if (specifier === "buffer") return buffer;\n' +
     '  if (specifier === "util") return util;\n' +
     '  if (specifier === "process") return processModule;\n' +
