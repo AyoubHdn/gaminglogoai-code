@@ -330,7 +330,7 @@ const runtimeOptions = {
   workers: [
     {
       name: "gaminglogoai-generation-http-front",
-      routes: ["gaminglogoai-generation.fixture.invalid/*"],
+      routes: ["*/*"],
       compatibilityDate: runtimeDate,
       compatibilityFlags: ["nodejs_compat", "nodejs_als"],
       modules: [
@@ -437,10 +437,7 @@ async function post(mode, pathname, body, token, manual) {
       return await mf.dispatchFetch("https://gaminglogoai-generation.fixture.invalid" + pathname, init);
     }
     const loopback = new URL(pathname, await mf.ready);
-    return await fetch(loopback, {
-      ...init,
-      headers: { ...init.headers, host: new URL(origin).host },
-    });
+    return await fetch(loopback, init);
   } catch (error) {
     report.transportDiagnostics.lastError = {
       mode,
@@ -498,6 +495,7 @@ try {
       contentLength: echoPayload.contentLength ?? null,
       transferEncoding: echoPayload.transferEncoding ?? null,
     };
+    report.transportDiagnostics.echo = echoCases;
   }
   report.transportDiagnostics.echo = echoCases;
   checks.push("front-to-app-body-echo-preserved");
