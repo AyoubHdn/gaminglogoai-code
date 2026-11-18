@@ -200,18 +200,6 @@ const assets = path.join(outputRoot, "assets");
 const compiledWorker = path.join(root, ".ci-generation-worker.mjs");
 await copyFile(bundle, compiledWorker);
 const entryShim = path.join(root, ".ci-generation-entry.mjs");
-const globalValues = /** @type {Record<string, unknown>} */ (globalThis);
-const streamWeb = Object.fromEntries([
-  "ReadableStream",
-  "WritableStream",
-  "TransformStream",
-  "CompressionStream",
-  "DecompressionStream",
-  "TextEncoderStream",
-  "TextDecoderStream",
-  "ByteLengthQueuingStrategy",
-  "CountQueuingStrategy",
-].map((name) => [name, globalValues[name]]));
 await writeFile(
   entryShim,
   'import { AsyncLocalStorage } from "node:async_hooks";\n' +
@@ -233,6 +221,11 @@ await writeFile(
     'import * as http from "node:http";\n' +
     'import * as https from "node:https";\n' +
     'globalThis.AsyncLocalStorage = AsyncLocalStorage;\n' +
+    'const streamWeb = Object.fromEntries([\n' +
+    '  "ReadableStream", "WritableStream", "TransformStream",\n' +
+    '  "CompressionStream", "DecompressionStream", "TextEncoderStream",\n' +
+    '  "TextDecoderStream", "ByteLengthQueuingStrategy", "CountQueuingStrategy",\n' +
+    '].map((name) => [name, globalThis[name]]));\n' +
     'globalThis.require = (specifier) => {\n' +
     '  if (specifier === "async_hooks") return { AsyncLocalStorage };\n' +
     '  if (specifier === "fs") return fs;\n' +
