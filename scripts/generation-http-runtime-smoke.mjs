@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import { copyFile, mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { request as httpRequest } from "node:http";
 
 const root = path.resolve(process.env.GENERATION_HTTP_FIXTURE_ROOT ?? process.cwd());
 const outputRoot = process.env.GENERATION_HTTP_FIXTURE_ROOT
@@ -437,7 +438,35 @@ async function post(mode, pathname, body, token, manual) {
       return await mf.dispatchFetch("https://gaminglogoai-generation.fixture.invalid" + pathname, init);
     }
     const loopback = new URL(pathname, await mf.ready);
-    return await fetch(loopback, init);
+    return await new Promise((resolve, reject) => {
+      const request = httpRequest(
+        {
+          hostname: loopback.hostname,
+          port: loopback.port,
+          path: loopback.pathname + loopback.search,
+          method: "POST",
+          headers: init.headers,
+        },
+        (response) => {
+          const chunks = [];
+          response.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+          response.on("end", () => {
+            const responseHeaders = Object.entries(response.headers).map(([key, value]) => [
+              key,
+              Array.isArray(value) ? value.join(",") : value ?? "",
+            ]);
+            resolve(
+              new Response(Buffer.concat(chunks), {
+                status: response.statusCode ?? 0,
+                headers: responseHeaders,
+              }),
+            );
+          });
+        },
+      );
+      request.on("error", reject);
+      request.end(init.body);
+    });
   } catch (error) {
     report.transportDiagnostics.lastError = {
       mode,
