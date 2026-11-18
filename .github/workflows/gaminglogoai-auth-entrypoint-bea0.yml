@@ -387,6 +387,9 @@ jobs:
         run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund wrangler@4.164.0
 
 
+      - name: Install compatibility test database driver
+        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund postgres@3.4.7
+
       - name: Build GamingLogoAI OpenNext
         env:
           NODE_ENV: production
