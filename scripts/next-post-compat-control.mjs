@@ -67,6 +67,7 @@ const port = 18700 + Math.floor(Math.random() * 200);
 const child = spawn("npx", ["wrangler", "dev", "--local", "--config", "wrangler.jsonc", "--ip", "127.0.0.1", "--port", String(port)], {
   cwd: root, stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, WRANGLER_LOG_SANITIZE: "true" }
 });
+const exited = new Promise(resolve => child.once("exit", resolve));
 const url = "http://127.0.0.1:" + port + "/api/echo";
 const cases = [
   { name: "ascii", body: JSON.stringify({ message: "hello" }), expected: 200 },
@@ -97,7 +98,6 @@ try {
   }
   console.log(JSON.stringify({ result: "PAGES_API_POST_CONTROL_PASS", versions: { node: process.version, next: nextVersion, openNext: openNextVersion, wrangler: wranglerVersion }, lockSha, compatibilityDate, flags: ["nodejs_compat", "nodejs_als"], cases: results }));
 } finally {
-  const exited = new Promise(resolve => child.once("exit", resolve));
   child.kill("SIGTERM");
   const stopped = await Promise.race([
     exited.then(() => true),
