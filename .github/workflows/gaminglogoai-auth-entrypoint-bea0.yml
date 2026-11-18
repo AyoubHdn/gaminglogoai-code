@@ -381,15 +381,14 @@ jobs:
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           git merge-base --is-ancestor 0f11fb40f72cef5b0e3c13982fbebf5259a642fd "$GITHUB_SHA"
 
-      - name: Install dependencies
-        run: npm ci --include=dev
       - name: Resolve exact candidate lockfile
         shell: bash
         run: |
           set -euo pipefail
           npm install --package-lock-only --ignore-scripts --save-exact --no-audit --no-fund
           sha256sum package-lock.json | tee .ci-compat-lock-sha.txt
-          npm ci --include=dev
+      - name: Install candidate dependencies
+        run: npm ci --include=dev
 
 
       - name: Build GamingLogoAI OpenNext
