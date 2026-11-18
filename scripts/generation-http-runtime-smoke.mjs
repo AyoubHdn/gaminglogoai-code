@@ -213,6 +213,7 @@ await writeFile(
     'import * as util from "node:util";\n' +
     'import * as processModule from "node:process";\n' +
     'import * as stream from "node:stream";\n' +
+    'import * as streamWeb from "node:stream/web";\n' +
     'import * as events from "node:events";\n' +
     'import * as os from "node:os";\n' +
     'import * as querystring from "node:querystring";\n' +
@@ -233,6 +234,7 @@ await writeFile(
     '  if (specifier === "util") return util;\n' +
     '  if (specifier === "process") return processModule;\n' +
     '  if (specifier === "stream") return stream;\n' +
+    '  if (specifier === "node:stream/web") return streamWeb;\n' +
     '  if (specifier === "events") return events;\n' +
     '  if (specifier === "os") return os;\n' +
     '  if (specifier === "querystring") return querystring;\n' +
