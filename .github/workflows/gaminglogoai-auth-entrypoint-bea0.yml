@@ -391,6 +391,9 @@ jobs:
         run: npm ci --include=dev
 
 
+      - name: Install compatibility test database driver
+        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund postgres@3.4.7
+
       - name: Build GamingLogoAI OpenNext
         env:
           NODE_ENV: production
