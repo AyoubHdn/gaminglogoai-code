@@ -355,7 +355,9 @@ jobs:
       - name: Diff check
         run: git diff --check
 
-\n\n  compatibility-experiment:
+
+
+  compatibility-experiment:
     if: github.ref_name == 'experiment/gaminglogoai-post-body-c'
     runs-on: ubuntu-latest
     timeout-minutes: 35
