@@ -532,10 +532,13 @@ try {
   const unknownBody = JSON.stringify({ 0: { json: {} } });
   const unknownModes = /** @type {Array<["dispatch"|"loopback", boolean]>} */ ([
     ["dispatch", true],
+    ["dispatch", false],
+    ["loopback", true],
     ["loopback", false],
   ]);
+  const appPostCases = /** @type {Record<string, Record<string, unknown>>} */ ({});
   for (const [mode, manual] of unknownModes) {
-    const key = mode + "-app-post";
+    const key = mode + "-app-post-" + (manual ? "manual" : "automatic");
     const unknownResponse = await post(
       mode,
       "/api/trpc/fixture.unknown?batch=1",
@@ -544,8 +547,30 @@ try {
       manual,
     );
     const summary = await summarizeErrorResponse(unknownResponse);
-    report.transportDiagnostics[key] = summary;
-    assert.notEqual(summary.firstLine, "Invalid body");
+    appPostCases[key] = {
+      ...summary,
+      sentBytes: Buffer.byteLength(unknownBody),
+    };
+  }
+  report.transportDiagnostics.appPost = appPostCases;
+  const generatedIndex = path.join(outputRoot, "server-functions", "default", "index.mjs");
+  const generatedSource = await readFile(generatedIndex, "utf8");
+  report.transportDiagnostics.openNextRequestShape = {
+    bodyAssignedToIncomingMessage: generatedSource.includes("body: preprocessedEvent.body"),
+    readableFalse: generatedSource.includes("readable: false"),
+    completeTrue: generatedSource.includes("complete: true"),
+    requestParser: "Next parse-body -> compiled raw-body",
+  };
+  const invalidBodyCount = Object.values(appPostCases).filter(
+    (summary) => summary.firstLine === "Invalid body",
+  ).length;
+  if (invalidBodyCount === unknownModes.length) {
+    report.failurePhase = JSON.stringify({
+      kind: "compiled-open-next-body-parser",
+      invalidBodyCount,
+      appPost: appPostCases,
+    });
+    throw new Error("compiled app rejected POST bodies in all transport modes");
   }
   checks.push("compiled-app-post-body-parsed");
 
