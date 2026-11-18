@@ -3,7 +3,7 @@ name: GamingLogoAI auth entrypoint
 on:
   push:
     branches:
-      - staging/gaminglogoai-auth-entrypoint-bea0
+      - staging/gaminglogoai-auth-entrypoint-bea0\r\n      - experiment/gaminglogoai-post-body-c
 
 permissions:
   contents: read
@@ -355,3 +355,84 @@ jobs:
       - name: Diff check
         run: git diff --check
 
+\n\n  compatibility-experiment:
+    if: github.ref_name == 'experiment/gaminglogoai-post-body-c'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Check out exact pushed commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify immutable baseline ancestry
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git merge-base --is-ancestor 0f11fb40f72cef5b0e3c13982fbebf5259a642fd "$GITHUB_SHA"
+
+      - name: Install dependencies
+        run: npm ci --include=dev
+      - name: Resolve exact candidate lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --package-lock-only --ignore-scripts --save-exact --no-audit --no-fund
+          sha256sum package-lock.json | tee .ci-compat-lock-sha.txt
+          npm ci --include=dev
+
+
+      - name: Build GamingLogoAI OpenNext
+        env:
+          NODE_ENV: production
+          DATABASE_URL: postgresql://invalid:invalid@db.invalid:5432/invalid
+          DB_AUTH_BACKEND: service
+          DB_READS_BACKEND: service
+          DB_GENERATION_BACKEND: service
+          CLOUDFLARE_READ_ONLY_MODE: "true"
+          AUTH_EXTERNAL_SYNC_MODE: disabled
+          NEXTAUTH_SECRET: fixture-nextauth-secret
+          NEXTAUTH_URL: https://fixture.invalid
+          HOST_NAME: https://fixture.invalid
+          GOOGLE_CLIENT_ID: fixture-google-client
+          GOOGLE_CLIENT_SECRET: fixture-google-secret
+          REPLICATE_API_TOKEN: fixture-replicate-token
+          MOCK_REPLICATE: "true"
+          SECRET_ACCESS_KEY: fixture-secret-key
+          ACCESS_KEY_ID: fixture-access-key
+          STRIPE_SECRET_KEY: sk_test_fixture
+          STRIPE_WEB_HOOK_SECRET: whsec_fixture
+          PRICE_ID_STARTER: price_fixture_starter
+          PRICE_ID_PRO: price_fixture_pro
+          PRICE_ID_ELITE: price_fixture_elite
+          MAUTIC_BASE_URL: http://127.0.0.1:9
+          MAUTIC_USERNAME: fixture-mautic
+          MAUTIC_PASSWORD: fixture-mautic-password
+          CRON_SECRET: fixture-cron-secret
+          MYLEAD_SECURITY_KEY: fixture-mylead-key
+          IPAPI_KEY: fixture-ipapi-key
+          NEXT_PUBLIC_STRIPE_KEY: pk_test_fixture
+          NEXT_PUBLIC_AWS_REGION_GAMING: us-east-1
+          NEXT_PUBLIC_S3_BUCKET_NAME_GAMING: gaminglogoai-fixture
+        run: |
+          npm run build
+          npx opennextjs-cloudflare build
+
+      - name: Minimal Pages Router POST control
+        env:
+          COMPAT_NEXT_VERSION: "15.5.29"
+          COMPAT_OPENNEXT_VERSION: "1.20.17"
+          COMPAT_WRANGLER_VERSION: "4.148.0"
+        run: node scripts/next-post-compat-control.mjs
+
+      - name: GamingLogoAI compiled HTTP probe
+        env:
+          GENERATION_HTTP_FIXTURE_ROOT: ${{ github.workspace }}/.open-next
+        run: node scripts/generation-http-runtime-smoke.mjs
