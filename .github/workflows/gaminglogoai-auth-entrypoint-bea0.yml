@@ -78,6 +78,9 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Resolve candidate lockfile
+        run: npm install --package-lock-only --ignore-scripts --save-exact --no-audit --no-fund
+
       - name: Install pinned dependencies
         run: npm ci --include=dev
 
