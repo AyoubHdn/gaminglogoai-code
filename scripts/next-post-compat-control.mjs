@@ -48,6 +48,7 @@ await writeFile(path.join(root, "tsconfig.json"), JSON.stringify({
   },
   include: ["pages/**/*.js"],
 }, null, 2) + "\n");
+await writeFile(path.join(root, "open-next.config.ts"), 'import { defineCloudflareConfig } from "@opennextjs/cloudflare";\nexport default defineCloudflareConfig({});\n');
 await writeFile(path.join(root, "wrangler.jsonc"), JSON.stringify({
   name: "gaminglogoai-pages-api-compat-fixture",
   main: ".open-next/worker.js",
