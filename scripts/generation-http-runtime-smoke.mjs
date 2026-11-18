@@ -244,11 +244,17 @@ await writeFile(
     'const compiled = await import("./.ci-generation-worker.mjs");\n' +
     'export default compiled.default;\n',
 );
+const appProxy = path.join(root, ".ci-generation-app-proxy.mjs");
+await writeFile(
+  appProxy,
+  'export default {async fetch(request,env){const url=new URL(request.url);if(url.pathname==="/__fixture/body-echo"){try{const bytes=new Uint8Array(await request.arrayBuffer());return new Response(JSON.stringify({receivedBytes:bytes.byteLength,contentLength:request.headers.get("content-length"),transferEncoding:request.headers.get("transfer-encoding")}),{status:200,headers:{"content-type":"application/json"}});}catch(error){return new Response(JSON.stringify({errorType:error?.constructor?.name??"unknown",errorCode:error?.code??null}),{status:500,headers:{"content-type":"application/json"}});}}return env.NEXT.fetch(request);}};'
+);
 const moduleFiles = [
   entryShim,
   compiledWorker,
+  appProxy,
   ...(await allFiles(outputRoot)).filter(
-    (file) => file !== bundle && file !== compiledWorker && file !== entryShim,
+    (file) => file !== bundle && file !== compiledWorker && file !== entryShim && file !== appProxy,
   ),
 ]
   .filter((file) => file.endsWith(".js") || file.endsWith(".mjs"))
@@ -337,8 +343,18 @@ const runtimeOptions = {
       ],
       modulesRoot: root,
       serviceBindings: {
-        APP: "gaminglogoai-generation-http-fixture",
+        APP: "gaminglogoai-generation-http-proxy",
         ASSETS: createAssetFixture(assets),
+      },
+    },
+    {
+      name: "gaminglogoai-generation-http-proxy",
+      modules: [{ type: "ESModule", path: appProxy }],
+      modulesRoot: root,
+      compatibilityDate: runtimeDate,
+      compatibilityFlags: ["nodejs_compat", "nodejs_als"],
+      serviceBindings: {
+        NEXT: "gaminglogoai-generation-http-fixture",
       },
     },
     appOptions,
@@ -354,7 +370,7 @@ const makeMiniflare = (options) =>
 const mf = makeMiniflare(runtimeOptions);
 /** @type {string[]} */
 const checks = [];
-/** @typedef {{result: string, fixtureOnly: boolean, deployable: boolean, workerdVersion: string, miniflareVersion: string, runtimeCompatibilityDate: string, checks: string[], dbOperations: string[], dbCalls: Array<Record<string, unknown>>, mockedProviderCalls: number, mockedS3Uploads: number, blockedOutbound: number, blockedUrls: string[], missingBindingLayer: string|null, failurePhase: string|null}} ProbeReport */
+/** @typedef {{result: string, fixtureOnly: boolean, deployable: boolean, workerdVersion: string, miniflareVersion: string, runtimeCompatibilityDate: string, checks: string[], dbOperations: string[], dbCalls: Array<Record<string, unknown>>, mockedProviderCalls: number, mockedS3Uploads: number, blockedOutbound: number, blockedUrls: string[], missingBindingLayer: string|null, failurePhase: string|null, transportDiagnostics: Record<string, unknown>}} ProbeReport */
 /** @type {ProbeReport} */
 const report = {
   result: "GAMINGLOGOAI_GENERATION_HTTP_PROBE_STOPPED",
@@ -372,6 +388,7 @@ const report = {
   blockedUrls,
   missingBindingLayer: null,
   failurePhase: null,
+  transportDiagnostics: {},
 };
 /** @param {string|undefined} token @returns {Record<string, string>} */
 const headers = (token) => ({
@@ -390,17 +407,37 @@ const mutationInput = (requestId, prompt = "Fixture gaming logo") => ({
     },
   },
 });
-/** @param {string} requestId @param {string=} token @param {string=} prompt */
-async function mutation(requestId, token, prompt) {
-  const body = JSON.stringify(mutationInput(requestId, prompt));
-  return mf.dispatchFetch(`${origin}/api/trpc/generate.generateIcon?batch=1`, {
+/** @param {string} body @param {string|undefined} token @param {boolean} manual */
+function postInit(body, token, manual) {
+  return {
     method: "POST",
     headers: {
       ...headers(token),
-      "content-length": String(Buffer.byteLength(body)),
+      ...(manual ? { "content-length": String(Buffer.byteLength(body)) } : {}),
     },
     body,
+  };
+}
+/** @param {"dispatch"|"loopback"} mode @param {string} pathname @param {string} body @param {string|undefined} token @param {boolean} manual */
+async function post(mode, pathname, body, token, manual) {
+  const init = postInit(body, token, manual);
+  if (mode === "dispatch") return mf.dispatchFetch("https://gaminglogoai-generation.fixture.invalid" + pathname, init);
+  const loopback = new URL(pathname, await mf.ready);
+  return fetch(loopback, {
+    ...init,
+    headers: { ...init.headers, host: new URL(origin).host },
   });
+}
+/** @param {string} requestId @param {string=} token @param {string=} prompt @param {"dispatch"|"loopback"} mode @param {boolean} manual */
+async function mutation(requestId, token, prompt, mode = "dispatch", manual = true) {
+  const body = JSON.stringify(mutationInput(requestId, prompt));
+  return post(
+    mode,
+    "/api/trpc/generate.generateIcon?batch=1",
+    body,
+    token,
+    manual,
+  );
 }
 
 /** @param {Response} response @returns {Promise<Record<string, unknown>>} */
@@ -416,6 +453,48 @@ async function summarizeErrorResponse(response) {
 }
 try {
   await mf.ready;
+  const echoBody = JSON.stringify({ fixture: "body-transport", value: "x".repeat(64) });
+  const echoCases = {};
+  for (const [mode, manual] of [
+    ["dispatch", true],
+    ["dispatch", false],
+    ["loopback", true],
+    ["loopback", false],
+  ]) {
+    const key = mode + "-" + (manual ? "manual" : "automatic");
+    const echoResponse = await post(mode, "/__fixture/body-echo", echoBody, undefined, manual);
+    const echoPayload = await echoResponse.json();
+    const expectedBytes = Buffer.byteLength(echoBody);
+    assert.equal(echoResponse.status, 200);
+    assert.equal(echoPayload.receivedBytes, expectedBytes);
+    if (manual) assert.equal(echoPayload.contentLength, String(expectedBytes));
+    echoCases[key] = {
+      status: echoResponse.status,
+      sentBytes: expectedBytes,
+      receivedBytes: echoPayload.receivedBytes,
+      contentLength: echoPayload.contentLength ?? null,
+      transferEncoding: echoPayload.transferEncoding ?? null,
+    };
+  }
+  report.transportDiagnostics.echo = echoCases;
+  checks.push("front-to-app-body-echo-preserved");
+
+  const unknownBody = JSON.stringify({ 0: { json: {} } });
+  for (const [mode, manual] of [["dispatch", true], ["loopback", false]]) {
+    const key = mode + "-app-post";
+    const unknownResponse = await post(
+      mode,
+      "/api/trpc/fixture.unknown?batch=1",
+      unknownBody,
+      undefined,
+      manual,
+    );
+    const summary = await summarizeErrorResponse(unknownResponse);
+    report.transportDiagnostics[key] = summary;
+    assert.notEqual(summary.firstLine, "Invalid body");
+  }
+  checks.push("compiled-app-post-body-parsed");
+
   const anonymous = await mutation(requestA);
   if (anonymous.status !== 401) {
     report.failurePhase = JSON.stringify({
