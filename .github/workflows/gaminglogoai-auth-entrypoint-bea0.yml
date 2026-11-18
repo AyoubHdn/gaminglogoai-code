@@ -3,7 +3,8 @@ name: GamingLogoAI auth entrypoint
 on:
   push:
     branches:
-      - staging/gaminglogoai-auth-entrypoint-bea0\r\n      - experiment/gaminglogoai-post-body-c
+      - staging/gaminglogoai-auth-entrypoint-bea0
+      - experiment/gaminglogoai-post-body-c
 
 permissions:
   contents: read
