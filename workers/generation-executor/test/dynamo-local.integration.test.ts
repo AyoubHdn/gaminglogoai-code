@@ -28,13 +28,13 @@ if (!endpointValue) throw new Error("DYNAMODB_LOCAL_ENDPOINT is required");
 const endpoint = new URL(endpointValue);
 if (
   endpoint.protocol !== "http:" ||
-  endpoint.hostname !== "localhost" ||
+  !["localhost", "127.0.0.1"].includes(endpoint.hostname) ||
   endpoint.port !== "8000" ||
   endpoint.pathname !== "/" ||
   endpoint.search ||
   endpoint.hash
 )
-  throw new Error("DYNAMODB_LOCAL_ENDPOINT must be http://127.0.0.1:8000/");
+  throw new Error("DYNAMODB_LOCAL_ENDPOINT must be an HTTP loopback endpoint on port 8000");
 
 const tableName = `gaminglogoai-executor-ci-${randomUUID().replaceAll("-", "").slice(0, 16)}`;
 const scope = "gaminglogoai-staging-ci";
@@ -48,6 +48,40 @@ const config: ExecutorConfig = {
 };
 
 const testClients = new Set<DynamoDBClient>();
+
+type SdkFailureSummary = {
+  name: string | null;
+  code: string | null;
+  httpStatus: number | null;
+  causeCode: string | null;
+  phase: "connect" | "socket" | "response" | "unknown";
+};
+
+function recordValue(value: unknown): Record<string, unknown> | null {
+  return typeof value === "object" && value !== null
+    ? (value as Record<string, unknown>)
+    : null;
+}
+
+function summarizeSdkFailure(error: unknown): SdkFailureSummary {
+  const value = recordValue(error);
+  const metadata = recordValue(value?.$metadata);
+  const cause = recordValue(value?.cause);
+  const name = typeof value?.name === "string" ? value.name : null;
+  const code = typeof value?.code === "string" ? value.code : null;
+  const causeCode = typeof cause?.code === "string" ? cause.code : null;
+  const httpStatus =
+    typeof metadata?.httpStatusCode === "number" ? metadata.httpStatusCode : null;
+  const phase =
+    causeCode === "ECONNREFUSED" || causeCode === "ENOTFOUND"
+      ? "connect"
+      : name === "TimeoutError" || causeCode === "ETIMEDOUT"
+        ? "socket"
+        : httpStatus !== null
+          ? "response"
+          : "unknown";
+  return { name, code, httpStatus, causeCode, phase };
+}
 
 function createClient(): DynamoDBClient {
   return new DynamoDBClient({
@@ -130,18 +164,25 @@ async function createTable(client: DynamoDBClient): Promise<void> {
 }
 
 async function waitForSignedSdkReadiness(): Promise<void> {
+  let firstFailure: SdkFailureSummary | undefined;
+  let lastFailure: SdkFailureSummary | undefined;
   for (let attempt = 0; attempt < 30; attempt++) {
     const client = createClient();
     try {
       await client.send(new ListTablesCommand({}));
       return;
-    } catch {
+    } catch (error) {
+      const summary = summarizeSdkFailure(error);
+      firstFailure ??= summary;
+      lastFailure = summary;
       await new Promise((resolve) => setTimeout(resolve, 500));
     } finally {
       client.destroy();
     }
   }
-  throw new Error("DynamoDB Local AWS SDK readiness timeout");
+  throw new Error(
+    `DynamoDB Local AWS SDK readiness timeout: ${JSON.stringify({ attempts: 30, firstFailure, lastFailure })}`,
+  );
 }
 
 async function expectNew(store: DynamoExecutionStore, input: GenerationExecutionRequest) {
