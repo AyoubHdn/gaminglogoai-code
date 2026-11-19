@@ -71,7 +71,6 @@ async function render(base64, shouldWatermark) {
 }
 
 const pipeline = {
-  /** @param {FixtureInput} _input */
   async generate() {
     providerCalls++;
     return [baseImage.toString("base64")];
