@@ -7,6 +7,7 @@ import {
   DescribeTableCommand,
   DynamoDBClient,
   GetItemCommand,
+  ListTablesCommand,
   PutItemCommand,
 } from "@aws-sdk/client-dynamodb";
 import {
@@ -55,8 +56,8 @@ function createClient(): DynamoDBClient {
     credentials: { accessKeyId: "local", secretAccessKey: "local" },
     maxAttempts: 1,
     requestHandler: new NodeHttpHandler({
-      connectionTimeout: 5000,
-      socketTimeout: 5000,
+      connectionTimeout: 1500,
+      socketTimeout: 1500,
     }),
   });
 }
@@ -125,6 +126,21 @@ async function createTable(client: DynamoDBClient): Promise<void> {
   throw new Error("DynamoDB Local table did not become ACTIVE");
 }
 
+async function waitForSignedSdkReadiness(): Promise<void> {
+  for (let attempt = 0; attempt < 30; attempt++) {
+    const client = createClient();
+    try {
+      await client.send(new ListTablesCommand({}));
+      return;
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    } finally {
+      client.destroy();
+    }
+  }
+  throw new Error("DynamoDB Local AWS SDK readiness timeout");
+}
+
 async function expectNew(store: DynamoExecutionStore, input: GenerationExecutionRequest) {
   const result = await store.begin(input);
   assert.equal(result.kind, "new");
@@ -132,6 +148,7 @@ async function expectNew(store: DynamoExecutionStore, input: GenerationExecution
 }
 
 test("DynamoExecutionStore and handler use durable DynamoDB Local state", async (t) => {
+  await waitForSignedSdkReadiness();
   const admin = createClient();
   await createTable(admin);
   t.after(async () => {
