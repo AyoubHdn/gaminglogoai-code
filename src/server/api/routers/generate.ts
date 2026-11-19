@@ -211,7 +211,15 @@ export function createGenerateRouter(
               });
 
               try {
-                await upload(icon, image, shouldWatermark);
+                await upload(
+                  {
+                    id: icon.id,
+                    prompt: icon.prompt ?? input.prompt,
+                    imageKey: null,
+                  },
+                  image,
+                  shouldWatermark,
+                );
               } catch (s3Error) {
                 console.error("S3 Upload Error:", s3Error);
                 throw new TRPCError({

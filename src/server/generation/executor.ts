@@ -42,7 +42,7 @@ export function createFunctionGenerationExecutor(
           reason: "invalid-result",
         };
       try {
-        await Promise.all(
+        const uploads = await Promise.allSettled(
           input.plannedOutputIds.map((id, index) =>
             upload(
               { id, prompt: input.prompt, imageKey: null },
@@ -51,6 +51,12 @@ export function createFunctionGenerationExecutor(
             ),
           ),
         );
+        if (uploads.some((upload) => upload.status === "rejected"))
+          return {
+            status: "failed",
+            certainty: "definitive",
+            reason: "storage",
+          };
       } catch {
         return {
           status: "failed",
