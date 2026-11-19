@@ -53,7 +53,7 @@ export const generationErrorCodes = [
 export type GenerationErrorCode = (typeof generationErrorCodes)[number];
 export class GenerationError extends Error {
   readonly code: GenerationErrorCode;
-  constructor(code: GenerationErrorCode, message = code) {
+  constructor(code: GenerationErrorCode, message: string = code) {
     super(message);
     this.code = code;
   }

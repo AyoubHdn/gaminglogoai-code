@@ -6,6 +6,19 @@ import type { GenerationExecutor } from "./contract.ts";
 
 type Runtime = { GENERATION_EXECUTOR?: GenerationExecutorBinding };
 
+function getGenerationExecutorBinding(value: unknown): GenerationExecutorBinding | undefined {
+  if (typeof value !== "object" || value === null) return undefined;
+  const binding = Reflect.get(value, "GENERATION_EXECUTOR");
+  if (typeof binding !== "object" || binding === null) return undefined;
+  const fetch = Reflect.get(binding, "fetch");
+  if (typeof fetch !== "function") return undefined;
+  return {
+    fetch(input, init) {
+      return Reflect.apply(fetch, binding, [input, init]);
+    },
+  };
+}
+
 export type RequestGenerationExecutorDependencies = {
   getCloudflareRuntime(): Promise<Runtime>;
 };
@@ -28,7 +41,7 @@ export async function createRequestGenerationExecutor(
           await import("@opennextjs/cloudflare")
         ).getCloudflareContext({ async: true })
       ).env;
-  return createRemoteGenerationExecutor(runtime.GENERATION_EXECUTOR);
+  return createRemoteGenerationExecutor(getGenerationExecutorBinding(runtime));
 }
 
 
