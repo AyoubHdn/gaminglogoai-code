@@ -180,24 +180,36 @@ jobs:
             "$DYNAMODB_LOCAL_IMAGE" \
             -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
           docker image inspect "$DYNAMODB_LOCAL_IMAGE" --format 'DynamoDB Local image: {{index .RepoTags 0}}'
+          readiness_script="$RUNNER_TEMP/dynamodb-local-readiness.mjs"
+          cat > "$readiness_script" <<'EOF'
+          import { DynamoDBClient, ListTablesCommand } from "@aws-sdk/client-dynamodb";
+          import { NodeHttpHandler } from "@smithy/node-http-handler";
+
+          const client = new DynamoDBClient({
+            endpoint: "http://127.0.0.1:8000/",
+            region: "us-east-1",
+            credentials: { accessKeyId: "local", secretAccessKey: "local" },
+            maxAttempts: 1,
+            requestHandler: new NodeHttpHandler({ connectionTimeout: 1500, socketTimeout: 1500 }),
+          });
+          try {
+            await client.send(new ListTablesCommand({}));
+            process.exitCode = 0;
+          } catch {
+            process.exitCode = 1;
+          } finally {
+            client.destroy();
+          }
+          EOF
           last_status='unavailable'
           for attempt in $(seq 1 300); do
-            response_file="$RUNNER_TEMP/dynamodb-local-readiness-response"
-            status=$(curl --silent --show-error --max-time 2 \
-              --request POST \
-              --header 'Content-Type: application/x-amz-json-1.0' \
-              --header 'X-Amz-Target: DynamoDB_20120810.ListTables' \
-              --data '{}' \
-              --output "$response_file" \
-              --write-out '%{http_code}' \
-              http://127.0.0.1:8000/ 2>/dev/null || true)
-            last_status="$status"
-            if [[ "$status" == '200' ]] && grep -q 'TableNames' "$response_file"; then
+            if node "$readiness_script" >/dev/null 2>&1; then
               exit 0
             fi
+            last_status='aws-sdk-list-tables-failed'
             sleep 1
           done
-          echo "DynamoDB Local readiness HTTP status: $last_status"
+          echo "DynamoDB Local readiness result: $last_status"
           docker logs gaminglogoai-dynamodb-local
           exit 1
 
