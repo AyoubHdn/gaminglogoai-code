@@ -33,6 +33,7 @@ async function runDocker(args, options = {}) {
   });
 }
 
+/** @param {string} file */
 async function digest(file) {
   return createHash("sha256").update(await readFile(file)).digest("hex");
 }
@@ -110,6 +111,7 @@ RUN cp /build/public-watermark.png /opt/package/public/watermark.png
 RUN cp -R /build/node_modules /opt/package/node_modules
 RUN cp /build/package.json /opt/package/package.json
 RUN cp /build/package-lock.json /opt/package/package-lock.json
+RUN rm -rf /opt/package/node_modules/.bin
 CMD ["sleep", "3600"]
 `;
 const buildInside = `import { build } from "esbuild";
