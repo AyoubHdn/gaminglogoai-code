@@ -53,7 +53,10 @@ function createClient(): DynamoDBClient {
   return new DynamoDBClient({
     endpoint: endpoint.toString(),
     region: config.awsRegion,
-    credentials: { accessKeyId: "local", secretAccessKey: "local" },
+    credentials: {
+      accessKeyId: "fakeMyKeyId",
+      secretAccessKey: "fakeSecretAccessKey",
+    },
     maxAttempts: 1,
     requestHandler: new NodeHttpHandler({
       connectionTimeout: 1500,
