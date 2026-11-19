@@ -10,6 +10,7 @@ import {
   createRemoteGenerationDbService,
 } from "../../../src/server/generation/dbService.ts";
 import {
+  GenerationExecutionFailure,
   prepareLogoRequest,
   type LogoRequest,
 } from "../../../src/server/generation/contract.ts";
@@ -290,11 +291,15 @@ void test("generation ledger: Prisma and actual Worker RPC with disposable Postg
               service: remote(),
               generate() {
                 return failure === "provider"
-                  ? Promise.reject(new Error("synthetic provider failure"))
+                  ? Promise.reject(
+                      new GenerationExecutionFailure("definitive", "provider"),
+                    )
                   : Promise.resolve(["synthetic"]);
               },
               upload() {
-                return Promise.reject(new Error("synthetic upload failure"));
+                return Promise.reject(
+                  new GenerationExecutionFailure("definitive", "storage"),
+                );
               },
               sync() {
                 syncs++;
