@@ -282,13 +282,18 @@ jobs:
         run: |
           cp -a .ci-generation-open-next .open-next
           npx wrangler@4.148.0 deploy --config wrangler.gaminglogoai-generation-fixture.jsonc --dry-run --outdir .ci-generation-runtime/bundle
+          test -s .ci-generation-runtime/bundle/worker.js
+          if [ ! -d .ci-generation-runtime/bundle/assets ]; then cp -a .ci-generation-open-next/assets .ci-generation-runtime/bundle/assets; fi
           rm -rf .open-next
 
       - name: Compiled OpenNext HTTP generation probe
         if: steps.fixture-package.outcome == 'success'
         timeout-minutes: 5
         env:
-          GENERATION_HTTP_FIXTURE_ROOT: ${{ github.workspace }}/.ci-generation-open-next
+          GENERATION_HTTP_PROJECT_ROOT: ${{ github.workspace }}
+          GENERATION_HTTP_FIXTURE_ROOT: ${{ github.workspace }}/.ci-generation-runtime/bundle
+          GENERATION_HTTP_REPORT_ROOT: ${{ github.workspace }}/.ci-generation-runtime
+          GENERATION_HTTP_TOOL_BUNDLE: "true"
         run: node scripts/generation-http-runtime-smoke.mjs
 
       - name: Package fixture-only generation bundle
@@ -440,7 +445,18 @@ jobs:
           COMPAT_WRANGLER_VERSION: "4.148.0"
         run: node scripts/next-post-compat-control.mjs
 
+      - name: Generate candidate Wrangler runtime bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx wrangler@4.148.0 deploy --config wrangler.gaminglogoai-generation-fixture.jsonc --dry-run --outdir .ci-compat-runtime/bundle
+          test -s .ci-compat-runtime/bundle/worker.js
+          if [ ! -d .ci-compat-runtime/bundle/assets ]; then cp -a .open-next/assets .ci-compat-runtime/bundle/assets; fi
+
       - name: GamingLogoAI compiled HTTP probe
         env:
-          GENERATION_HTTP_FIXTURE_ROOT: ${{ github.workspace }}/.open-next
+          GENERATION_HTTP_PROJECT_ROOT: ${{ github.workspace }}
+          GENERATION_HTTP_FIXTURE_ROOT: ${{ github.workspace }}/.ci-compat-runtime/bundle
+          GENERATION_HTTP_REPORT_ROOT: ${{ github.workspace }}/.ci-compat-runtime
+          GENERATION_HTTP_TOOL_BUNDLE: "true"
         run: node scripts/generation-http-runtime-smoke.mjs

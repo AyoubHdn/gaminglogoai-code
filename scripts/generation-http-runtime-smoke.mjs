@@ -1,14 +1,17 @@
 import assert from "node:assert/strict";
 import { createRequire } from "node:module";
-import { copyFile, mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { request as httpRequest } from "node:http";
 
-const root = path.resolve(process.env.GENERATION_HTTP_FIXTURE_ROOT ?? process.cwd());
+const root = path.resolve(process.env.GENERATION_HTTP_PROJECT_ROOT ?? process.cwd());
 const outputRoot = process.env.GENERATION_HTTP_FIXTURE_ROOT
   ? path.resolve(process.env.GENERATION_HTTP_FIXTURE_ROOT)
   : path.join(root, ".open-next");
+const reportRoot = path.resolve(
+  process.env.GENERATION_HTTP_REPORT_ROOT ?? path.join(root, ".ci-generation-runtime"),
+);
 const require = createRequire(path.join(root, "package.json"));
 const wranglerRequire = createRequire(require.resolve("wrangler/package.json"));
 const miniflarePath = wranglerRequire.resolve("miniflare");
@@ -19,6 +22,11 @@ const workerdVersion = JSON.parse(
 const miniflareVersion = JSON.parse(
   await readFile(wranglerRequire.resolve("miniflare/package.json"), "utf8"),
 ).version;
+const wranglerVersion = JSON.parse(
+  await readFile(wranglerRequire.resolve("wrangler/package.json"), "utf8"),
+).version;
+const nodeVersion = process.version;
+const toolGeneratedBundle = process.env.GENERATION_HTTP_TOOL_BUNDLE === "true";
 const { Miniflare, Log, LogLevel, convertV4MiniflareOptions } =
   await import(pathToFileURL(miniflarePath).href);
 
@@ -197,71 +205,17 @@ function createDbFixture() {
 
 const bundle = path.join(outputRoot, "worker.js");
 const assets = path.join(outputRoot, "assets");
-const compiledWorker = path.join(root, ".ci-generation-worker.mjs");
-await copyFile(bundle, compiledWorker);
-const entryShim = path.join(root, ".ci-generation-entry.mjs");
-await writeFile(
-  entryShim,
-  'import { AsyncLocalStorage } from "node:async_hooks";\n' +
-    'import * as fs from "node:fs";\n' +
-    'import * as fsPromises from "node:fs/promises";\n' +
-    'import * as path from "node:path";\n' +
-    'import * as url from "node:url";\n' +
-    'import * as vm from "node:vm";\n' +
-    'import * as crypto from "node:crypto";\n' +
-    'import * as buffer from "node:buffer";\n' +
-    'import * as util from "node:util";\n' +
-    'import * as processModule from "node:process";\n' +
-    'import * as stream from "node:stream";\n' +
-    'import * as events from "node:events";\n' +
-    'import * as os from "node:os";\n' +
-    'import * as querystring from "node:querystring";\n' +
-    'import * as stringDecoder from "node:string_decoder";\n' +
-    'import * as assert from "node:assert";\n' +
-    'import * as http from "node:http";\n' +
-    'import * as https from "node:https";\n' +
-    'globalThis.AsyncLocalStorage = AsyncLocalStorage;\n' +
-    'const streamWeb = Object.fromEntries([\n' +
-    '  "ReadableStream", "WritableStream", "TransformStream",\n' +
-    '  "CompressionStream", "DecompressionStream", "TextEncoderStream",\n' +
-    '  "TextDecoderStream", "ByteLengthQueuingStrategy", "CountQueuingStrategy",\n' +
-    '].map((name) => [name, globalThis[name]]));\n' +
-    'globalThis.require = (specifier) => {\n' +
-    '  if (specifier === "async_hooks") return { AsyncLocalStorage };\n' +
-    '  if (specifier === "fs") return fs;\n' +
-    '  if (specifier === "fs/promises") return fsPromises;\n' +
-    '  if (specifier === "path" || specifier === "node:path") return path;\n' +
-    '  if (specifier === "url") return url;\n' +
-    '  if (specifier === "vm") return vm;\n' +
-    '  if (specifier === "crypto" || specifier === "node:crypto") return crypto;\n' +
-    '  if (specifier === "buffer" || specifier === "node:buffer") return buffer;\n' +
-    '  if (specifier === "util") return util;\n' +
-    '  if (specifier === "process") return processModule;\n' +
-    '  if (specifier === "stream") return stream;\n' +
-    '  if (specifier === "node:stream/web") return streamWeb;\n' +
-    '  if (specifier === "events") return events;\n' +
-    '  if (specifier === "os") return os;\n' +
-    '  if (specifier === "querystring") return querystring;\n' +
-    '  if (specifier === "string_decoder") return stringDecoder;\n' +
-    '  if (specifier === "assert") return assert;\n' +
-    '  if (specifier === "http") return http;\n' +
-    '  if (specifier === "https") return https;\n' +
-    '  throw new Error(`Unsupported fixture require: ${String(specifier)}`);\n' +
-    '};\n' +
-    'const compiled = await import("./.ci-generation-worker.mjs");\n' +
-    'export default compiled.default;\n',
-);
+const compiledWorker = bundle;
 const appProxy = path.join(root, ".ci-generation-app-proxy.mjs");
 await writeFile(
   appProxy,
   'export default {async fetch(request,env){const url=new URL(request.url);if(url.pathname==="/__fixture/body-echo"){try{const bytes=new Uint8Array(await request.arrayBuffer());return new Response(JSON.stringify({receivedBytes:bytes.byteLength,contentLength:request.headers.get("content-length"),transferEncoding:request.headers.get("transfer-encoding")}),{status:200,headers:{"content-type":"application/json"}});}catch(error){return new Response(JSON.stringify({errorType:error?.constructor?.name??"unknown",errorCode:error?.code??null}),{status:500,headers:{"content-type":"application/json"}});}}return env.NEXT.fetch(request);}};'
 );
 const moduleFiles = [
-  entryShim,
   compiledWorker,
   appProxy,
   ...(await allFiles(outputRoot)).filter(
-    (file) => file !== bundle && file !== compiledWorker && file !== entryShim && file !== appProxy,
+    (file) => file !== bundle && file !== appProxy,
   ),
 ]
   .filter((file) => file.endsWith(".js") || file.endsWith(".mjs"))
@@ -377,12 +331,17 @@ const makeMiniflare = (options) =>
 const mf = makeMiniflare(runtimeOptions);
 /** @type {string[]} */
 const checks = [];
-/** @typedef {{result: string, fixtureOnly: boolean, deployable: boolean, workerdVersion: string, miniflareVersion: string, runtimeCompatibilityDate: string, checks: string[], dbOperations: string[], dbCalls: Array<Record<string, unknown>>, mockedProviderCalls: number, mockedS3Uploads: number, blockedOutbound: number, blockedUrls: string[], missingBindingLayer: string|null, failurePhase: string|null, transportDiagnostics: Record<string, unknown>}} ProbeReport */
+/** @typedef {{result: string, fixtureOnly: boolean, deployable: boolean, nodeVersion: string, wranglerVersion: string, wranglerPackagePath: string, workerEntrypoint: string, bundleMode: string, workerdVersion: string, miniflareVersion: string, runtimeCompatibilityDate: string, checks: string[], dbOperations: string[], dbCalls: Array<Record<string, unknown>>, mockedProviderCalls: number, mockedS3Uploads: number, blockedOutbound: number, blockedUrls: string[], missingBindingLayer: string|null, failurePhase: string|null, transportDiagnostics: Record<string, unknown>}} ProbeReport */
 /** @type {ProbeReport} */
 const report = {
   result: "GAMINGLOGOAI_GENERATION_HTTP_PROBE_STOPPED",
   fixtureOnly: true,
   deployable: false,
+  nodeVersion,
+  wranglerVersion,
+  wranglerPackagePath: wranglerRequire.resolve("wrangler/package.json"),
+  workerEntrypoint: bundle,
+  bundleMode: toolGeneratedBundle ? "wrangler-dry-run-outdir" : "raw-opennext",
   workerdVersion,
   miniflareVersion,
   runtimeCompatibilityDate: runtimeDate,
@@ -680,9 +639,9 @@ try {
   report.blockedOutbound = blockedOutbound;
   await mf.dispose();
 }
-await mkdir(path.join(root, ".ci-generation-runtime"), { recursive: true });
+await mkdir(reportRoot, { recursive: true });
 await writeFile(
-  path.join(root, ".ci-generation-runtime", "runtime-smoke-report.json"),
+  path.join(reportRoot, "runtime-smoke-report.json"),
   `${JSON.stringify(report, null, 2)}\n`,
 );
 console.log(JSON.stringify(report, null, 2));
