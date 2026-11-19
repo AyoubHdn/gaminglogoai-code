@@ -3,13 +3,22 @@ import {
   parseLogoRequest,
   type GenerationDbService,
   type GenerationExecutor,
+  type GenerationIcon,
   type GenerationReservation,
   type LogoRequest,
 } from "./contract.ts";
+import { createFunctionGenerationExecutor } from "./executor.ts";
 
 type Dependencies = {
   service: GenerationDbService;
-  executor: GenerationExecutor;
+  executor?: GenerationExecutor;
+  /** Backward-compatible injected test boundary; production routers pass executor. */
+  generate?: (input: LogoRequest) => Promise<string[]>;
+  upload?: (
+    icon: GenerationIcon,
+    base64: string,
+    shouldWatermark: boolean,
+  ) => Promise<void>;
   sync?(reservation: GenerationReservation): Promise<void>;
 };
 /** Provider/S3 work stays outside SQL transactions. The DB owns the charge and final icon set. */
@@ -30,7 +39,16 @@ export async function runLogoGeneration(
     );
   }
   try {
-    const execution = await dependencies.executor.execute({
+    const executor =
+      dependencies.executor ??
+      (dependencies.generate && dependencies.upload
+        ? createFunctionGenerationExecutor(
+            dependencies.generate,
+            dependencies.upload,
+          )
+        : null);
+    if (!executor) throw new Error("Generation executor is required");
+    const execution = await executor.execute({
       ...input,
       shouldWatermark: reservation.shouldWatermark,
       plannedOutputIds: reservation.icons.map((icon) => icon.id),
@@ -38,7 +56,12 @@ export async function runLogoGeneration(
     if (execution.status === "failed") {
       if (execution.certainty === "ambiguous")
         throw new GenerationError("GENERATION_EXECUTION_AMBIGUOUS");
-      throw new GenerationError("GENERATION_EXECUTION_FAILED");
+      throw new GenerationError(
+        "GENERATION_EXECUTION_FAILED",
+        execution.reason === "storage"
+          ? "Generation image upload failed"
+          : "Generation provider failed",
+      );
     }
     if (
       execution.outputIds.length !== reservation.icons.length ||

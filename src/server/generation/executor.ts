@@ -4,11 +4,64 @@ import {
   type GenerationExecutionRequest,
   type GenerationExecutionResult,
   type GenerationExecutor,
+  type GenerationIcon,
+  type LogoRequest,
 } from "./contract.ts";
 
 export type GenerationExecutorBinding = {
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 };
+
+export function createFunctionGenerationExecutor(
+  generate: (input: LogoRequest) => Promise<string[]>,
+  upload: (
+    icon: GenerationIcon,
+    base64: string,
+    shouldWatermark: boolean,
+  ) => Promise<void>,
+): GenerationExecutor {
+  return {
+    async execute(input) {
+      let images: string[];
+      try {
+        images = await generate(input);
+      } catch {
+        return {
+          status: "failed",
+          certainty: "definitive",
+          reason: "provider",
+        };
+      }
+      if (
+        images.length !== input.plannedOutputIds.length ||
+        images.some((image) => typeof image !== "string" || image.length === 0)
+      )
+        return {
+          status: "failed",
+          certainty: "definitive",
+          reason: "invalid-result",
+        };
+      try {
+        await Promise.all(
+          input.plannedOutputIds.map((id, index) =>
+            upload(
+              { id, prompt: input.prompt, imageKey: null },
+              images[index]!,
+              input.shouldWatermark,
+            ),
+          ),
+        );
+      } catch {
+        return {
+          status: "failed",
+          certainty: "definitive",
+          reason: "storage",
+        };
+      }
+      return { status: "completed", outputIds: input.plannedOutputIds };
+    },
+  };
+}
 
 function parseResult(value: unknown): GenerationExecutionResult {
   if (!isRecord(value) || value.status === undefined)

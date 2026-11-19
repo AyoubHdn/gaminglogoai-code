@@ -5,8 +5,8 @@ import AWS from "aws-sdk";
 import { env } from "~/env.mjs";
 import { b64Image } from "~/data/b64Image";
 import { finalizeGeneratedImage } from "~/server/imageWatermark";
+import { createFunctionGenerationExecutor } from "./executor.ts";
 import type {
-  GenerationExecutionRequest,
   GenerationExecutor,
   GenerationIcon,
   LogoRequest,
@@ -99,47 +99,7 @@ export function createNodeGenerationExecutor(
 ): GenerationExecutor {
   const generate = overrides.generate ?? generateNodeImages;
   const upload = overrides.upload ?? uploadNodeImage;
-  return {
-    async execute(input: GenerationExecutionRequest) {
-      let images: string[];
-      try {
-        images = await generate(input);
-      } catch {
-        return {
-          status: "failed",
-          certainty: "definitive",
-          reason: "provider",
-        };
-      }
-      if (
-        images.length !== input.plannedOutputIds.length ||
-        images.some((image) => typeof image !== "string" || image.length === 0)
-      )
-        return {
-          status: "failed",
-          certainty: "definitive",
-          reason: "invalid-result",
-        };
-      try {
-        await Promise.all(
-          input.plannedOutputIds.map((id, index) =>
-            upload(
-              { id, prompt: input.prompt, imageKey: null },
-              images[index]!,
-              input.shouldWatermark,
-            ),
-          ),
-        );
-      } catch {
-        return {
-          status: "failed",
-          certainty: "definitive",
-          reason: "storage",
-        };
-      }
-      return { status: "completed", outputIds: input.plannedOutputIds };
-    },
-  };
+  return createFunctionGenerationExecutor(generate, upload);
 }
 
 
