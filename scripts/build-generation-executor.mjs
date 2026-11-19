@@ -16,6 +16,7 @@ import path from "node:path";
 
 const exec = promisify(execFile);
 const root = process.cwd();
+const packageName = "gaminglogoai-generation-executor-lambda-fixture";
 const output = path.join(root, ".codex-tmp-tests", "generation-executor-lambda-package");
 const context = await mkdtemp(path.join(os.tmpdir(), "gaminglogoai-lambda-context-"));
 const image = "public.ecr.aws/lambda/nodejs:22";
