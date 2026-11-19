@@ -259,7 +259,7 @@ console.log(JSON.stringify({
   uncompressedBytes,
   imageDigest,
   architecture: inspected.Architecture,
-  node: (await runDocker(["run", "--rm", "--network", "none", repoDigest, "node", "--version"])).stdout.trim(),
+  node: (await runDocker(["run", "--rm", "--network", "none", "--entrypoint", "node", repoDigest, "--version"])).stdout.trim(),
   handler: "handler.handler",
   packageLockSha256,
   credentialScan: "PASS",
