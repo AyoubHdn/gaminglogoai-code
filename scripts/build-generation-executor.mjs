@@ -39,6 +39,11 @@ async function digest(file) {
   return createHash("sha256").update(await readFile(file)).digest("hex");
 }
 
+/**
+ * @param {string} directory
+ * @param {string} [prefix]
+ * @returns {Promise<Array<{path: string, full: string}>>}
+ */
 async function walk(directory, prefix = "") {
   const entries = await readdir(directory, { withFileTypes: true });
   const result = [];
@@ -181,7 +186,7 @@ if (!handlerText.includes("createGenerationExecutorHandler"))
 const packageLockSha256 = await digest(path.join(output, "package-lock.json"));
 const manifestFiles = {};
 let uncompressedBytes = 0;
-for (const file of packageFiles) {
+for (const file of packageFiles.filter((entry) => !entry.path.endsWith(".d.ts"))) {
   const fileStat = await stat(file.full);
   uncompressedBytes += fileStat.size;
   manifestFiles[file.path] = { sha256: await digest(file.full), bytes: fileStat.size };
