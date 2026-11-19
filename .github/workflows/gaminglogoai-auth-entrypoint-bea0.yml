@@ -180,7 +180,12 @@ jobs:
             -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
           docker image inspect "$DYNAMODB_LOCAL_IMAGE" --format 'DynamoDB Local image: {{index .RepoTags 0}}'
           for attempt in $(seq 1 180); do
-            if timeout 2 bash -c '</dev/tcp/127.0.0.1/8000' 2>/dev/null
+            if curl --fail --silent --show-error --max-time 2 \
+              --request POST \
+              --header 'Content-Type: application/x-amz-json-1.0' \
+              --header 'X-Amz-Target: DynamoDB_20120810.ListTables' \
+              --data '{}' \
+              http://127.0.0.1:8000/ >/dev/null 2>&1
             then
               exit 0
             fi
