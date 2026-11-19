@@ -149,7 +149,7 @@ export function createRemoteGenerationExecutor(
 
   return {
     async execute(input: GenerationExecutionRequest) {
-      const body = JSON.stringify(input);
+      const requestBody = JSON.stringify(input);
       const timestamp = String(Date.now());
       let response: Response;
       try {
@@ -161,10 +161,10 @@ export function createRemoteGenerationExecutor(
             "x-generation-executor-signature": await signExecutorRequest(
               hmacSecret,
               timestamp,
-              body,
+              requestBody,
             ),
           },
-          body,
+          body: requestBody,
         });
       } catch {
         return {
@@ -174,9 +174,9 @@ export function createRemoteGenerationExecutor(
         };
       }
 
-      let body: unknown;
+      let responseBody: unknown;
       try {
-        body = await response.json();
+        responseBody = await response.json();
       } catch {
         return {
           status: "failed",
@@ -184,14 +184,14 @@ export function createRemoteGenerationExecutor(
           reason: "invalid-result",
         };
       }
-      if (!response.ok || !isRecord(body) || body.ok !== true)
+      if (!response.ok || !isRecord(responseBody) || responseBody.ok !== true)
         return {
           status: "failed",
           certainty: "ambiguous",
           reason: "unavailable",
         };
       try {
-        return parseResult(body.data);
+        return parseResult(responseBody.data);
       } catch {
         return {
           status: "failed",
