@@ -242,7 +242,10 @@ jobs:
 
       - name: Prepare fixture artifact provenance and content hashes
         id: fixture-package
-        if: always() && steps.opennext-build.outcome == 'success' && steps.root-dry-run.outcome == 'success'
+        # Fixture publication is intentionally limited to the dedicated
+        # staging branch. Experimental branches still run all validation, but
+        # must not fail merely because publication is closed there.
+        if: always() && github.ref_name == 'staging/gaminglogoai-auth-entrypoint-bea0' && steps.opennext-build.outcome == 'success' && steps.root-dry-run.outcome == 'success'
         run: node scripts/package-staging-fixture.mjs
 
       - name: Preserve fixture-only OpenNext artifact
@@ -461,4 +464,5 @@ jobs:
           GENERATION_HTTP_REPORT_ROOT: ${{ github.workspace }}/.ci-compat-runtime
           GENERATION_HTTP_TOOL_BUNDLE: "true"
         run: node scripts/generation-http-runtime-smoke.mjs
+
 
