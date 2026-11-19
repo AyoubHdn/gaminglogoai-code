@@ -161,7 +161,7 @@ jobs:
           --test scripts/generation-executor-package.test.mjs
           workers/generation-executor/test/handler.test.ts
 
-      - name: Build fixture-only Node executor package
+      - name: Build self-contained Linux Lambda executor fixture
         run: node scripts/build-generation-executor.mjs
 
       - name: Start pinned DynamoDB Local
@@ -607,5 +607,6 @@ jobs:
           GENERATION_HTTP_REPORT_ROOT: ${{ github.workspace }}/.ci-compat-runtime
           GENERATION_HTTP_TOOL_BUNDLE: "true"
         run: node scripts/generation-http-runtime-smoke.mjs
+
 
 
