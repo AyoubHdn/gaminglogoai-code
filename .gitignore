@@ -47,4 +47,5 @@ yarn-error.log*
 # auth-only staging build outputs
 /.staging-auth/
 /.ci-auth-runtime/
+/.codex-tmp-tests/
 

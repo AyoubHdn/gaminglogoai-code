@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Inert review template for the GamingLogoAI staging generation executor.
+Parameters:
+  ExecutionScope:
+    Type: String
+    Default: gaminglogoai-staging
+  ExecutionTableName:
+    Type: String
+    Default: gaminglogoai-generation-executions-staging
+  BucketName:
+    Type: String
+    Default: '<UNRESOLVED_STAGING_BUCKET>'
+Resources:
+  ExecutionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref ExecutionTableName
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: executionKey
+          AttributeType: S
+      KeySchema:
+        - AttributeName: executionKey
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: gaminglogoai-generation-staging-execution
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: { Service: lambda.amazonaws.com }
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: gaminglogoai-generation-staging-runtime
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: [dynamodb:GetItem, dynamodb:PutItem, dynamodb:UpdateItem]
+                Resource: !GetAtt ExecutionTable.Arn
+              - Effect: Allow
+                Action: [s3:PutObject]
+                Resource: !Sub arn:${AWS::Partition}:s3:::${BucketName}/*
+              - Effect: Allow
+                Action: [logs:CreateLogGroup, logs:CreateLogStream, logs:PutLogEvents]
+                Resource: '*'
+  GenerationExecutor:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: gaminglogoai-generation-staging
+      Runtime: nodejs22.x
+      Architectures: [x86_64]
+      Handler: handler.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Timeout: 300
+      MemorySize: 2048
+      ReservedConcurrentExecutions: 1
+      Environment:
+        Variables:
+          GENERATION_EXECUTION_SCOPE: !Ref ExecutionScope
+          GENERATION_EXECUTION_TABLE: !Ref ExecutionTableName
+          NEXT_PUBLIC_AWS_REGION_GAMING: !Ref AWS::Region
+          NEXT_PUBLIC_S3_BUCKET_NAME_GAMING: !Ref BucketName
+          REPLICATE_API_TOKEN: '<SECRET_MANAGER_OR_PARAMETER_STORE_REFERENCE>'
+          GENERATION_EXECUTOR_HMAC_SECRET: '<SECRET_MANAGER_OR_PARAMETER_STORE_REFERENCE>'

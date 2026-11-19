@@ -26,6 +26,8 @@ export type GenerationDbService = {
   refundLogo(input: GenerationKey): Promise<GenerationState>;
 };
 export type GenerationExecutionRequest = LogoRequest & {
+  executionScope: string;
+  fingerprint: string;
   shouldWatermark: boolean;
   plannedOutputIds: string[];
 };
@@ -39,6 +41,25 @@ export type GenerationExecutionResult =
 export type GenerationExecutor = {
   execute(input: GenerationExecutionRequest): Promise<GenerationExecutionResult>;
 };
+export type GenerationExecutionFailureReason =
+  | "provider"
+  | "storage"
+  | "invalid-result"
+  | "unavailable";
+export class GenerationExecutionFailure extends Error {
+  readonly certainty: "definitive" | "ambiguous";
+  readonly reason: GenerationExecutionFailureReason;
+
+  constructor(
+    certainty: "definitive" | "ambiguous",
+    reason: GenerationExecutionFailureReason,
+    message = reason,
+  ) {
+    super(message);
+    this.certainty = certainty;
+    this.reason = reason;
+  }
+}
 export const generationErrorCodes = [
   "GENERATION_BAD_INPUT",
   "GENERATION_USER_NOT_FOUND",

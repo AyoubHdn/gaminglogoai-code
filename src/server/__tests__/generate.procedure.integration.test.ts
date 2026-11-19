@@ -11,6 +11,7 @@ import {
   type GenerateRouterDependencies,
 } from "../api/routers/generate.ts";
 import { createRequestGenerationDbService } from "../generation/requestService.ts";
+import { GenerationExecutionFailure } from "../generation/contract.ts";
 import { createRemoteGenerationDbService } from "../generation/dbService.ts";
 import type {
   GenerationDbService,
@@ -238,7 +239,7 @@ void test("provider and upload failures refund through the protected procedure",
   const providerRouter = routerWith(service, {
     async generate() {
       providerCalls++;
-      throw new Error("synthetic provider failure");
+      throw new GenerationExecutionFailure("definitive", "provider");
     },
     async upload() {
       throw new Error("upload must not run");
@@ -263,7 +264,7 @@ void test("provider and upload failures refund through the protected procedure",
       return ["synthetic-image"];
     },
     async upload() {
-      throw new Error("synthetic upload failure");
+      throw new GenerationExecutionFailure("definitive", "storage");
     },
   });
   await assert.rejects(

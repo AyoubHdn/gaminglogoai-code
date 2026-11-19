@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "gaminglogoai-generation-gateway-staging",
+  "account_id": "<CLOUDFLARE_ACCOUNT_ID>",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-19",
+  "workers_dev": false,
+  "preview_urls": false,
+  "vars": {
+    "GENERATION_EXECUTION_SCOPE": "gaminglogoai-staging",
+    "AWS_REGION": "<AWS_REGION>",
+    "GENERATION_LAMBDA_FUNCTION_URL": "<PRIVATE_AWS_IAM_FUNCTION_URL>"
+  }
+}

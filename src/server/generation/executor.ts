@@ -1,5 +1,6 @@
 import {
   GenerationError,
+  GenerationExecutionFailure,
   isRecord,
   type GenerationExecutionRequest,
   type GenerationExecutionResult,
@@ -11,6 +12,28 @@ import {
 export type GenerationExecutorBinding = {
   fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
 };
+
+async function signExecutorRequest(
+  secret: string,
+  timestamp: string,
+  body: string,
+): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(`${timestamp}.${body}`),
+  );
+  return Array.from(new Uint8Array(signature), (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("");
+}
 
 export function createFunctionGenerationExecutor(
   generate: (input: LogoRequest) => Promise<string[]>,
@@ -25,11 +48,15 @@ export function createFunctionGenerationExecutor(
       let images: string[];
       try {
         images = await generate(input);
-      } catch {
+      } catch (error) {
+        const failure =
+          error instanceof GenerationExecutionFailure
+            ? error
+            : new GenerationExecutionFailure("ambiguous", "provider");
         return {
           status: "failed",
-          certainty: "definitive",
-          reason: "provider",
+          certainty: failure.certainty,
+          reason: failure.reason,
         };
       }
       if (
@@ -51,16 +78,25 @@ export function createFunctionGenerationExecutor(
             ),
           ),
         );
-        if (uploads.some((upload) => upload.status === "rejected"))
+        const failures = uploads.filter(
+          (upload): upload is PromiseRejectedResult => upload.status === "rejected",
+        );
+        if (failures.length > 0) {
+          const definitive = failures.every(
+            ({ reason }) =>
+              reason instanceof GenerationExecutionFailure &&
+              reason.certainty === "definitive",
+          );
           return {
             status: "failed",
-            certainty: "definitive",
+            certainty: definitive ? "definitive" : "ambiguous",
             reason: "storage",
           };
+        }
       } catch {
         return {
           status: "failed",
-          certainty: "definitive",
+          certainty: "ambiguous",
           reason: "storage",
         };
       }
@@ -104,18 +140,31 @@ function parseResult(value: unknown): GenerationExecutionResult {
 
 export function createRemoteGenerationExecutor(
   binding: GenerationExecutorBinding | undefined,
+  hmacSecret = "",
 ): GenerationExecutor {
   if (!binding || typeof binding.fetch !== "function")
     throw new Error("GENERATION_EXECUTOR binding is required for service generation");
+  if (!hmacSecret)
+    throw new Error("GENERATION_EXECUTOR_HMAC_SECRET is required for service generation");
 
   return {
     async execute(input: GenerationExecutionRequest) {
+      const body = JSON.stringify(input);
+      const timestamp = String(Date.now());
       let response: Response;
       try {
         response = await binding.fetch("https://generation-executor.internal/execute", {
           method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify(input),
+          headers: {
+            "content-type": "application/json",
+            "x-generation-executor-timestamp": timestamp,
+            "x-generation-executor-signature": await signExecutorRequest(
+              hmacSecret,
+              timestamp,
+              body,
+            ),
+          },
+          body,
         });
       } catch {
         return {

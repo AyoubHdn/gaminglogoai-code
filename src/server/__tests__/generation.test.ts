@@ -5,6 +5,7 @@ import { createRemoteGenerationDbService } from "../generation/dbService.ts";
 import { createRequestGenerationDbService } from "../generation/requestService.ts";
 import {
   GenerationError,
+  GenerationExecutionFailure,
   prepareLogoRequest,
   type GenerationDbService,
   type GenerationReservation,
@@ -147,7 +148,8 @@ void test("provider error and output count mismatch refund once without creating
     const f = await fixture();
     f.dependencies.generate = async () => {
       f.events.push("generate");
-      if (reason === "provider") throw new Error("provider failed");
+      if (reason === "provider")
+        throw new GenerationExecutionFailure("definitive", "provider");
       return [];
     };
     await assert.rejects(runLogoGeneration(input, f.dependencies));
@@ -161,7 +163,8 @@ void test("all uploads settle before refund, no completion on partial upload", a
   f.dependencies.generate = async () => ["a", "b"];
   let count = 0;
   f.dependencies.upload = async () => {
-    if (++count === 1) throw new Error("S3 failed");
+    if (++count === 1)
+      throw new GenerationExecutionFailure("definitive", "storage");
     await new Promise((resolve) => setTimeout(resolve, 10));
     f.events.push("last-upload-settled");
   };

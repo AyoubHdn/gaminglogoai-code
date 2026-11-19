@@ -41,7 +41,10 @@ export async function createRequestGenerationExecutor(
           await import("@opennextjs/cloudflare")
         ).getCloudflareContext({ async: true })
       ).env;
-  return createRemoteGenerationExecutor(getGenerationExecutorBinding(runtime));
+  return createRemoteGenerationExecutor(
+    getGenerationExecutorBinding(runtime),
+    process.env.GENERATION_EXECUTOR_HMAC_SECRET,
+  );
 }
 
 

@@ -155,6 +155,15 @@ jobs:
           --test --test-concurrency=1
           src/server/__tests__/imageWatermark.render.test.ts
 
+      - name: Node executor package tests
+        run: >-
+          node --experimental-strip-types
+          --test scripts/generation-executor-package.test.mjs
+          workers/generation-executor/test/handler.test.ts
+
+      - name: Build fixture-only Node executor package
+        run: node scripts/build-generation-executor.mjs
+
       - name: Runtime harness and artifact fixture tests
         run: >-
           node --test

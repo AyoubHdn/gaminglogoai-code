@@ -1,5 +1,6 @@
 import {
   GenerationError,
+  prepareLogoRequest,
   parseLogoRequest,
   type GenerationDbService,
   type GenerationExecutor,
@@ -39,6 +40,7 @@ export async function runLogoGeneration(
     );
   }
   try {
+    const prepared = await prepareLogoRequest(input);
     const executor =
       dependencies.executor ??
       (dependencies.generate && dependencies.upload
@@ -50,6 +52,8 @@ export async function runLogoGeneration(
     if (!executor) throw new Error("Generation executor is required");
     const execution = await executor.execute({
       ...input,
+      executionScope: process.env.GENERATION_EXECUTION_SCOPE ?? "",
+      fingerprint: prepared.fingerprint,
       shouldWatermark: reservation.shouldWatermark,
       plannedOutputIds: reservation.icons.map((icon) => icon.id),
     });

@@ -249,6 +249,8 @@ const bindings = {
   DB_READS_BACKEND: "service",
   DB_GENERATION_BACKEND: "service",
   GENERATION_EXECUTION_BACKEND: "service",
+  GENERATION_EXECUTION_SCOPE: "gaminglogoai-fixture",
+  GENERATION_EXECUTOR_HMAC_SECRET: "fixture-executor-secret",
   CLOUDFLARE_READ_ONLY_MODE: "false",
   DATABASE_URL: "postgresql://invalid:invalid@db.invalid:5432/invalid",
   NEXTAUTH_SECRET: "fixture-nextauth-secret",
