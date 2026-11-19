@@ -7,7 +7,7 @@ import path from "node:path";
 const packageRoot = "/opt/package";
 const require = createRequire(path.join(packageRoot, "package.json"));
 const sharp = require("sharp");
-const handlerModule = await import("file:///opt/package/handler.mjs");
+const handlerModule = require(path.join(packageRoot, "handler.cjs"));
 assert.equal(typeof handlerModule.createGenerationExecutorHandler, "function");
 assert.equal(typeof handlerModule.handler, "function");
 

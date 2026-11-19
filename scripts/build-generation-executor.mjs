@@ -105,7 +105,7 @@ RUN npm ci --include=dev
 RUN node --experimental-strip-types /build/build-inside-container.mjs
 RUN npm prune --omit=dev
 RUN mkdir -p /opt/package/public
-RUN cp /build/dist/handler.mjs /opt/package/handler.mjs
+RUN cp /build/dist/handler.cjs /opt/package/handler.cjs
 RUN cp /build/dist/fixture-request.json /opt/package/fixture-request.json
 RUN cp /build/public-watermark.png /opt/package/public/watermark.png
 RUN cp -R /build/node_modules /opt/package/node_modules
@@ -123,8 +123,8 @@ await build({
   bundle: true,
   platform: "node",
   target: "node22",
-  format: "esm",
-  outfile: "/build/dist/handler.mjs",
+  format: "cjs",
+  outfile: "/build/dist/handler.cjs",
   external: ["sharp"],
   sourcemap: false,
   legalComments: "none",
@@ -163,7 +163,7 @@ try {
 
 const packageFiles = await walk(output);
 const required = [
-  "handler.mjs",
+  "handler.cjs",
   "fixture-request.json",
   "package.json",
   "package-lock.json",
@@ -201,7 +201,7 @@ await writeFile(
       os: inspected.Os,
     },
     handler: "handler.handler",
-    format: "ESM",
+    format: "CommonJS",
     externalNativeDependency: "sharp",
     files: manifestFiles,
     uncompressedBytes,
