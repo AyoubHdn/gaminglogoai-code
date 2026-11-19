@@ -45,6 +45,8 @@ const config: ExecutorConfig = {
   bucketName: "fixture-only",
 };
 
+const testClients = new Set<DynamoDBClient>();
+
 function createClient(): DynamoDBClient {
   return new DynamoDBClient({
     endpoint: endpoint.toString(),
@@ -54,7 +56,9 @@ function createClient(): DynamoDBClient {
 }
 
 function createStore(): DynamoExecutionStore {
-  return new DynamoExecutionStore(config, { client: createClient() });
+  const client = createClient();
+  testClients.add(client);
+  return new DynamoExecutionStore(config, { client });
 }
 
 async function requestFor(
@@ -126,6 +130,8 @@ test("DynamoExecutionStore and handler use durable DynamoDB Local state", async 
   await createTable(admin);
   t.after(async () => {
     await admin.send(new DeleteTableCommand({ TableName: tableName }));
+    for (const client of testClients) client.destroy();
+    testClients.clear();
     admin.destroy();
   });
 
