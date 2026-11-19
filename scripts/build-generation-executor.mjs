@@ -174,7 +174,7 @@ for (const requiredPath of required) {
   if (!packageFiles.some((file) => file.path === requiredPath))
     throw new Error(`Required packaged path is missing: ${requiredPath}`);
 }
-const handlerText = await readFile(path.join(output, "handler.mjs"), "utf8");
+const handlerText = await readFile(path.join(output, "handler.cjs"), "utf8");
 if (!handlerText.includes("createGenerationExecutorHandler"))
   throw new Error("Packaged handler does not contain the expected export");
 const packageLockSha256 = await digest(path.join(output, "package-lock.json"));
