@@ -2,7 +2,6 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import type { PrismaClient } from "@prisma/client";
-import sharp from "sharp";
 import { shouldWatermarkPurchaseStatus } from "./watermarkPolicy";
 export { shouldWatermarkPurchaseStatus } from "./watermarkPolicy";
 
@@ -13,6 +12,12 @@ const CREATOR = "GamingLogoAI";
 const COPYRIGHT = "Created with GamingLogoAI.com";
 
 let watermarkAssetPromise: Promise<Buffer> | null = null;
+let sharpModulePromise: Promise<typeof import("sharp").default> | null = null;
+
+async function loadSharp(): Promise<typeof import("sharp").default> {
+  sharpModulePromise ??= import("sharp").then((module) => module.default);
+  return sharpModulePromise;
+}
 
 function loadWatermarkAsset(): Promise<Buffer> {
   watermarkAssetPromise ??= readFile(
@@ -75,6 +80,11 @@ export async function finalizeGeneratedImage(
     toolType: string;
   },
 ): Promise<Buffer> {
+  // Sharp remains a Node/Vercel-only rendering dependency. Loading it here,
+  // rather than at module evaluation, lets the Worker-safe generation router
+  // initialize for reservation/replay paths without pretending Sharp runs in
+  // Workers. Vercel keeps the same rendering behavior when this function runs.
+  const sharp = await loadSharp();
   const metadata = await sharp(sourceBuffer).metadata();
   if (!metadata.width || !metadata.height) {
     throw new Error("Cannot finalize an image without valid dimensions.");
@@ -131,3 +141,4 @@ export async function finalizeGeneratedImage(
     .withXmp(buildXmpMetadata(description))
     .toBuffer();
 }
+

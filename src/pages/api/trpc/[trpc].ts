@@ -16,11 +16,16 @@ export default async function handler(
   if (readOnly === "true" && process.env.DB_READS_BACKEND !== "service") {
     throw new Error("Read-only Worker profile requires service reads");
   }
-  // The read-only staging profile never loads the native generation routers.
+  // Profiles are selected only from trusted server configuration. The legacy
+  // Vercel path remains the default; service-backed profiles expose only the
+  // routers whose dependencies are safe for that runtime.
+  const generationBackend = process.env.DB_GENERATION_BACKEND ?? "legacy";
   const router =
     readOnly === "true"
       ? (await import("~/server/api/readRoot")).readAppRouter
-      : (await import("~/server/api/root")).appRouter;
+      : generationBackend === "service"
+        ? (await import("~/server/api/generationRoot")).generationAppRouter
+        : (await import("~/server/api/root")).appRouter;
   return createNextApiHandler({
     router,
     createContext: createTRPCContext,
@@ -34,3 +39,4 @@ export default async function handler(
         : undefined,
   })(req, res);
 }
+

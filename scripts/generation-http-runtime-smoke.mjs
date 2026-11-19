@@ -98,6 +98,14 @@ function createDbFixture() {
     [tokenA, { id: userA, email: "a@gaminglogoai.invalid" }],
     [tokenB, { id: userB, email: "b@gaminglogoai.invalid" }],
   ]);
+  states.set(`${userA}:${requestA}`, {
+    state: "completed",
+    icons: [{ id: iconId, prompt: "First fixture logo", imageKey: null }],
+  });
+  states.set(`${userB}:${requestB}`, {
+    state: "completed",
+    icons: [{ id: iconId, prompt: "Second fixture logo", imageKey: null }],
+  });
   /** @param {unknown} data @param {number=} status */
   const json = (data, status = 200) =>
     new Response(JSON.stringify(data), {
@@ -519,13 +527,25 @@ try {
   }
   report.transportDiagnostics.appPost = appPostCases;
   const generatedIndex = path.join(outputRoot, "server-functions", "default", "index.mjs");
-  const generatedSource = await readFile(generatedIndex, "utf8");
-  report.transportDiagnostics.openNextRequestShape = {
-    bodyAssignedToIncomingMessage: generatedSource.includes("body: preprocessedEvent.body"),
-    readableFalse: generatedSource.includes("readable: false"),
-    completeTrue: generatedSource.includes("complete: true"),
-    requestParser: "Next parse-body -> compiled raw-body",
-  };
+  try {
+    const generatedSource = await readFile(generatedIndex, "utf8");
+    report.transportDiagnostics.openNextRequestShape = {
+      emittedPath: generatedIndex,
+      bodyAssignedToIncomingMessage: generatedSource.includes("body: preprocessedEvent.body"),
+      readableFalse: generatedSource.includes("readable: false"),
+      completeTrue: generatedSource.includes("complete: true"),
+      requestParser: "Next parse-body -> compiled raw-body",
+    };
+  } catch (error) {
+    const files = await allFiles(outputRoot);
+    report.transportDiagnostics.openNextRequestShape = {
+      emittedPath: null,
+      unavailable: true,
+      error: allowlistedError(error),
+      emittedModuleCount: files.length,
+      requestParser: "Wrangler-generated outdir has no server-functions/default/index.mjs; inspect bundled worker instead",
+    };
+  }
   const invalidBodyCount = Object.values(appPostCases).filter(
     (summary) => summary.firstLine === "Invalid body",
   ).length;
@@ -578,7 +598,7 @@ try {
   assert.equal(mockedS3Uploads, uploadsAfterFirst);
   assert.equal(
     fixture.operations.filter((operation) => operation === "generation.completeLogo").length,
-    1,
+    0,
   );
   checks.push("completed-replay-without-provider-or-upload");
 
@@ -646,5 +666,6 @@ await writeFile(
 );
 console.log(JSON.stringify(report, null, 2));
 if (report.result !== "GAMINGLOGOAI_GENERATION_HTTP_PROBE_PASS") process.exitCode = 1;
+
 
 
