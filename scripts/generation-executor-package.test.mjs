@@ -19,6 +19,7 @@ test("executor HMAC accepts the exact body and rejects stale or changed bodies",
 
 test("durable-store fixture does not replay a running execution", async () => {
   const store = new MemoryExecutionStore("gaminglogoai-staging");
+  /** @type {import("../src/server/generation/contract.ts").GenerationExecutionRequest} */
   const input = {
     userId: "user",
     requestId: "request",

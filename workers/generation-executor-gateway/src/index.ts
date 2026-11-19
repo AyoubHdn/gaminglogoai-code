@@ -10,6 +10,13 @@ type Env = {
 
 const encoder = new TextEncoder();
 
+function jsonResponse(value: unknown, status: number): Response {
+  return new Response(JSON.stringify(value), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
+}
+
 async function sha256Hex(value: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", encoder.encode(value));
   return Array.from(new Uint8Array(digest), (byte) =>
@@ -123,14 +130,14 @@ export default {
         request.headers.get("x-generation-executor-signature"),
       ))
     )
-      return Response.json({ ok: false, error: "EXECUTOR_AUTH_FAILED" }, { status: 401 });
+      return jsonResponse({ ok: false, error: "EXECUTOR_AUTH_FAILED" }, 401);
     try {
       const target = JSON.parse(body) as { userId?: unknown };
-      if (!target.userId) return Response.json({ ok: false, error: "EXECUTION_REQUEST_INVALID" }, { status: 400 });
+      if (!target.userId) return jsonResponse({ ok: false, error: "EXECUTION_REQUEST_INVALID" }, 400);
       if ((target as { executionScope?: unknown }).executionScope !== env.GENERATION_EXECUTION_SCOPE)
-        return Response.json({ ok: false, error: "EXECUTION_SCOPE_MISMATCH" }, { status: 400 });
+        return jsonResponse({ ok: false, error: "EXECUTION_SCOPE_MISMATCH" }, 400);
     } catch {
-      return Response.json({ ok: false, error: "EXECUTION_REQUEST_INVALID" }, { status: 400 });
+      return jsonResponse({ ok: false, error: "EXECUTION_REQUEST_INVALID" }, 400);
     }
     const timestamp = request.headers.get("x-generation-executor-timestamp")!;
     const signature = request.headers.get("x-generation-executor-signature")!;
