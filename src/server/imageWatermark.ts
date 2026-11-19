@@ -12,10 +12,15 @@ const CREATOR = "GamingLogoAI";
 const COPYRIGHT = "Created with GamingLogoAI.com";
 
 let watermarkAssetPromise: Promise<Buffer> | null = null;
-let sharpModulePromise: Promise<typeof import("sharp").default> | null = null;
+type SharpFactory = typeof import("sharp");
 
-async function loadSharp(): Promise<typeof import("sharp").default> {
-  sharpModulePromise ??= import("sharp").then((module) => module.default);
+let sharpModulePromise: Promise<SharpFactory> | null = null;
+
+async function loadSharp(): Promise<SharpFactory> {
+  sharpModulePromise ??= import("sharp").then((module) => {
+    const loaded = module as unknown as { default?: SharpFactory };
+    return loaded.default ?? (loaded as unknown as SharpFactory);
+  });
   return sharpModulePromise;
 }
 
