@@ -170,16 +170,21 @@ jobs:
           DYNAMODB_LOCAL_IMAGE: amazon/dynamodb-local:2.6.1
         run: |
           set -euo pipefail
-          data_dir="$RUNNER_TEMP/gaminglogoai-dynamodb-local"
-          mkdir -p "$data_dir"
+          volume_name='gaminglogoai-dynamodb-local-data'
           docker pull "$DYNAMODB_LOCAL_IMAGE"
+          docker volume create "$volume_name" >/dev/null
+          docker run --rm --user 0:0 --entrypoint /bin/sh \
+            --volume "$volume_name:/home/dynamodblocal/data" \
+            "$DYNAMODB_LOCAL_IMAGE" \
+            -c 'chown -R 1000:1000 /home/dynamodblocal/data'
           docker run --detach --name gaminglogoai-dynamodb-local \
             --publish 8000:8000 \
-            --volume "$data_dir:/home/dynamodblocal/data" \
+            --volume "$volume_name:/home/dynamodblocal/data" \
             --workdir /home/dynamodblocal \
             "$DYNAMODB_LOCAL_IMAGE" \
             -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
           docker image inspect "$DYNAMODB_LOCAL_IMAGE" --format 'DynamoDB Local image: {{index .RepoTags 0}}'
+          docker volume inspect "$volume_name" --format 'DynamoDB Local volume: name={{.Name}} driver={{.Driver}}'
           docker inspect gaminglogoai-dynamodb-local --format 'DynamoDB Local container: status={{.State.Status}} running={{.State.Running}}'
           docker inspect gaminglogoai-dynamodb-local --format '{{range .Mounts}}{{.Destination}} rw={{.RW}}{{"\\n"}}{{end}}'
           docker exec gaminglogoai-dynamodb-local sh -c 'id; printf "mount-user="; id -u; printf ":"; id -g; stat -c "mount=%n owner=%u:%g mode=%A" /home/dynamodblocal/data; touch /home/dynamodblocal/data/.ci-write-check; rm /home/dynamodblocal/data/.ci-write-check'
@@ -211,12 +216,17 @@ jobs:
         run: |
           set +e
           cli_error_file="$RUNNER_TEMP/gaminglogoai-dynamodb-cli-error.txt"
-          aws dynamodb list-tables \
-            --endpoint-url http://localhost:8000/ \
-            --region us-east-1 \
-            --no-cli-pager \
-            --output json >/dev/null 2>"$cli_error_file"
-          cli_exit=$?
+          if command -v aws >/dev/null 2>&1; then
+            aws dynamodb list-tables \
+              --endpoint-url http://localhost:8000/ \
+              --region us-east-1 \
+              --no-cli-pager \
+              --output json >/dev/null 2>"$cli_error_file"
+            cli_exit=$?
+          else
+            cli_exit=127
+            printf 'aws-cli-missing\n' >"$cli_error_file"
+          fi
           cli_error_code="$(grep -Eo '[A-Za-z][A-Za-z0-9]+Exception' "$cli_error_file" | head -n 1 || true)"
           cli_phase='unknown'
           if grep -Eqi 'timed out|timeout|socket' "$cli_error_file"; then cli_phase='socket'; fi
@@ -251,8 +261,14 @@ jobs:
               const httpStatus = typeof meta.httpStatusCode === "number" ? meta.httpStatusCode : null;
               const phase = causeCode === "ECONNREFUSED" || causeCode === "ENOTFOUND" ? "connect" : name === "TimeoutError" || causeCode === "ETIMEDOUT" ? "socket" : httpStatus !== null ? "response" : "unknown";
               console.log(JSON.stringify({ result: "fail", name, code, httpStatus, causeCode, phase }));
+              process.exitCode = 1;
             } finally { client.destroy(); }
           '
+          sdk_exit=$?
+          if [ "$sdk_exit" -ne 0 ]; then
+            echo "Signed AWS SDK readiness failed; refusing to run store assertions."
+            exit "$sdk_exit"
+          fi
           exit 0
 
       - name: DynamoExecutionStore DynamoDB Local integration tests
