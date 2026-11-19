@@ -1,0 +1,98 @@
+import {
+  GenerationError,
+  isRecord,
+  type GenerationExecutionRequest,
+  type GenerationExecutionResult,
+  type GenerationExecutor,
+} from "./contract.ts";
+
+export type GenerationExecutorBinding = {
+  fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
+};
+
+function parseResult(value: unknown): GenerationExecutionResult {
+  if (!isRecord(value) || value.status === undefined)
+    throw new GenerationError("GENERATION_EXECUTION_AMBIGUOUS");
+
+  if (value.status === "failed") {
+    if (
+      (value.certainty !== "definitive" && value.certainty !== "ambiguous") ||
+      (value.reason !== "provider" &&
+        value.reason !== "storage" &&
+        value.reason !== "invalid-result" &&
+        value.reason !== "unavailable")
+    )
+      throw new GenerationError("GENERATION_EXECUTION_AMBIGUOUS");
+    return {
+      status: "failed",
+      certainty: value.certainty,
+      reason: value.reason,
+    };
+  }
+
+  if (
+    value.status !== "completed" ||
+    !Array.isArray(value.outputIds) ||
+    value.outputIds.some((id) => typeof id !== "string")
+  )
+    throw new GenerationError("GENERATION_EXECUTION_AMBIGUOUS");
+
+  return {
+    status: "completed",
+    outputIds: value.outputIds,
+  };
+}
+
+export function createRemoteGenerationExecutor(
+  binding: GenerationExecutorBinding | undefined,
+): GenerationExecutor {
+  if (!binding || typeof binding.fetch !== "function")
+    throw new Error("GENERATION_EXECUTOR binding is required for service generation");
+
+  return {
+    async execute(input: GenerationExecutionRequest) {
+      let response: Response;
+      try {
+        response = await binding.fetch("https://generation-executor.internal/execute", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(input),
+        });
+      } catch {
+        return {
+          status: "failed",
+          certainty: "ambiguous",
+          reason: "unavailable",
+        };
+      }
+
+      let body: unknown;
+      try {
+        body = await response.json();
+      } catch {
+        return {
+          status: "failed",
+          certainty: "ambiguous",
+          reason: "invalid-result",
+        };
+      }
+      if (!response.ok || !isRecord(body) || body.ok !== true)
+        return {
+          status: "failed",
+          certainty: "ambiguous",
+          reason: "unavailable",
+        };
+      try {
+        return parseResult(body.data);
+      } catch {
+        return {
+          status: "failed",
+          certainty: "ambiguous",
+          reason: "invalid-result",
+        };
+      }
+    },
+  };
+}
+
+

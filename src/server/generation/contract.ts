@@ -25,6 +25,20 @@ export type GenerationDbService = {
   completeLogo(input: GenerationKey): Promise<GenerationState>;
   refundLogo(input: GenerationKey): Promise<GenerationState>;
 };
+export type GenerationExecutionRequest = LogoRequest & {
+  shouldWatermark: boolean;
+  plannedOutputIds: string[];
+};
+export type GenerationExecutionResult =
+  | { status: "completed"; outputIds: string[] }
+  | {
+      status: "failed";
+      certainty: "definitive" | "ambiguous";
+      reason: "provider" | "storage" | "invalid-result" | "unavailable";
+    };
+export type GenerationExecutor = {
+  execute(input: GenerationExecutionRequest): Promise<GenerationExecutionResult>;
+};
 export const generationErrorCodes = [
   "GENERATION_BAD_INPUT",
   "GENERATION_USER_NOT_FOUND",
@@ -33,6 +47,8 @@ export const generationErrorCodes = [
   "GENERATION_REQUEST_CONFLICT",
   "GENERATION_IN_PROGRESS",
   "GENERATION_ALREADY_REFUNDED",
+  "GENERATION_EXECUTION_FAILED",
+  "GENERATION_EXECUTION_AMBIGUOUS",
 ] as const;
 export type GenerationErrorCode = (typeof generationErrorCodes)[number];
 export class GenerationError extends Error {
@@ -180,3 +196,4 @@ export function parseReservation(value: unknown): GenerationReservation {
     name: value.name,
   };
 }
+

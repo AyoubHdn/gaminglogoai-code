@@ -37,6 +37,12 @@ const tokenA = "gla-generation-http-token-a";
 const tokenB = "gla-generation-http-token-b";
 const requestA = "8a8b8c8d-8e8f-4a4b-8c8d-8e8f8a8b8c8d";
 const requestB = "9a9b9c9d-9e9f-4a4b-8c9d-9e9f9a9b9c9d";
+const requestC = "aaabbbcc-dd11-4ee2-8ff3-445566778899";
+const requestD = "bbccdde0-ee22-4ff3-9004-556677889900";
+const requestE = "ccddee11-ff33-4004-a115-667788990011";
+const requestF = "ddeeff22-0044-4115-b226-778899001122";
+const requestG = "eeff0033-1155-4226-b337-889900112233";
+const requestH = "ff001144-2266-4337-c448-990011223344";
 const iconId = "a".repeat(64);
 
 /** @param {string} compatibilityDate @param {string} version */
@@ -232,6 +238,9 @@ const runtimeDate = supportedRuntimeDate("2026-11-12", workerdVersion);
 const fixture = createDbFixture();
 let blockedOutbound = 0;
 let mockedS3Uploads = 0;
+let executorMode = "success";
+/** @type {Array<Record<string, unknown>>} */
+const executorCalls = [];
 /** @type {string[]} */
 const blockedUrls = [];
 const bindings = {
@@ -239,6 +248,7 @@ const bindings = {
   DB_AUTH_BACKEND: "service",
   DB_READS_BACKEND: "service",
   DB_GENERATION_BACKEND: "service",
+  GENERATION_EXECUTION_BACKEND: "service",
   CLOUDFLARE_READ_ONLY_MODE: "false",
   DATABASE_URL: "postgresql://invalid:invalid@db.invalid:5432/invalid",
   NEXTAUTH_SECRET: "fixture-nextauth-secret",
@@ -268,6 +278,40 @@ const bindings = {
 };
 /** @param {Request} request */
 const dbServiceBinding = (request) => fixture.fetch(request);
+/** @param {Request} request */
+const executorServiceBinding = async (request) => {
+  const input = /** @type {Record<string, unknown>} */ (await request.json());
+  executorCalls.push(input);
+  if (executorMode === "provider-failure")
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        data: { status: "failed", certainty: "definitive", reason: "provider" },
+      }),
+      { status: 200, headers: { "content-type": "application/json" } },
+    );
+  if (executorMode === "upload-failure")
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        data: { status: "failed", certainty: "definitive", reason: "storage" },
+      }),
+      { status: 200, headers: { "content-type": "application/json" } },
+    );
+  if (executorMode === "invalid")
+    return new Response(
+      JSON.stringify({ ok: true, data: { status: "completed", outputIds: ["wrong"] } }),
+      { status: 200, headers: { "content-type": "application/json" } },
+    );
+  if (executorMode === "ambiguous") throw new Error("fixture response lost");
+  const plannedOutputIds = Array.isArray(input.plannedOutputIds)
+    ? input.plannedOutputIds
+    : [];
+  return new Response(
+    JSON.stringify({ ok: true, data: { status: "completed", outputIds: plannedOutputIds } }),
+    { status: 200, headers: { "content-type": "application/json" } },
+  );
+};
 const appOptions = {
   name: "gaminglogoai-generation-http-fixture",
   modules: moduleFiles,
@@ -277,6 +321,7 @@ const appOptions = {
   bindings,
   serviceBindings: {
     DB_SERVICE: dbServiceBinding,
+    GENERATION_EXECUTOR: executorServiceBinding,
     ASSETS: createAssetFixture(assets),
   },
   /** @param {Request} request */
@@ -339,7 +384,7 @@ const makeMiniflare = (options) =>
 const mf = makeMiniflare(runtimeOptions);
 /** @type {string[]} */
 const checks = [];
-/** @typedef {{result: string, fixtureOnly: boolean, deployable: boolean, nodeVersion: string, wranglerVersion: string, wranglerPackagePath: string, workerEntrypoint: string, bundleMode: string, workerdVersion: string, miniflareVersion: string, runtimeCompatibilityDate: string, checks: string[], dbOperations: string[], dbCalls: Array<Record<string, unknown>>, mockedProviderCalls: number, mockedS3Uploads: number, blockedOutbound: number, blockedUrls: string[], missingBindingLayer: string|null, failurePhase: string|null, transportDiagnostics: Record<string, unknown>}} ProbeReport */
+/** @typedef {{result: string, fixtureOnly: boolean, deployable: boolean, nodeVersion: string, wranglerVersion: string, wranglerPackagePath: string, workerEntrypoint: string, bundleMode: string, workerdVersion: string, miniflareVersion: string, runtimeCompatibilityDate: string, checks: string[], dbOperations: string[], dbCalls: Array<Record<string, unknown>>, executorCalls: number, mockedProviderCalls: number, mockedS3Uploads: number, blockedOutbound: number, blockedUrls: string[], missingBindingLayer: string|null, executionBindingLayer: string|null, failurePhase: string|null, transportDiagnostics: Record<string, unknown>}} ProbeReport */
 /** @type {ProbeReport} */
 const report = {
   result: "GAMINGLOGOAI_GENERATION_HTTP_PROBE_STOPPED",
@@ -356,11 +401,13 @@ const report = {
   checks,
   dbOperations: fixture.operations,
   dbCalls: [],
+  executorCalls: 0,
   mockedProviderCalls: 0,
   mockedS3Uploads: 0,
   blockedOutbound: 0,
   blockedUrls,
   missingBindingLayer: null,
+  executionBindingLayer: null,
   failurePhase: null,
   transportDiagnostics: {},
 };
@@ -581,26 +628,44 @@ try {
   );
   checks.push("invalid-input-rejected-before-charge");
 
-  const first = await mutation(requestA, tokenA, "First fixture logo");
+  const first = await mutation(requestC, tokenA, "Fresh fixture logo");
   assert.equal(first.status, 200);
   const firstBody = await first.json();
   assert.ok(JSON.stringify(firstBody).includes(iconId));
   const firstReserve = fixture.calls.find(
-    (call) => call.operation === "generation.reserveLogo",
+    (call) =>
+      call.operation === "generation.reserveLogo" &&
+      call.input.requestId === requestC,
   );
   assert.equal(firstReserve?.input.userId, userA);
-  checks.push("authenticated-generation-reached-db-service");
+  assert.equal(executorCalls.length, 1);
+  assert.equal(executorCalls[0]?.userId, userA);
+  assert.deepEqual(executorCalls[0]?.plannedOutputIds, [iconId]);
+  checks.push("fresh-generation-reached-db-and-executor-services");
 
-  const uploadsAfterFirst = mockedS3Uploads;
-  const duplicate = await mutation(requestA, tokenA, "First fixture logo");
+  const executorCallsAfterFirst = executorCalls.length;
+  const duplicate = await mutation(requestC, tokenA, "Fresh fixture logo");
   assert.equal(duplicate.status, 200);
   assert.deepEqual(await duplicate.json(), firstBody);
-  assert.equal(mockedS3Uploads, uploadsAfterFirst);
+  assert.equal(executorCalls.length, executorCallsAfterFirst);
   assert.equal(
     fixture.operations.filter((operation) => operation === "generation.completeLogo").length,
-    0,
+    1,
   );
   checks.push("completed-replay-without-provider-or-upload");
+
+  const concurrentExecutorCalls = executorCalls.length;
+  const concurrent = await Promise.all([
+    mutation(requestD, tokenA, "Concurrent fixture logo"),
+    mutation(requestD, tokenA, "Concurrent fixture logo"),
+  ]);
+  assert.equal(concurrent.filter((response) => response.status === 200).length, 1);
+  assert.equal(concurrent.filter((response) => response.status >= 400).length, 1);
+  assert.equal(executorCalls.length, concurrentExecutorCalls + 1);
+  const concurrentReplay = await mutation(requestD, tokenA, "Concurrent fixture logo");
+  assert.equal(concurrentReplay.status, 200);
+  assert.equal(executorCalls.length, concurrentExecutorCalls + 1);
+  checks.push("duplicate-concurrent-execution-and-replay");
 
   const second = await mutation(requestB, tokenB, "Second fixture logo");
   assert.equal(second.status, 200);
@@ -610,6 +675,55 @@ try {
   assert.equal(reserves.at(-1)?.input.userId, userB);
   assert.notEqual(reserves[0]?.input.userId, reserves.at(-1)?.input.userId);
   checks.push("request-scoped-account-isolation");
+
+  executorMode = "provider-failure";
+  const providerFailure = await mutation(requestE, tokenA, "Provider failure fixture");
+  assert.ok(providerFailure.status >= 400);
+  assert.equal(
+    fixture.calls.filter(
+      (call) =>
+        call.operation === "generation.refundLogo" &&
+        call.input.requestId === requestE,
+    ).length,
+    1,
+  );
+  executorMode = "upload-failure";
+  const uploadFailure = await mutation(requestF, tokenA, "Upload failure fixture");
+  assert.ok(uploadFailure.status >= 400);
+  assert.equal(
+    fixture.calls.filter(
+      (call) =>
+        call.operation === "generation.refundLogo" &&
+        call.input.requestId === requestF,
+    ).length,
+    1,
+  );
+  checks.push("provider-and-upload-failure-refund-once");
+
+  executorMode = "invalid";
+  const invalidResult = await mutation(requestG, tokenA, "Invalid executor fixture");
+  assert.ok(invalidResult.status >= 400);
+  assert.equal(
+    fixture.calls.filter(
+      (call) =>
+        call.operation === "generation.refundLogo" &&
+        call.input.requestId === requestG,
+    ).length,
+    0,
+  );
+  executorMode = "ambiguous";
+  const ambiguous = await mutation(requestH, tokenA, "Ambiguous executor fixture");
+  assert.ok(ambiguous.status >= 400);
+  assert.equal(
+    fixture.calls.filter(
+      (call) =>
+        call.operation === "generation.refundLogo" &&
+        call.input.requestId === requestH,
+    ).length,
+    0,
+  );
+  checks.push("invalid-and-ambiguous-execution-do-not-speculate");
+  executorMode = "success";
 
   const noBindingOptions = {
     ...appOptions,
@@ -635,10 +749,50 @@ try {
     );
     assert.ok(missing.status >= 400);
     report.missingBindingLayer =
-      "request authentication/runtime resolution before generation resolver";
+      "request authentication/DB_SERVICE context before generation resolver";
     checks.push("missing-binding-fails-closed-before-generation");
   } finally {
     await noBindingMf.dispose();
+  }
+
+  const reserveCountBeforeMissingExecutor = fixture.operations.filter(
+    (operation) => operation === "generation.reserveLogo",
+  ).length;
+  const noExecutorMf = makeMiniflare({
+    ...runtimeOptions,
+    workers: [
+      {
+        ...appOptions,
+        serviceBindings: {
+          DB_SERVICE: dbServiceBinding,
+          ASSETS: createAssetFixture(assets),
+        },
+      },
+    ],
+  });
+  try {
+    await noExecutorMf.ready;
+    const missingExecutor = await noExecutorMf.dispatchFetch(
+      `${origin}/api/trpc/generate.generateIcon?batch=1`,
+      {
+        method: "POST",
+        headers: {
+          ...headers(tokenA),
+          "content-length": String(Buffer.byteLength(JSON.stringify(mutationInput(requestA)))),
+        },
+        body: JSON.stringify(mutationInput(requestA)),
+      },
+    );
+    assert.ok(missingExecutor.status >= 400);
+    assert.equal(
+      fixture.operations.filter((operation) => operation === "generation.reserveLogo").length,
+      reserveCountBeforeMissingExecutor,
+    );
+    report.executionBindingLayer =
+      "trusted executor resolver before generation.reserveLogo";
+    checks.push("missing-executor-binding-fails-before-charge");
+  } finally {
+    await noExecutorMf.dispose();
   }
 
   assert.equal(fixture.unexpected, 0);
@@ -656,6 +810,8 @@ try {
     sessionTokenSeen: Boolean(input.sessionToken),
   }));
   report.mockedS3Uploads = mockedS3Uploads;
+  report.executorCalls = executorCalls.length;
+  report.mockedProviderCalls = executorCalls.length;
   report.blockedOutbound = blockedOutbound;
   await mf.dispose();
 }

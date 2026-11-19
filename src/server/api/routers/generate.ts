@@ -2,124 +2,29 @@
 
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import fetch from "node-fetch";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import Replicate from "replicate";
 import { env } from "~/env.mjs";
-import { b64Image } from "~/data/b64Image";
 import { LOGO_MODEL_CREDITS } from "~/lib/generationPricing";
-import AWS from "aws-sdk";
 import { syncUserToMautic } from "~/server/api/routers/mautic-utils";
-import { buffer as readStreamIntoBuffer } from "stream/consumers";
-import { Readable } from "stream";
-import {
-  finalizeGeneratedImage,
-  shouldWatermarkPurchaseStatus,
-} from "~/server/imageWatermark";
+import { shouldWatermarkPurchaseStatus } from "~/server/imageWatermark";
 import { createRequestGenerationDbService } from "~/server/generation/requestService";
+import { createRequestGenerationExecutor } from "~/server/generation/requestExecutor";
 import { runLogoGeneration } from "~/server/generation/runLogo";
 import {
   GenerationError,
   type GenerationDbService,
+  type GenerationExecutor,
   type GenerationIcon,
   type GenerationReservation,
   type LogoRequest,
 } from "~/server/generation/contract";
 import { withCreditTransaction } from "~/server/lib/creditTransaction";
 
-const s3 = new AWS.S3({
-  credentials: {
-    accessKeyId: env.ACCESS_KEY_ID,
-    secretAccessKey: env.SECRET_ACCESS_KEY,
-  },
-  region: env.NEXT_PUBLIC_AWS_REGION_GAMING,
-});
-
 const BUCKET_NAME = env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING; // Replace with your S3 bucket name
-
-const replicate = new Replicate({
-  auth: env.REPLICATE_API_TOKEN,
-});
-
-// Helper function to fetch an image from a URL and encode it as Base64
-async function fetchAndEncodeImage(url: string): Promise<string> {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: `Failed to fetch image from ${url}`,
-    });
-  }
-  const buf = await response.buffer();
-  return buf.toString("base64");
-}
-
-// Generate the image and encode it as Base64
-const generateIcon = async (
-  prompt: string,
-  numberOfImages = 1,
-  aspectRatio = "1:1",
-  model = "flux-schnell",
-): Promise<string[]> => {
-  let path: `${string}/${string}`;
-  let input: Record<string, any>;
-  let outputs: string[] = [];
-
-  // Model-specific settings
-  if (model === "flux-schnell") {
-    path = "black-forest-labs/flux-schnell";
-    input = {
-      prompt,
-      go_fast: false,
-      megapixels: "1",
-      num_outputs: numberOfImages,
-      aspect_ratio: aspectRatio,
-      output_format: "png",
-      output_quality: 80,
-      num_inference_steps: 4,
-      disable_safety_checker: true,
-    };
-  } else if (model === "flux-dev") {
-    path = "black-forest-labs/flux-dev";
-    input = {
-      prompt,
-      go_fast: false,
-      megapixels: "1",
-      num_outputs: numberOfImages,
-      aspect_ratio: aspectRatio,
-      output_format: "png",
-      output_quality: 80,
-      num_inference_steps: 28,
-      disable_safety_checker: true,
-    };
-  } else {
-    throw new TRPCError({
-      code: "BAD_REQUEST",
-      message: "Invalid model selected",
-    });
-  }
-
-  // Mock mode for testing
-  if (env.MOCK_REPLICATE === "true") {
-    return Array(numberOfImages).fill(b64Image) as string[];
-  }
-
-  // For flux models, we expect an array of URLs
-  const output = (await replicate.run(path, { input })) as string[];
-  if (!Array.isArray(output) || output.length === 0) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Failed to generate image URLs",
-    });
-  }
-  // Convert each URL to base64
-  outputs = await Promise.all(output.map(fetchAndEncodeImage));
-
-  return outputs;
-};
 
 export type GenerateRouterDependencies = {
   createGenerationDbService?: () => Promise<GenerationDbService | null>;
+  createGenerationExecutor?: () => Promise<GenerationExecutor>;
   generate?: (input: LogoRequest) => Promise<string[]>;
   upload?: (
     icon: GenerationIcon,
@@ -127,33 +32,6 @@ export type GenerateRouterDependencies = {
     shouldWatermark: boolean,
   ) => Promise<void>;
   syncUserToMautic?: typeof syncUserToMautic;
-};
-
-const defaultGeneration = (input: LogoRequest) =>
-  generateIcon(
-    input.prompt,
-    input.numberOfImages,
-    input.aspectRatio,
-    input.model,
-  );
-
-const defaultUpload = async (
-  icon: GenerationIcon,
-  base64: string,
-  shouldWatermark: boolean,
-) => {
-  const image = await finalizeGeneratedImage(
-    Buffer.from(base64, "base64"),
-    { shouldWatermark, toolType: "Gaming logo" },
-  );
-  await s3
-    .putObject({
-      Bucket: BUCKET_NAME,
-      Body: image,
-      Key: icon.id,
-      ContentType: "image/png",
-    })
-    .promise();
 };
 
 function createSyncDependency(
@@ -181,8 +59,19 @@ export function createGenerateRouter(
 ) {
   const createGenerationDbService =
     overrides.createGenerationDbService ?? createRequestGenerationDbService;
-  const generate = overrides.generate ?? defaultGeneration;
-  const upload = overrides.upload ?? defaultUpload;
+  const createGenerationExecutor =
+    overrides.createGenerationExecutor ??
+    (overrides.generate || overrides.upload
+      ? async () => {
+          const { createNodeGenerationExecutor } = await import(
+            "~/server/generation/nodeExecutor"
+          );
+          return createNodeGenerationExecutor({
+            generate: overrides.generate,
+            upload: overrides.upload,
+          });
+        }
+      : createRequestGenerationExecutor);
   const sync = createSyncDependency(
     overrides.syncUserToMautic ?? syncUserToMautic,
   );
@@ -206,6 +95,9 @@ export function createGenerateRouter(
             code: "BAD_REQUEST",
             message: "A generation request ID is required",
           });
+        // Resolve the trusted executor before reserving credits. A missing or
+        // unavailable Worker binding therefore has zero ledger side effects.
+        const generationExecutor = await createGenerationExecutor();
         try {
           const completed = await runLogoGeneration(
             {
@@ -218,8 +110,7 @@ export function createGenerateRouter(
             },
             {
               service: generationService,
-              generate,
-              upload,
+              executor: generationExecutor,
               sync,
             },
           );
@@ -294,13 +185,20 @@ export function createGenerateRouter(
             console.error("Error updating Mautic after credit deduction:", err);
           }
 
-          // Generate images
-          const b64Images: string[] = await generateIcon(
-            input.prompt,
-            input.numberOfImages,
-            input.aspectRatio,
-            input.model,
+          const { generateNodeImages, uploadNodeImage } = await import(
+            "~/server/generation/nodeExecutor"
           );
+          const generate = overrides.generate ?? generateNodeImages;
+          const upload = overrides.upload ?? uploadNodeImage;
+          const legacyRequest: LogoRequest = {
+            userId: ctx.session.user.id,
+            requestId: input.requestId ?? "legacy",
+            prompt: input.prompt,
+            numberOfImages: input.numberOfImages,
+            aspectRatio: input.aspectRatio ?? "1:1",
+            model: input.model,
+          };
+          const b64Images = await generate(legacyRequest);
 
           // Store images in DB & upload to S3
           const createdIcons = await Promise.all(
@@ -313,21 +211,7 @@ export function createGenerateRouter(
               });
 
               try {
-                const finalImageBuffer = await finalizeGeneratedImage(
-                  Buffer.from(image, "base64"),
-                  {
-                    shouldWatermark,
-                    toolType: "Gaming logo",
-                  },
-                );
-                await s3
-                  .putObject({
-                    Bucket: BUCKET_NAME,
-                    Body: finalImageBuffer,
-                    Key: icon.id,
-                    ContentType: "image/png",
-                  })
-                  .promise();
+                await upload(icon, image, shouldWatermark);
               } catch (s3Error) {
                 console.error("S3 Upload Error:", s3Error);
                 throw new TRPCError({
@@ -352,4 +236,5 @@ export function createGenerateRouter(
 }
 
 export const generateRouter = createGenerateRouter();
+
 

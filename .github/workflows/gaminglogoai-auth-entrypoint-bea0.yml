@@ -148,6 +148,13 @@ jobs:
           --test --test-concurrency=1
           src/server/__tests__/generate.procedure.integration.test.ts
 
+      - name: Node Sharp rendering regression
+        run: >-
+          node --experimental-strip-types
+          --experimental-loader ./scripts/resolve-src-alias-loader.mjs
+          --test --test-concurrency=1
+          src/server/__tests__/imageWatermark.render.test.ts
+
       - name: Runtime harness and artifact fixture tests
         run: >-
           node --test
@@ -275,6 +282,7 @@ jobs:
           DB_AUTH_BACKEND: service
           DB_READS_BACKEND: service
           DB_GENERATION_BACKEND: service
+          GENERATION_EXECUTION_BACKEND: service
           CLOUDFLARE_READ_ONLY_MODE: "false"
           AUTH_EXTERNAL_SYNC_MODE: disabled
           NEXTAUTH_URL: https://gaminglogoai-generation.fixture.invalid
@@ -418,6 +426,7 @@ jobs:
           DB_AUTH_BACKEND: service
           DB_READS_BACKEND: service
           DB_GENERATION_BACKEND: service
+          GENERATION_EXECUTION_BACKEND: service
           CLOUDFLARE_READ_ONLY_MODE: "true"
           AUTH_EXTERNAL_SYNC_MODE: disabled
           NEXTAUTH_SECRET: fixture-nextauth-secret
