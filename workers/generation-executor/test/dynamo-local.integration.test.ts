@@ -13,6 +13,7 @@ import {
   prepareLogoRequest,
   type GenerationExecutionRequest,
 } from "../../../src/server/generation/contract.ts";
+import { NodeHttpHandler } from "@smithy/node-http-handler";
 import { createGenerationExecutorHandler } from "../src/handler.ts";
 import { signExecutorBody } from "../src/hmac.ts";
 import {
@@ -52,6 +53,11 @@ function createClient(): DynamoDBClient {
     endpoint: endpoint.toString(),
     region: config.awsRegion,
     credentials: { accessKeyId: "local", secretAccessKey: "local" },
+    maxAttempts: 1,
+    requestHandler: new NodeHttpHandler({
+      connectionTimeout: 5000,
+      socketTimeout: 5000,
+    }),
   });
 }
 
@@ -129,10 +135,13 @@ test("DynamoExecutionStore and handler use durable DynamoDB Local state", async 
   const admin = createClient();
   await createTable(admin);
   t.after(async () => {
-    await admin.send(new DeleteTableCommand({ TableName: tableName }));
-    for (const client of testClients) client.destroy();
-    testClients.clear();
-    admin.destroy();
+    try {
+      await admin.send(new DeleteTableCommand({ TableName: tableName }));
+    } finally {
+      for (const client of testClients) client.destroy();
+      testClients.clear();
+      admin.destroy();
+    }
   });
 
   await t.test("concurrent same-key claims acquire exactly once", async () => {
