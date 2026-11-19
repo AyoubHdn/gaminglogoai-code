@@ -180,7 +180,7 @@ jobs:
             "$DYNAMODB_LOCAL_IMAGE" \
             -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
           docker image inspect "$DYNAMODB_LOCAL_IMAGE" --format 'DynamoDB Local image: {{index .RepoTags 0}}'
-          readiness_script="$RUNNER_TEMP/dynamodb-local-readiness.mjs"
+          readiness_script="$GITHUB_WORKSPACE/.dynamodb-local-readiness.mjs"
           cat > "$readiness_script" <<'EOF'
           import { DynamoDBClient, ListTablesCommand } from "@aws-sdk/client-dynamodb";
           import { NodeHttpHandler } from "@smithy/node-http-handler";
@@ -204,12 +204,14 @@ jobs:
           last_status='unavailable'
           for attempt in $(seq 1 300); do
             if node "$readiness_script" >/dev/null 2>&1; then
+              rm -f "$readiness_script"
               exit 0
             fi
             last_status='aws-sdk-list-tables-failed'
             sleep 1
           done
           echo "DynamoDB Local readiness result: $last_status"
+          rm -f "$readiness_script"
           docker logs gaminglogoai-dynamodb-local
           exit 1
 
