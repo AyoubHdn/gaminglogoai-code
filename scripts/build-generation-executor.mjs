@@ -21,6 +21,10 @@ const context = await mkdtemp(path.join(os.tmpdir(), "gaminglogoai-lambda-contex
 const image = "public.ecr.aws/lambda/nodejs:22";
 const sourceSha = (await exec("git", ["rev-parse", "HEAD"], { cwd: root })).stdout.trim();
 
+/**
+ * @param {string[]} args
+ * @param {import("node:child_process").ExecFileOptions} [options]
+ */
 async function runDocker(args, options = {}) {
   return exec("docker", args, {
     cwd: root,
