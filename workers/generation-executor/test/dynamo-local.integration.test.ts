@@ -99,10 +99,10 @@ function createClient(): DynamoDBClient {
   });
 }
 
-function createStore(): DynamoExecutionStore {
+function createStore(executionScope = scope): DynamoExecutionStore {
   const client = createClient();
   testClients.add(client);
-  return new DynamoExecutionStore(config, { client });
+  return new DynamoExecutionStore({ ...config, executionScope }, { client });
 }
 
 async function requestFor(
@@ -221,7 +221,7 @@ test("DynamoExecutionStore and handler use durable DynamoDB Local state", async 
     const otherScope = await requestFor("account-a", "other-scope", requestId);
     assert.equal((await createStore().begin(accountA)).kind, "new");
     assert.equal((await createStore().begin(accountB)).kind, "new");
-    assert.equal((await createStore().begin(otherScope)).kind, "new");
+    assert.equal((await createStore("other-scope").begin(otherScope)).kind, "new");
   });
 
   await t.test("conflicting fingerprints and owner tokens are rejected", async () => {
@@ -372,3 +372,4 @@ test("DynamoExecutionStore and handler use durable DynamoDB Local state", async 
     assert.equal(calls, 0);
   });
 });
+
