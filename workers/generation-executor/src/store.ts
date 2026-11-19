@@ -53,6 +53,43 @@ function stringValue(value: AttributeValue | undefined): string | undefined {
   return value && "S" in value ? value.S : undefined;
 }
 
+function requiredStringValue(
+  item: Record<string, AttributeValue>,
+  name: string,
+): string {
+  const value = stringValue(item[name]);
+  if (!value) throw new Error("EXECUTION_RECORD_INVALID");
+  return value;
+}
+
+function numberValue(
+  item: Record<string, AttributeValue>,
+  name: string,
+): number {
+  const value = item[name];
+  if (!value || !("N" in value) || typeof value.N !== "string" || !/^\d+$/.test(value.N))
+    throw new Error("EXECUTION_RECORD_INVALID");
+  const parsed = Number(value.N);
+  if (!Number.isSafeInteger(parsed)) throw new Error("EXECUTION_RECORD_INVALID");
+  return parsed;
+}
+
+function outputIdsValue(item: Record<string, AttributeValue>): string[] | undefined {
+  const encoded = stringValue(item.outputIds);
+  if (encoded === undefined) return undefined;
+  try {
+    const outputIds: unknown = JSON.parse(encoded);
+    if (
+      !Array.isArray(outputIds) ||
+      outputIds.some((outputId) => typeof outputId !== "string" || outputId.length === 0)
+    )
+      throw new Error("EXECUTION_RECORD_INVALID");
+    return outputIds;
+  } catch {
+    throw new Error("EXECUTION_RECORD_INVALID");
+  }
+}
+
 function fromItem(item: Record<string, AttributeValue>): ExecutionRecord {
   const status = stringValue(item.status);
   if (
@@ -63,18 +100,18 @@ function fromItem(item: Record<string, AttributeValue>): ExecutionRecord {
       status !== "ambiguous")
   )
     throw new Error("EXECUTION_RECORD_INVALID");
-  const outputIds = stringValue(item.outputIds);
+  void numberValue(item, "expiresAt");
   return {
-    executionKey: stringValue(item.executionKey) ?? "",
-    userId: stringValue(item.userId) ?? "",
-    requestId: stringValue(item.requestId) ?? "",
-    fingerprint: stringValue(item.fingerprint) ?? "",
-    model: stringValue(item.model) ?? "",
+    executionKey: requiredStringValue(item, "executionKey"),
+    userId: requiredStringValue(item, "userId"),
+    requestId: requiredStringValue(item, "requestId"),
+    fingerprint: requiredStringValue(item, "fingerprint"),
+    model: requiredStringValue(item, "model"),
     status,
     ownerToken: stringValue(item.ownerToken),
-    outputIds: outputIds ? JSON.parse(outputIds) as string[] : undefined,
+    outputIds: outputIdsValue(item),
     reason: stringValue(item.reason),
-    updatedAt: Number(stringValue(item.updatedAt) ?? 0),
+    updatedAt: numberValue(item, "updatedAt"),
   };
 }
 
@@ -91,9 +128,12 @@ function assertIdentity(record: ExecutionRecord, input: GenerationExecutionReque
 export class DynamoExecutionStore implements ExecutionStore {
   private readonly client: DynamoDBClient;
   private readonly config: ExecutorConfig;
-  constructor(config: ExecutorConfig) {
+  constructor(
+    config: ExecutorConfig,
+    options: { client?: DynamoDBClient } = {},
+  ) {
     this.config = config;
-    this.client = new DynamoDBClient({ region: config.awsRegion });
+    this.client = options.client ?? new DynamoDBClient({ region: config.awsRegion });
   }
 
   async begin(input: GenerationExecutionRequest): Promise<BeginExecution> {

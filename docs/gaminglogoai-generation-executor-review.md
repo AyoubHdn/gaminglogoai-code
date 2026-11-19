@@ -59,6 +59,14 @@ and request ID. A conditional put wins exactly one owner token. Existing
 another paid execution; mismatched fingerprint/model/identity is a conflict.
 Completion/failure updates require the owner token and `running` state.
 
+The DynamoDB `expiresAt` TTL is retention only; it is not a lease, lock
+expiry, or permission to restart paid work. A record is never re-claimed just
+because its retention timestamp has passed. If an operator deletes a record,
+the same execution key can become claimable again, so deletion is outside the
+automatic execution path and requires prior reconciliation. DynamoDB TTL
+timing is not used as recovery evidence and is not established by the local
+emulator tests.
+
 Provider exceptions, network timeouts, and S3 errors are ambiguous by default.
 They do not trigger a refund, retry, or object deletion. Only an explicitly
 classified pre-dispatch/definitive failure can be returned as definitive. A

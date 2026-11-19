@@ -164,6 +164,37 @@ jobs:
       - name: Build fixture-only Node executor package
         run: node scripts/build-generation-executor.mjs
 
+      - name: Start pinned DynamoDB Local
+        shell: bash
+        env:
+          DYNAMODB_LOCAL_IMAGE: amazon/dynamodb-local:2.6.1
+        run: |
+          set -euo pipefail
+          data_dir="$RUNNER_TEMP/gaminglogoai-dynamodb-local"
+          mkdir -p "$data_dir"
+          docker pull "$DYNAMODB_LOCAL_IMAGE"
+          docker run --detach --name gaminglogoai-dynamodb-local \
+            --publish 8000:8000 \
+            --volume "$data_dir:/home/dynamodblocal/data" \
+            "$DYNAMODB_LOCAL_IMAGE" \
+            -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
+          docker image inspect "$DYNAMODB_LOCAL_IMAGE" --format 'DynamoDB Local image: {{index .RepoTags 0}}'
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8000/shell/ >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs gaminglogoai-dynamodb-local
+          exit 1
+
+      - name: DynamoExecutionStore DynamoDB Local integration tests
+        env:
+          DYNAMODB_LOCAL_ENDPOINT: http://127.0.0.1:8000/
+        run: >-
+          node --experimental-strip-types --test --test-concurrency=1
+          workers/generation-executor/test/dynamo-local.integration.test.ts
+
       - name: Runtime harness and artifact fixture tests
         run: >-
           node --test
