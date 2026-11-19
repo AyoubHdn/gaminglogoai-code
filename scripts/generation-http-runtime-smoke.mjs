@@ -263,7 +263,7 @@ const dbServiceBinding = (request) => fixture.fetch(request);
 const appOptions = {
   name: "gaminglogoai-generation-http-fixture",
   modules: moduleFiles,
-  modulesRoot: outputRoot,
+  modulesRoot: root,
   compatibilityDate: runtimeDate,
   compatibilityFlags: ["nodejs_compat", "nodejs_als"],
   bindings,
