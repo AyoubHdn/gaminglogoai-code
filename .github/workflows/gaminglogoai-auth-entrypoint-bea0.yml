@@ -344,19 +344,24 @@ jobs:
         run: mv .ci-readonly-open-next .open-next
 
       - name: Prepare the auth-only staging candidate
+        if: github.ref_name == 'staging/gaminglogoai-auth-entrypoint-bea0'
         run: node scripts/package-staging-auth.mjs prepare
 
       - name: Auth-only Worker Wrangler dry-run
+        if: github.ref_name == 'staging/gaminglogoai-auth-entrypoint-bea0'
         run: npx wrangler@4.148.0 deploy --config wrangler.auth-staging.jsonc --dry-run --outdir .ci-auth-runtime/bundle
 
       - name: Actual workerd Google OAuth fixture round trip
+        if: github.ref_name == 'staging/gaminglogoai-auth-entrypoint-bea0'
         timeout-minutes: 5
         run: node scripts/staging-auth-runtime-smoke.mjs
 
       - name: Verify auth candidate provenance and complete content manifest
+        if: github.ref_name == 'staging/gaminglogoai-auth-entrypoint-bea0'
         run: node scripts/package-staging-auth.mjs finalize
 
       - name: Preserve the auth-only staging candidate
+        if: github.ref_name == 'staging/gaminglogoai-auth-entrypoint-bea0'
         uses: actions/upload-artifact@v4
         with:
           name: gaminglogoai-staging-google-auth-candidate-${{ github.sha }}
