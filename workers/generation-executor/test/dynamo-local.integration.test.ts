@@ -28,7 +28,7 @@ if (!endpointValue) throw new Error("DYNAMODB_LOCAL_ENDPOINT is required");
 const endpoint = new URL(endpointValue);
 if (
   endpoint.protocol !== "http:" ||
-  endpoint.hostname !== "127.0.0.1" ||
+  endpoint.hostname !== "localhost" ||
   endpoint.port !== "8000" ||
   endpoint.pathname !== "/" ||
   endpoint.search ||

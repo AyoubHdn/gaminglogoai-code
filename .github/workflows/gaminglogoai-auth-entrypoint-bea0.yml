@@ -182,7 +182,7 @@ jobs:
           docker image inspect "$DYNAMODB_LOCAL_IMAGE" --format 'DynamoDB Local image: {{index .RepoTags 0}}'
           last_status='unavailable'
           for attempt in $(seq 1 300); do
-            status_code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 2 -X POST 'http://127.0.0.1:8000/' || true)"
+            status_code="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' --max-time 2 -X POST 'http://localhost:8000/' || true)"
             if [ "$status_code" != '000' ]; then
               echo "DynamoDB Local loopback HTTP ready (unsigned probe status: $status_code)"
               exit 0
@@ -196,7 +196,7 @@ jobs:
 
       - name: DynamoExecutionStore DynamoDB Local integration tests
         env:
-          DYNAMODB_LOCAL_ENDPOINT: http://127.0.0.1:8000/
+          DYNAMODB_LOCAL_ENDPOINT: http://localhost:8000/
         run: >-
           node --experimental-strip-types --test --test-concurrency=1
           workers/generation-executor/test/dynamo-local.integration.test.ts
