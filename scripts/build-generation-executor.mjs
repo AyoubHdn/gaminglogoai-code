@@ -239,7 +239,8 @@ try {
   await runDocker(["start", runtimeContainer]);
   await runDocker(["cp", output, `${runtimeContainer}:/opt/package`]);
   await runDocker(["cp", path.join(context, "runtime-smoke.mjs"), `${runtimeContainer}:/tmp/runtime-smoke.mjs`]);
-  await runDocker(["exec", runtimeContainer, "node", "/tmp/runtime-smoke.mjs"]);
+  const runtimeSmoke = await runDocker(["exec", runtimeContainer, "node", "/tmp/runtime-smoke.mjs"]);
+  console.log(`PACKAGED_RUNTIME_EVIDENCE=${runtimeSmoke.stdout.trim()}`);
 } finally {
   await runDocker(["rm", "--force", runtimeContainer]).catch(() => undefined);
 }

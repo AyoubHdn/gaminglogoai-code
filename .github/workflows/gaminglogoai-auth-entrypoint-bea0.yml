@@ -162,7 +162,17 @@ jobs:
           workers/generation-executor/test/handler.test.ts
 
       - name: Build self-contained Linux Lambda executor fixture
+        id: lambda-package
         run: node scripts/build-generation-executor.mjs
+
+      - name: Preserve non-deployable Lambda review package
+        if: steps.lambda-package.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gaminglogoai-lambda-review-fixture-${{ github.sha }}
+          path: .codex-tmp-tests/gaminglogoai-generation-executor-lambda-fixture-${{ github.sha }}.zip
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Start pinned DynamoDB Local
         shell: bash
