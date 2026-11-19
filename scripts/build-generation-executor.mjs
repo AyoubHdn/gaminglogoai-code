@@ -24,6 +24,10 @@ await build({
 });
 await copyFile(asset, path.join(output, "public", "watermark.png"));
 
+/**
+ * @param {string} file
+ * @returns {Promise<string>}
+ */
 const sha256 = async (file) =>
   createHash("sha256").update(await readFile(file)).digest("hex");
 const sourceSha = execFileSync("git", ["rev-parse", "HEAD"], {

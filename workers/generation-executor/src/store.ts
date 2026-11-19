@@ -90,7 +90,9 @@ function assertIdentity(record: ExecutionRecord, input: GenerationExecutionReque
 
 export class DynamoExecutionStore implements ExecutionStore {
   private readonly client: DynamoDBClient;
-  constructor(private readonly config: ExecutorConfig) {
+  private readonly config: ExecutorConfig;
+  constructor(config: ExecutorConfig) {
+    this.config = config;
     this.client = new DynamoDBClient({ region: config.awsRegion });
   }
 
@@ -188,7 +190,10 @@ export class DynamoExecutionStore implements ExecutionStore {
 
 export class MemoryExecutionStore implements ExecutionStore {
   readonly records = new Map<string, ExecutionRecord>();
-  constructor(private readonly scope: string) {}
+  private readonly scope: string;
+  constructor(scope: string) {
+    this.scope = scope;
+  }
   async begin(input: GenerationExecutionRequest): Promise<BeginExecution> {
     const executionKey = key(input, this.scope);
     const current = this.records.get(executionKey);
