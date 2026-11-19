@@ -2,8 +2,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 import type { PrismaClient } from "@prisma/client";
-import { shouldWatermarkPurchaseStatus } from "./watermarkPolicy";
-export { shouldWatermarkPurchaseStatus } from "./watermarkPolicy";
+import { shouldWatermarkPurchaseStatus } from "./watermarkPolicy.ts";
+export { shouldWatermarkPurchaseStatus } from "./watermarkPolicy.ts";
 
 const WATERMARK_WIDTH_RATIO = 0.28;
 const WATERMARK_MARGIN_RATIO = 0.02;
