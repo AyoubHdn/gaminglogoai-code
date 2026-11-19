@@ -186,7 +186,7 @@ if (!handlerText.includes("createGenerationExecutorHandler"))
 const packageLockSha256 = await digest(path.join(output, "package-lock.json"));
 const manifestFiles = {};
 let uncompressedBytes = 0;
-for (const file of packageFiles.filter((entry) => !entry.path.endsWith(".d.ts"))) {
+for (const file of packageFiles) {
   const fileStat = await stat(file.full);
   uncompressedBytes += fileStat.size;
   manifestFiles[file.path] = { sha256: await digest(file.full), bytes: fileStat.size };
@@ -244,7 +244,7 @@ const zipSha256 = await digest(zip);
 const zipStat = await stat(zip);
 const forbidden = [/AKIA[0-9A-Z]{16}/, /-----BEGIN [A-Z ]+ PRIVATE KEY-----/, /sk_(?:live|test)_[A-Za-z0-9]+/, /whsec_[A-Za-z0-9]+/];
 const credentialScan = [];
-for (const file of packageFiles) {
+for (const file of packageFiles.filter((entry) => !entry.path.endsWith(".d.ts"))) {
   const bytes = await readFile(file.full);
   if (forbidden.some((pattern) => pattern.test(bytes.toString("utf8")))) credentialScan.push(file.path);
 }
