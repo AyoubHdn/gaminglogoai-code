@@ -69,7 +69,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REF_NAME" = "staging/gaminglogoai-auth-entrypoint-bea0" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c"
+          test "$GITHUB_REF_NAME" = "staging/gaminglogoai-auth-entrypoint-bea0" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c-generated-runtime"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git status --porcelain)" = ""
 
@@ -368,7 +368,7 @@ jobs:
 
 
   compatibility-experiment:
-    if: github.ref_name == 'experiment/gaminglogoai-post-body-c'
+    if: github.ref_name == 'experiment/gaminglogoai-post-body-c' || github.ref_name == 'experiment/gaminglogoai-post-body-c-generated-runtime'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -461,3 +461,4 @@ jobs:
           GENERATION_HTTP_REPORT_ROOT: ${{ github.workspace }}/.ci-compat-runtime
           GENERATION_HTTP_TOOL_BUNDLE: "true"
         run: node scripts/generation-http-runtime-smoke.mjs
+
