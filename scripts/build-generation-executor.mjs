@@ -27,11 +27,15 @@ const sourceSha = (await exec("git", ["rev-parse", "HEAD"], { cwd: root })).stdo
  * @param {import("node:child_process").ExecFileOptions} [options]
  */
 async function runDocker(args, options = {}) {
-  return exec("docker", args, {
+  const result = await exec("docker", args, {
     cwd: root,
     maxBuffer: 32 * 1024 * 1024,
     ...options,
   });
+  return {
+    stdout: result.stdout.toString(),
+    stderr: result.stderr.toString(),
+  };
 }
 
 /** @param {string} file */
@@ -89,7 +93,9 @@ const inspected = JSON.parse(
   (await runDocker(["image", "inspect", image, "--format", "{{json .}}"]))
     .stdout,
 );
-const repoDigest = (inspected.RepoDigests ?? []).find((value) =>
+/** @type {string[]} */
+const repoDigests = Array.isArray(inspected.RepoDigests) ? inspected.RepoDigests : [];
+const repoDigest = repoDigests.find((value) =>
   value.startsWith("public.ecr.aws/lambda/nodejs@sha256:"),
 );
 if (!repoDigest) throw new Error("The Lambda base image did not expose a pinned digest");
@@ -184,6 +190,7 @@ const handlerText = await readFile(path.join(output, "handler.cjs"), "utf8");
 if (!handlerText.includes("createGenerationExecutorHandler"))
   throw new Error("Packaged handler does not contain the expected export");
 const packageLockSha256 = await digest(path.join(output, "package-lock.json"));
+/** @type {Record<string, {sha256: string, bytes: number}>} */
 const manifestFiles = {};
 let uncompressedBytes = 0;
 for (const file of packageFiles) {
