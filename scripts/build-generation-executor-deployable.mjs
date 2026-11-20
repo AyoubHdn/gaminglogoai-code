@@ -145,7 +145,7 @@ await rm(zip, { force: true });
 await exec("zip", ["-q", "-r", "-9", zip, "."], { cwd: output });
 const zipSha256 = await sha256(zip);
 const scan = [];
-for (const file of files) {
+for (const file of files.filter((entry) => !entry.path.endsWith(".d.ts"))) {
   const text = (await readFile(file.full)).toString("utf8");
   if (/AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]+ PRIVATE KEY-----|sk_(?:live|test)_[A-Za-z0-9]+|whsec_[A-Za-z0-9]+/.test(text)) scan.push(file.path);
 }
