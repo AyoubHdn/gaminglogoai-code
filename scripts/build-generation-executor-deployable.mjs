@@ -165,7 +165,7 @@ try {
   await runDocker(["cp", `${extracted}${path.sep}.`, `${runtime}:/opt/package`]);
   await runDocker(["cp", fixtureInput, `${runtime}:/tmp/fixture-request.json`]);
   await runDocker(["cp", path.join(context, "runtime-smoke.mjs"), `${runtime}:/tmp/runtime-smoke.mjs`]);
-  const runtimeSmoke = await runDocker(["exec", runtime, "node", "/tmp/runtime-smoke.mjs"]);
+  const runtimeSmoke = await runDocker(["exec", "-e", "FIXTURE_REQUEST_PATH=/tmp/fixture-request.json", runtime, "node", "/tmp/runtime-smoke.mjs"]);
   if (!runtimeSmoke.stdout.includes("watermarkRendering") || !runtimeSmoke.stdout.includes("completedReplayWithoutProviderOrUpload"))
     throw new Error("Packaged offline runtime evidence is incomplete");
   console.log(`PACKAGED_RUNTIME_EVIDENCE=${runtimeSmoke.stdout.trim()}`);

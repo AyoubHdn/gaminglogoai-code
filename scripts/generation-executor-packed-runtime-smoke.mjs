@@ -12,9 +12,12 @@ assert.equal(typeof handlerModule.createGenerationExecutorHandler, "function");
 assert.equal(typeof handlerModule.handler, "function");
 
 /** @typedef {{userId: string, requestId: string, prompt: string, model: string, numberOfImages: number, aspectRatio: string, executionScope: string, fingerprint: string, shouldWatermark: boolean, plannedOutputIds: string[]}} FixtureInput */
+// The deployable package supplies synthetic input outside the ZIP; the legacy
+// fixture build retains its historical in-package input for compatibility.
+/** @type {string} */
+const fixturePath = process.env.FIXTURE_REQUEST_PATH ?? path.join(packageRoot, "fixture-request.json");
 /** @type {FixtureInput} */
-// The synthetic request is test input outside the deployment ZIP.
-const fixture = JSON.parse(await readFile("/tmp/fixture-request.json", "utf8"));
+const fixture = JSON.parse(await readFile(fixturePath, "utf8"));
 const secret = "fixture-executor-secret";
 const records = new Map();
 let providerCalls = 0;
