@@ -13,7 +13,8 @@ assert.equal(typeof handlerModule.handler, "function");
 
 /** @typedef {{userId: string, requestId: string, prompt: string, model: string, numberOfImages: number, aspectRatio: string, executionScope: string, fingerprint: string, shouldWatermark: boolean, plannedOutputIds: string[]}} FixtureInput */
 /** @type {FixtureInput} */
-const fixture = JSON.parse(await readFile(path.join(packageRoot, "fixture-request.json"), "utf8"));
+// The synthetic request is test input outside the deployment ZIP.
+const fixture = JSON.parse(await readFile("/tmp/fixture-request.json", "utf8"));
 const secret = "fixture-executor-secret";
 const records = new Map();
 let providerCalls = 0;
