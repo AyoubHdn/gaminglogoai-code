@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - staging/gaminglogoai-auth-entrypoint-bea0
+      - staging/gaminglogoai-executor-prefix-4de
       - experiment/gaminglogoai-post-body-c
       - experiment/gaminglogoai-post-body-c-generated-runtime
 
@@ -69,7 +70,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REF_NAME" = "staging/gaminglogoai-auth-entrypoint-bea0" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c-generated-runtime"
+          test "$GITHUB_REF_NAME" = "staging/gaminglogoai-auth-entrypoint-bea0" || test "$GITHUB_REF_NAME" = "staging/gaminglogoai-executor-prefix-4de" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c-generated-runtime"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git status --porcelain)" = ""
 
@@ -160,10 +161,37 @@ jobs:
           node --experimental-strip-types
           --test scripts/generation-executor-package.test.mjs
           workers/generation-executor/test/handler.test.ts
+          workers/generation-executor/test/output-prefix.test.ts
+          workers/db/src/generation.prefix.test.ts
+          workers/generation-executor-gateway/src/index.sigv4.test.mjs
+          workers/generation-executor-gateway/src/index.sigv4.sdk.test.mjs
+
+      - name: Credit transaction regression
+        run: >-
+          node --experimental-strip-types
+          --experimental-loader ./scripts/resolve-src-alias-loader.mjs
+          src/server/lib/__tests__/creditTransaction.test.ts
 
       - name: Build self-contained Linux Lambda executor fixture
         id: lambda-package
         run: node scripts/build-generation-executor.mjs
+
+      - name: Build deployable staging Lambda candidate
+        id: deployable-lambda-package
+        env:
+          EXPECTED_SOURCE_SHA: ${{ github.sha }}
+        run: node scripts/build-generation-executor-deployable.mjs
+
+      - name: Preserve deployable staging Lambda candidate
+        if: steps.deployable-lambda-package.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gaminglogoai-generation-staging-deployable-${{ github.sha }}
+          path: |
+            .codex-tmp-tests/gaminglogoai-generation-staging-deployable-${{ github.sha }}.zip
+            .codex-tmp-tests/generation-executor-staging-deployable-${{ github.sha }}/build-provenance.json
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Preserve non-deployable Lambda review package
         if: steps.lambda-package.outcome == 'success'

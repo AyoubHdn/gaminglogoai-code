@@ -6,6 +6,7 @@ import { env } from "~/env.mjs";
 import { b64Image } from "~/data/b64Image";
 import { finalizeGeneratedImage } from "~/server/imageWatermark";
 import { createFunctionGenerationExecutor } from "./executor.ts";
+import { configuredGenerationOutputPrefix, generationObjectKey } from "./storageKey.ts";
 import type {
   GenerationExecutor,
   GenerationIcon,
@@ -20,6 +21,7 @@ const s3 = new AWS.S3({
   region: env.NEXT_PUBLIC_AWS_REGION_GAMING,
 });
 const bucketName = env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING;
+const outputPrefix = configuredGenerationOutputPrefix(env.GENERATION_OUTPUT_PREFIX);
 const replicate = new Replicate({ auth: env.REPLICATE_API_TOKEN });
 
 async function fetchAndEncodeImage(url: string): Promise<string> {
@@ -61,7 +63,7 @@ export async function generateNodeImages(input: LogoRequest): Promise<string[]> 
   if (env.MOCK_REPLICATE === "true")
     return Array(input.numberOfImages).fill(b64Image) as string[];
   const output = (await replicate.run(path, { input: modelInput })) as unknown;
-  if (!Array.isArray(output) || output.some((url) => typeof url !== "string"))
+  if (!Array.isArray(output) || !output.every((url): url is string => typeof url === "string"))
     throw new Error("Failed to generate image URLs");
   return Promise.all(output.map((url) => fetchAndEncodeImage(url)));
 }
@@ -79,7 +81,7 @@ export async function uploadNodeImage(
     .putObject({
       Bucket: bucketName,
       Body: image,
-      Key: icon.id,
+      Key: generationObjectKey(outputPrefix, icon.id),
       ContentType: "image/png",
     })
     .promise();

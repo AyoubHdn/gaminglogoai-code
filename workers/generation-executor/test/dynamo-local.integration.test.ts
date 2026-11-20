@@ -45,6 +45,7 @@ const config: ExecutorConfig = {
   executionTable: tableName,
   awsRegion: "us-east-1",
   bucketName: "fixture-only",
+  outputPrefix: "generation-staging/",
 };
 
 const testClients = new Set<DynamoDBClient>();

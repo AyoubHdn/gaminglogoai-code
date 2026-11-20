@@ -42,6 +42,10 @@ const server = z.object({
   CRON_SECRET: z.string(),
   MYLEAD_SECURITY_KEY: z.string(),
   IPAPI_KEY: z.string(),
+  GENERATION_OUTPUT_PREFIX: z.string().refine(
+    (value) => value === "" || /^(?:[A-Za-z0-9][A-Za-z0-9._-]*\/)+$/.test(value),
+    "GENERATION_OUTPUT_PREFIX must contain only safe path segments and end with /",
+  ).default(""),
 });
 
 /**
@@ -92,6 +96,7 @@ const processEnv = {
   NEXT_PUBLIC_S3_BUCKET_NAME_GAMING: process.env.NEXT_PUBLIC_S3_BUCKET_NAME_GAMING,
   MYLEAD_SECURITY_KEY: process.env.MYLEAD_SECURITY_KEY,
   IPAPI_KEY: process.env.IPAPI_KEY,
+  GENERATION_OUTPUT_PREFIX: process.env.GENERATION_OUTPUT_PREFIX,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

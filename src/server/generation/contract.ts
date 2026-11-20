@@ -10,7 +10,7 @@ export type LogoRequest = {
 };
 export type GenerationKey = Pick<LogoRequest, "userId" | "requestId">;
 export type GenerationState = "reserved" | "completed" | "refunded";
-export type GenerationIcon = { id: string; prompt: string; imageKey: null };
+export type GenerationIcon = { id: string; prompt: string; imageKey: string | null };
 export type GenerationReservation = {
   acquired: boolean;
   state: GenerationState;
@@ -189,10 +189,10 @@ export function parseIcons(value: unknown): GenerationIcon[] {
       typeof icon.id !== "string" ||
       !/^[a-f0-9]{64}$/.test(icon.id) ||
       typeof icon.prompt !== "string" ||
-      icon.imageKey !== null
+      (icon.imageKey !== null && typeof icon.imageKey !== "string")
     )
       throw new Error("Invalid generation icon");
-    return { id: icon.id, prompt: icon.prompt, imageKey: null };
+    return { id: icon.id, prompt: icon.prompt, imageKey: icon.imageKey };
   });
 }
 export function parseReservation(value: unknown): GenerationReservation {

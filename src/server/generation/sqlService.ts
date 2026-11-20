@@ -5,9 +5,11 @@ import {
   parseReservation,
   parseState,
   prepareLogoRequest,
+  isRecord,
   type GenerationDbService,
   type GenerationKey,
 } from "./contract.ts";
+import { generationImageKey, validateGenerationOutputPrefix } from "./storageKey.ts";
 
 type Row = Record<string, unknown>;
 export type GenerationQuery = (
@@ -34,11 +36,24 @@ async function getRequest(query: GenerationQuery, key: GenerationKey) {
   );
   return row;
 }
-function reservation(row: Row, user: Row, acquired: boolean) {
+function reservation(row: Row, user: Row, acquired: boolean, outputPrefix: string) {
+  const normalizedIcons: unknown = Array.isArray(row.icons)
+    ? (row.icons as unknown[]).map((icon: unknown) =>
+        isRecord(icon) && typeof icon.id === "string"
+          ? {
+              ...icon,
+              imageKey:
+                typeof icon.imageKey === "string"
+                  ? icon.imageKey
+                  : generationImageKey(outputPrefix, icon.id),
+            }
+          : icon,
+      )
+    : row.icons;
   return parseReservation({
     acquired,
     state: row.state,
-    icons: row.icons,
+    icons: normalizedIcons,
     shouldWatermark: row.shouldWatermark,
     credits: user.gamingCredits,
     email: user.email,
@@ -48,7 +63,9 @@ function reservation(row: Row, user: Row, acquired: boolean) {
 
 export function createSqlGenerationDbService(
   transaction: GenerationTransaction,
+  outputPrefix = "",
 ): GenerationDbService {
+  const safeOutputPrefix = validateGenerationOutputPrefix(outputPrefix);
   return {
     async reserveLogo(value) {
       const { input, fingerprint, icons, cost } =
@@ -63,7 +80,7 @@ export function createSqlGenerationDbService(
             existing.creditCost !== cost
           )
             throw new GenerationError("GENERATION_REQUEST_CONFLICT");
-          return reservation(existing, user, false);
+          return reservation(existing, user, false, safeOutputPrefix);
         }
         const [charged] = await query(
           'UPDATE "User" SET "gamingCredits"="gamingCredits"-$2 WHERE "id"=$1 AND "gamingCredits">=$2 RETURNING "gamingCredits"',
@@ -71,6 +88,7 @@ export function createSqlGenerationDbService(
         );
         if (!charged)
           throw new GenerationError("GENERATION_INSUFFICIENT_CREDITS");
+        const storedIcons = icons.map((icon) => ({ ...icon, imageKey: generationImageKey(safeOutputPrefix, icon.id) }));
         const [row] = await query(
           'INSERT INTO "GamingGenerationRequest" ("userId","requestId","fingerprint","creditCost","icons","shouldWatermark") VALUES ($1,$2,$3,$4,$5::text::jsonb,$6) RETURNING *',
           [
@@ -78,12 +96,12 @@ export function createSqlGenerationDbService(
             input.requestId,
             fingerprint,
             cost,
-            JSON.stringify(icons),
+            JSON.stringify(storedIcons),
             user.hasPurchasedCredits !== true,
           ],
         );
         if (!row) throw new Error("Generation reservation insert failed");
-        return reservation(row, { ...user, ...charged }, true);
+        return reservation(row, { ...user, ...charged }, true, safeOutputPrefix);
       });
     },
     async completeLogo(value) {
@@ -96,7 +114,7 @@ export function createSqlGenerationDbService(
         if (state === "completed") return state;
         if (state === "refunded")
           throw new GenerationError("GENERATION_ALREADY_REFUNDED");
-        for (const icon of parseIcons(row.icons)) {
+        for (const icon of parseIcons(row.icons).map((value) => ({ ...value, imageKey: value.imageKey ?? generationImageKey(safeOutputPrefix, value.id) }))) {
           await query(
             'INSERT INTO "Icon" ("id","userId","prompt","imageKey") VALUES ($1,$2,$3,$4) RETURNING "id"',
             [icon.id, key.userId, icon.prompt, icon.imageKey],

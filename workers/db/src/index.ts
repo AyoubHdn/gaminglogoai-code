@@ -4,6 +4,7 @@ import {
   type GenerationTransaction,
 } from "../../../src/server/generation/sqlService.ts";
 import { dispatchAuth, isAuthOperation, type AuthOperation } from "./auth.ts";
+import { validateGenerationOutputPrefix } from "../../../src/server/generation/storageKey.ts";
 
 type DbRow = Record<string, unknown>;
 export type DbQuery = (
@@ -15,6 +16,7 @@ type WorkerEnv = {
   HYPERDRIVE?: {
     connectionString?: string;
   };
+  GENERATION_OUTPUT_PREFIX?: string;
 };
 
 type ReadOperation =
@@ -133,6 +135,7 @@ async function dispatch(
 export function createDbRpcHandler(
   query: DbQuery,
   transaction?: GenerationTransaction,
+  outputPrefix = "",
 ) {
   return async (request: Request): Promise<Response> => {
     if (request.method !== "POST" || new URL(request.url).pathname !== "/rpc") {
@@ -154,7 +157,7 @@ export function createDbRpcHandler(
       ) {
         if (!transaction)
           throw new Error("Generation transaction boundary is required");
-        const service = createSqlGenerationDbService(transaction);
+        const service = createSqlGenerationDbService(transaction, validateGenerationOutputPrefix(outputPrefix));
         // Each implementation validates the untrusted input before executing SQL.
         if (body.operation === "generation.reserveLogo")
           data = await service.reserveLogo(body.input as never);
@@ -193,6 +196,7 @@ export default {
     if (!env.HYPERDRIVE?.connectionString) {
       return json({ ok: false, error: { code: "DB_BINDING_MISSING" } }, 503);
     }
+    const outputPrefix = validateGenerationOutputPrefix(env.GENERATION_OUTPUT_PREFIX);
 
     const { default: postgres } = await import("postgres");
     const sql = postgres(env.HYPERDRIVE.connectionString, { prepare: false });
@@ -205,7 +209,7 @@ export default {
               tx.unsafe(query, values as never[]),
             ),
           }))
-          .then(({ result }) => result),
+          .then(({ result }) => result), outputPrefix,
     );
     try {
       return await handler(request);

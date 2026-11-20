@@ -9,6 +9,7 @@ import {
   type GenerationDbService,
 } from "./contract.ts";
 import { createSqlGenerationDbService } from "./sqlService.ts";
+import { configuredGenerationOutputPrefix } from "./storageKey.ts";
 
 export function createPrismaGenerationDbService(
   prisma: PrismaClient,
@@ -16,7 +17,7 @@ export function createPrismaGenerationDbService(
   return createSqlGenerationDbService((action) =>
     prisma.$transaction((tx) =>
       action((query, values) => tx.$queryRawUnsafe(query, ...values)),
-    ),
+    ), configuredGenerationOutputPrefix(process.env.GENERATION_OUTPUT_PREFIX),
   );
 }
 export function createRemoteGenerationDbService(

@@ -1,3 +1,5 @@
+import { validateGenerationOutputPrefix } from "../../../src/server/generation/storageKey.ts";
+
 export type ExecutorConfig = {
   replicateApiToken: string;
   hmacSecret: string;
@@ -5,6 +7,7 @@ export type ExecutorConfig = {
   executionTable: string;
   awsRegion: string;
   bucketName: string;
+  outputPrefix: string;
 };
 
 function required(env: NodeJS.ProcessEnv, name: string): string {
@@ -23,5 +26,6 @@ export function loadExecutorConfig(
     executionTable: required(env, "GENERATION_EXECUTION_TABLE"),
     awsRegion: required(env, "NEXT_PUBLIC_AWS_REGION_GAMING"),
     bucketName: required(env, "NEXT_PUBLIC_S3_BUCKET_NAME_GAMING"),
+    outputPrefix: validateGenerationOutputPrefix(required(env, "GENERATION_OUTPUT_PREFIX")),
   };
 }

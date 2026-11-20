@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server";
+import type { Prisma } from "@prisma/client";
 
 import { prisma } from "../db";
 
@@ -11,7 +12,7 @@ export async function withCreditTransaction<T>(
     return fn();
   }
 
-  const { count } = await prisma.$transaction((tx) =>
+  const { count } = await prisma.$transaction((tx: Prisma.TransactionClient) =>
     tx.user.updateMany({
       where: {
         id: userId,
@@ -37,7 +38,7 @@ export async function withCreditTransaction<T>(
   try {
     return await fn();
   } catch (error) {
-    await prisma.$transaction((tx) =>
+    await prisma.$transaction((tx: Prisma.TransactionClient) =>
       tx.user.update({
         where: {
           id: userId,

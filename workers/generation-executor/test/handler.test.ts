@@ -14,6 +14,7 @@ const config: ExecutorConfig = {
   executionTable: "fixture-table",
   awsRegion: "us-east-1",
   bucketName: "fixture-bucket",
+  outputPrefix: "generation-staging/",
 };
 const input: GenerationExecutionRequest = {
   userId: "user-a",

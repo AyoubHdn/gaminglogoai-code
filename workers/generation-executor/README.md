@@ -36,6 +36,9 @@ reconciled separately; it is never automatically refunded or retried.
 Lambda: `REPLICATE_API_TOKEN`, `GENERATION_EXECUTOR_HMAC_SECRET`,
 `GENERATION_EXECUTION_SCOPE`, `GENERATION_EXECUTION_TABLE`,
 `NEXT_PUBLIC_AWS_REGION_GAMING`, `NEXT_PUBLIC_S3_BUCKET_NAME_GAMING`.
+The staging deployment also sets the server-controlled
+`GENERATION_OUTPUT_PREFIX` to `generation-staging/`. An empty value preserves
+the legacy Vercel layout; request payloads never select this prefix.
 
 Gateway: `GENERATION_EXECUTOR_HMAC_SECRET`, `GENERATION_EXECUTION_SCOPE`,
 `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, optional `AWS_SESSION_TOKEN`,

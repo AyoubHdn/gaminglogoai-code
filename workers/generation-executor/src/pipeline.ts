@@ -8,6 +8,7 @@ import type {
   LogoRequest,
 } from "../../../src/server/generation/contract.ts";
 import type { ExecutorConfig } from "./config.ts";
+import { generationObjectKey } from "../../../src/server/generation/storageKey.ts";
 
 export type ExecutorPipeline = {
   generate(input: LogoRequest): Promise<string[]>;
@@ -16,6 +17,9 @@ export type ExecutorPipeline = {
     base64: string,
     shouldWatermark: boolean,
   ): Promise<void>;
+};
+type S3SendClient = {
+  send(command: PutObjectCommand): Promise<unknown>;
 };
 
 async function fetchImage(url: string): Promise<string> {
@@ -41,9 +45,10 @@ function modelInput(input: LogoRequest): Record<string, unknown> {
 export function createNodeExecutorPipeline(
   config: ExecutorConfig,
   overrides: Partial<ExecutorPipeline> = {},
+  clients: { s3?: S3SendClient } = {},
 ): ExecutorPipeline {
   const replicate = new Replicate({ auth: config.replicateApiToken });
-  const s3 = new S3Client({ region: config.awsRegion });
+  const s3 = clients.s3 ?? new S3Client({ region: config.awsRegion });
   return {
     async generate(input) {
       if (overrides.generate) return overrides.generate(input);
@@ -54,7 +59,7 @@ export function createNodeExecutorPipeline(
       const output = (await replicate.run(path, {
         input: modelInput(input),
       })) as unknown;
-      if (!Array.isArray(output) || output.some((url) => typeof url !== "string"))
+      if (!Array.isArray(output) || !output.every((url): url is string => typeof url === "string"))
         throw new Error("PROVIDER_OUTPUT_INVALID");
       return Promise.all(output.map((url) => fetchImage(url)));
     },
@@ -67,7 +72,7 @@ export function createNodeExecutorPipeline(
       await s3.send(
         new PutObjectCommand({
           Bucket: config.bucketName,
-          Key: icon.id,
+          Key: generationObjectKey(config.outputPrefix, icon.id),
           Body: image,
           ContentType: "image/png",
         }),

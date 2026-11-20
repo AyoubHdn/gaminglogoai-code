@@ -7,6 +7,14 @@ type Env = {
   AWS_SECRET_ACCESS_KEY: string;
   AWS_SESSION_TOKEN?: string;
 };
+export type SigningEnv = Pick<
+  Env,
+  | "AWS_REGION"
+  | "GENERATION_LAMBDA_FUNCTION_URL"
+  | "AWS_ACCESS_KEY_ID"
+  | "AWS_SECRET_ACCESS_KEY"
+  | "AWS_SESSION_TOKEN"
+>;
 
 const encoder = new TextEncoder();
 
@@ -64,7 +72,7 @@ function awsPath(pathname: string): string {
 }
 
 async function signedLambdaRequest(
-  env: Env,
+  env: SigningEnv,
   body: string,
   rootTimestamp: string,
   rootSignature: string,
@@ -81,11 +89,15 @@ async function signedLambdaRequest(
     `host:${target.host}`,
     `x-amz-content-sha256:${payloadHash}`,
     `x-amz-date:${amzDate}`,
+    ...(env.AWS_SESSION_TOKEN ? [`x-amz-security-token:${env.AWS_SESSION_TOKEN}`] : []),
     `x-generation-executor-signature:${rootSignature}`,
     `x-generation-executor-timestamp:${rootTimestamp}`,
   ].join("\n") + "\n";
-  const signedHeaders =
-    "content-type;host;x-amz-content-sha256;x-amz-date;x-generation-executor-signature;x-generation-executor-timestamp";
+  const signedHeaders = [
+    "content-type", "host", "x-amz-content-sha256", "x-amz-date",
+    ...(env.AWS_SESSION_TOKEN ? ["x-amz-security-token"] : []),
+    "x-generation-executor-signature", "x-generation-executor-timestamp",
+  ].join(";");
   const canonicalRequest = [
     "POST",
     awsPath(target.pathname),
@@ -144,3 +156,5 @@ export default {
     return signedLambdaRequest(env, body, timestamp, signature);
   },
 };
+
+export { signedLambdaRequest };
