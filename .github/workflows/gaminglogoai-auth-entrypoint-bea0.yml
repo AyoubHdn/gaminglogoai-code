@@ -5,6 +5,7 @@ on:
     branches:
       - staging/gaminglogoai-auth-entrypoint-bea0
       - staging/gaminglogoai-executor-prefix-4de
+      - staging/gaminglogoai-replicate-a08
       - experiment/gaminglogoai-post-body-c
       - experiment/gaminglogoai-post-body-c-generated-runtime
 
@@ -70,7 +71,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$GITHUB_REF_NAME" = "staging/gaminglogoai-auth-entrypoint-bea0" || test "$GITHUB_REF_NAME" = "staging/gaminglogoai-executor-prefix-4de" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c-generated-runtime"
+          test "$GITHUB_REF_NAME" = "staging/gaminglogoai-auth-entrypoint-bea0" || test "$GITHUB_REF_NAME" = "staging/gaminglogoai-executor-prefix-4de" || test "$GITHUB_REF_NAME" = "staging/gaminglogoai-replicate-a08" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c" || test "$GITHUB_REF_NAME" = "experiment/gaminglogoai-post-body-c-generated-runtime"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$(git status --porcelain)" = ""
 
@@ -80,11 +81,12 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Resolve candidate lockfile
-        run: npm install --package-lock-only --ignore-scripts --save-exact --no-audit --no-fund
-
       - name: Install pinned dependencies
         run: npm ci --include=dev
+
+      - name: Verify dependency manifests remain pinned
+        shell: bash
+        run: git diff --exit-code -- package.json package-lock.json
 
       - name: Generate pinned Prisma client
         run: npx prisma generate --schema prisma/schema.prisma
