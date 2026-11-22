@@ -47,7 +47,10 @@ export function createNodeExecutorPipeline(
   overrides: Partial<ExecutorPipeline> = {},
   clients: { s3?: S3SendClient } = {},
 ): ExecutorPipeline {
-  const replicate = new Replicate({ auth: config.replicateApiToken });
+  const replicate = new Replicate({
+    auth: config.replicateApiToken,
+    useFileOutput: false,
+  });
   const s3 = clients.s3 ?? new S3Client({ region: config.awsRegion });
   return {
     async generate(input) {
