@@ -21,9 +21,10 @@ export type ExecutorPipeline = {
 type S3SendClient = {
   send(command: PutObjectCommand): Promise<unknown>;
 };
+type DownloadClient = typeof fetch;
 
-async function fetchImage(url: string): Promise<string> {
-  const response = await fetch(url);
+async function fetchImage(url: string, download: DownloadClient): Promise<string> {
+  const response = await download(url);
   if (!response.ok) throw new Error("PROVIDER_OUTPUT_DOWNLOAD_FAILED");
   return Buffer.from(await response.arrayBuffer()).toString("base64");
 }
@@ -45,13 +46,14 @@ function modelInput(input: LogoRequest): Record<string, unknown> {
 export function createNodeExecutorPipeline(
   config: ExecutorConfig,
   overrides: Partial<ExecutorPipeline> = {},
-  clients: { s3?: S3SendClient } = {},
+  clients: { s3?: S3SendClient; download?: DownloadClient } = {},
 ): ExecutorPipeline {
   const replicate = new Replicate({
     auth: config.replicateApiToken,
     useFileOutput: false,
   });
   const s3 = clients.s3 ?? new S3Client({ region: config.awsRegion });
+  const download = clients.download ?? fetch;
   return {
     async generate(input) {
       if (overrides.generate) return overrides.generate(input);
@@ -64,7 +66,7 @@ export function createNodeExecutorPipeline(
       })) as unknown;
       if (!Array.isArray(output) || !output.every((url): url is string => typeof url === "string"))
         throw new Error("PROVIDER_OUTPUT_INVALID");
-      return Promise.all(output.map((url) => fetchImage(url)));
+      return Promise.all(output.map((url) => fetchImage(url, download)));
     },
     async upload(icon, base64, shouldWatermark) {
       if (overrides.upload) return overrides.upload(icon, base64, shouldWatermark);

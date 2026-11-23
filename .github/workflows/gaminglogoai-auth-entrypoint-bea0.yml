@@ -164,6 +164,7 @@ jobs:
           --test scripts/generation-executor-package.test.mjs
           workers/generation-executor/test/handler.test.ts
           workers/generation-executor/test/output-prefix.test.ts
+          workers/generation-executor/test/pipeline-replicate.test.mjs
           workers/db/src/generation.prefix.test.ts
           workers/generation-executor-gateway/src/index.sigv4.test.mjs
           workers/generation-executor-gateway/src/index.sigv4.sdk.test.mjs
