@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import Replicate from "replicate";
+import { Response as NodeFetchResponse } from "node-fetch";
 import sharp from "sharp";
 import { prepareLogoRequest } from "../../../src/server/generation/contract.ts";
 import { signExecutorBody } from "../src/hmac.ts";
@@ -28,10 +29,12 @@ async function makePng() {
 /** @typedef {{ input?: { num_outputs?: unknown, output_format?: unknown }, [key: string]: unknown }} ApiBody */
 /** @typedef {{ mode: "success" | "invalid", outputUrl: string, apiCalls: number, downloadCalls: number, lastApiUrl: string, lastApiBody: ApiBody | null }} ApiState */
 /** @typedef {{ Bucket?: unknown, Key?: unknown, Body?: unknown }} UploadInput */
+/** @typedef {typeof globalThis.fetch} GlobalFetch */
+/** @typedef {typeof import("node-fetch").default} NodeFetch */
 /** @param {ApiState} state */
 function apiFetchFactory(state) {
-  /** @param {string | URL | Request} url @param {RequestInit | undefined} init */
-  return async (url, init) => {
+  /** @type {GlobalFetch} */
+  const fetcher = async (url, init) => {
     state.apiCalls += 1;
     state.lastApiUrl = String(url);
     state.lastApiBody = JSON.parse(String(init?.body ?? "{}"));
@@ -46,16 +49,18 @@ function apiFetchFactory(state) {
       headers: { "content-type": "application/json" },
     });
   };
+  return fetcher;
 }
 
 /** @param {Buffer} image @param {ApiState} state */
 function downloadFetchFactory(image, state) {
-  /** @param {string | URL | Request} url */
-  return async (url) => {
+  /** @type {NodeFetch} */
+  const fetcher = async (url) => {
     state.downloadCalls += 1;
     assert.equal(String(url), state.outputUrl);
-    return new Response(image, { status: 200, headers: { "content-type": "image/png" } });
+    return new NodeFetchResponse(image, { status: 200, headers: { "content-type": "image/png" } });
   };
+  return fetcher;
 }
 
 /** @param {unknown} output @returns {string[]} */
@@ -106,10 +111,12 @@ test("Replicate 1.4.0 FileOutput behavior and fixed URL-string pipeline use mock
   globalThis.fetch = apiFetchFactory(state);
   try {
     const defaultClient = new Replicate({ auth: config.replicateApiToken, fetch: globalThis.fetch });
-    const defaultOutput = await defaultClient.run("black-forest-labs/flux-schnell", { input: { prompt: "offline" } });
+    const defaultOutput = /** @type {unknown[]} */ (/** @type {unknown} */ (await defaultClient.run("black-forest-labs/flux-schnell", { input: { prompt: "offline" } })));
     assert.equal(Array.isArray(defaultOutput), true);
-    assert.equal(typeof defaultOutput[0], "object");
-    assert.equal(defaultOutput[0].constructor.name, "FileOutput");
+    const firstOutput = defaultOutput[0];
+    assert.ok(firstOutput && typeof firstOutput === "object");
+    const firstOutputObject = /** @type {{ constructor: { name: string } }} */ (firstOutput);
+    assert.equal(firstOutputObject.constructor.name, "FileOutput");
     assert.throws(() => requireStringOutputs(defaultOutput), /PROVIDER_OUTPUT_INVALID/);
 
     /** @type {UploadInput[]} */
@@ -132,12 +139,14 @@ test("Replicate 1.4.0 FileOutput behavior and fixed URL-string pipeline use mock
     assert.equal(apiBody.input.output_format, "png");
     assert.equal("useFileOutput" in apiBody, false);
     assert.equal(state.downloadCalls, 1);
-    await pipeline.upload({ id: input.plannedOutputIds[0], prompt: input.prompt, imageKey: null }, generatedImage, false);
+    const outputId = input.plannedOutputIds[0];
+    if (typeof outputId !== "string") throw new Error("expected planned output id");
+    await pipeline.upload({ id: outputId, prompt: input.prompt, imageKey: null }, generatedImage, false);
     assert.equal(uploads.length, 1);
     const upload = uploads[0];
     assert.ok(upload);
     assert.equal(upload.Bucket, config.bucketName);
-    assert.equal(upload.Key, `${config.outputPrefix}${input.plannedOutputIds[0]}`);
+    assert.equal(upload.Key, `${config.outputPrefix}${outputId}`);
     assert.ok(upload.Body instanceof Uint8Array);
     const metadata = await sharp(upload.Body).metadata();
     assert.equal(metadata.format, "png");
